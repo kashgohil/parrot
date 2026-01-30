@@ -116,6 +116,40 @@ async fn transcribe_last(
         _ => return Err(format!("Unknown setup mode: {}", setup_mode)),
     }
 
+    // Save audio if enabled
+    let save_audio = db
+        .get_setting("save_audio")
+        .map_err(|e| e.to_string())?
+        .unwrap_or_else(|| "false".to_string());
+
+    if save_audio == "true" {
+        match setup_mode.as_str() {
+            "local" => {
+                let audio_dir = Database::audio_dir().map_err(|e| e.to_string())?;
+                std::fs::create_dir_all(&audio_dir).map_err(|e| e.to_string())?;
+                let audio_path = audio_dir.join(format!("{}.wav", id));
+                std::fs::write(&audio_path, &wav_data).map_err(|e| e.to_string())?;
+                let _ = db.update_dictation_audio_path(&id, &audio_path.to_string_lossy());
+            }
+            "cloud" => {
+                if let Some(token) = session_token.as_deref() {
+                    let wav_clone = wav_data.clone();
+                    let token_owned = token.to_string();
+                    let id_clone = id.clone();
+                    // Upload in background to not block transcription flow
+                    tokio::spawn(async move {
+                        if let Err(e) =
+                            cloud_api::upload_audio(&token_owned, &id_clone, &wav_clone).await
+                        {
+                            eprintln!("Audio upload failed: {}", e);
+                        }
+                    });
+                }
+            }
+            _ => {}
+        }
+    }
+
     // Step 2: LLM cleanup
     let _ = app.emit("cleanup-started", ());
 
@@ -224,6 +258,8 @@ struct DictationEntry {
     provider: String,
     duration_ms: i64,
     created_at: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    audio_path: Option<String>,
 }
 
 #[tauri::command]
@@ -245,6 +281,7 @@ async fn get_history(db: tauri::State<'_, Database>) -> Result<Vec<DictationEntr
                     provider: e.provider,
                     duration_ms: e.duration_ms,
                     created_at: e.created_at,
+                    audio_path: e.audio_path,
                 })
                 .collect())
         }
@@ -265,6 +302,7 @@ async fn get_history(db: tauri::State<'_, Database>) -> Result<Vec<DictationEntr
                     provider: e.provider,
                     duration_ms: e.duration_ms,
                     created_at: e.created_at,
+                    audio_path: e.audio_path,
                 })
                 .collect())
         }
@@ -294,6 +332,7 @@ async fn search_history(
                     provider: e.provider,
                     duration_ms: e.duration_ms,
                     created_at: e.created_at,
+                    audio_path: e.audio_path,
                 })
                 .collect())
         }
@@ -314,6 +353,7 @@ async fn search_history(
                     provider: e.provider,
                     duration_ms: e.duration_ms,
                     created_at: e.created_at,
+                    audio_path: e.audio_path,
                 })
                 .collect())
         }
@@ -398,6 +438,38 @@ async fn update_profile(
                 .map_err(|e| e.to_string())
         }
         _ => Err(format!("Unknown setup mode: {}", setup_mode)),
+    }
+}
+
+#[tauri::command]
+async fn get_audio_url(
+    id: &str,
+    db: tauri::State<'_, Database>,
+) -> Result<Option<String>, String> {
+    let setup_mode = db
+        .get_setting("setup_mode")
+        .map_err(|e| e.to_string())?
+        .unwrap_or_else(|| "local".to_string());
+
+    match setup_mode.as_str() {
+        "local" => {
+            let path = db.get_audio_path(id).map_err(|e| e.to_string())?;
+            Ok(path)
+        }
+        "cloud" => {
+            let session_token = db
+                .get_setting("session_token")
+                .map_err(|e| e.to_string())?
+                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
+            match cloud_api::get_audio_url(&session_token, id).await {
+                Ok(url) => Ok(Some(url)),
+                Err(e) => {
+                    eprintln!("Failed to get audio URL: {}", e);
+                    Ok(None)
+                }
+            }
+        }
+        _ => Ok(None),
     }
 }
 
@@ -510,6 +582,7 @@ pub fn run() {
             set_setting,
             get_profile,
             update_profile,
+            get_audio_url,
             check_command_exists,
             install_tool,
         ])

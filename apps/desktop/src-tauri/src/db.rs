@@ -53,8 +53,28 @@ impl Database {
             );
 
             INSERT OR IGNORE INTO profile (id) VALUES (1);
+
+            -- Migration: add audio_path column
+            CREATE TABLE IF NOT EXISTS _migrations (name TEXT PRIMARY KEY);
             ",
         )?;
+
+        // Run conditional migrations
+        let has_audio_path: bool = conn
+            .prepare("SELECT COUNT(*) FROM _migrations WHERE name = 'add_audio_path'")?
+            .query_row([], |row| row.get::<_, i64>(0))
+            .unwrap_or(0)
+            > 0;
+
+        if !has_audio_path {
+            conn.execute_batch(
+                "
+                ALTER TABLE dictation_history ADD COLUMN audio_path TEXT;
+                INSERT INTO _migrations (name) VALUES ('add_audio_path');
+                ",
+            )?;
+        }
+
         Ok(())
     }
 
@@ -93,7 +113,7 @@ impl Database {
     pub fn get_history(&self) -> Result<Vec<DictationEntry>> {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn.prepare(
-            "SELECT id, raw_text, cleaned_text, provider, duration_ms, created_at FROM dictation_history ORDER BY created_at DESC",
+            "SELECT id, raw_text, cleaned_text, provider, duration_ms, created_at, audio_path FROM dictation_history ORDER BY created_at DESC",
         )?;
         let entries = stmt
             .query_map([], |row| {
@@ -104,6 +124,7 @@ impl Database {
                     provider: row.get(3)?,
                     duration_ms: row.get(4)?,
                     created_at: row.get(5)?,
+                    audio_path: row.get(6)?,
                 })
             })?
             .collect::<std::result::Result<Vec<_>, _>>()?;
@@ -114,7 +135,7 @@ impl Database {
         let conn = self.conn.lock().unwrap();
         let pattern = format!("%{}%", query);
         let mut stmt = conn.prepare(
-            "SELECT id, raw_text, cleaned_text, provider, duration_ms, created_at FROM dictation_history WHERE raw_text LIKE ?1 OR cleaned_text LIKE ?1 ORDER BY created_at DESC",
+            "SELECT id, raw_text, cleaned_text, provider, duration_ms, created_at, audio_path FROM dictation_history WHERE raw_text LIKE ?1 OR cleaned_text LIKE ?1 ORDER BY created_at DESC",
         )?;
         let entries = stmt
             .query_map([&pattern], |row| {
@@ -125,6 +146,7 @@ impl Database {
                     provider: row.get(3)?,
                     duration_ms: row.get(4)?,
                     created_at: row.get(5)?,
+                    audio_path: row.get(6)?,
                 })
             })?
             .collect::<std::result::Result<Vec<_>, _>>()?;
@@ -155,6 +177,28 @@ impl Database {
         Ok(())
     }
 
+    pub fn update_dictation_audio_path(&self, id: &str, audio_path: &str) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "UPDATE dictation_history SET audio_path = ?1 WHERE id = ?2",
+            [audio_path, id],
+        )?;
+        Ok(())
+    }
+
+    pub fn get_audio_path(&self, id: &str) -> Result<Option<String>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare("SELECT audio_path FROM dictation_history WHERE id = ?1")?;
+        let result = stmt.query_row([id], |row| row.get::<_, Option<String>>(0)).ok().flatten();
+        Ok(result)
+    }
+
+    pub fn audio_dir() -> Result<PathBuf> {
+        let data_dir =
+            dirs::data_dir().ok_or_else(|| anyhow::anyhow!("Could not find data directory"))?;
+        Ok(data_dir.join("com.kash.parrot").join("audio"))
+    }
+
     pub fn update_profile(
         &self,
         custom_words: &str,
@@ -178,6 +222,7 @@ pub struct DictationEntry {
     pub provider: String,
     pub duration_ms: i64,
     pub created_at: String,
+    pub audio_path: Option<String>,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Clone)]

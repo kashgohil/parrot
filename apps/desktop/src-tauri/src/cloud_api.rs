@@ -22,6 +22,8 @@ pub struct DictationEntry {
     pub provider: String,
     pub duration_ms: i64,
     pub created_at: String,
+    #[serde(default)]
+    pub audio_path: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -116,6 +118,54 @@ pub async fn search_history(session_token: &str, query: &str) -> Result<Vec<Dict
 
     let result: HistoryResponse = resp.json().await?;
     Ok(result.entries)
+}
+
+// -- Audio --
+
+pub async fn upload_audio(session_token: &str, dictation_id: &str, wav_data: &[u8]) -> Result<()> {
+    let client = reqwest::Client::new();
+    let part = reqwest::multipart::Part::bytes(wav_data.to_vec())
+        .file_name(format!("{}.wav", dictation_id))
+        .mime_str("audio/wav")?;
+    let form = reqwest::multipart::Form::new().part("audio", part);
+
+    let resp = client
+        .post(format!("{}/api/audio/{}", BACKEND_URL, dictation_id))
+        .header("Authorization", format!("Bearer {}", session_token))
+        .multipart(form)
+        .send()
+        .await?;
+
+    if !resp.status().is_success() {
+        let status = resp.status();
+        let body = resp.text().await.unwrap_or_default();
+        anyhow::bail!("Backend audio upload error {}: {}", status, body);
+    }
+
+    Ok(())
+}
+
+#[derive(Deserialize)]
+struct AudioUrlResponse {
+    url: String,
+}
+
+pub async fn get_audio_url(session_token: &str, dictation_id: &str) -> Result<String> {
+    let client = reqwest::Client::new();
+    let resp = client
+        .get(format!("{}/api/audio/{}", BACKEND_URL, dictation_id))
+        .header("Authorization", format!("Bearer {}", session_token))
+        .send()
+        .await?;
+
+    if !resp.status().is_success() {
+        let status = resp.status();
+        let body = resp.text().await.unwrap_or_default();
+        anyhow::bail!("Backend audio URL error {}: {}", status, body);
+    }
+
+    let result: AudioUrlResponse = resp.json().await?;
+    Ok(result.url)
 }
 
 // -- Profile --
