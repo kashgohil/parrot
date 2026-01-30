@@ -27,18 +27,20 @@ function RootLayout() {
     if (isLoading) return;
 
     const isAuthRoute = location.pathname.startsWith("/login") || location.pathname.startsWith("/signup");
-    const isOnboardingRoute = location.pathname.startsWith("/onboarding");
+    const onboardingPaths = ["/setup-mode", "/cloud-setup", "/local-setup", "/tour"];
+    const isOnboardingRoute = onboardingPaths.some(p => location.pathname.startsWith(p));
 
     if (!isAuthenticated && !isAuthRoute) {
       navigate({ to: "/login" });
     } else if (isAuthenticated && !user?.onboarding_completed && !isOnboardingRoute) {
-      navigate({ to: "/onboarding/setup-mode" });
+      navigate({ to: "/setup-mode" });
     }
   }, [isAuthenticated, isLoading, user, location.pathname, navigate]);
 
   // Check if we should render the full layout or just the outlet
   const isAuthRoute = location.pathname.startsWith("/login") || location.pathname.startsWith("/signup");
-  const isOnboardingRoute = location.pathname.startsWith("/onboarding");
+  const onboardingPaths = ["/setup-mode", "/cloud-setup", "/local-setup", "/tour"];
+  const isOnboardingRoute = onboardingPaths.some(p => location.pathname.startsWith(p));
 
   // For auth and onboarding routes, just render the outlet (they have their own layouts)
   if (isAuthRoute || isOnboardingRoute) {
@@ -95,8 +97,8 @@ function AuthenticatedLayout() {
 
   return (
     <div className="flex h-screen">
-      <nav className="w-[200px] bg-secondary border-r border-border flex flex-col pt-[env(titlebar-area-height,36px)] pb-4 shrink-0">
-        <div className="px-5 pb-4 border-b border-border mb-2 [-webkit-app-region:drag] cursor-default">
+      <nav className="w-[200px] bg-secondary border-r border-border flex flex-col pt-8 pb-4 shrink-0">
+        <div data-tauri-drag-region className="px-5 pb-4 border-b border-border mb-2 cursor-default">
           <h1 className="text-xl font-bold text-primary">Parrot</h1>
         </div>
         <div className="flex flex-col gap-0.5 px-2">
@@ -123,8 +125,11 @@ function AuthenticatedLayout() {
           </Link>
         </div>
       </nav>
-      <main className="flex-1 p-6 overflow-y-auto">
-        <Outlet />
+      <main className="flex-1 flex flex-col overflow-y-auto">
+        <div data-tauri-drag-region className="h-8 shrink-0 cursor-default" />
+        <div className="flex-1 px-6 pb-6">
+          <Outlet />
+        </div>
       </main>
       {status === "recording" && <RecordingOverlay />}
       {status === "transcribing" && <ProcessingOverlay label="Transcribing..." />}
