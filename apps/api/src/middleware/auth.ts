@@ -30,7 +30,7 @@ export async function authMiddleware(c: Context, next: Next) {
     return c.json({ error: "Invalid or expired session" }, 401);
   }
 
-  const user = getUserById(session.user_id);
+  const user = getUserById(session.userId);
 
   if (!user) {
     return c.json({ error: "User not found" }, 401);
@@ -40,8 +40,8 @@ export async function authMiddleware(c: Context, next: Next) {
     id: user.id,
     email: user.email,
     name: user.name,
-    onboarding_completed: user.onboarding_completed,
-    setup_mode: user.setup_mode,
+    onboarding_completed: user.onboardingCompleted,
+    setup_mode: user.setupMode,
   });
   c.set("sessionId", sessionId);
 

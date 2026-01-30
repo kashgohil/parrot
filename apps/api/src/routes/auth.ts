@@ -39,8 +39,8 @@ auth.post("/signup", async (c) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        onboarding_completed: user.onboarding_completed,
-        setup_mode: user.setup_mode,
+        onboarding_completed: user.onboardingCompleted,
+        setup_mode: user.setupMode,
       },
       token: session.id,
     });
@@ -76,8 +76,8 @@ auth.post("/login", async (c) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        onboarding_completed: user.onboarding_completed,
-        setup_mode: user.setup_mode,
+        onboarding_completed: user.onboardingCompleted,
+        setup_mode: user.setupMode,
       },
       token: session.id,
     });
@@ -118,8 +118,8 @@ auth.post("/google", async (c) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        onboarding_completed: user.onboarding_completed,
-        setup_mode: user.setup_mode,
+        onboarding_completed: user.onboardingCompleted,
+        setup_mode: user.setupMode,
       },
       token: session.id,
     });
