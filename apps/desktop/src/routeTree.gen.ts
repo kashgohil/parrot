@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VocabularyRouteImport } from './routes/vocabulary'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/_onboarding'
@@ -21,6 +22,11 @@ import { Route as OnboardingCloudSetupRouteImport } from './routes/_onboarding/c
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 
+const VocabularyRoute = VocabularyRouteImport.update({
+  id: '/vocabulary',
+  path: '/vocabulary',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/vocabulary': typeof VocabularyRoute
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/cloud-setup': typeof OnboardingCloudSetupRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/vocabulary': typeof VocabularyRoute
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/cloud-setup': typeof OnboardingCloudSetupRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/_onboarding': typeof OnboardingRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/vocabulary': typeof VocabularyRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/_onboarding/cloud-setup': typeof OnboardingCloudSetupRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/profile'
     | '/settings'
+    | '/vocabulary'
     | '/login'
     | '/signup'
     | '/cloud-setup'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/profile'
     | '/settings'
+    | '/vocabulary'
     | '/login'
     | '/signup'
     | '/cloud-setup'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/_onboarding'
     | '/profile'
     | '/settings'
+    | '/vocabulary'
     | '/_auth/login'
     | '/_auth/signup'
     | '/_onboarding/cloud-setup'
@@ -155,10 +167,18 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRouteWithChildren
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
+  VocabularyRoute: typeof VocabularyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vocabulary': {
+      id: '/vocabulary'
+      path: '/vocabulary'
+      fullPath: '/vocabulary'
+      preLoaderRoute: typeof VocabularyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -275,6 +295,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRouteWithChildren,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
+  VocabularyRoute: VocabularyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
