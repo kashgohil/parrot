@@ -3,11 +3,16 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri"
+    "dev": "bun run dev:api & bun run dev:desktop",
+    "dev:api": "bun run --filter @parrot/api dev",
+    "dev:desktop": "bun run --filter @parrot/desktop tauri dev",
+    "build:desktop": "bun run --filter @parrot/desktop tauri build",
+    "db:generate": "bun run --filter @parrot/api db:generate",
+    "db:migrate": "bun run --filter @parrot/api db:migrate"
   },
   "dependencies": {
     "react": "^19.1.0",
