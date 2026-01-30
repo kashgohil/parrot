@@ -12,6 +12,8 @@ interface AuthContextType {
   user: AuthUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  justLoggedIn: boolean;
+  clearJustLoggedIn: () => void;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name?: string) => Promise<void>;
   googleAuth: (idToken: string) => Promise<void>;
@@ -25,6 +27,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
 
   const refreshUser = useCallback(async () => {
     if (!api.getToken()) {
@@ -50,16 +53,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const { user } = await api.login(email, password);
+    setJustLoggedIn(true);
     setUser(user);
   };
 
   const signup = async (email: string, password: string, name?: string) => {
     const { user } = await api.signup(email, password, name);
+    setJustLoggedIn(true);
     setUser(user);
   };
 
   const googleAuth = async (idToken: string) => {
     const { user } = await api.googleAuth(idToken);
+    setJustLoggedIn(true);
     setUser(user);
   };
 
@@ -79,6 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoading,
         isAuthenticated: !!user,
+        justLoggedIn,
+        clearJustLoggedIn: () => setJustLoggedIn(false),
         login,
         signup,
         googleAuth,

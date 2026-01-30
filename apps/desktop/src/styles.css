@@ -224,6 +224,38 @@
 	animation: float 3s ease-in-out infinite;
 }
 
+@keyframes welcome-pop {
+	0% {
+		transform: scale(0);
+		opacity: 0;
+	}
+	60% {
+		transform: scale(1.15);
+		opacity: 1;
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+@utility animate-welcome-pop {
+	animation: welcome-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes welcome-check {
+	0% {
+		stroke-dashoffset: 20;
+	}
+	100% {
+		stroke-dashoffset: 0;
+	}
+}
+
+@utility animate-welcome-check {
+	stroke-dasharray: 20;
+	animation: welcome-check 0.4s ease-out 0.3s both;
+}
+
 * {
   box-sizing: border-box;
 }
