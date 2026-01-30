@@ -106,7 +106,8 @@ async fn transcribe_last(
                 .map_err(|e| e.to_string())?;
         }
         "cloud" => {
-            let token = session_token.as_deref()
+            let token = session_token
+                .as_deref()
                 .ok_or_else(|| "Session token required for cloud mode".to_string())?;
             cloud_api::insert_dictation(token, &id, &raw_text, "", "cloud", duration_ms as i64)
                 .await
@@ -144,7 +145,8 @@ async fn transcribe_last(
             }
         }
         "cloud" => {
-            let token = session_token.as_deref()
+            let token = session_token
+                .as_deref()
                 .ok_or_else(|| "Session token required for cloud mode".to_string())?;
             let llm_api_key = db.get_setting("llm_api_key").map_err(|e| e.to_string())?;
             match cleanup::cleanup_text(
@@ -383,10 +385,9 @@ async fn update_profile(
         .unwrap_or_else(|| "local".to_string());
 
     match setup_mode.as_str() {
-        "local" => {
-            db.update_profile(custom_words, context_prompt, writing_style)
-                .map_err(|e| e.to_string())
-        }
+        "local" => db
+            .update_profile(custom_words, context_prompt, writing_style)
+            .map_err(|e| e.to_string()),
         "cloud" => {
             let session_token = db
                 .get_setting("session_token")
