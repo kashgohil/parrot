@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { invoke } from "@tauri-apps/api/core";
 import { Check, Cloud, Monitor, X } from "lucide-react";
 import { useState } from "react";
 
@@ -26,6 +27,7 @@ function SetupModePage() {
 
 		setIsSubmitting(true);
 		try {
+			await invoke("set_setting", { key: "setup_mode", value: selected });
 			await updateOnboarding(false, selected);
 			if (selected === "local") {
 				navigate({ to: "/local-setup" });
