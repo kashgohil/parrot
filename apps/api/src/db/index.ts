@@ -41,7 +41,20 @@ sqlite.exec(`
     duration_ms INTEGER NOT NULL DEFAULT 0,
     created_at TEXT DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS _migrations (name TEXT PRIMARY KEY);
 `);
+
+// Conditional migrations
+const hasMigration = (name: string) =>
+  sqlite.query("SELECT 1 FROM _migrations WHERE name = ?").get(name) != null;
+
+if (!hasMigration("add_audio_url")) {
+  sqlite.exec(`
+    ALTER TABLE dictation_history ADD COLUMN audio_url TEXT;
+    INSERT INTO _migrations (name) VALUES ('add_audio_url');
+  `);
+}
 
 // User operations
 export async function createUser(
@@ -222,6 +235,13 @@ export function getHistory(userId: string): DictationEntry[] {
     .where(eq(dictationHistory.userId, userId))
     .orderBy(desc(dictationHistory.createdAt))
     .all();
+}
+
+export function updateDictationAudioUrl(id: string, audioUrl: string): void {
+  db.update(dictationHistory)
+    .set({ audioUrl })
+    .where(eq(dictationHistory.id, id))
+    .run();
 }
 
 export function searchHistory(userId: string, query: string): DictationEntry[] {

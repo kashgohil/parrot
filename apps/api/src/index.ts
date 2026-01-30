@@ -6,6 +6,7 @@ import { sync } from "./routes/sync";
 import { auth } from "./routes/auth";
 import { history } from "./routes/history";
 import { profile } from "./routes/profile";
+import { audio } from "./routes/audio";
 
 const app = new Hono();
 
@@ -18,6 +19,7 @@ app.route("/api/transcribe", transcribe);
 app.route("/api/cleanup", cleanup);
 app.route("/api/history", history);
 app.route("/api/profile", profile);
+app.route("/api/audio", audio);
 app.route("/api/sync", sync);
 
 export default {

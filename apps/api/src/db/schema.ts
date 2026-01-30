@@ -38,6 +38,7 @@ export const dictationHistory = sqliteTable("dictation_history", {
   cleanedText: text("cleaned_text").notNull().default(""),
   provider: text("provider").notNull().default("cloud"),
   durationMs: integer("duration_ms").notNull().default(0),
+  audioUrl: text("audio_url"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 });
 
