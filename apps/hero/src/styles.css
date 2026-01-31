@@ -1,0 +1,350 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+@font-face {
+	font-family: "Fira Sans";
+	src:
+		url("/fonts/FiraSans-Regular.woff2") format("woff2"),
+		url("/fonts/FiraSans-Regular.woff") format("woff");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Fira Sans";
+	src:
+		url("/fonts/FiraSans-Italic.woff2") format("woff2"),
+		url("/fonts/FiraSans-Italic.woff") format("woff");
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Fira Sans";
+	src:
+		url("/fonts/FiraSans-Medium.woff2") format("woff2"),
+		url("/fonts/FiraSans-Medium.woff") format("woff");
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Fira Sans";
+	src:
+		url("/fonts/FiraSans-SemiBold.woff2") format("woff2"),
+		url("/fonts/FiraSans-SemiBold.woff") format("woff");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Fira Sans";
+	src:
+		url("/fonts/FiraSans-Bold.woff2") format("woff2"),
+		url("/fonts/FiraSans-Bold.woff") format("woff");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+:root {
+	--radius: 0.625rem;
+	--background: #fafdf6;
+	--foreground: #1b2e1b;
+	--card: #ffffff;
+	--card-foreground: #1b2e1b;
+	--popover: #ffffff;
+	--popover-foreground: #1b2e1b;
+	--primary: #7cb342;
+	--primary-foreground: #ffffff;
+	--secondary: #f1f8e9;
+	--secondary-foreground: #1b2e1b;
+	--muted: #f1f8e9;
+	--muted-foreground: #5f7a5f;
+	--accent: #f1f8e9;
+	--accent-foreground: #1b2e1b;
+	--destructive: oklch(0.577 0.245 27.325);
+	--border: #d5e4c3;
+	--input: #d5e4c3;
+	--ring: #7cb342;
+	--chart-1: oklch(0.646 0.222 41.116);
+	--chart-2: oklch(0.6 0.118 184.704);
+	--chart-3: oklch(0.398 0.07 227.392);
+	--chart-4: oklch(0.828 0.189 84.429);
+	--chart-5: oklch(0.769 0.188 70.08);
+	--sidebar: #f1f8e9;
+	--sidebar-foreground: #1b2e1b;
+	--sidebar-primary: #7cb342;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #f1f8e9;
+	--sidebar-accent-foreground: #1b2e1b;
+	--sidebar-border: #d5e4c3;
+	--sidebar-ring: #7cb342;
+	--color-pk-primary: #7cb342;
+	--color-pk-primary-light: #8bc34a;
+	--color-pk-primary-dark: #689f38;
+	--color-pk-bg: #fafdf6;
+	--color-pk-bg-secondary: #f1f8e9;
+	--color-pk-bg-card: #ffffff;
+	--color-pk-text: #1b2e1b;
+	--color-pk-text-muted: #5f7a5f;
+	--color-pk-accent: #ff7043;
+	--color-pk-accent-hover: #ff8a65;
+	--color-pk-border: #d5e4c3;
+	--color-pk-badge-green: #4ade80;
+}
+
+@theme inline {
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+	--radius-2xl: calc(var(--radius) + 8px);
+	--radius-3xl: calc(var(--radius) + 12px);
+	--radius-4xl: calc(var(--radius) + 16px);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+}
+
+@keyframes fade-in-up {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@utility animate-fade-in-up {
+	animation: fade-in-up 0.6s ease-out both;
+}
+
+@keyframes fade-in-up-delay-1 {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@utility animate-fade-in-up-delay-1 {
+	animation: fade-in-up-delay-1 0.6s ease-out 0.15s both;
+}
+
+@utility animate-fade-in-up-delay-2 {
+	animation: fade-in-up-delay-1 0.6s ease-out 0.3s both;
+}
+
+@utility animate-fade-in-up-delay-3 {
+	animation: fade-in-up-delay-1 0.6s ease-out 0.45s both;
+}
+
+@keyframes pulse-glow {
+	0%,
+	100% {
+		box-shadow: 0 4px 20px rgba(124, 179, 66, 0.4);
+	}
+	50% {
+		box-shadow: 0 4px 30px rgba(124, 179, 66, 0.6);
+	}
+}
+
+@utility animate-pulse-glow {
+	animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes soundwave {
+	0%, 100% { transform: scaleY(0.3); }
+	50% { transform: scaleY(1); }
+}
+
+@utility animate-soundwave {
+	animation: soundwave 1.2s ease-in-out infinite;
+}
+
+@keyframes float {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(-8px); }
+}
+
+@utility animate-float {
+	animation: float 3s ease-in-out infinite;
+}
+
+@keyframes typewriter {
+	from { width: 0; }
+	to { width: 100%; }
+}
+
+@utility animate-typewriter {
+	animation: typewriter 2s steps(30) 0.5s both;
+}
+
+@keyframes blink-caret {
+	0%, 100% { border-color: transparent; }
+	50% { border-color: var(--primary); }
+}
+
+@utility animate-blink-caret {
+	animation: blink-caret 0.8s step-end infinite;
+}
+
+@keyframes shimmer {
+	0% { background-position: -200% 0; }
+	100% { background-position: 200% 0; }
+}
+
+@utility animate-shimmer {
+	background: linear-gradient(90deg, transparent 0%, rgba(124, 179, 66, 0.08) 50%, transparent 100%);
+	background-size: 200% 100%;
+	animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes marquee {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+
+@utility animate-marquee {
+	animation: marquee 35s linear infinite;
+}
+
+@keyframes marquee-reverse {
+	0% { transform: translateX(-50%); }
+	100% { transform: translateX(0); }
+}
+
+@utility animate-marquee-reverse {
+	animation: marquee-reverse 35s linear infinite;
+}
+
+@keyframes slide-down {
+	from {
+		opacity: 0;
+		transform: translateY(-100%);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@utility animate-slide-down {
+	animation: slide-down 0.3s ease-out both;
+}
+
+@keyframes glow-badge {
+	0%, 100% {
+		box-shadow: 0 0 8px rgba(124, 179, 66, 0.3), 0 0 20px rgba(124, 179, 66, 0.1);
+	}
+	50% {
+		box-shadow: 0 0 16px rgba(124, 179, 66, 0.5), 0 0 40px rgba(124, 179, 66, 0.2);
+	}
+}
+
+@utility animate-glow-badge {
+	animation: glow-badge 2s ease-in-out infinite;
+}
+
+@keyframes flow-line {
+	0% { stroke-dashoffset: 20; }
+	100% { stroke-dashoffset: 0; }
+}
+
+@utility animate-flow-line {
+	animation: flow-line 1s linear infinite;
+}
+
+@keyframes word-pop {
+	from {
+		opacity: 0;
+		transform: scale(0.8) translateY(4px);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
+@utility animate-word-pop {
+	animation: word-pop 0.25s ease-out both;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family:
+		"Fira Sans",
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		Roboto,
+		sans-serif;
+	background: var(--background);
+	color: var(--foreground);
+	min-height: 100vh;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+code {
+	font-family:
+		source-code-pro,
+		Menlo,
+		Monaco,
+		Consolas,
+		"Courier New",
+		monospace;
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
+}
