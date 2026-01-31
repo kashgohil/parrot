@@ -10,6 +10,7 @@
     "dev": "bun run dev:api & bun run dev:desktop",
     "dev:api": "bun run --filter @parrot/api dev",
     "dev:desktop": "bun run --filter @parrot/desktop tauri dev",
+    "dev:hero": "bun run --filter hero dev",
     "build:desktop": "bun run --filter @parrot/desktop tauri build",
     "db:generate": "bun run --filter @parrot/api db:generate",
     "db:migrate": "bun run --filter @parrot/api db:migrate"
