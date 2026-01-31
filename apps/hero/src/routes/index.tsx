@@ -1,10 +1,10 @@
+import Footer from "@/components/Footer";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import Footer from "@/components/Footer";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	ArrowRight,
@@ -26,7 +26,6 @@ import {
 	Globe,
 	Hash,
 	Headphones,
-	Heart,
 	Image,
 	Keyboard,
 	Laptop,
@@ -53,7 +52,6 @@ import {
 	StickyNote,
 	Table2,
 	Terminal,
-	TriangleAlert,
 	X as XIcon,
 	Zap,
 } from "lucide-react";
@@ -70,14 +68,20 @@ export const Route = createFileRoute("/")({
 				content:
 					"Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.",
 			},
-			{ property: "og:title", content: "Parrot — Voice dictation that just works" },
+			{
+				property: "og:title",
+				content: "Parrot — Voice dictation that just works",
+			},
 			{
 				property: "og:description",
 				content:
 					"Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/" },
-			{ name: "twitter:title", content: "Parrot — Voice dictation that just works" },
+			{
+				name: "twitter:title",
+				content: "Parrot — Voice dictation that just works",
+			},
 			{
 				name: "twitter:description",
 				content:
@@ -243,16 +247,18 @@ function TypingRace() {
 	}, [voicePos, sentence.length, phase]);
 
 	return (
-		<div className="bg-[#1a1f2b] rounded-xl border border-white/[0.08] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] overflow-hidden">
+		<div className="bg-[#1a1f2b] rounded-xl border border-white/8 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] overflow-hidden">
 			{/* Title bar */}
-			<div className="flex items-center gap-2 px-4 py-3 bg-[#1e2433] border-b border-white/[0.06]">
+			<div className="flex items-center gap-2 px-4 py-3 bg-[#1e2433] border-b border-white/6">
 				<div className="flex gap-[7px]">
 					<div className="w-[11px] h-[11px] rounded-full bg-[#ff5f57]" />
 					<div className="w-[11px] h-[11px] rounded-full bg-[#febc2e]" />
 					<div className="w-[11px] h-[11px] rounded-full bg-[#28c840]" />
 				</div>
 				<div className="flex-1 text-center">
-					<span className="text-[11px] text-white/30 font-medium">Speed comparison</span>
+					<span className="text-[11px] text-white/30 font-medium">
+						Speed comparison
+					</span>
 				</div>
 				<div className="w-[52px]" />
 			</div>
@@ -266,7 +272,7 @@ function TypingRace() {
 							Typing · ~45 wpm
 						</span>
 					</div>
-					<div className="bg-white/[0.04] rounded-lg p-3 border border-white/[0.06] min-h-[48px]">
+					<div className="bg-white/4 rounded-lg p-3 border border-white/6 min-h-[48px]">
 						<p className="text-white/60 text-[13px] leading-relaxed font-mono">
 							{sentence.slice(0, keyboardPos)}
 							<span className="inline-block w-[2px] h-[1.1em] bg-white/30 ml-px align-text-bottom animate-blink-caret border-r-2 border-white/30" />
@@ -286,7 +292,7 @@ function TypingRace() {
 							</span>
 						)}
 					</div>
-					<div className="bg-primary/[0.06] rounded-lg p-3 border border-primary/20 min-h-[48px]">
+					<div className="bg-primary/6 rounded-lg p-3 border border-primary/20 min-h-[48px]">
 						<p className="text-white/90 text-[13px] leading-relaxed font-mono">
 							{sentence.slice(0, voicePos)}
 							{voicePos < sentence.length && (
@@ -297,7 +303,7 @@ function TypingRace() {
 				</div>
 				{/* Progress bars */}
 				<div className="flex gap-3">
-					<div className="flex-1 h-1 bg-white/[0.06] rounded-full overflow-hidden">
+					<div className="flex-1 h-1 bg-white/6 rounded-full overflow-hidden">
 						<div
 							className="h-full bg-white/20 rounded-full transition-all duration-100"
 							style={{ width: `${(keyboardPos / sentence.length) * 100}%` }}
@@ -388,30 +394,39 @@ function BeforeAfter() {
 // ---------------------------------------------------------------------------
 // 4. Interactive Voice Demo Playground
 // ---------------------------------------------------------------------------
-const VOICE_SCENARIOS: { label: string; icon: ReactNode; appName: string; words: string }[] = [
+const VOICE_SCENARIOS: {
+	label: string;
+	icon: ReactNode;
+	appName: string;
+	words: string;
+}[] = [
 	{
 		label: "Email",
 		icon: <Mail size={18} />,
 		appName: "Gmail",
-		words: "Hi team, just a quick update on the Q3 launch. We're tracking ahead of schedule and should have the beta ready by next Wednesday. I'll send calendar invites for the review session.",
+		words:
+			"Hi team, just a quick update on the Q3 launch. We're tracking ahead of schedule and should have the beta ready by next Wednesday. I'll send calendar invites for the review session.",
 	},
 	{
 		label: "Code",
 		icon: <Code size={18} />,
 		appName: "VS Code",
-		words: "This function validates the user session token against the Redis store. If expired, it triggers a refresh flow and returns the new token. Throws AuthError on invalid signatures.",
+		words:
+			"This function validates the user session token against the Redis store. If expired, it triggers a refresh flow and returns the new token. Throws AuthError on invalid signatures.",
 	},
 	{
 		label: "Medical",
 		icon: <Stethoscope size={18} />,
 		appName: "Epic",
-		words: "Patient is a 54-year-old male presenting with chest tightness and shortness of breath on exertion. No prior cardiac history. Recommend stress echocardiogram and lipid panel.",
+		words:
+			"Patient is a 54-year-old male presenting with chest tightness and shortness of breath on exertion. No prior cardiac history. Recommend stress echocardiogram and lipid panel.",
 	},
 	{
 		label: "Slack",
 		icon: <MessageSquare size={18} />,
 		appName: "Slack",
-		words: "Hey, the deploy pipeline is green. I merged the hotfix for the auth redirect bug. Can someone from the frontend team verify on staging before we push to prod?",
+		words:
+			"Hey, the deploy pipeline is green. I merged the hotfix for the auth redirect bug. Can someone from the frontend team verify on staging before we push to prod?",
 	},
 ];
 
@@ -477,10 +492,14 @@ function VoiceDemoPlayground() {
 								<div
 									key={i}
 									className={`flex-1 rounded-full transition-all ${
-										isActive ? "bg-primary/50 animate-soundwave" : "bg-primary/15"
+										isActive
+											? "bg-primary/50 animate-soundwave"
+											: "bg-primary/15"
 									}`}
 									style={{
-										height: isActive ? `${12 + Math.sin(i * 0.8) * 16}px` : "4px",
+										height: isActive
+											? `${12 + Math.sin(i * 0.8) * 16}px`
+											: "4px",
 										animationDelay: `${i * 0.06}s`,
 										animationDuration: `${0.7 + (i % 5) * 0.15}s`,
 									}}
@@ -500,11 +519,7 @@ function VoiceDemoPlayground() {
 									i < visibleWords
 										? "opacity-100 translate-y-0"
 										: "opacity-0 translate-y-1"
-								} ${
-									i === visibleWords - 1
-										? "text-primary font-medium"
-										: ""
-								}`}
+								} ${i === visibleWords - 1 ? "text-primary font-medium" : ""}`}
 							>
 								{word}
 							</span>
@@ -524,17 +539,32 @@ function DualModeSpotlight() {
 
 	const localSteps: { icon: ReactNode; label: string }[] = [
 		{ icon: <Mic size={20} className="text-primary" />, label: "Mic" },
-		{ icon: <Laptop size={20} className="text-foreground/70" />, label: "Your Mac" },
-		{ icon: <Zap size={20} className="text-amber-500" />, label: "Whisper.cpp" },
+		{
+			icon: <Laptop size={20} className="text-foreground/70" />,
+			label: "Your Mac",
+		},
+		{
+			icon: <Zap size={20} className="text-amber-500" />,
+			label: "Whisper.cpp",
+		},
 		{ icon: <Bot size={20} className="text-violet-500" />, label: "Ollama" },
-		{ icon: <Clipboard size={20} className="text-foreground/70" />, label: "Clipboard" },
+		{
+			icon: <Clipboard size={20} className="text-foreground/70" />,
+			label: "Clipboard",
+		},
 	];
 	const cloudSteps: { icon: ReactNode; label: string }[] = [
 		{ icon: <Mic size={20} className="text-primary" />, label: "Mic" },
 		{ icon: <Lock size={20} className="text-sky-500" />, label: "Encrypted" },
 		{ icon: <Cloud size={20} className="text-sky-500" />, label: "Cloud API" },
-		{ icon: <Laptop size={20} className="text-foreground/70" />, label: "Your Mac" },
-		{ icon: <Clipboard size={20} className="text-foreground/70" />, label: "Clipboard" },
+		{
+			icon: <Laptop size={20} className="text-foreground/70" />,
+			label: "Your Mac",
+		},
+		{
+			icon: <Clipboard size={20} className="text-foreground/70" />,
+			label: "Clipboard",
+		},
 	];
 
 	const steps = mode === "local" ? localSteps : cloudSteps;
@@ -594,27 +624,36 @@ function DualModeSpotlight() {
 			</div>
 
 			{/* Data flow diagram */}
-			<div className={`relative rounded-2xl border-2 p-6 md:p-8 mb-8 transition-colors duration-300 ${
-				mode === "local"
-					? "border-primary/30 bg-primary/[0.03]"
-					: "border-sky-300/30 bg-sky-50/30"
-			}`}>
+			<div
+				className={`relative rounded-2xl border-2 p-6 md:p-8 mb-8 transition-colors duration-300 ${
+					mode === "local"
+						? "border-primary/30 bg-primary/3"
+						: "border-sky-300/30 bg-sky-50/30"
+				}`}
+			>
 				{mode === "local" && (
 					<div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 rounded-full">
 						<Lock size={11} className="text-primary" />
-						<span className="text-[10px] font-bold text-primary uppercase tracking-wider">On device</span>
+						<span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+							On device
+						</span>
 					</div>
 				)}
 				{mode === "cloud" && (
 					<div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-sky-100 rounded-full">
 						<Shield size={11} className="text-sky-600" />
-						<span className="text-[10px] font-bold text-sky-600 uppercase tracking-wider">Encrypted</span>
+						<span className="text-[10px] font-bold text-sky-600 uppercase tracking-wider">
+							Encrypted
+						</span>
 					</div>
 				)}
 
 				<div className="flex items-center justify-between gap-2 overflow-x-auto py-4">
 					{steps.map((step, i) => (
-						<div key={`${mode}-${i}`} className="flex items-center gap-2 shrink-0">
+						<div
+							key={`${mode}-${i}`}
+							className="flex items-center gap-2 shrink-0"
+						>
 							<div className="flex flex-col items-center gap-1.5">
 								<div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center shadow-sm">
 									{step.icon}
@@ -624,9 +663,17 @@ function DualModeSpotlight() {
 								</span>
 							</div>
 							{i < steps.length - 1 && (
-								<svg width="32" height="12" className="shrink-0 mx-1" viewBox="0 0 32 12">
+								<svg
+									width="32"
+									height="12"
+									className="shrink-0 mx-1"
+									viewBox="0 0 32 12"
+								>
 									<line
-										x1="0" y1="6" x2="24" y2="6"
+										x1="0"
+										y1="6"
+										x2="24"
+										y2="6"
 										stroke={mode === "local" ? "#7cb342" : "#38bdf8"}
 										strokeWidth="2"
 										strokeDasharray="4 3"
@@ -646,7 +693,10 @@ function DualModeSpotlight() {
 			{/* Stats */}
 			<div className="grid grid-cols-3 gap-4 mb-8">
 				{stats.map((s, i) => (
-					<div key={`${mode}-${i}`} className="text-center bg-card rounded-xl border border-border p-4">
+					<div
+						key={`${mode}-${i}`}
+						className="text-center bg-card rounded-xl border border-border p-4"
+					>
 						<p className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
 							{s.value}
 						</p>
@@ -726,7 +776,15 @@ function FeatureRow({
 // ---------------------------------------------------------------------------
 // 7. Animated Stats
 // ---------------------------------------------------------------------------
-function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
+function AnimatedCounter({
+	target,
+	suffix = "",
+	prefix = "",
+}: {
+	target: number;
+	suffix?: string;
+	prefix?: string;
+}) {
 	const { ref, inView } = useInView();
 	const [value, setValue] = useState(0);
 
@@ -751,7 +809,9 @@ function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number;
 	return (
 		<div ref={ref} className="text-center">
 			<p className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
-				{prefix}{inView ? value : 0}{suffix}
+				{prefix}
+				{inView ? value : 0}
+				{suffix}
 			</p>
 		</div>
 	);
@@ -781,7 +841,9 @@ function AnimatedStats() {
 		<div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
 			<div>
 				<AnimatedCounter target={3} suffix="x" />
-				<p className="text-sm text-muted-foreground mt-1 text-center">faster than typing</p>
+				<p className="text-sm text-muted-foreground mt-1 text-center">
+					faster than typing
+				</p>
 			</div>
 			<div className="text-center">
 				<p className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
@@ -791,11 +853,17 @@ function AnimatedStats() {
 			</div>
 			<div className="text-center">
 				<p className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
-					<span className={`inline-block transition-all duration-700 ${inView ? "scale-110" : "scale-100"}`}>
+					<span
+						className={`inline-block transition-all duration-700 ${
+							inView ? "scale-110" : "scale-100"
+						}`}
+					>
 						0
 					</span>
 				</p>
-				<p className="text-sm text-muted-foreground mt-1">data on our servers</p>
+				<p className="text-sm text-muted-foreground mt-1">
+					data on our servers
+				</p>
 			</div>
 			<LiveWordCounter />
 		</div>
@@ -877,32 +945,40 @@ function AppCarousel() {
 const USE_CASE_TABS = [
 	{
 		label: "Writers",
-		before: "so um I think the main point of the article is that like AI is changing how we write and uh we need to adapt our workflows",
-		after: "The core argument: AI is fundamentally changing how we write, and our workflows need to adapt accordingly.",
+		before:
+			"so um I think the main point of the article is that like AI is changing how we write and uh we need to adapt our workflows",
+		after:
+			"The core argument: AI is fundamentally changing how we write, and our workflows need to adapt accordingly.",
 		benefits: [
 			"Draft blog posts and newsletters at the speed of thought",
 			"AI cleanup turns stream-of-consciousness into polished prose",
 			"Custom writing style keeps your voice consistent",
 		],
-		quote: "I write 2,000 words a day for my blog. Parrot cut my drafting time in half.",
+		quote:
+			"I write 2,000 words a day for my blog. Parrot cut my drafting time in half.",
 		quotee: "Megan R., Content writer",
 	},
 	{
 		label: "Medical",
-		before: "patient is a 54 year old male presenting with uh chest tightness and shortness of breath on exertion no prior cardiac history",
-		after: "Patient is a 54-year-old male presenting with chest tightness and dyspnea on exertion. No prior cardiac history.",
+		before:
+			"patient is a 54 year old male presenting with uh chest tightness and shortness of breath on exertion no prior cardiac history",
+		after:
+			"Patient is a 54-year-old male presenting with chest tightness and dyspnea on exertion. No prior cardiac history.",
 		benefits: [
 			"Dictate patient notes between appointments",
 			"Custom vocabulary handles medical terminology",
 			"Local mode keeps patient data on-device",
 		],
-		quote: "Custom vocabulary is a lifesaver. All my medical terms come through correctly now.",
+		quote:
+			"Custom vocabulary is a lifesaver. All my medical terms come through correctly now.",
 		quotee: "Dr. James K., Cardiologist",
 	},
 	{
 		label: "Legal",
-		before: "the defendants counsel filed a motion to dismiss arguing that the plaintiff lacks standing under uh article three",
-		after: "Defendant's counsel filed a motion to dismiss, arguing that the plaintiff lacks standing under Article III.",
+		before:
+			"the defendants counsel filed a motion to dismiss arguing that the plaintiff lacks standing under uh article three",
+		after:
+			"Defendant's counsel filed a motion to dismiss, arguing that the plaintiff lacks standing under Article III.",
 		benefits: [
 			"Draft case notes and contracts by voice",
 			"Local mode keeps privileged communications on-device",
@@ -913,20 +989,25 @@ const USE_CASE_TABS = [
 	},
 	{
 		label: "Developers",
-		before: "this function validates the user session token and if its expired it triggers a refresh flow uh and returns the new token",
-		after: "This function validates the user session token. If expired, it triggers a refresh flow and returns the new token.",
+		before:
+			"this function validates the user session token and if its expired it triggers a refresh flow uh and returns the new token",
+		after:
+			"This function validates the user session token. If expired, it triggers a refresh flow and returns the new token.",
 		benefits: [
 			"Write documentation and code comments by voice",
 			"Great for developers managing RSI",
 			"Technical vocabulary like 'Kubernetes' transcribed correctly",
 		],
-		quote: "I have RSI and can't type for long stretches. Parrot lets me keep coding.",
+		quote:
+			"I have RSI and can't type for long stretches. Parrot lets me keep coding.",
 		quotee: "Tom L., Software engineer",
 	},
 	{
 		label: "Executives",
-		before: "hey can you schedule a follow up with the client for next tuesday and also send the deck to marketing before the all hands",
-		after: "Please schedule a follow-up with the client for next Tuesday. Also, send the deck to Marketing before the all-hands.",
+		before:
+			"hey can you schedule a follow up with the client for next tuesday and also send the deck to marketing before the all hands",
+		after:
+			"Please schedule a follow-up with the client for next Tuesday. Also, send the deck to Marketing before the all-hands.",
 		benefits: [
 			"Fire off emails and status updates in seconds",
 			"Writing style keeps tone consistent across communication",
@@ -937,14 +1018,17 @@ const USE_CASE_TABS = [
 	},
 	{
 		label: "Accessibility",
-		before: "for anyone who finds typing difficult parrot provides a reliable fast alternative that works across every app",
-		after: "For anyone who finds typing difficult, Parrot provides a reliable, fast alternative that works across every app.",
+		before:
+			"for anyone who finds typing difficult parrot provides a reliable fast alternative that works across every app",
+		after:
+			"For anyone who finds typing difficult, Parrot provides a reliable, fast alternative that works across every app.",
 		benefits: [
 			"Reliable voice input across every Mac app",
 			"Global hotkey means no mouse required to start",
 			"Local mode works fully offline",
 		],
-		quote: "Parrot gives me independence. I can communicate freely without relying on typing.",
+		quote:
+			"Parrot gives me independence. I can communicate freely without relying on typing.",
 		quotee: "Alex D., Accessibility advocate",
 	},
 ];
@@ -985,7 +1069,7 @@ function UseCaseTabs() {
 							"{tab.before}"
 						</p>
 					</div>
-					<div className="bg-foreground/[0.03] rounded-xl p-4 border border-primary/15">
+					<div className="bg-foreground/3 rounded-xl p-4 border border-primary/15">
 						<p className="text-[10px] font-bold uppercase tracking-wider text-primary mb-2">
 							Parrot writes
 						</p>
@@ -998,7 +1082,10 @@ function UseCaseTabs() {
 				{/* Benefits */}
 				<ul className="space-y-2.5 mb-6">
 					{tab.benefits.map((b, i) => (
-						<li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+						<li
+							key={i}
+							className="flex items-start gap-2.5 text-sm text-muted-foreground"
+						>
 							<Check size={15} className="text-primary mt-0.5 shrink-0" />
 							{b}
 						</li>
@@ -1007,7 +1094,11 @@ function UseCaseTabs() {
 
 				{/* Quote */}
 				<div className="bg-muted/30 rounded-xl p-4 border border-border">
-					<Quote size={16} className="text-foreground/15 mb-2" fill="currentColor" />
+					<Quote
+						size={16}
+						className="text-foreground/15 mb-2"
+						fill="currentColor"
+					/>
 					<p className="text-sm text-foreground italic mb-2">"{tab.quote}"</p>
 					<p className="text-xs text-muted-foreground">{tab.quotee}</p>
 				</div>
@@ -1059,16 +1150,24 @@ function ComparisonTable() {
 		{ feature: "Cloud mode", parrot: true, wispr: true, macos: false },
 		{ feature: "Custom vocabulary", parrot: true, wispr: true, macos: false },
 		{ feature: "AI cleanup", parrot: true, wispr: true, macos: false },
-		{ feature: "Privacy (no data sent)", parrot: true, wispr: false, macos: "partial" as const },
+		{
+			feature: "Privacy (no data sent)",
+			parrot: true,
+			wispr: false,
+			macos: "partial" as const,
+		},
 		{ feature: "Offline support", parrot: true, wispr: false, macos: true },
 		{ feature: "Open source", parrot: true, wispr: false, macos: false },
 		{ feature: "Price", parrot: "Free", wispr: "$8/mo", macos: "Free" },
 	];
 
 	const renderCell = (val: boolean | string) => {
-		if (val === true) return <Check size={16} className="text-primary mx-auto" />;
-		if (val === false) return <XIcon size={16} className="text-red-400/60 mx-auto" />;
-		if (val === "partial") return <Minus size={16} className="text-amber-400 mx-auto" />;
+		if (val === true)
+			return <Check size={16} className="text-primary mx-auto" />;
+		if (val === false)
+			return <XIcon size={16} className="text-red-400/60 mx-auto" />;
+		if (val === "partial")
+			return <Minus size={16} className="text-amber-400 mx-auto" />;
 		return <span className="text-sm font-medium text-foreground">{val}</span>;
 	};
 
@@ -1077,17 +1176,27 @@ function ComparisonTable() {
 			<table className="w-full text-sm">
 				<thead>
 					<tr className="border-b-2 border-border">
-						<th className="text-left py-3 px-4 text-muted-foreground font-medium">Feature</th>
-						<th className="text-center py-3 px-4 font-bold text-primary">Parrot</th>
-						<th className="text-center py-3 px-4 text-muted-foreground font-medium">Wispr Flow</th>
-						<th className="text-center py-3 px-4 text-muted-foreground font-medium">macOS Dictation</th>
+						<th className="text-left py-3 px-4 text-muted-foreground font-medium">
+							Feature
+						</th>
+						<th className="text-center py-3 px-4 font-bold text-primary">
+							Parrot
+						</th>
+						<th className="text-center py-3 px-4 text-muted-foreground font-medium">
+							Wispr Flow
+						</th>
+						<th className="text-center py-3 px-4 text-muted-foreground font-medium">
+							macOS Dictation
+						</th>
 					</tr>
 				</thead>
 				<tbody>
 					{rows.map((row, i) => (
 						<tr key={i} className="border-b border-border">
 							<td className="py-3 px-4 text-foreground">{row.feature}</td>
-							<td className="py-3 px-4 text-center">{renderCell(row.parrot)}</td>
+							<td className="py-3 px-4 text-center">
+								{renderCell(row.parrot)}
+							</td>
 							<td className="py-3 px-4 text-center">{renderCell(row.wispr)}</td>
 							<td className="py-3 px-4 text-center">{renderCell(row.macos)}</td>
 						</tr>
@@ -1134,9 +1243,6 @@ const FAQ = [
 function HomePage() {
 	return (
 		<div className="min-h-screen">
-			{/* ============================================================
-			    1. HERO — two columns, left text / right typing race
-			    ============================================================ */}
 			<section className="relative px-6 pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
 				<div className="max-w-6xl mx-auto grid md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 items-center">
 					{/* Left — copy */}
@@ -1207,9 +1313,6 @@ function HomePage() {
 				</div>
 			</section>
 
-			{/* ============================================================
-			    2. SCROLLING MARQUEE
-			    ============================================================ */}
 			<div className="border-y border-border bg-muted/30 py-4 overflow-hidden">
 				<div className="animate-marquee flex gap-8 whitespace-nowrap">
 					{[
@@ -1249,9 +1352,6 @@ function HomePage() {
 				</div>
 			</div>
 
-			{/* ============================================================
-			    3. BEFORE / AFTER — AI cleanup demo
-			    ============================================================ */}
 			<section id="demo" className="py-20 md:py-28 px-6">
 				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
@@ -1268,9 +1368,6 @@ function HomePage() {
 				<BeforeAfter />
 			</section>
 
-			{/* ============================================================
-			    4. INTERACTIVE VOICE DEMO PLAYGROUND
-			    ============================================================ */}
 			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
 				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
@@ -1287,9 +1384,6 @@ function HomePage() {
 				<VoiceDemoPlayground />
 			</section>
 
-			{/* ============================================================
-			    5. DUAL MODE SPOTLIGHT
-			    ============================================================ */}
 			<section className="py-20 md:py-28 px-6">
 				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
@@ -1302,15 +1396,13 @@ function HomePage() {
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px]">
 						Switch between local and cloud anytime in settings. No data
-						migration, no lock-in. Parrot is the only voice tool that gives you both.
+						migration, no lock-in. Parrot is the only voice tool that gives you
+						both.
 					</p>
 				</div>
 				<DualModeSpotlight />
 			</section>
 
-			{/* ============================================================
-			    6. FEATURE DEEP-DIVES
-			    ============================================================ */}
 			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
 				<div className="max-w-5xl mx-auto space-y-20 md:space-y-28">
 					<FeatureRow
@@ -1445,18 +1537,12 @@ function HomePage() {
 				</div>
 			</section>
 
-			{/* ============================================================
-			    7. ANIMATED STATS
-			    ============================================================ */}
 			<section className="py-20 md:py-24 px-6">
 				<div className="max-w-4xl mx-auto">
 					<AnimatedStats />
 				</div>
 			</section>
 
-			{/* ============================================================
-			    8. APP COMPATIBILITY CAROUSEL
-			    ============================================================ */}
 			<section className="py-16 md:py-20 px-6 bg-muted/30 border-y border-border">
 				<div className="max-w-5xl mx-auto">
 					<p className="text-center text-lg font-bold text-foreground mb-2">
@@ -1469,9 +1555,6 @@ function HomePage() {
 				</div>
 			</section>
 
-			{/* ============================================================
-			    9. USE-CASE TABS
-			    ============================================================ */}
 			<section className="py-20 md:py-28 px-6">
 				<div className="max-w-5xl mx-auto">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
@@ -1488,9 +1571,6 @@ function HomePage() {
 				</div>
 			</section>
 
-			{/* ============================================================
-			    10. TESTIMONIALS
-			    ============================================================ */}
 			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
 				<div className="max-w-5xl mx-auto">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
@@ -1526,9 +1606,6 @@ function HomePage() {
 				</div>
 			</section>
 
-			{/* ============================================================
-			    11. FEATURE GRID
-			    ============================================================ */}
 			<section className="py-20 md:py-24 px-6">
 				<div className="max-w-5xl mx-auto">
 					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
@@ -1574,9 +1651,6 @@ function HomePage() {
 				</div>
 			</section>
 
-			{/* ============================================================
-			    12. COMPETITOR COMPARISON TABLE
-			    ============================================================ */}
 			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
 				<div className="max-w-4xl mx-auto">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
@@ -1593,9 +1667,6 @@ function HomePage() {
 				</div>
 			</section>
 
-			{/* ============================================================
-			    13. FAQ
-			    ============================================================ */}
 			<section className="py-20 md:py-28 px-6">
 				<div className="max-w-2xl mx-auto">
 					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
@@ -1606,7 +1677,7 @@ function HomePage() {
 							<AccordionItem
 								key={i}
 								value={`faq-${i}`}
-								className="border border-border bg-card rounded-2xl px-5 data-[state=open]:border-primary/30 data-[state=open]:bg-primary/[0.03] transition-colors"
+								className="border border-border bg-card rounded-2xl px-5 data-[state=open]:border-primary/30 data-[state=open]:bg-primary/3 transition-colors"
 							>
 								<AccordionTrigger className="font-semibold text-foreground text-[15px] hover:no-underline py-5">
 									{item.q}
@@ -1620,9 +1691,6 @@ function HomePage() {
 				</div>
 			</section>
 
-			{/* ============================================================
-			    14. FINAL CTA
-			    ============================================================ */}
 			<section className="py-20 md:py-28 px-6 bg-foreground">
 				<div className="max-w-2xl mx-auto text-center">
 					<img

@@ -92,7 +92,7 @@ const placements: DoodlePlacement[] = [
   [93, 95, 'feather', -10, 38],
 ]
 
-export function DoodleBackground({ opacity = 0.07 }: { opacity?: number }) {
+export function DoodleBackground({ opacity = 0.1 }: { opacity?: number }) {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {placements.map(([top, left, icon, rot, size], i) => {

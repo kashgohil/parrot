@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import {
 	Accordion,
 	AccordionContent,
@@ -7,14 +8,13 @@ import {
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	ArrowRight,
+	Building2,
 	Check,
 	HardDrive,
 	Key,
 	Sparkles,
 	Users,
-	Building2,
 } from "lucide-react";
-import Footer from "@/components/Footer";
 
 export const Route = createFileRoute("/pricing")({
 	component: PricingPage,
@@ -48,12 +48,37 @@ export const Route = createFileRoute("/pricing")({
 					"@context": "https://schema.org",
 					"@type": "Product",
 					name: "Parrot",
-					description: "Voice dictation for Mac with AI cleanup and custom vocabulary.",
+					description:
+						"Voice dictation for Mac with AI cleanup and custom vocabulary.",
 					offers: [
-						{ "@type": "Offer", name: "Local", price: "0", priceCurrency: "USD" },
-						{ "@type": "Offer", name: "Cloud — Bring Your Key", price: "5", priceCurrency: "USD", billingIncrement: "P1M" },
-						{ "@type": "Offer", name: "Cloud — Managed", price: "15", priceCurrency: "USD", billingIncrement: "P1M" },
-						{ "@type": "Offer", name: "Teams", price: "10", priceCurrency: "USD", billingIncrement: "P1M", unitText: "per user" },
+						{
+							"@type": "Offer",
+							name: "Local",
+							price: "0",
+							priceCurrency: "USD",
+						},
+						{
+							"@type": "Offer",
+							name: "Cloud — Bring Your Key",
+							price: "5",
+							priceCurrency: "USD",
+							billingIncrement: "P1M",
+						},
+						{
+							"@type": "Offer",
+							name: "Cloud — Managed",
+							price: "15",
+							priceCurrency: "USD",
+							billingIncrement: "P1M",
+						},
+						{
+							"@type": "Offer",
+							name: "Teams",
+							price: "10",
+							priceCurrency: "USD",
+							billingIncrement: "P1M",
+							unitText: "per user",
+						},
 					],
 				}),
 			},
@@ -120,7 +145,7 @@ const TIERS = [
 		step: "01",
 		name: "Local",
 		tagline: "Your Mac does everything.",
-		price: "Free",
+		price: "$0",
 		priceSub: "forever",
 		description:
 			"Whisper.cpp transcription and Ollama AI cleanup running entirely on your device. No network, no keys, no account. Download and go.",
@@ -137,8 +162,7 @@ const TIERS = [
 			"Works completely offline",
 		],
 		cta: "Download for free",
-		ctaStyle:
-			"bg-foreground text-background hover:bg-foreground/85",
+		ctaStyle: "bg-foreground text-background hover:bg-foreground/85",
 		ctaLink: "/download",
 	},
 	{
@@ -168,15 +192,14 @@ const TIERS = [
 			{ name: "GPT-4o-mini cleanup", cost: "~$0.0001/req" },
 		],
 		cta: "Start with your keys",
-		ctaStyle:
-			"bg-sky-600 text-white hover:bg-sky-700",
+		ctaStyle: "bg-sky-600 text-white hover:bg-sky-700",
 		ctaLink: "/download",
 	},
 	{
 		id: "managed",
 		step: "03",
 		name: "Cloud — Managed",
-		tagline: "We handle the keys. You just talk.",
+		tagline: "You talk, we handle the rest.",
 		price: "$15",
 		priceSub: "/ month",
 		description:
@@ -194,8 +217,7 @@ const TIERS = [
 			"Usage dashboard",
 		],
 		cta: "Get started",
-		ctaStyle:
-			"bg-violet-600 text-white hover:bg-violet-700",
+		ctaStyle: "bg-violet-600 text-white hover:bg-violet-700",
 		ctaLink: "/download",
 		popular: true,
 	},
@@ -221,8 +243,7 @@ const TIERS = [
 			"5,000 minutes / month pool (expandable)",
 		],
 		cta: "Start a team",
-		ctaStyle:
-			"bg-amber-600 text-white hover:bg-amber-700",
+		ctaStyle: "bg-amber-600 text-white hover:bg-amber-700",
 		ctaLink: "/download",
 	},
 	{
@@ -230,7 +251,7 @@ const TIERS = [
 		step: "05",
 		name: "Enterprise",
 		tagline: "Custom pricing. Custom everything.",
-		price: "Custom",
+		price: "",
 		priceSub: "",
 		description:
 			"For organizations with specific compliance, security, or deployment needs. On-premise options, SSO, custom SLAs, dedicated support, volume discounts, and integration with your existing tools.",
@@ -248,8 +269,7 @@ const TIERS = [
 			"Custom integrations & API access",
 		],
 		cta: "Talk to us",
-		ctaStyle:
-			"bg-foreground text-background hover:bg-foreground/85",
+		ctaStyle: "bg-foreground text-background hover:bg-foreground/85",
 		ctaLink: "mailto:hello@parrot.dev",
 	},
 ];
@@ -284,7 +304,6 @@ const FAQ = [
 function PricingPage() {
 	return (
 		<div className="min-h-screen">
-			{/* ── Hero ── */}
 			<section className="px-6 pt-16 pb-14 md:pt-24 md:pb-20">
 				<div className="max-w-3xl mx-auto">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3 animate-fade-in-up">
@@ -296,33 +315,16 @@ function PricingPage() {
 						don't want to do.
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl animate-fade-in-up-delay-2">
-						Want full control? It's free. Want us to handle the
-						infrastructure? That's where pricing starts. The more we
-						manage, the more it costs — but never more than it should.
+						Want full control? It's free. Want us to handle the infrastructure?
+						That's where pricing starts. The more we manage, the more it costs —
+						but never more than it should.
 					</p>
 				</div>
 			</section>
 
-			{/* ── The spectrum: a single sentence ── */}
-			<section className="px-6 pb-6">
-				<div className="max-w-4xl mx-auto">
-					<div className="flex items-center gap-3 text-xs text-muted-foreground">
-						<span className="font-bold uppercase tracking-wider text-foreground">
-							You do everything
-						</span>
-						<div className="flex-1 h-px bg-gradient-to-r from-emerald-300 via-violet-300 to-amber-300 opacity-50" />
-						<span className="font-bold uppercase tracking-wider text-foreground">
-							We do everything
-						</span>
-					</div>
-				</div>
-			</section>
-
-			{/* ── Tiers as horizontal story blocks ── */}
 			<section className="px-6 pb-20 md:pb-28">
 				<div className="max-w-4xl mx-auto">
 					<div className="relative">
-						{/* Vertical thread */}
 						<div className="absolute left-[19px] top-8 bottom-8 w-px bg-border hidden md:block" />
 
 						<div className="space-y-6">
@@ -330,15 +332,14 @@ function PricingPage() {
 								const Icon = tier.icon;
 								return (
 									<div key={tier.id} className="relative">
-										{/* Dot on the vertical thread */}
 										<div
 											className={`absolute left-[11px] top-8 w-[18px] h-[18px] rounded-full border-[3px] border-background z-10 hidden md:block ${tier.accentDot}`}
 										/>
 
 										<div
-											className={`md:ml-12 border rounded-2xl p-6 md:p-8 transition-colors ${tier.accent} ${
-												tier.popular ? "ring-2 ring-violet-400/30" : ""
-											}`}
+											className={`md:ml-12 border rounded-2xl p-6 md:p-8 transition-colors ${
+												tier.accent
+											} ${tier.popular ? "ring-2 ring-violet-400/30" : ""}`}
 										>
 											{tier.popular && (
 												<div className="absolute -top-3 right-6 md:right-auto md:left-20">
@@ -349,10 +350,9 @@ function PricingPage() {
 											)}
 
 											<div className="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-10">
-												{/* Left: identity */}
 												<div className="lg:w-[340px] shrink-0">
 													<div className="flex items-center gap-3 mb-3">
-														<div className="w-9 h-9 rounded-xl bg-foreground/[0.06] flex items-center justify-center">
+														<div className="w-9 h-9 rounded-xl bg-foreground/6 flex items-center justify-center">
 															<Icon size={18} className="text-foreground/70" />
 														</div>
 														<div>
@@ -382,7 +382,6 @@ function PricingPage() {
 														{tier.description}
 													</p>
 
-													{/* Provider cost hints for BYOK */}
 													{tier.providerCosts && (
 														<div className="mt-4 space-y-1.5">
 															<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
@@ -410,10 +409,7 @@ function PricingPage() {
 															className={`inline-flex items-center gap-2 px-6 py-2.5 font-semibold rounded-xl transition-colors no-underline text-sm mt-6 ${tier.ctaStyle}`}
 														>
 															{tier.cta}
-															<ArrowRight
-																size={14}
-																strokeWidth={2.5}
-															/>
+															<ArrowRight size={14} strokeWidth={2.5} />
 														</a>
 													) : (
 														<Link
@@ -421,15 +417,11 @@ function PricingPage() {
 															className={`inline-flex items-center gap-2 px-6 py-2.5 font-semibold rounded-xl transition-colors no-underline text-sm mt-6 ${tier.ctaStyle}`}
 														>
 															{tier.cta}
-															<ArrowRight
-																size={14}
-																strokeWidth={2.5}
-															/>
+															<ArrowRight size={14} strokeWidth={2.5} />
 														</Link>
 													)}
 												</div>
 
-												{/* Right: features as check list */}
 												<div className="flex-1 min-w-0">
 													<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
 														What's included
@@ -460,7 +452,6 @@ function PricingPage() {
 				</div>
 			</section>
 
-			{/* ── At a glance comparison ── */}
 			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
 				<div className="max-w-4xl mx-auto">
 					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
@@ -574,8 +565,8 @@ function PricingPage() {
 													val === "✓"
 														? "text-primary font-bold"
 														: val === "—"
-															? "text-muted-foreground/40"
-															: "text-muted-foreground"
+														? "text-muted-foreground/40"
+														: "text-muted-foreground"
 												}`}
 											>
 												{val}
@@ -589,7 +580,6 @@ function PricingPage() {
 				</div>
 			</section>
 
-			{/* ── Related links ── */}
 			<section className="px-6 py-14">
 				<div className="max-w-4xl mx-auto">
 					<div className="flex flex-wrap items-center justify-center gap-6 text-sm">
@@ -621,7 +611,6 @@ function PricingPage() {
 				</div>
 			</section>
 
-			{/* ── FAQ ── */}
 			<section className="px-6 py-20 md:py-28">
 				<div className="max-w-3xl mx-auto">
 					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
@@ -632,7 +621,7 @@ function PricingPage() {
 							<AccordionItem
 								key={i}
 								value={`faq-${i}`}
-								className="border border-border bg-card rounded-2xl px-5 data-[state=open]:border-primary/30 data-[state=open]:bg-primary/[0.03] transition-colors"
+								className="border border-border bg-card rounded-2xl px-5 data-[state=open]:border-primary/30 data-[state=open]:bg-primary/3 transition-colors"
 							>
 								<AccordionTrigger className="font-semibold text-foreground text-[15px] hover:no-underline py-5">
 									{item.q}
@@ -646,15 +635,14 @@ function PricingPage() {
 				</div>
 			</section>
 
-			{/* ── CTA ── */}
 			<section className="px-6 py-20 md:py-28 bg-foreground">
 				<div className="max-w-2xl mx-auto text-center">
 					<h2 className="text-3xl md:text-4xl font-black text-background tracking-tight mb-4">
 						Start free. Scale when ready.
 					</h2>
 					<p className="text-background/50 mb-8 text-[15px]">
-						Every plan starts with a free local install. Upgrade only
-						when you need cloud features.
+						Every plan starts with a free local install. Upgrade only when you
+						need cloud features.
 					</p>
 					<Link
 						to="/download"
@@ -674,4 +662,3 @@ function PricingPage() {
 		</div>
 	);
 }
-
