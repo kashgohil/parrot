@@ -5,7 +5,7 @@ import { ArrowRight, Check } from "lucide-react";
 export const Route = createFileRoute("/checkout/success")({
 	component: CheckoutSuccessPage,
 	head: () => ({
-		meta: [{ title: "Welcome to Parrot — subscription active" }],
+		meta: [{ title: "Welcome to Parrot - subscription active" }],
 	}),
 });
 

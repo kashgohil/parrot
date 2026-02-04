@@ -6,20 +6,20 @@ export const Route = createFileRoute("/changelog")({
 	component: ChangelogPage,
 	head: () => ({
 		meta: [
-			{ title: "Changelog — Parrot" },
+			{ title: "Changelog - Parrot" },
 			{
 				name: "description",
 				content:
 					"Follow Parrot's development progress. See what we've built and what's coming next.",
 			},
-			{ property: "og:title", content: "Changelog — Parrot" },
+			{ property: "og:title", content: "Changelog - Parrot" },
 			{
 				property: "og:description",
 				content:
 					"Follow Parrot's development progress. See what we've built and what's coming next.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/changelog" },
-			{ name: "twitter:title", content: "Changelog — Parrot" },
+			{ name: "twitter:title", content: "Changelog - Parrot" },
 			{
 				name: "twitter:description",
 				content:

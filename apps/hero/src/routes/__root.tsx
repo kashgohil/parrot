@@ -18,7 +18,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Parrot — Voice dictation that just works',
+        title: 'Parrot - Voice dictation that just works',
       },
       {
         name: 'description',

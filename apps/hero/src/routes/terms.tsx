@@ -7,20 +7,20 @@ export const Route = createFileRoute("/terms")({
 	component: TermsPage,
 	head: () => ({
 		meta: [
-			{ title: "Terms of Service — Parrot" },
+			{ title: "Terms of Service - Parrot" },
 			{
 				name: "description",
 				content:
 					"Terms and conditions for using Parrot voice dictation software.",
 			},
-			{ property: "og:title", content: "Terms of Service — Parrot" },
+			{ property: "og:title", content: "Terms of Service - Parrot" },
 			{
 				property: "og:description",
 				content:
 					"Terms and conditions for using Parrot voice dictation software.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/terms" },
-			{ name: "twitter:title", content: "Terms of Service — Parrot" },
+			{ name: "twitter:title", content: "Terms of Service - Parrot" },
 			{
 				name: "twitter:description",
 				content:

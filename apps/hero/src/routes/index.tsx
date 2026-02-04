@@ -76,7 +76,7 @@ export const Route = createFileRoute("/")({
 	component: HomePage,
 	head: () => ({
 		meta: [
-			{ title: "Parrot — Voice dictation that just works" },
+			{ title: "Parrot - Voice dictation that just works" },
 			{
 				name: "description",
 				content:
@@ -84,7 +84,7 @@ export const Route = createFileRoute("/")({
 			},
 			{
 				property: "og:title",
-				content: "Parrot — Voice dictation that just works",
+				content: "Parrot - Voice dictation that just works",
 			},
 			{
 				property: "og:description",
@@ -94,7 +94,7 @@ export const Route = createFileRoute("/")({
 			{ property: "og:url", content: "https://tryparrot.app/" },
 			{
 				name: "twitter:title",
-				content: "Parrot — Voice dictation that just works",
+				content: "Parrot - Voice dictation that just works",
 			},
 			{
 				name: "twitter:description",
@@ -143,7 +143,7 @@ export const Route = createFileRoute("/")({
 							name: "Works offline?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Local mode, yes — fully offline once models are downloaded. Cloud mode needs internet.",
+								text: "Local mode, yes - fully offline once models are downloaded. Cloud mode needs internet.",
 							},
 						},
 						{
@@ -1085,12 +1085,12 @@ function AppCarousel() {
 
 	return (
 		<div className="space-y-3 overflow-hidden">
-			{/* Row 1 — scrolls left */}
+			{/* Row 1 - scrolls left */}
 			<div className="flex w-max animate-marquee">
 				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW1)}</div>
 				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW1)}</div>
 			</div>
-			{/* Row 2 — scrolls right */}
+			{/* Row 2 - scrolls right */}
 			<div className="flex w-max animate-marquee-reverse">
 				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW2)}</div>
 				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW2)}</div>
@@ -1160,7 +1160,7 @@ const USE_CASE_TABS = [
 		benefits: [
 			"Fire off emails and status updates in seconds",
 			"Writing style keeps tone consistent across communication",
-			"Works in any app — email, Slack, Notion, etc.",
+			"Works in any app - email, Slack, Notion, etc.",
 		],
 	},
 	{
@@ -1415,7 +1415,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
 		q: "Does it work offline?",
 		a: (
 			<>
-				<strong>Local mode:</strong> Yes — fully offline once models are
+				<strong>Local mode:</strong> Yes - fully offline once models are
 				downloaded.
 				<br />
 				<strong>Cloud mode:</strong> Needs internet.
@@ -1465,7 +1465,7 @@ function HomePage() {
 		<div className="min-h-screen">
 			<section className="relative px-6 pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
 				<div className="max-w-6xl mx-auto grid md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 items-center">
-					{/* Left — copy */}
+					{/* Left - copy */}
 					<div>
 						<div
 							className={`inline-flex items-center gap-2 px-3 py-1 bg-primary/8 border border-primary/15 rounded-full mb-6 ${anim(
@@ -1529,7 +1529,7 @@ function HomePage() {
 						</div>
 					</div>
 
-					{/* Right — typing race */}
+					{/* Right - typing race */}
 					<div
 						className={`${anim(
 							"animate-fade-in-up-delay-2",

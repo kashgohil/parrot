@@ -7,20 +7,20 @@ export const Route = createFileRoute("/contact")({
 	component: ContactPage,
 	head: () => ({
 		meta: [
-			{ title: "Contact Us — Parrot" },
+			{ title: "Contact Us - Parrot" },
 			{
 				name: "description",
 				content:
 					"Get in touch with the Parrot team. We're here to help with questions, feedback, and support.",
 			},
-			{ property: "og:title", content: "Contact Us — Parrot" },
+			{ property: "og:title", content: "Contact Us - Parrot" },
 			{
 				property: "og:description",
 				content:
 					"Get in touch with the Parrot team. We're here to help with questions, feedback, and support.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/contact" },
-			{ name: "twitter:title", content: "Contact Us — Parrot" },
+			{ name: "twitter:title", content: "Contact Us - Parrot" },
 			{
 				name: "twitter:description",
 				content:

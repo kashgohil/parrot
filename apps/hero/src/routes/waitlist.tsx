@@ -7,20 +7,20 @@ export const Route = createFileRoute("/waitlist")({
 	component: WaitlistPage,
 	head: () => ({
 		meta: [
-			{ title: "Join the Waitlist — Parrot" },
+			{ title: "Join the Waitlist - Parrot" },
 			{
 				name: "description",
 				content:
 					"Be the first to try Parrot. Voice dictation for Mac with cleanup, custom vocabulary, and local-first privacy.",
 			},
-			{ property: "og:title", content: "Join the Waitlist — Parrot" },
+			{ property: "og:title", content: "Join the Waitlist - Parrot" },
 			{
 				property: "og:description",
 				content:
 					"Be the first to try Parrot. Voice dictation for Mac with cleanup, custom vocabulary, and local-first privacy.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/waitlist" },
-			{ name: "twitter:title", content: "Join the Waitlist — Parrot" },
+			{ name: "twitter:title", content: "Join the Waitlist - Parrot" },
 			{
 				name: "twitter:description",
 				content:

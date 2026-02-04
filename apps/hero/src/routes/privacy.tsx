@@ -7,20 +7,20 @@ export const Route = createFileRoute("/privacy")({
 	component: PrivacyPage,
 	head: () => ({
 		meta: [
-			{ title: "Privacy Policy — Parrot" },
+			{ title: "Privacy Policy - Parrot" },
 			{
 				name: "description",
 				content:
 					"Parrot's privacy policy. Local mode keeps everything on-device. No analytics, no tracking.",
 			},
-			{ property: "og:title", content: "Privacy Policy — Parrot" },
+			{ property: "og:title", content: "Privacy Policy - Parrot" },
 			{
 				property: "og:description",
 				content:
 					"Parrot's privacy policy. Local mode keeps everything on-device. No analytics, no tracking.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/privacy" },
-			{ name: "twitter:title", content: "Privacy Policy — Parrot" },
+			{ name: "twitter:title", content: "Privacy Policy - Parrot" },
 			{
 				name: "twitter:description",
 				content:
@@ -90,7 +90,7 @@ function PrivacyPage() {
 						<PolicySection
 							title="Cloud mode"
 							paragraphs={[
-								"When you use cloud mode, your recorded audio is sent directly from Parrot to the transcription provider you selected (OpenAI, Deepgram, or ElevenLabs) using your own API key. Parrot acts as a thin client — we do not proxy, store, or log this audio.",
+								"When you use cloud mode, your recorded audio is sent directly from Parrot to the transcription provider you selected (OpenAI, Deepgram, or ElevenLabs) using your own API key. Parrot acts as a thin client - we do not proxy, store, or log this audio.",
 								"If AI cleanup is enabled, the transcribed text (not the audio) is sent to your chosen LLM provider (e.g., OpenAI for GPT-4o-mini) for grammar and style correction. Again, this goes directly to the provider using your key.",
 								"Each provider has their own privacy policy governing how they handle your data. We recommend reviewing them.",
 							]}
@@ -100,7 +100,7 @@ function PrivacyPage() {
 							title="Accounts (optional)"
 							paragraphs={[
 								"Creating a Parrot account is optional. Local mode works without any account.",
-								"If you create an account, we store: your email address, a hashed password (Argon2id), and your session token (30-day expiry). We do not store your API keys on our servers — those are kept locally on your device.",
+								"If you create an account, we store: your email address, a hashed password (Argon2id), and your session token (30-day expiry). We do not store your API keys on our servers - those are kept locally on your device.",
 								"Google OAuth: if you sign in with Google, we receive your email and name from Google's OAuth flow. We store only the email.",
 							]}
 						/>

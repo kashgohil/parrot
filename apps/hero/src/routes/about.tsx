@@ -6,7 +6,7 @@ export const Route = createFileRoute("/about")({
 	component: AboutPage,
 	head: () => ({
 		meta: [
-			{ title: "About Parrot — Native voice dictation for Mac" },
+			{ title: "About Parrot - Native voice dictation for Mac" },
 			{
 				name: "description",
 				content:
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/about")({
 			},
 			{
 				property: "og:title",
-				content: "About Parrot — Native voice dictation for Mac",
+				content: "About Parrot - Native voice dictation for Mac",
 			},
 			{
 				property: "og:description",
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/about")({
 			{ property: "og:url", content: "https://tryparrot.app/about" },
 			{
 				name: "twitter:title",
-				content: "About Parrot — Native voice dictation for Mac",
+				content: "About Parrot - Native voice dictation for Mac",
 			},
 			{
 				name: "twitter:description",
