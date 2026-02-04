@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
+import { WaitlistCTA } from "@/components/WaitlistCTA";
 
 export const Route = createFileRoute("/privacy")({
 	component: PrivacyPage,
@@ -49,7 +51,7 @@ function PrivacyPage() {
 			</section>
 
 			{/* ── Content ── */}
-			<section className="px-6 pb-20 md:pb-28">
+			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
 				<div className="max-w-3xl mx-auto">
 					{/* TLDR */}
 					<div className="bg-primary/[0.04] border border-primary/15 rounded-2xl p-6 md:p-7 mb-14">
@@ -137,44 +139,42 @@ function PrivacyPage() {
 			</section>
 
 			{/* ── Contact ── */}
-			<section className="px-6 py-16 bg-muted/30 border-y border-border">
+			<section className="px-6 py-20 md:py-28">
 				<div className="max-w-3xl mx-auto">
-					<h2 className="text-xl font-bold text-foreground tracking-tight mb-3">
-						Questions?
-					</h2>
-					<p className="text-[15px] text-muted-foreground">
-						If you have questions about how Parrot handles your
-						data, open an issue on GitHub or reach out by email.
-						We're happy to clarify anything.
+					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
+						Questions
 					</p>
-				</div>
-			</section>
-
-			{/* ── Related links ── */}
-			<section className="px-6 py-14">
-				<div className="max-w-3xl mx-auto">
-					<div className="flex flex-wrap items-center justify-center gap-6 text-sm">
-						<Link
-							to="/about"
-							className="text-primary hover:text-primary/80 font-medium no-underline transition-colors"
+					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-4">
+						Need more info?
+					</h2>
+					<p className="text-[15px] text-muted-foreground leading-relaxed max-w-xl mb-6">
+						If you have questions about how Parrot handles your data, reach out
+						to us. We're happy to clarify anything.
+					</p>
+					<div className="flex flex-wrap gap-4">
+						<a
+							href="mailto:hello@tryparrot.app"
+							className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
 						>
-							How Parrot works &rarr;
-						</Link>
+							Email us
+							<ArrowRight size={16} strokeWidth={2.5} />
+						</a>
 						<Link
-							to="/download"
-							className="text-primary hover:text-primary/80 font-medium no-underline transition-colors"
+							to="/contact"
+							className="inline-flex items-center gap-2 px-5 py-2.5 bg-muted text-foreground font-semibold rounded-xl hover:bg-muted/80 border border-border transition-colors no-underline"
 						>
-							Download Parrot &rarr;
-						</Link>
-						<Link
-							to="/pricing"
-							className="text-primary hover:text-primary/80 font-medium no-underline transition-colors"
-						>
-							See pricing &rarr;
+							All contact options
 						</Link>
 					</div>
 				</div>
 			</section>
+
+			{/* ── CTA ── */}
+			<WaitlistCTA
+				heading="Privacy-first dictation"
+				subheading="Try Parrot and see how voice dictation should work."
+				source="privacy"
+			/>
 
 			<Footer />
 		</div>
