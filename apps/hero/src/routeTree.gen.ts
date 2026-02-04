@@ -9,15 +9,29 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WaitlistRouteImport } from './routes/waitlist'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as DownloadRouteImport } from './routes/download'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 
+const WaitlistRoute = WaitlistRouteImport.update({
+  id: '/waitlist',
+  path: '/waitlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -31,6 +45,11 @@ const PricingRoute = PricingRouteImport.update({
 const DownloadRoute = DownloadRouteImport.update({
   id: '/download',
   path: '/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChangelogRoute = ChangelogRouteImport.update({
@@ -53,6 +72,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout/success',
+  path: '/checkout/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
@@ -63,20 +87,28 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
   '/download': typeof DownloadRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
+  '/waitlist': typeof WaitlistRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/blog/': typeof BlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
   '/download': typeof DownloadRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
+  '/waitlist': typeof WaitlistRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/blog': typeof BlogIndexRoute
 }
 export interface FileRoutesById {
@@ -84,10 +116,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
   '/download': typeof DownloadRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
+  '/waitlist': typeof WaitlistRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/blog/': typeof BlogIndexRoute
 }
 export interface FileRouteTypes {
@@ -96,30 +132,42 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/changelog'
+    | '/contact'
     | '/download'
     | '/pricing'
     | '/privacy'
+    | '/terms'
+    | '/waitlist'
     | '/blog/$slug'
+    | '/checkout/success'
     | '/blog/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/changelog'
+    | '/contact'
     | '/download'
     | '/pricing'
     | '/privacy'
+    | '/terms'
+    | '/waitlist'
     | '/blog/$slug'
+    | '/checkout/success'
     | '/blog'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/changelog'
+    | '/contact'
     | '/download'
     | '/pricing'
     | '/privacy'
+    | '/terms'
+    | '/waitlist'
     | '/blog/$slug'
+    | '/checkout/success'
     | '/blog/'
   fileRoutesById: FileRoutesById
 }
@@ -127,15 +175,33 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ChangelogRoute: typeof ChangelogRoute
+  ContactRoute: typeof ContactRoute
   DownloadRoute: typeof DownloadRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
+  WaitlistRoute: typeof WaitlistRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/waitlist': {
+      id: '/waitlist'
+      path: '/waitlist'
+      fullPath: '/waitlist'
+      preLoaderRoute: typeof WaitlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -155,6 +221,13 @@ declare module '@tanstack/react-router' {
       path: '/download'
       fullPath: '/download'
       preLoaderRoute: typeof DownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/changelog': {
@@ -185,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/checkout/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -199,10 +279,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ChangelogRoute: ChangelogRoute,
+  ContactRoute: ContactRoute,
   DownloadRoute: DownloadRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
+  WaitlistRoute: WaitlistRoute,
   BlogSlugRoute: BlogSlugRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
   BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport
