@@ -9,104 +9,106 @@ import {
   Mic,
   Music,
 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
-type DoodlePlacement = [
-  top: number,
-  left: number,
-  icon: string,
-  rotation: number,
-  size: number,
+const iconList: { key: string; Icon: LucideIcon }[] = [
+  { key: 'mic', Icon: Mic },
+  { key: 'waves', Icon: AudioLines },
+  { key: 'clipboard', Icon: ClipboardList },
+  { key: 'feather', Icon: Feather },
+  { key: 'bubble', Icon: MessageSquareText },
+  { key: 'keyboard', Icon: Keyboard },
+  { key: 'music', Icon: Music },
+  { key: 'clock', Icon: Clock },
 ]
 
-const icons: Record<string, LucideIcon> = {
-  mic: Mic,
-  waves: AudioLines,
-  clipboard: ClipboardList,
-  feather: Feather,
-  bubble: MessageSquareText,
-  keyboard: Keyboard,
-  music: Music,
-  clock: Clock,
+// Seeded random for consistent positions
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000
+  return x - Math.floor(x)
 }
 
-const placements: DoodlePlacement[] = [
-  [1, 2, 'mic', 14, 40],
-  [3, 22, 'waves', -7, 36],
-  [2, 42, 'bubble', 11, 38],
-  [4, 62, 'feather', -16, 36],
-  [1, 82, 'music', 9, 40],
-  [10, 8, 'keyboard', 19, 36],
-  [12, 28, 'clipboard', -4, 38],
-  [11, 48, 'mic', 9, 40],
-  [13, 68, 'bubble', -11, 36],
-  [10, 88, 'waves', 6, 38],
-  [19, 1, 'feather', -9, 38],
-  [21, 18, 'music', 17, 36],
-  [20, 38, 'keyboard', -6, 40],
-  [22, 58, 'waves', 12, 36],
-  [19, 78, 'clipboard', -13, 38],
-  [21, 95, 'mic', 8, 36],
-  [28, 6, 'bubble', 13, 38],
-  [30, 26, 'feather', -5, 36],
-  [29, 46, 'music', 16, 40],
-  [31, 66, 'keyboard', -10, 36],
-  [28, 86, 'mic', 7, 38],
-  [37, 3, 'clipboard', -17, 36],
-  [39, 22, 'waves', 8, 38],
-  [38, 42, 'bubble', -6, 40],
-  [40, 62, 'feather', 14, 36],
-  [37, 82, 'music', -9, 36],
-  [39, 96, 'keyboard', 11, 38],
-  [46, 8, 'mic', 7, 38],
-  [48, 28, 'keyboard', -14, 36],
-  [47, 48, 'clipboard', 12, 40],
-  [49, 68, 'bubble', -5, 36],
-  [46, 88, 'feather', 10, 38],
-  [55, 1, 'waves', -11, 36],
-  [57, 18, 'music', 14, 38],
-  [56, 38, 'mic', -9, 40],
-  [58, 58, 'clipboard', 7, 36],
-  [55, 78, 'keyboard', -13, 38],
-  [57, 94, 'bubble', 8, 36],
-  [64, 6, 'feather', -8, 38],
-  [66, 26, 'waves', 13, 36],
-  [65, 46, 'clock', -6, 40],
-  [67, 66, 'music', 11, 36],
-  [64, 86, 'mic', -14, 38],
-  [73, 3, 'keyboard', 8, 36],
-  [75, 22, 'clipboard', -15, 38],
-  [74, 42, 'feather', 12, 36],
-  [76, 62, 'waves', -7, 40],
-  [73, 82, 'bubble', 10, 36],
-  [75, 96, 'music', -11, 38],
-  [82, 8, 'music', -9, 38],
-  [84, 28, 'mic', 13, 36],
-  [83, 48, 'keyboard', -6, 40],
-  [85, 68, 'feather', 11, 36],
-  [82, 88, 'clipboard', -14, 38],
-  [91, 1, 'bubble', 7, 36],
-  [93, 20, 'waves', -12, 38],
-  [92, 40, 'clock', 15, 36],
-  [94, 60, 'mic', -8, 40],
-  [91, 80, 'keyboard', 11, 36],
-  [93, 95, 'feather', -10, 38],
-]
+type Doodle = {
+  id: number
+  top: number // pixels
+  left: number // percentage
+  iconIndex: number
+  rotation: number
+  size: number
+}
+
+// Fixed spacing - same pixel density across all screen sizes
+const COL_WIDTH = 120 // pixels between columns
+const ROW_HEIGHT = 120 // pixels between rows
+
+function generateDoodles(containerWidth: number, containerHeight: number): Doodle[] {
+  const doodles: Doodle[] = []
+  let id = 0
+
+  const cols = Math.max(3, Math.ceil(containerWidth / COL_WIDTH))
+  const rows = Math.ceil(containerHeight / ROW_HEIGHT)
+  const cellWidth = 100 / cols
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const seed = row * 100 + col
+
+      const top = row * ROW_HEIGHT + seededRandom(seed) * ROW_HEIGHT * 0.6 + ROW_HEIGHT * 0.2
+      const left = col * cellWidth + seededRandom(seed + 1) * cellWidth * 0.6 + cellWidth * 0.2
+
+      const iconIndex = Math.floor(seededRandom(seed + 2) * iconList.length)
+      const rotation = (seededRandom(seed + 3) - 0.5) * 30
+      const size = 32 + seededRandom(seed + 4) * 10
+
+      doodles.push({ id: id++, top, left, iconIndex, rotation, size })
+    }
+  }
+
+  return doodles
+}
 
 export function DoodleBackground({ opacity = 0.1 }: { opacity?: number }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [doodles, setDoodles] = useState<Doodle[]>([])
+
+  useEffect(() => {
+    function updateDoodles() {
+      if (!containerRef.current) return
+      const width = containerRef.current.offsetWidth
+      const height = containerRef.current.offsetHeight
+      if (width > 0 && height > 0) {
+        setDoodles(generateDoodles(width, height))
+      }
+    }
+
+    // Use ResizeObserver to detect container size changes
+    const resizeObserver = new ResizeObserver(updateDoodles)
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current)
+    }
+
+    // Initial generation
+    updateDoodles()
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {placements.map(([top, left, icon, rot, size], i) => {
-        const Icon = icons[icon]
+    <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden">
+      {doodles.map((doodle) => {
+        const { Icon } = iconList[doodle.iconIndex]
         return (
           <Icon
-            key={i}
+            key={doodle.id}
             className="absolute text-primary"
             style={{
-              top: `${top}%`,
-              left: `${left}%`,
-              width: `${size}px`,
-              height: `${size}px`,
-              transform: `rotate(${rot}deg)`,
+              top: `${doodle.top}px`,
+              left: `${doodle.left}%`,
+              width: `${doodle.size}px`,
+              height: `${doodle.size}px`,
+              transform: `rotate(${doodle.rotation}deg)`,
               opacity,
             }}
             strokeWidth={1.3}
