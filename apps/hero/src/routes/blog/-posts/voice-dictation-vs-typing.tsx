@@ -54,7 +54,7 @@ export default function VoiceDictationVsTyping() {
 			<p>
 				The most frustrating part of dictation has always been proper nouns. Your coworker's
 				name, your company's product, medical or legal terminology — these get mangled
-				constantly. <Link to="/blog/custom-vocabulary-voice-dictation">Custom vocabulary</Link>{" "}
+				constantly. <Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>Custom vocabulary</Link>{" "}
 				fixes this. You add your terms once, and the transcription engine handles them correctly
 				every time.
 			</p>

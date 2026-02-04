@@ -55,7 +55,7 @@ export default function TranscriptionApisCompared() {
 				<li><strong>Overall accuracy</strong>: Whisper and ElevenLabs tied at ~96%, Deepgram at ~95%. The differences are marginal.</li>
 				<li><strong>Speed</strong>: Deepgram was 40% faster on average. ElevenLabs second, Whisper third.</li>
 				<li><strong>Punctuation</strong>: ElevenLabs produced the most naturally punctuated output. Whisper was good. Deepgram occasionally missed commas.</li>
-				<li><strong>Proper nouns</strong>: All three struggled equally. This is where <Link to="/blog/custom-vocabulary-voice-dictation">custom vocabulary</Link> matters most.</li>
+				<li><strong>Proper nouns</strong>: All three struggled equally. This is where <Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>custom vocabulary</Link> matters most.</li>
 			</ul>
 
 			<h2>Our recommendation</h2>
@@ -68,10 +68,18 @@ export default function TranscriptionApisCompared() {
 				The good news is you can switch providers anytime in Parrot's settings without losing
 				your history or configuration. Try one for a week, switch if it's not working for you.
 			</p>
+
+			<h2>Three ways to use Parrot</h2>
 			<p>
-				And if you don't want to use any cloud API, Parrot's{" "}
-				<Link to="/blog/local-voice-dictation-mac">local mode</Link> runs Whisper.cpp entirely
-				on your Mac. No API key, no cost, no data leaving your machine.
+				Parrot offers flexibility in how you handle transcription:
+			</p>
+			<ul>
+				<li><strong>Local mode</strong> — Whisper.cpp runs entirely on your Mac. No API keys, no internet, no data leaving your machine. Best for privacy-conscious users. See our <Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>local setup guide</Link>.</li>
+				<li><strong>BYOK (Bring Your Own Key)</strong> — Use your own API keys for Whisper, Deepgram, or ElevenLabs. You control the relationship with the provider and pay them directly.</li>
+				<li><strong>Managed</strong> — Let Parrot handle everything. No API keys to manage, no setup hassle. We route your audio to the best available provider.</li>
+			</ul>
+			<p>
+				Switch between modes anytime in settings. Your vocabulary, history, and preferences carry over.
 			</p>
 		</>
 	);

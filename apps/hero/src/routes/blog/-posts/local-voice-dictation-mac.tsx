@@ -53,7 +53,7 @@ export default function LocalVoiceDictationMac() {
 					>
 						Whisper.cpp
 					</a>{" "}
-					- a C++ port of OpenAI's Whisper model that runs natively on Apple
+					— a C++ port of OpenAI's Whisper model that runs natively on Apple
 					Silicon and Intel Macs. It uses Core ML and Metal acceleration on
 					Apple Silicon for near-real-time performance.
 				</li>
@@ -66,8 +66,9 @@ export default function LocalVoiceDictationMac() {
 					>
 						Ollama
 					</a>{" "}
-					- a local LLM runner. It handles grammar fixes, filler word removal,
-					and applying your writing style - all without an internet connection.
+					— a local LLM runner. It handles grammar fixes, filler word removal,
+					and applying your writing style — all without an internet connection.
+					(Cloud users can use OpenAI or Anthropic models instead.)
 				</li>
 			</ul>
 			<p>
@@ -205,9 +206,9 @@ export default function LocalVoiceDictationMac() {
 
 			<h2>Step 1: Install Parrot</h2>
 			<p>
-				<Link to="/download">Download Parrot</Link> and drag it to your
-				Applications folder. On first launch, it'll ask for microphone
-				permission — that's the only system permission it needs.
+				<Link to="/waitlist">Join the waitlist</Link> to get access when Parrot
+				launches. On first launch, it'll ask for microphone permission — that's
+				the only system permission it needs.
 			</p>
 			<p>
 				If macOS shows a "cannot be opened because the developer cannot be
@@ -350,8 +351,8 @@ export default function LocalVoiceDictationMac() {
 					, lawyers, and anyone handling sensitive information.
 				</li>
 				<li>
-					<strong>Cost</strong> — no API fees, no subscription. Once downloaded,
-					it's free forever.
+					<strong>No API key required</strong> — no external accounts, no setup
+					beyond the initial model downloads.
 				</li>
 				<li>
 					<strong>Offline</strong> — works on planes, in areas with bad
@@ -362,13 +363,26 @@ export default function LocalVoiceDictationMac() {
 			<h2>When to consider cloud instead</h2>
 			<p>
 				If you need the absolute fastest transcription, or you're on an older
-				Intel Mac where local processing is slow, cloud mode with your own API
-				key is a good alternative. Check our{" "}
-				<Link to="/blog/$slug" params={{ slug: "transcription-apis-compared" }}>
-					comparison of transcription APIs
-				</Link>{" "}
-				to pick a provider. You can switch between local and cloud anytime in{" "}
-				<Link to="/download">Parrot's settings</Link>.
+				Intel Mac where local processing is slow, Parrot offers two cloud options:
+			</p>
+			<ul>
+				<li>
+					<strong>BYOK (Bring Your Own Key)</strong> — use your own API keys for
+					OpenAI Whisper, Deepgram, or ElevenLabs. You control the provider
+					relationship. Check our{" "}
+					<Link to="/blog/$slug" params={{ slug: "transcription-apis-compared" }}>
+						comparison of transcription APIs
+					</Link>{" "}
+					to pick one.
+				</li>
+				<li>
+					<strong>Managed mode</strong> — let Parrot handle everything. No API
+					keys to manage, we route your audio to the best available provider.
+				</li>
+			</ul>
+			<p>
+				You can switch between local, BYOK, and managed modes anytime in
+				Parrot's settings. Your vocabulary, history, and preferences carry over.
 			</p>
 
 			<h2>Resources</h2>

@@ -32,7 +32,8 @@ export default function CustomVocabularyVoiceDictation() {
 			<p>
 				In <Link to="/">Parrot</Link>, you add terms in your profile settings. The list is
 				stored locally in your SQLite database and sent alongside every transcription request.
-				It works with both cloud providers and local Whisper.cpp.
+				It works in all modes — local (Whisper.cpp), BYOK (your own API keys), and managed
+				(we handle everything).
 			</p>
 
 			<h2>What to add to your vocabulary</h2>
@@ -87,10 +88,10 @@ export default function CustomVocabularyVoiceDictation() {
 				sessions immediately — no restart needed.
 			</p>
 			<p>
-				If you're dictating <Link to="/blog/voice-dictation-medical-hipaa">medical notes</Link>{" "}
+				If you're dictating <Link to="/blog/$slug" params={{ slug: "voice-dictation-medical-hipaa" }}>medical notes</Link>{" "}
 				or legal documents, your vocabulary list will be longer and more specialized. That's
 				fine — the more specific your list, the better the results.{" "}
-				<Link to="/download">Download Parrot</Link> and try it.
+				<Link to="/waitlist">Join the waitlist</Link> to try it when Parrot launches.
 			</p>
 		</>
 	);

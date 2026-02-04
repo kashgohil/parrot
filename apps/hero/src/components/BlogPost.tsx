@@ -86,29 +86,6 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 				</div>
 			</section>
 
-			{/* CTA */}
-			<section className="px-6 py-16 md:py-20 bg-foreground">
-				<div className="max-w-2xl mx-auto text-center">
-					<h2 className="text-2xl md:text-3xl font-black text-background tracking-tight mb-3">
-						Try Parrot for free
-					</h2>
-					<p className="text-background/50 mb-6 text-[15px]">
-						Download for Mac. No account required for local mode.
-					</p>
-					<Link
-						to="/download"
-						className="group inline-flex items-center gap-2.5 px-7 py-3 bg-primary text-primary-foreground font-semibold rounded-2xl hover:bg-primary/90 transition-colors no-underline shadow-[0_4px_20px_rgba(124,179,66,0.3)]"
-					>
-						Download for Mac
-						<ArrowRight
-							size={16}
-							strokeWidth={2.5}
-							className="transition-transform group-hover:translate-x-0.5"
-						/>
-					</Link>
-				</div>
-			</section>
-
 			{/* Related posts */}
 			{related.length > 0 && (
 				<section className="px-6 py-16 md:py-20 bg-muted/30 border-y border-border">
@@ -143,6 +120,28 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 				</section>
 			)}
 
+			{/* CTA */}
+			<section className="px-6 py-16 md:py-20 bg-foreground">
+				<div className="max-w-2xl mx-auto text-center">
+					<h2 className="text-2xl md:text-3xl font-black text-background tracking-tight mb-3">
+						Try Parrot
+					</h2>
+					<p className="text-background/50 mb-6 text-[15px]">
+						Voice dictation for Mac. No account required for local mode.
+					</p>
+					<Link
+						to="/download"
+						className="group inline-flex items-center gap-2.5 px-7 py-3 bg-primary text-primary-foreground font-semibold rounded-2xl hover:bg-primary/90 transition-colors no-underline shadow-[0_4px_20px_rgba(124,179,66,0.3)]"
+					>
+						Download for Mac
+						<ArrowRight
+							size={16}
+							strokeWidth={2.5}
+							className="transition-transform group-hover:translate-x-0.5"
+						/>
+					</Link>
+				</div>
+			</section>
 			<Footer />
 		</div>
 	);

@@ -87,8 +87,9 @@ export default function WhyTauriNotElectron() {
 				transcribe, paste — Tauri is a better fit.
 			</p>
 			<p>
-				Want to see the result? <Link to="/download">Download Parrot</Link> and see how a
-				15 MB native app compares to the Electron apps on your dock.
+				Want to see the result? <Link to="/waitlist">Join the waitlist</Link> to try Parrot
+				when it launches and see how a 15 MB native app compares to the Electron apps on
+				your dock.
 			</p>
 		</>
 	);

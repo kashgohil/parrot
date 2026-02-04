@@ -28,7 +28,7 @@ export default function VoiceDictationMedicalHipaa() {
 				When audio never leaves your machine, there's no transmission of PHI to worry about.
 			</p>
 			<p>
-				Parrot's <Link to="/blog/local-voice-dictation-mac">local mode</Link> does exactly
+				Parrot's <Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>local mode</Link> does exactly
 				this. Whisper.cpp runs the transcription model on your Mac. Ollama handles the AI
 				cleanup locally. Your audio and text stay on your laptop — no cloud, no network
 				requests, no third parties.
@@ -47,7 +47,7 @@ export default function VoiceDictationMedicalHipaa() {
 				frequently get wrong.
 			</p>
 			<p>
-				Parrot's <Link to="/blog/custom-vocabulary-voice-dictation">custom vocabulary</Link>{" "}
+				Parrot's <Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>custom vocabulary</Link>{" "}
 				lets you add your terms — "metformin," "echocardiogram," "HbA1c" — so the
 				transcription engine recognizes them. You build this list once and it applies to every
 				dictation going forward.
@@ -68,6 +68,18 @@ export default function VoiceDictationMedicalHipaa() {
 				same note. Over a day with 20+ patients, that adds up to over an hour saved.
 			</p>
 
+			<h2>Cloud options with BYOK</h2>
+			<p>
+				If local mode doesn't fit your workflow (older Mac, limited disk space), Parrot's
+				BYOK (Bring Your Own Key) mode lets you use cloud providers like OpenAI Whisper
+				with your own API key. Some providers offer BAAs for enterprise accounts. You
+				control the relationship with the provider directly.
+			</p>
+			<p>
+				The key difference: in BYOK mode, audio goes directly from your Mac to your
+				chosen provider. Parrot never sees or stores it.
+			</p>
+
 			<h2>What about Dragon Medical?</h2>
 			<p>
 				Dragon Medical is the incumbent in medical dictation, and it's good at what it does.
@@ -77,15 +89,17 @@ export default function VoiceDictationMedicalHipaa() {
 			<p>
 				Parrot isn't trying to replace Dragon in a hospital IT department. It's for individual
 				practitioners, small practices, and medical professionals who want something that works
-				on their Mac without a monthly fee. Local mode is free forever.
+				on their Mac. Local mode keeps everything on-device, BYOK mode gives you control over
+				your cloud provider.
 			</p>
 
 			<h2>Getting started</h2>
 			<p>
 				If you're a medical professional interested in trying voice dictation with local
-				processing, <Link to="/download">download Parrot</Link>, choose local mode during
-				setup, and add your medical terminology to the custom vocabulary. The whole process
-				takes a few minutes, and you can start dictating immediately.
+				processing, <Link to="/waitlist">join the waitlist</Link> to get access when Parrot
+				launches. Choose local mode during setup, and add your medical terminology to the
+				custom vocabulary. The whole process takes a few minutes, and you can start
+				dictating immediately.
 			</p>
 		</>
 	);

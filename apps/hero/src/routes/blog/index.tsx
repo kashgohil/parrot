@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { posts } from "@/lib/blog";
 import Footer from "@/components/Footer";
+import { WaitlistCTA } from "@/components/WaitlistCTA";
 
 export const Route = createFileRoute("/blog/")({
 	component: BlogIndex,
@@ -34,7 +35,8 @@ export const Route = createFileRoute("/blog/")({
 function BlogIndex() {
 	return (
 		<div className="min-h-screen">
-			<section className="px-6 pt-16 pb-12 md:pt-24 md:pb-16">
+			{/* ── Hero ── */}
+			<section className="px-6 pt-16 pb-20 md:pt-24 md:pb-28">
 				<div className="max-w-3xl mx-auto">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3 animate-fade-in-up">
 						Blog
@@ -49,7 +51,8 @@ function BlogIndex() {
 				</div>
 			</section>
 
-			<section className="px-6 pb-20 md:pb-28">
+			{/* ── Posts grid ── */}
+			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
 				<div className="max-w-5xl mx-auto">
 					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
 						{posts.map((post) => (
@@ -83,6 +86,13 @@ function BlogIndex() {
 					</div>
 				</div>
 			</section>
+
+			{/* ── CTA ── */}
+			<WaitlistCTA
+				heading="Try Parrot"
+				subheading="Join the waitlist and be first to know when we launch."
+				source="blog"
+			/>
 
 			<Footer />
 		</div>

@@ -50,7 +50,7 @@ export default function RsiDeveloperVoiceDictation() {
 			<ul>
 				<li><strong>Code in short bursts</strong>. Type your code, but take breaks. Use a timer if you need to.</li>
 				<li><strong>Dictate everything else</strong>. Slack messages, PR descriptions, docs — anything that's natural language goes through voice.</li>
-				<li><strong>Add technical terms to custom vocabulary</strong>. "Kubernetes," "PostgreSQL," "middleware," your project names, your teammates' names. This prevents constant corrections. See our <Link to="/blog/custom-vocabulary-voice-dictation">guide on custom vocabulary</Link>.</li>
+				<li><strong>Add technical terms to custom vocabulary</strong>. "Kubernetes," "PostgreSQL," "middleware," your project names, your teammates' names. This prevents constant corrections. See our <Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>guide on custom vocabulary</Link>.</li>
 				<li><strong>Use the global hotkey</strong>. Cmd+Shift+Space starts recording from any app. You don't have to switch to a separate dictation window.</li>
 			</ul>
 
@@ -86,10 +86,14 @@ export default function RsiDeveloperVoiceDictation() {
 				keystrokes enough that your hands can recover. Even offloading 30% of your typing to
 				voice makes a measurable difference.
 			</p>
+
+			<h2>Getting started</h2>
 			<p>
-				<Link to="/download">Parrot is free for local mode</Link> — there's no cost to trying
-				it. Set up the hotkey, add your technical vocabulary, and start with just Slack
-				messages. See if it helps.
+				<Link to="/waitlist">Join the waitlist</Link> to try Parrot when it launches. You can
+				use local mode (everything on-device, no API keys), BYOK mode (bring your own API key
+				for OpenAI, Deepgram, or ElevenLabs), or managed mode (we handle everything). Set up
+				the hotkey, add your technical vocabulary, and start with just Slack messages. See if
+				it helps.
 			</p>
 		</>
 	);
