@@ -1,13 +1,13 @@
 import { Link } from "@tanstack/react-router";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Menu, X, ArrowRight } from "lucide-react";
 
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
 	return (
 		<>
 			<div className="sticky top-0 z-40 w-full px-4 pt-3">
-				<header className="max-w-5xl mx-auto flex items-center justify-between px-4 py-2.5 bg-foreground/[0.03] backdrop-blur-xl rounded-2xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+				<header className="max-w-5xl mx-auto flex items-center justify-between px-4 py-2.5 bg-foreground/3 backdrop-blur-xl rounded-2xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
 					<Link
 						to="/"
 						className="flex items-center gap-2 no-underline text-foreground hover:opacity-80 transition-opacity"
@@ -17,9 +17,7 @@ export default function Header() {
 							alt="Parrot"
 							className="w-8 h-8"
 						/>
-						<span className="text-[15px] font-bold tracking-tight">
-							Parrot
-						</span>
+						<span className="text-2xl font-bold tracking-tight">Parrot</span>
 					</Link>
 
 					<nav className="hidden md:flex items-center">
@@ -28,7 +26,6 @@ export default function Header() {
 								[
 									{ to: "/", label: "Home" },
 									{ to: "/about", label: "About" },
-									{ to: "/pricing", label: "Pricing" },
 									{ to: "/blog", label: "Blog" },
 								] as const
 							).map((link) => (
@@ -49,10 +46,10 @@ export default function Header() {
 
 					<div className="hidden md:block">
 						<Link
-							to="/download"
+							to="/waitlist"
 							className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-foreground text-background text-[13px] font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
 						>
-							Get the app
+							Join waitlist
 							<ArrowRight size={13} strokeWidth={2.5} />
 						</Link>
 					</div>
@@ -97,9 +94,7 @@ export default function Header() {
 						[
 							{ to: "/", label: "Home" },
 							{ to: "/about", label: "About" },
-							{ to: "/pricing", label: "Pricing" },
 							{ to: "/blog", label: "Blog" },
-							{ to: "/download", label: "Download" },
 						] as const
 					).map((link) => (
 						<Link
@@ -119,11 +114,11 @@ export default function Header() {
 
 				<div className="p-4 border-t border-border">
 					<Link
-						to="/download"
+						to="/waitlist"
 						onClick={() => setIsOpen(false)}
 						className="flex items-center justify-center gap-2 w-full py-2.5 bg-foreground text-background text-sm font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
 					>
-						Get the app
+						Join waitlist
 						<ArrowRight size={14} />
 					</Link>
 				</div>

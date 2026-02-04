@@ -9,20 +9,61 @@ export default function Footer() {
 						<img
 							src="/parrot-transparent.png"
 							alt="Parrot"
-							className="w-7 h-7"
+							className="w-8 h-8"
 						/>
-						<span className="text-sm font-bold text-foreground tracking-tight">
+						<span className="text-2xl font-bold text-foreground tracking-tight">
 							Parrot
 						</span>
 					</div>
 					<nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px]">
-						<Link to="/" className="text-muted-foreground hover:text-foreground transition-colors no-underline">Home</Link>
-						<Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors no-underline">About</Link>
-						<Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors no-underline">Pricing</Link>
-						<Link to="/download" className="text-muted-foreground hover:text-foreground transition-colors no-underline">Download</Link>
-						<Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors no-underline">Blog</Link>
-						<Link to="/changelog" className="text-muted-foreground hover:text-foreground transition-colors no-underline">Changelog</Link>
-						<Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors no-underline">Privacy</Link>
+						<Link
+							to="/"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Home
+						</Link>
+						<Link
+							to="/about"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							About
+						</Link>
+						<Link
+							to="/waitlist"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Waitlist
+						</Link>
+						<Link
+							to="/blog"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Blog
+						</Link>
+						<Link
+							to="/changelog"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Changelog
+						</Link>
+						<Link
+							to="/privacy"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Privacy
+						</Link>
+						<Link
+							to="/terms"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Terms
+						</Link>
+						<Link
+							to="/contact"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Contact
+						</Link>
 					</nav>
 				</div>
 				<p className="text-center text-muted-foreground/50 text-xs mt-8">

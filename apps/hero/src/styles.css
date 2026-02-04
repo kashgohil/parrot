@@ -246,7 +246,7 @@
 }
 
 @utility animate-marquee {
-	animation: marquee 35s linear infinite;
+	animation: marquee 60s linear infinite;
 }
 
 @keyframes marquee-reverse {
@@ -255,7 +255,7 @@
 }
 
 @utility animate-marquee-reverse {
-	animation: marquee-reverse 35s linear infinite;
+	animation: marquee-reverse 60s linear infinite;
 }
 
 @keyframes slide-down {
