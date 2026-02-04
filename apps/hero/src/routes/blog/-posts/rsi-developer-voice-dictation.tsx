@@ -6,7 +6,7 @@ export default function RsiDeveloperVoiceDictation() {
 			<p>
 				If you write code for a living, you type a lot. Eight hours a day, five days a week,
 				thousands of keystrokes per hour. For some developers, this eventually catches up with
-				them in the form of repetitive strain injury — pain in the wrists, hands, forearms, or
+				them in the form of repetitive strain injury - pain in the wrists, hands, forearms, or
 				shoulders that makes typing difficult or impossible.
 			</p>
 
@@ -19,7 +19,7 @@ export default function RsiDeveloperVoiceDictation() {
 			<p>
 				Common signs: pain or tingling in your fingers after long typing sessions, aching
 				wrists at the end of the day, difficulty gripping objects in the morning. If any of
-				this sounds familiar, you're not alone — and there are ways to manage it without
+				this sounds familiar, you're not alone - and there are ways to manage it without
 				abandoning your career.
 			</p>
 
@@ -49,7 +49,7 @@ export default function RsiDeveloperVoiceDictation() {
 			</p>
 			<ul>
 				<li><strong>Code in short bursts</strong>. Type your code, but take breaks. Use a timer if you need to.</li>
-				<li><strong>Dictate everything else</strong>. Slack messages, PR descriptions, docs — anything that's natural language goes through voice.</li>
+				<li><strong>Dictate everything else</strong>. Slack messages, PR descriptions, docs - anything that's natural language goes through voice.</li>
 				<li><strong>Add technical terms to custom vocabulary</strong>. "Kubernetes," "PostgreSQL," "middleware," your project names, your teammates' names. This prevents constant corrections. See our <Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>guide on custom vocabulary</Link>.</li>
 				<li><strong>Use the global hotkey</strong>. Cmd+Shift+Space starts recording from any app. You don't have to switch to a separate dictation window.</li>
 			</ul>
@@ -75,9 +75,9 @@ export default function RsiDeveloperVoiceDictation() {
 			<ul>
 				<li><strong>Split keyboards</strong> (like Kinesis Advantage or Ergodox) reduce wrist pronation.</li>
 				<li><strong>Vertical mice</strong> put your hand in a natural position.</li>
-				<li><strong>Frequent breaks</strong> — the 20-20-20 rule or similar.</li>
-				<li><strong>Stretching</strong> — wrist extensions and flexion exercises.</li>
-				<li><strong>Professional help</strong> — see a hand specialist or occupational therapist if symptoms persist.</li>
+				<li><strong>Frequent breaks</strong> - the 20-20-20 rule or similar.</li>
+				<li><strong>Stretching</strong> - wrist extensions and flexion exercises.</li>
+				<li><strong>Professional help</strong> - see a hand specialist or occupational therapist if symptoms persist.</li>
 			</ul>
 
 			<h2>It's not all or nothing</h2>

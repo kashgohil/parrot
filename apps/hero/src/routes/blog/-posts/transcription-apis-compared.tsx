@@ -28,7 +28,7 @@ export default function TranscriptionApisCompared() {
 			</p>
 			<ul>
 				<li><strong>Accuracy</strong>: Comparable to Whisper for most content. Slightly better with conversational speech and filler words. Slightly worse with heavily technical content.</li>
-				<li><strong>Speed</strong>: Fast. Noticeably quicker than Whisper — often under 1 second for short clips. They also offer a streaming mode for real-time transcription.</li>
+				<li><strong>Speed</strong>: Fast. Noticeably quicker than Whisper - often under 1 second for short clips. They also offer a streaming mode for real-time transcription.</li>
 				<li><strong>Pricing</strong>: Pay-as-you-go starting at $0.0043 per minute. Slightly cheaper than Whisper.</li>
 				<li><strong>Best for</strong>: Users who want the fastest turnaround, high-volume dictation.</li>
 			</ul>
@@ -39,7 +39,7 @@ export default function TranscriptionApisCompared() {
 				has gotten surprisingly good. It's the newest option in Parrot.
 			</p>
 			<ul>
-				<li><strong>Accuracy</strong>: Strong, especially for clear speech. Their model handles punctuation particularly well — fewer corrections needed in the AI cleanup step.</li>
+				<li><strong>Accuracy</strong>: Strong, especially for clear speech. Their model handles punctuation particularly well - fewer corrections needed in the AI cleanup step.</li>
 				<li><strong>Speed</strong>: Good. Between Whisper and Deepgram in our tests.</li>
 				<li><strong>Pricing</strong>: Included in ElevenLabs plans. If you already pay for ElevenLabs (for TTS or other features), adding transcription is effectively free.</li>
 				<li><strong>Best for</strong>: Users already in the ElevenLabs ecosystem, content creators who use both TTS and STT.</li>
@@ -74,9 +74,9 @@ export default function TranscriptionApisCompared() {
 				Parrot offers flexibility in how you handle transcription:
 			</p>
 			<ul>
-				<li><strong>Local mode</strong> — Whisper.cpp runs entirely on your Mac. No API keys, no internet, no data leaving your machine. Best for privacy-conscious users. See our <Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>local setup guide</Link>.</li>
-				<li><strong>BYOK (Bring Your Own Key)</strong> — Use your own API keys for Whisper, Deepgram, or ElevenLabs. You control the relationship with the provider and pay them directly.</li>
-				<li><strong>Managed</strong> — Let Parrot handle everything. No API keys to manage, no setup hassle. We route your audio to the best available provider.</li>
+				<li><strong>Local mode</strong> - Whisper.cpp runs entirely on your Mac. No API keys, no internet, no data leaving your machine. Best for privacy-conscious users. See our <Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>local setup guide</Link>.</li>
+				<li><strong>BYOK (Bring Your Own Key)</strong> - Use your own API keys for Whisper, Deepgram, or ElevenLabs. You control the relationship with the provider and pay them directly.</li>
+				<li><strong>Managed</strong> - Let Parrot handle everything. No API keys to manage, no setup hassle. We route your audio to the best available provider.</li>
 			</ul>
 			<p>
 				Switch between modes anytime in settings. Your vocabulary, history, and preferences carry over.

@@ -5,15 +5,15 @@ export default function VoiceDictationMedicalHipaa() {
 		<>
 			<p>
 				Medical professionals dictate more than almost any other group. Patient notes, referral
-				letters, case summaries, prescription instructions — the volume of text is enormous.
+				letters, case summaries, prescription instructions - the volume of text is enormous.
 				Voice dictation makes sense here. The question is whether it's safe to use.
 			</p>
 
 			<h2>The HIPAA problem with cloud dictation</h2>
 			<p>
 				Most voice dictation tools send your audio to a cloud server for processing. When that
-				audio contains protected health information (PHI) — patient names, diagnoses, treatment
-				plans — you have a HIPAA compliance issue.
+				audio contains protected health information (PHI) - patient names, diagnoses, treatment
+				plans - you have a HIPAA compliance issue.
 			</p>
 			<p>
 				Using a cloud transcription API doesn't automatically violate HIPAA, but it requires a
@@ -30,7 +30,7 @@ export default function VoiceDictationMedicalHipaa() {
 			<p>
 				Parrot's <Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>local mode</Link> does exactly
 				this. Whisper.cpp runs the transcription model on your Mac. Ollama handles the AI
-				cleanup locally. Your audio and text stay on your laptop — no cloud, no network
+				cleanup locally. Your audio and text stay on your laptop - no cloud, no network
 				requests, no third parties.
 			</p>
 			<p>
@@ -48,7 +48,7 @@ export default function VoiceDictationMedicalHipaa() {
 			</p>
 			<p>
 				Parrot's <Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>custom vocabulary</Link>{" "}
-				lets you add your terms — "metformin," "echocardiogram," "HbA1c" — so the
+				lets you add your terms - "metformin," "echocardiogram," "HbA1c" - so the
 				transcription engine recognizes them. You build this list once and it applies to every
 				dictation going forward.
 			</p>

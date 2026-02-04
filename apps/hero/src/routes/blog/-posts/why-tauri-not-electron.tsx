@@ -5,7 +5,7 @@ export default function WhyTauriNotElectron() {
 		<>
 			<p>
 				When we started building Parrot, the first decision was the desktop framework. Electron
-				is the obvious choice — it's mature, well-documented, and most cross-platform desktop
+				is the obvious choice - it's mature, well-documented, and most cross-platform desktop
 				apps use it. We went with Tauri instead. Here's why.
 			</p>
 
@@ -18,7 +18,7 @@ export default function WhyTauriNotElectron() {
 			<p>
 				Tauri uses the system's native webview (WebKit on macOS). The Parrot binary is under
 				15 MB. That's a 10x difference. For a utility app that lives in your menu bar, this
-				matters — both for download time and for disk space.
+				matters - both for download time and for disk space.
 			</p>
 
 			<h2>Memory usage</h2>
@@ -38,10 +38,10 @@ export default function WhyTauriNotElectron() {
 				Parrot needs to do things that web technologies can't:
 			</p>
 			<ul>
-				<li><strong>Audio capture</strong> — we use cpal for low-latency microphone access. This is a Rust library that talks directly to Core Audio on macOS.</li>
-				<li><strong>Global hotkey</strong> — registering Cmd+Shift+Space system-wide requires native APIs. Tauri's Rust backend handles this directly.</li>
-				<li><strong>Clipboard + auto-paste</strong> — after transcription, we write to the clipboard and simulate a paste keystroke using enigo. This needs OS-level access.</li>
-				<li><strong>SQLite</strong> — local history, settings, and vocabulary are stored in rusqlite. No Node.js bindings or WASM needed.</li>
+				<li><strong>Audio capture</strong> - we use cpal for low-latency microphone access. This is a Rust library that talks directly to Core Audio on macOS.</li>
+				<li><strong>Global hotkey</strong> - registering Cmd+Shift+Space system-wide requires native APIs. Tauri's Rust backend handles this directly.</li>
+				<li><strong>Clipboard + auto-paste</strong> - after transcription, we write to the clipboard and simulate a paste keystroke using enigo. This needs OS-level access.</li>
+				<li><strong>SQLite</strong> - local history, settings, and vocabulary are stored in rusqlite. No Node.js bindings or WASM needed.</li>
 			</ul>
 			<p>
 				In Electron, each of these would require a native Node.js addon or a complex IPC bridge.
@@ -53,12 +53,12 @@ export default function WhyTauriNotElectron() {
 			<p>
 				Tauri doesn't mean abandoning the web stack. Parrot's UI is React 19 with TanStack
 				Router, Tailwind CSS, and Vite. The developer experience for the frontend is
-				identical to any React app — hot module replacement, component libraries, the whole
+				identical to any React app - hot module replacement, component libraries, the whole
 				ecosystem.
 			</p>
 			<p>
 				The difference is that instead of Chromium rendering the UI, macOS WebKit does. For
-				our use case, this has no practical downside — we don't need Chrome-specific APIs or
+				our use case, this has no practical downside - we don't need Chrome-specific APIs or
 				bleeding-edge CSS features.
 			</p>
 
@@ -83,8 +83,8 @@ export default function WhyTauriNotElectron() {
 			</p>
 			<p>
 				If we were building a cross-platform app with complex UI requirements (think Figma or
-				Notion), Electron would make more sense. But for what Parrot does — capture audio,
-				transcribe, paste — Tauri is a better fit.
+				Notion), Electron would make more sense. But for what Parrot does - capture audio,
+				transcribe, paste - Tauri is a better fit.
 			</p>
 			<p>
 				Want to see the result? <Link to="/waitlist">Join the waitlist</Link> to try Parrot

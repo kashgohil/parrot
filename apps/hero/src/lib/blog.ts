@@ -35,7 +35,7 @@ export const posts: BlogPost[] = [
 		slug: "transcription-apis-compared",
 		title: "Whisper vs. Deepgram vs. ElevenLabs: Transcription APIs Compared",
 		description:
-			"A practical comparison of three popular transcription APIs — accuracy, speed, pricing, and which one to pick for voice dictation.",
+			"A practical comparison of three popular transcription APIs - accuracy, speed, pricing, and which one to pick for voice dictation.",
 		date: "2026-01-20",
 		readingTime: "7 min read",
 		category: "Comparison",
@@ -65,7 +65,7 @@ export const posts: BlogPost[] = [
 		slug: "why-tauri-not-electron",
 		title: "Why We Built Parrot with Tauri Instead of Electron",
 		description:
-			"The technical reasoning behind choosing Tauri over Electron for a native Mac voice dictation app — performance, binary size, and system access.",
+			"The technical reasoning behind choosing Tauri over Electron for a native Mac voice dictation app - performance, binary size, and system access.",
 		date: "2026-01-05",
 		readingTime: "6 min read",
 		category: "Technical",
@@ -75,7 +75,7 @@ export const posts: BlogPost[] = [
 		slug: "custom-vocabulary-voice-dictation",
 		title: "Custom Vocabulary: Stop Correcting Your Own Name",
 		description:
-			"How custom vocabulary lists fix the most frustrating part of voice dictation — names, jargon, and domain-specific terms that always get mangled.",
+			"How custom vocabulary lists fix the most frustrating part of voice dictation - names, jargon, and domain-specific terms that always get mangled.",
 		date: "2026-01-01",
 		readingTime: "5 min read",
 		category: "Guide",

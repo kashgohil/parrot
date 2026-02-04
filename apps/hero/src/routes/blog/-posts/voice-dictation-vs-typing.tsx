@@ -13,7 +13,7 @@ export default function VoiceDictationVsTyping() {
 			<h2>Raw speed: dictation wins easily</h2>
 			<p>
 				We tested drafting emails, meeting notes, and long-form writing using both methods. For
-				first drafts of prose — emails, documentation, journal entries — voice dictation was
+				first drafts of prose - emails, documentation, journal entries - voice dictation was
 				consistently <strong>2.5–3x faster</strong> than typing. The words just come out faster
 				when you don't have to think about your fingers.
 			</p>
@@ -32,7 +32,7 @@ export default function VoiceDictationVsTyping() {
 				comment explaining what your function does, but you wouldn't dictate the function itself.
 			</p>
 			<p>
-				Short messages — a two-word Slack reply, a quick "sounds good" — are faster to type
+				Short messages - a two-word Slack reply, a quick "sounds good" - are faster to type
 				because the overhead of starting a recording isn't worth it. The sweet spot for
 				dictation is anything longer than a sentence or two.
 			</p>
@@ -53,7 +53,7 @@ export default function VoiceDictationVsTyping() {
 			<h2>Custom vocabulary eliminates the biggest friction</h2>
 			<p>
 				The most frustrating part of dictation has always been proper nouns. Your coworker's
-				name, your company's product, medical or legal terminology — these get mangled
+				name, your company's product, medical or legal terminology - these get mangled
 				constantly. <Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>Custom vocabulary</Link>{" "}
 				fixes this. You add your terms once, and the transcription engine handles them correctly
 				every time.
@@ -66,7 +66,7 @@ export default function VoiceDictationVsTyping() {
 			<ul>
 				<li><strong>Use voice dictation</strong> for emails, documentation, notes, journal entries, messages longer than a sentence, and anything where you're expressing ideas in natural language.</li>
 				<li><strong>Use typing</strong> for code, formulas, very short messages, and situations where you can't speak aloud (libraries, open offices without a private space).</li>
-				<li><strong>Use both</strong> — dictate the draft, type the edits. This hybrid approach is the fastest workflow we've found.</li>
+				<li><strong>Use both</strong> - dictate the draft, type the edits. This hybrid approach is the fastest workflow we've found.</li>
 			</ul>
 
 			<h2>The real advantage isn't speed</h2>
@@ -79,7 +79,7 @@ export default function VoiceDictationVsTyping() {
 			<p>
 				If you've never tried modern voice dictation, the gap between what you remember and
 				what exists now is significant. The accuracy is there, the speed is there, and with
-				tools like <Link to="/">Parrot</Link>, the setup is minimal — press a hotkey
+				tools like <Link to="/">Parrot</Link>, the setup is minimal - press a hotkey
 				and start talking.
 			</p>
 		</>

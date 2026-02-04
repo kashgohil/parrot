@@ -53,7 +53,7 @@ export default function LocalVoiceDictationMac() {
 					>
 						Whisper.cpp
 					</a>{" "}
-					— a C++ port of OpenAI's Whisper model that runs natively on Apple
+					- a C++ port of OpenAI's Whisper model that runs natively on Apple
 					Silicon and Intel Macs. It uses Core ML and Metal acceleration on
 					Apple Silicon for near-real-time performance.
 				</li>
@@ -66,8 +66,8 @@ export default function LocalVoiceDictationMac() {
 					>
 						Ollama
 					</a>{" "}
-					— a local LLM runner. It handles grammar fixes, filler word removal,
-					and applying your writing style — all without an internet connection.
+					- a local LLM runner. It handles grammar fixes, filler word removal,
+					and applying your writing style - all without an internet connection.
 					(Cloud users can use OpenAI or Anthropic models instead.)
 				</li>
 			</ul>
@@ -123,23 +123,23 @@ export default function LocalVoiceDictationMac() {
 			<p>Other model sizes you can choose:</p>
 			<ul>
 				<li>
-					<strong>tiny</strong> (~75 MB) — fastest, lowest accuracy. Good for
+					<strong>tiny</strong> (~75 MB) - fastest, lowest accuracy. Good for
 					quick testing.
 				</li>
 				<li>
-					<strong>base</strong> (~142 MB) — fast, decent accuracy for simple
+					<strong>base</strong> (~142 MB) - fast, decent accuracy for simple
 					dictation.
 				</li>
 				<li>
-					<strong>small</strong> (~466 MB) — good middle ground if you're low on
+					<strong>small</strong> (~466 MB) - good middle ground if you're low on
 					disk space.
 				</li>
 				<li>
-					<strong>medium</strong> (~1.5 GB) — recommended. Accurate for everyday
+					<strong>medium</strong> (~1.5 GB) - recommended. Accurate for everyday
 					use.
 				</li>
 				<li>
-					<strong>large-v3</strong> (~3 GB) — most accurate, but slower. Best
+					<strong>large-v3</strong> (~3 GB) - most accurate, but slower. Best
 					for non-English languages.
 				</li>
 			</ul>
@@ -180,15 +180,15 @@ export default function LocalVoiceDictationMac() {
 			<p>Other models that work well:</p>
 			<ul>
 				<li>
-					<strong>llama3.2</strong> (3B, ~2.5 GB) — recommended. Fast and
+					<strong>llama3.2</strong> (3B, ~2.5 GB) - recommended. Fast and
 					accurate for text cleanup.
 				</li>
 				<li>
-					<strong>mistral</strong> (7B, ~4.1 GB) — higher quality output, slower
+					<strong>mistral</strong> (7B, ~4.1 GB) - higher quality output, slower
 					on base M1/M2.
 				</li>
 				<li>
-					<strong>phi3</strong> (3.8B, ~2.3 GB) — lightweight alternative with
+					<strong>phi3</strong> (3.8B, ~2.3 GB) - lightweight alternative with
 					good performance.
 				</li>
 			</ul>
@@ -207,7 +207,7 @@ export default function LocalVoiceDictationMac() {
 			<h2>Step 1: Install Parrot</h2>
 			<p>
 				<Link to="/waitlist">Join the waitlist</Link> to get access when Parrot
-				launches. On first launch, it'll ask for microphone permission — that's
+				launches. On first launch, it'll ask for microphone permission - that's
 				the only system permission it needs.
 			</p>
 			<p>
@@ -249,7 +249,7 @@ export default function LocalVoiceDictationMac() {
 			<p>
 				Press <strong>Cmd+Shift+Space</strong> (or your custom hotkey) to start
 				recording. Press it again to stop. Your transcription appears where your
-				cursor is — no copy-paste needed.
+				cursor is - no copy-paste needed.
 			</p>
 			<p>
 				The first transcription may take a few extra seconds while the models
@@ -263,7 +263,7 @@ export default function LocalVoiceDictationMac() {
 			</p>
 			<ul>
 				<li>
-					<strong>Custom vocabulary</strong> — add names, technical terms, and
+					<strong>Custom vocabulary</strong> - add names, technical terms, and
 					jargon so Whisper recognizes them correctly. See our guide on{" "}
 					<Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>
 						custom vocabulary
@@ -271,12 +271,12 @@ export default function LocalVoiceDictationMac() {
 					.
 				</li>
 				<li>
-					<strong>Writing context</strong> — tell the AI cleanup model what kind
+					<strong>Writing context</strong> - tell the AI cleanup model what kind
 					of text you typically dictate (emails, code comments, medical notes)
 					so it formats output appropriately.
 				</li>
 				<li>
-					<strong>Hotkey</strong> — change the default Cmd+Shift+Space to any
+					<strong>Hotkey</strong> - change the default Cmd+Shift+Space to any
 					key combination that fits your workflow.
 				</li>
 			</ul>
@@ -288,16 +288,16 @@ export default function LocalVoiceDictationMac() {
 			</p>
 			<ul>
 				<li>
-					<strong>Apple Silicon (M1/M2/M3/M4)</strong> — about 1–2 seconds of
+					<strong>Apple Silicon (M1/M2/M3/M4)</strong> - about 1–2 seconds of
 					processing per 10 seconds of audio with the medium model. Metal GPU
 					acceleration makes this feel near-instant for short dictations.
 				</li>
 				<li>
-					<strong>Intel Macs</strong> — roughly 2–4x slower than Apple Silicon.
+					<strong>Intel Macs</strong> - roughly 2–4x slower than Apple Silicon.
 					Consider using the "small" or "base" Whisper model for faster results.
 				</li>
 				<li>
-					<strong>RAM</strong> — the medium Whisper model needs about 2–3 GB of
+					<strong>RAM</strong> - the medium Whisper model needs about 2–3 GB of
 					RAM. If you're running Ollama simultaneously, aim for at least 16 GB
 					total system memory.
 				</li>
@@ -315,27 +315,27 @@ export default function LocalVoiceDictationMac() {
 			<h2>Troubleshooting</h2>
 			<ul>
 				<li>
-					<strong>"Whisper not found"</strong> — make sure{" "}
+					<strong>"Whisper not found"</strong> - make sure{" "}
 					<code>whisper-cpp</code> is in your PATH. Run{" "}
 					<code>which whisper-cpp</code> in Terminal to check. If it's not
 					found, reinstall with <code>brew install whisper-cpp</code>.
 				</li>
 				<li>
-					<strong>"Ollama connection refused"</strong> — Ollama needs to be
+					<strong>"Ollama connection refused"</strong> - Ollama needs to be
 					running in the background. Start it with <code>ollama serve</code> or
 					launch the Ollama app.
 				</li>
 				<li>
-					<strong>Slow transcription</strong> — try a smaller Whisper model
+					<strong>Slow transcription</strong> - try a smaller Whisper model
 					(small or base). Close memory-heavy apps to free up RAM.
 				</li>
 				<li>
-					<strong>Poor accuracy</strong> — upgrade to a larger Whisper model, or
+					<strong>Poor accuracy</strong> - upgrade to a larger Whisper model, or
 					add frequently misheard words to your custom vocabulary in Parrot's
 					settings.
 				</li>
 				<li>
-					<strong>Microphone not working</strong> — check System Settings →
+					<strong>Microphone not working</strong> - check System Settings →
 					Privacy & Security → Microphone and ensure Parrot has permission.
 				</li>
 			</ul>
@@ -344,18 +344,18 @@ export default function LocalVoiceDictationMac() {
 			<p>Three reasons people choose local mode:</p>
 			<ul>
 				<li>
-					<strong>Privacy</strong> — nothing leaves your Mac. Important for{" "}
+					<strong>Privacy</strong> - nothing leaves your Mac. Important for{" "}
 					<Link to="/blog/$slug" params={{ slug: "voice-dictation-medical-hipaa" }}>
 						medical professionals
 					</Link>
 					, lawyers, and anyone handling sensitive information.
 				</li>
 				<li>
-					<strong>No API key required</strong> — no external accounts, no setup
+					<strong>No API key required</strong> - no external accounts, no setup
 					beyond the initial model downloads.
 				</li>
 				<li>
-					<strong>Offline</strong> — works on planes, in areas with bad
+					<strong>Offline</strong> - works on planes, in areas with bad
 					connectivity, or if you just don't want to depend on the internet.
 				</li>
 			</ul>
@@ -367,7 +367,7 @@ export default function LocalVoiceDictationMac() {
 			</p>
 			<ul>
 				<li>
-					<strong>BYOK (Bring Your Own Key)</strong> — use your own API keys for
+					<strong>BYOK (Bring Your Own Key)</strong> - use your own API keys for
 					OpenAI Whisper, Deepgram, or ElevenLabs. You control the provider
 					relationship. Check our{" "}
 					<Link to="/blog/$slug" params={{ slug: "transcription-apis-compared" }}>
@@ -376,7 +376,7 @@ export default function LocalVoiceDictationMac() {
 					to pick one.
 				</li>
 				<li>
-					<strong>Managed mode</strong> — let Parrot handle everything. No API
+					<strong>Managed mode</strong> - let Parrot handle everything. No API
 					keys to manage, we route your audio to the best available provider.
 				</li>
 			</ul>
@@ -395,7 +395,7 @@ export default function LocalVoiceDictationMac() {
 					>
 						Whisper.cpp on GitHub
 					</a>{" "}
-					— source code, build instructions, and model details.
+					- source code, build instructions, and model details.
 				</li>
 				<li>
 					<a
@@ -405,7 +405,7 @@ export default function LocalVoiceDictationMac() {
 					>
 						OpenAI Whisper
 					</a>{" "}
-					— the original Whisper research and model documentation.
+					- the original Whisper research and model documentation.
 				</li>
 				<li>
 					<a
@@ -415,7 +415,7 @@ export default function LocalVoiceDictationMac() {
 					>
 						Ollama
 					</a>{" "}
-					— official site with downloads and documentation.
+					- official site with downloads and documentation.
 				</li>
 				<li>
 					<a
@@ -425,13 +425,13 @@ export default function LocalVoiceDictationMac() {
 					>
 						Ollama Model Library
 					</a>{" "}
-					— browse and compare available local LLMs.
+					- browse and compare available local LLMs.
 				</li>
 				<li>
 					<a href="https://brew.sh" target="_blank" rel="noopener noreferrer">
 						Homebrew
 					</a>{" "}
-					— macOS package manager.
+					- macOS package manager.
 				</li>
 			</ul>
 		</>

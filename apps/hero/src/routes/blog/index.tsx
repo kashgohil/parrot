@@ -7,13 +7,13 @@ export const Route = createFileRoute("/blog/")({
 	component: BlogIndex,
 	head: () => ({
 		meta: [
-			{ title: "Blog — Parrot" },
+			{ title: "Blog - Parrot" },
 			{
 				name: "description",
 				content:
 					"Articles about voice dictation, transcription APIs, productivity, and building native Mac apps.",
 			},
-			{ property: "og:title", content: "Blog — Parrot" },
+			{ property: "og:title", content: "Blog - Parrot" },
 			{
 				property: "og:description",
 				content:
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/blog/")({
 			},
 			{ property: "og:url", content: "https://tryparrot.app/blog" },
 			{ property: "og:type", content: "website" },
-			{ name: "twitter:title", content: "Blog — Parrot" },
+			{ name: "twitter:title", content: "Blog - Parrot" },
 			{
 				name: "twitter:description",
 				content:

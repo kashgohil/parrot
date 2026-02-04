@@ -21,9 +21,9 @@ export const Route = createFileRoute("/blog/$slug")({
 		const post = loaderData;
 		return {
 			meta: [
-				{ title: `${post.title} — Parrot Blog` },
+				{ title: `${post.title} - Parrot Blog` },
 				{ name: "description", content: post.description },
-				{ property: "og:title", content: `${post.title} — Parrot Blog` },
+				{ property: "og:title", content: `${post.title} - Parrot Blog` },
 				{ property: "og:description", content: post.description },
 				{
 					property: "og:url",
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/blog/$slug")({
 					property: "og:image",
 					content: "https://tryparrot.app/parrot-transparent.png",
 				},
-				{ name: "twitter:title", content: `${post.title} — Parrot Blog` },
+				{ name: "twitter:title", content: `${post.title} - Parrot Blog` },
 				{ name: "twitter:description", content: post.description },
 			],
 			links: [
