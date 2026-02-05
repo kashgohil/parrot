@@ -3,5 +3,5 @@
 	"framework": null,
 	"installCommand": "bun install",
 	"buildCommand": "cd apps/hero && bun run build && mkdir -p ../../.vercel && cp -r .vercel/output ../../.vercel/",
-	"ignoreCommand": "git diff HEAD^ HEAD --quiet apps/hero"
+	"ignoreCommand": "git diff HEAD^ HEAD --quiet apps/hero vercel.json"
 }
