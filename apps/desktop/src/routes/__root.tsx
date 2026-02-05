@@ -1,6 +1,7 @@
 import { DoodleBackground } from "@/components/doodle-background";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth";
+import { SubscriptionProvider } from "@/lib/subscription";
 import {
 	createRootRoute,
 	Link,
@@ -123,7 +124,11 @@ function RootLayout() {
 		return null;
 	}
 
-	return <AuthenticatedLayout />;
+	return (
+		<SubscriptionProvider>
+			<AuthenticatedLayout />
+		</SubscriptionProvider>
+	);
 }
 
 function WelcomeScreen({ name }: { name?: string | null }) {

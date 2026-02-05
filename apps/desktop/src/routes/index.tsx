@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useSubscription } from "@/lib/subscription";
 import { createFileRoute } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -41,6 +42,7 @@ function HomePage() {
 	const [expandedId, setExpandedId] = useState<string | null>(null);
 
 	const tip = useMemo(() => getTipOfTheDay(), []);
+	const { subscription, isApproachingLimit } = useSubscription();
 
 	const loadHistory = useCallback(async () => {
 		try {
@@ -129,9 +131,25 @@ function HomePage() {
 
 	return (
 		<div>
+			{/* Usage warning */}
+			{isApproachingLimit() && subscription && (
+				<div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 mb-4">
+					<p className="text-xs font-semibold text-amber-600 mb-1">
+						Usage limit
+					</p>
+					<p className="text-sm text-foreground">
+						You've used {subscription.usage.transcriptionMinutes} of{" "}
+						{subscription.limits.transcriptionMinutes} transcription minutes
+						this month.
+					</p>
+				</div>
+			)}
+
 			{/* Tip of the day */}
 			<div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 mb-6">
-				<p className="text-xs font-semibold text-primary mb-1">Tip of the day</p>
+				<p className="text-xs font-semibold text-primary mb-1">
+					Tip of the day
+				</p>
 				<p className="text-sm text-foreground">{tip}</p>
 			</div>
 
@@ -170,7 +188,11 @@ function HomePage() {
 											{/* Timeline dot */}
 											<div className="absolute -left-[21px] top-3.5 w-2.5 h-2.5 rounded-full bg-primary/40 border-2 border-background" />
 											<Card
-												className={`cursor-pointer transition-colors ${isExpanded ? "border-primary" : "hover:border-muted-foreground"}`}
+												className={`cursor-pointer transition-colors ${
+													isExpanded
+														? "border-primary"
+														: "hover:border-muted-foreground"
+												}`}
 												onClick={() =>
 													setExpandedId(isExpanded ? null : entry.id)
 												}
@@ -182,9 +204,7 @@ function HomePage() {
 															<span className="capitalize">
 																{entry.provider}
 															</span>
-															<span>
-																{formatDuration(entry.duration_ms)}
-															</span>
+															<span>{formatDuration(entry.duration_ms)}</span>
 														</div>
 														<Button
 															variant="outline"
@@ -198,7 +218,9 @@ function HomePage() {
 														</Button>
 													</div>
 													<p
-														className={`text-sm leading-relaxed text-foreground ${isExpanded ? "" : "line-clamp-3"}`}
+														className={`text-sm leading-relaxed text-foreground ${
+															isExpanded ? "" : "line-clamp-3"
+														}`}
 													>
 														{display}
 													</p>
