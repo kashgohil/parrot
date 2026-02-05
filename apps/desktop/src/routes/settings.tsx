@@ -24,7 +24,6 @@ function SettingsPage() {
 	const [useOwnKeys, setUseOwnKeys] = useState(false);
 	const [saveAudio, setSaveAudio] = useState(false);
 	const [saved, setSaved] = useState(false);
-
 	const [contextPrompt, setContextPrompt] = useState("");
 	const [writingStyle, setWritingStyle] = useState("");
 
@@ -68,7 +67,8 @@ function SettingsPage() {
 			if (pressed.size === 0) return;
 
 			const parts: string[] = [];
-			if (pressed.has("Meta") || pressed.has("Control")) parts.push("CmdOrCtrl");
+			if (pressed.has("Meta") || pressed.has("Control"))
+				parts.push("CmdOrCtrl");
 			if (pressed.has("Alt")) parts.push("Alt");
 			if (pressed.has("Shift")) parts.push("Shift");
 
@@ -86,14 +86,20 @@ function SettingsPage() {
 		}
 
 		function handleClick(e: MouseEvent) {
-			if (recorderRef.current && !recorderRef.current.contains(e.target as Node)) {
+			if (
+				recorderRef.current &&
+				!recorderRef.current.contains(e.target as Node)
+			) {
 				setRecording(false);
 			}
 		}
 
 		window.addEventListener("keydown", handleKeyDown, true);
 		window.addEventListener("keyup", handleKeyUp, true);
-		const clickTimer = setTimeout(() => window.addEventListener("click", handleClick), 0);
+		const clickTimer = setTimeout(
+			() => window.addEventListener("click", handleClick),
+			0,
+		);
 
 		return () => {
 			window.removeEventListener("keydown", handleKeyDown, true);
@@ -115,10 +121,14 @@ function SettingsPage() {
 			if (hk) setHotkey(hk);
 			const ak = await invoke<string | null>("get_setting", { key: "api_key" });
 			if (ak) setApiKey(ak);
-			const lk = await invoke<string | null>("get_setting", { key: "llm_api_key" });
+			const lk = await invoke<string | null>("get_setting", {
+				key: "llm_api_key",
+			});
 			if (lk) setLlmApiKey(lk);
 			if (ak || lk) setUseOwnKeys(true);
-			const sa = await invoke<string | null>("get_setting", { key: "save_audio" });
+			const sa = await invoke<string | null>("get_setting", {
+				key: "save_audio",
+			});
 			setSaveAudio(sa === "true");
 		} catch (e) {
 			console.error("Failed to load settings:", e);
@@ -140,7 +150,10 @@ function SettingsPage() {
 			await invoke("set_setting", { key: "hotkey", value: hotkey });
 			await invoke("set_setting", { key: "api_key", value: apiKey });
 			await invoke("set_setting", { key: "llm_api_key", value: llmApiKey });
-			await invoke("set_setting", { key: "save_audio", value: saveAudio ? "true" : "false" });
+			await invoke("set_setting", {
+				key: "save_audio",
+				value: saveAudio ? "true" : "false",
+			});
 
 			const profile = await invoke<Profile>("get_profile");
 			await invoke("update_profile", {
@@ -172,9 +185,20 @@ function SettingsPage() {
 					) : (
 						<div className="flex gap-2 items-center">
 							<kbd className="flex-1 flex items-center justify-center h-10 rounded-md border border-border bg-muted text-sm font-medium tracking-wide">
-								{hotkey.replace(/CmdOrCtrl/g, navigator.platform.includes("Mac") ? "\u2318" : "Ctrl").replace(/Shift/g, "\u21E7").replace(/Alt/g, "\u2325").replace(/\+/g, " + ")}
+								{hotkey
+									.replace(
+										/CmdOrCtrl/g,
+										navigator.platform.includes("Mac") ? "\u2318" : "Ctrl",
+									)
+									.replace(/Shift/g, "\u21E7")
+									.replace(/Alt/g, "\u2325")
+									.replace(/\+/g, " + ")}
 							</kbd>
-							<Button variant="outline" className="shrink-0 h-10" onClick={startRecording}>
+							<Button
+								variant="outline"
+								className="shrink-0 h-10"
+								onClick={startRecording}
+							>
 								Record
 							</Button>
 						</div>
@@ -194,7 +218,9 @@ function SettingsPage() {
 					</p>
 					<div className="flex flex-col gap-5">
 						<div className="flex flex-col gap-1.5">
-							<Label htmlFor="contextPrompt" className="text-[15px]">Context / Instructions</Label>
+							<Label htmlFor="contextPrompt" className="text-[15px]">
+								Context / Instructions
+							</Label>
 							<Textarea
 								id="contextPrompt"
 								className="text-[15px]"
@@ -204,11 +230,14 @@ function SettingsPage() {
 								rows={4}
 							/>
 							<span className="text-sm text-muted-foreground">
-								Tell the LLM about yourself so it can better clean up your dictations.
+								Tell the LLM about yourself so it can better clean up your
+								dictations.
 							</span>
 						</div>
 						<div className="flex flex-col gap-1.5">
-							<Label htmlFor="writingStyle" className="text-[15px]">Writing Style</Label>
+							<Label htmlFor="writingStyle" className="text-[15px]">
+								Writing Style
+							</Label>
 							<Textarea
 								id="writingStyle"
 								className="text-[15px]"
@@ -265,7 +294,8 @@ function SettingsPage() {
 									placeholder="Your transcription provider key"
 								/>
 								<span className="text-xs text-muted-foreground">
-									The key used to turn your voice into text (e.g. OpenAI Whisper, Deepgram, ElevenLabs).
+									The key used to turn your voice into text (e.g. OpenAI
+									Whisper, Deepgram, ElevenLabs).
 								</span>
 							</div>
 							<div className="flex flex-col gap-1.5">
