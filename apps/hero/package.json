@@ -4,7 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev --port 3002",
-		"build": "vite build",
+		"generate-seo": "bun run scripts/generate-seo.ts",
+		"build": "bun run generate-seo && vite build",
 		"preview": "vite preview",
 		"test": "vitest run",
 		"format": "biome format",
