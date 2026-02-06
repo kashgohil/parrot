@@ -14,6 +14,8 @@ import { cleanup } from "./routes/cleanup";
 import { history } from "./routes/history";
 import { profile } from "./routes/profile";
 import { sync } from "./routes/sync";
+import { subscription } from "./routes/subscription";
+import { sync } from "./routes/sync";
 import { transcribe } from "./routes/transcribe";
 import { waitlistRoute } from "./routes/waitlist";
 
@@ -62,6 +64,7 @@ app.route("/api/history", history);
 app.route("/api/profile", profile);
 app.route("/api/audio", audio);
 app.route("/api/sync", sync);
+app.route("/api/subscription", subscription);
 app.route("/api/waitlist", waitlistRoute);
 
 export default {
