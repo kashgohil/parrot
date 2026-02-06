@@ -37,6 +37,7 @@ export const Route = createFileRoute("/blog/$slug")({
 				},
 				{ name: "twitter:title", content: `${post.title} - Parrot Blog` },
 				{ name: "twitter:description", content: post.description },
+				{ name: "keywords", content: post.keywords.join(", ") },
 			],
 			links: [
 				{
