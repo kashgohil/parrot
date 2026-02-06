@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Parrot Blog</title>
+    <link>https://tryparrot.app/blog</link>
+    <description>Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.</description>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 06 Feb 2026 18:46:17 GMT</lastBuildDate>
+    <atom:link href="https://tryparrot.app/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title><![CDATA[Best Voice Dictation Apps for Mac in 2026]]></title>
+      <link>https://tryparrot.app/blog/best-voice-dictation-apps-mac-2026</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/best-voice-dictation-apps-mac-2026</guid>
+      <description><![CDATA[A comprehensive comparison of the best voice dictation apps for Mac, including Parrot, Whisper Flow, macOS Dictation, and more.]]></description>
+      <pubDate>Thu, 05 Feb 2026 00:00:00 GMT</pubDate>
+      <category>voice dictation, voice dictation app, mac dictation, best dictation software, speech to text mac, dictation app mac</category>
+    </item>
+    <item>
+      <title><![CDATA[Speech to Text: The Complete Guide]]></title>
+      <link>https://tryparrot.app/blog/speech-to-text-complete-guide</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/speech-to-text-complete-guide</guid>
+      <description><![CDATA[Everything you need to know about speech to text technology - how it works, the best providers, and practical use cases for voice transcription.]]></description>
+      <pubDate>Tue, 03 Feb 2026 00:00:00 GMT</pubDate>
+      <category>speech to text, voice to text, transcription, speech recognition, voice transcription, automatic speech recognition</category>
+    </item>
+    <item>
+      <title><![CDATA[10 Ways Voice Apps Boost Productivity]]></title>
+      <link>https://tryparrot.app/blog/voice-apps-boost-productivity</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/voice-apps-boost-productivity</guid>
+      <description><![CDATA[Practical tips for using voice dictation apps to work faster, reduce typing strain, and get more done throughout your workday.]]></description>
+      <pubDate>Sun, 01 Feb 2026 00:00:00 GMT</pubDate>
+      <category>voice app, productivity, dictation productivity, hands-free typing, voice productivity, work faster</category>
+    </item>
+    <item>
+      <title><![CDATA[Voice Dictation vs. Typing: Which Is Actually Faster?]]></title>
+      <link>https://tryparrot.app/blog/voice-dictation-vs-typing</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/voice-dictation-vs-typing</guid>
+      <description><![CDATA[We compared voice dictation and typing across different tasks. Here's what we found about speed, accuracy, and when each method wins.]]></description>
+      <pubDate>Wed, 28 Jan 2026 00:00:00 GMT</pubDate>
+      <category>voice dictation, typing speed, dictation vs typing, voice typing, speech to text speed</category>
+    </item>
+    <item>
+      <title><![CDATA[How to Set Up Local Voice Dictation on Mac]]></title>
+      <link>https://tryparrot.app/blog/local-voice-dictation-mac</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/local-voice-dictation-mac</guid>
+      <description><![CDATA[Step-by-step guide to running voice dictation entirely on your Mac with no cloud services, no API keys, and no internet required.]]></description>
+      <pubDate>Sat, 24 Jan 2026 00:00:00 GMT</pubDate>
+      <category>local voice dictation, mac dictation, offline dictation, privacy voice dictation, whisper local</category>
+    </item>
+    <item>
+      <title><![CDATA[Whisper vs. Deepgram vs. ElevenLabs: Transcription APIs Compared]]></title>
+      <link>https://tryparrot.app/blog/transcription-apis-compared</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/transcription-apis-compared</guid>
+      <description><![CDATA[A practical comparison of three popular transcription APIs - accuracy, speed, pricing, and which one to pick for voice dictation.]]></description>
+      <pubDate>Tue, 20 Jan 2026 00:00:00 GMT</pubDate>
+      <category>whisper api, deepgram, elevenlabs, transcription api, speech to text api, voice transcription</category>
+    </item>
+    <item>
+      <title><![CDATA[Voice Dictation for Medical Professionals: Privacy and HIPAA]]></title>
+      <link>https://tryparrot.app/blog/voice-dictation-medical-hipaa</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/voice-dictation-medical-hipaa</guid>
+      <description><![CDATA[How medical professionals can use voice dictation without compromising patient privacy. Local-first tools and HIPAA considerations.]]></description>
+      <pubDate>Thu, 15 Jan 2026 00:00:00 GMT</pubDate>
+      <category>medical dictation, hipaa voice dictation, healthcare transcription, medical speech to text, private dictation</category>
+    </item>
+    <item>
+      <title><![CDATA[Managing RSI as a Developer with Voice Dictation]]></title>
+      <link>https://tryparrot.app/blog/rsi-developer-voice-dictation</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/rsi-developer-voice-dictation</guid>
+      <description><![CDATA[A developer's guide to using voice dictation to reduce strain, stay productive, and protect your hands from repetitive stress injury.]]></description>
+      <pubDate>Sat, 10 Jan 2026 00:00:00 GMT</pubDate>
+      <category>rsi developer, repetitive strain injury, voice coding, ergonomic typing, developer health</category>
+    </item>
+    <item>
+      <title><![CDATA[Why We Built Parrot with Tauri Instead of Electron]]></title>
+      <link>https://tryparrot.app/blog/why-tauri-not-electron</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/why-tauri-not-electron</guid>
+      <description><![CDATA[The technical reasoning behind choosing Tauri over Electron for a native Mac voice dictation app - performance, binary size, and system access.]]></description>
+      <pubDate>Mon, 05 Jan 2026 00:00:00 GMT</pubDate>
+      <category>tauri, electron alternative, rust desktop app, native mac app, lightweight desktop app</category>
+    </item>
+    <item>
+      <title><![CDATA[Custom Vocabulary: Stop Correcting Your Own Name]]></title>
+      <link>https://tryparrot.app/blog/custom-vocabulary-voice-dictation</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/custom-vocabulary-voice-dictation</guid>
+      <description><![CDATA[How custom vocabulary lists fix the most frustrating part of voice dictation - names, jargon, and domain-specific terms that always get mangled.]]></description>
+      <pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate>
+      <category>custom vocabulary, voice dictation accuracy, speech recognition vocabulary, dictation custom words</category>
+    </item>
+  </channel>
+</rss>

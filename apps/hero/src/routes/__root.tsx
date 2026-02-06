@@ -64,6 +64,12 @@ export const Route = createRootRoute({
 				href: appCss,
 			},
 			{
+				rel: "alternate",
+				type: "application/rss+xml",
+				title: "Parrot Blog",
+				href: "/rss.xml",
+			},
+			{
 				rel: "icon",
 				href: "/favicon.ico",
 				type: "image/x-icon",
