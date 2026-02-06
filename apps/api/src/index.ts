@@ -18,6 +18,7 @@ import { subscription } from "./routes/subscription";
 import { sync } from "./routes/sync";
 import { transcribe } from "./routes/transcribe";
 import { waitlistRoute } from "./routes/waitlist";
+import { webhooks } from "./routes/webhooks";
 
 const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? "http://localhost:4318";
 
@@ -64,6 +65,7 @@ app.route("/api/history", history);
 app.route("/api/profile", profile);
 app.route("/api/audio", audio);
 app.route("/api/sync", sync);
+app.route("/api/webhooks", webhooks);
 app.route("/api/subscription", subscription);
 app.route("/api/waitlist", waitlistRoute);
 
