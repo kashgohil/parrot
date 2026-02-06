@@ -21,7 +21,7 @@ audio.post("/:dictationId", async (c) => {
 
 	if (!sessionId) return c.json({ error: "Unauthorized" }, 401);
 
-	const session = getSession(sessionId);
+	const session = await getSession(sessionId);
 	if (!session) return c.json({ error: "Invalid or expired session" }, 401);
 
 	const dictationId = c.req.param("dictationId");
@@ -38,7 +38,7 @@ audio.post("/:dictationId", async (c) => {
 	});
 
 	const audioUrl = `s3://${BUCKET}/${key}`;
-	updateDictationAudioUrl(dictationId, audioUrl);
+	await updateDictationAudioUrl(dictationId, audioUrl);
 
 	return c.json({ status: "ok", audioUrl });
 });
@@ -50,7 +50,7 @@ audio.get("/:dictationId", async (c) => {
 
 	if (!sessionId) return c.json({ error: "Unauthorized" }, 401);
 
-	const session = getSession(sessionId);
+	const session = await getSession(sessionId);
 	if (!session) return c.json({ error: "Invalid or expired session" }, 401);
 
 	const dictationId = c.req.param("dictationId");

@@ -8,8 +8,10 @@ import {
   createSession,
   deleteSession,
   updateUserOnboarding,
+  getWaitlistEntry,
 } from "../db/index";
 import { authMiddleware } from "../middleware/auth";
+import { isWaitlistMode } from "./waitlist";
 
 export const auth = new Hono();
 
@@ -26,13 +28,24 @@ auth.post("/signup", async (c) => {
       return c.json({ error: "Password must be at least 8 characters" }, 400);
     }
 
-    const existingUser = getUserByEmail(email);
+    // In waitlist mode, only allow signups from waitlisted emails
+    if (isWaitlistMode()) {
+      const waitlistEntry = await getWaitlistEntry(email.toLowerCase().trim());
+      if (!waitlistEntry) {
+        return c.json({
+          error: "Parrot is currently in private beta. Join the waitlist to get early access.",
+          waitlistMode: true,
+        }, 403);
+      }
+    }
+
+    const existingUser = await getUserByEmail(email);
     if (existingUser) {
       return c.json({ error: "Email already registered" }, 400);
     }
 
     const user = await createUser(email, password, name);
-    const session = createSession(user.id);
+    const session = await createSession(user.id);
 
     return c.json({
       user: {
@@ -59,7 +72,7 @@ auth.post("/login", async (c) => {
       return c.json({ error: "Email and password are required" }, 400);
     }
 
-    const user = getUserByEmail(email);
+    const user = await getUserByEmail(email);
     if (!user) {
       return c.json({ error: "Invalid email or password" }, 401);
     }
@@ -69,7 +82,7 @@ auth.post("/login", async (c) => {
       return c.json({ error: "Invalid email or password" }, 401);
     }
 
-    const session = createSession(user.id);
+    const session = await createSession(user.id);
 
     return c.json({
       user: {
@@ -87,7 +100,137 @@ auth.post("/login", async (c) => {
   }
 });
 
-// Google OAuth callback
+// In-memory store for pending OAuth flows (state -> session token)
+const pendingOAuthFlows = new Map<string, { token: string; user: any; expiresAt: number } | null>();
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3001";
+
+// Initiate Google OAuth - desktop app opens this in browser
+auth.get("/google/redirect", (c) => {
+  const state = c.req.query("state");
+  if (!state) {
+    return c.text("Missing state parameter", 400);
+  }
+
+  // Mark this state as pending
+  pendingOAuthFlows.set(state, null);
+
+  // Clean up after 10 minutes
+  setTimeout(() => pendingOAuthFlows.delete(state), 10 * 60 * 1000);
+
+  const params = new URLSearchParams({
+    client_id: GOOGLE_CLIENT_ID,
+    redirect_uri: `${API_BASE_URL}/api/auth/google/callback`,
+    response_type: "code",
+    scope: "openid email profile",
+    state,
+    access_type: "offline",
+    prompt: "consent",
+  });
+
+  return c.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`);
+});
+
+// Google OAuth callback - browser redirects here after consent
+auth.get("/google/callback", async (c) => {
+  const code = c.req.query("code");
+  const state = c.req.query("state");
+  const error = c.req.query("error");
+
+  if (error || !code || !state) {
+    return c.html(`<html><body><h2>Authentication failed</h2><p>${error || "Missing parameters"}</p><p>You can close this window.</p></body></html>`);
+  }
+
+  if (!pendingOAuthFlows.has(state)) {
+    return c.html("<html><body><h2>Invalid or expired request</h2><p>Please try again from the app.</p></body></html>");
+  }
+
+  try {
+    // Exchange code for tokens
+    const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code,
+        client_id: GOOGLE_CLIENT_ID,
+        client_secret: GOOGLE_CLIENT_SECRET,
+        redirect_uri: `${API_BASE_URL}/api/auth/google/callback`,
+        grant_type: "authorization_code",
+      }),
+    });
+
+    const tokens = await tokenResponse.json() as any;
+
+    if (!tokens.id_token) {
+      throw new Error("No id_token in response");
+    }
+
+    const payload = decodeGoogleToken(tokens.id_token);
+    if (!payload || !payload.email) {
+      throw new Error("Invalid token payload");
+    }
+
+    // Find or create user
+    let user = await getUserByGoogleId(payload.sub);
+    if (!user) {
+      // In waitlist mode, only allow signups from waitlisted emails
+      if (isWaitlistMode()) {
+        const waitlistEntry = await getWaitlistEntry(payload.email.toLowerCase().trim());
+        if (!waitlistEntry) {
+          return c.html(`<html><body style="font-family:system-ui;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><div style="text-align:center"><h2>Private Beta</h2><p>Parrot is currently in private beta.</p><p>Join the waitlist at tryparrot.app/waitlist to get early access.</p></div></body></html>`);
+        }
+      }
+      user = await createOAuthUser(payload.email, payload.sub, payload.name);
+    }
+
+    const session = await createSession(user.id);
+
+    // Store result for polling
+    pendingOAuthFlows.set(state, {
+      token: session.id,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        onboarding_completed: user.onboardingCompleted,
+        setup_mode: user.setupMode,
+      },
+      expiresAt: Date.now() + 5 * 60 * 1000,
+    });
+
+    return c.html(`<html><body style="font-family:system-ui;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><div style="text-align:center"><h2>Signed in successfully!</h2><p>You can close this window and return to the app.</p></div></body></html>`);
+  } catch (err) {
+    console.error("Google callback error:", err);
+    return c.html("<html><body><h2>Authentication failed</h2><p>Something went wrong. Please try again.</p></body></html>");
+  }
+});
+
+// Poll for OAuth result - desktop app calls this
+auth.get("/google/poll", (c) => {
+  const state = c.req.query("state");
+  if (!state) {
+    return c.json({ error: "Missing state" }, 400);
+  }
+
+  const result = pendingOAuthFlows.get(state);
+
+  if (result === undefined) {
+    return c.json({ error: "Invalid or expired state" }, 404);
+  }
+
+  if (result === null) {
+    return c.json({ status: "pending" });
+  }
+
+  // Clean up
+  pendingOAuthFlows.delete(state);
+
+  return c.json({ status: "complete", user: result.user, token: result.token });
+});
+
+// Google OAuth with ID token (direct)
 auth.post("/google", async (c) => {
   try {
     const { id_token } = await c.req.json();
@@ -96,22 +239,29 @@ auth.post("/google", async (c) => {
       return c.json({ error: "ID token required" }, 400);
     }
 
-    // Decode and verify the Google ID token
-    // In production, you'd verify this with Google's public keys
     const payload = decodeGoogleToken(id_token);
 
     if (!payload || !payload.email) {
       return c.json({ error: "Invalid token" }, 401);
     }
 
-    // Find or create user
-    let user = getUserByGoogleId(payload.sub);
+    let user = await getUserByGoogleId(payload.sub);
 
     if (!user) {
-      user = createOAuthUser(payload.email, payload.sub, payload.name);
+      // In waitlist mode, only allow signups from waitlisted emails
+      if (isWaitlistMode()) {
+        const waitlistEntry = await getWaitlistEntry(payload.email.toLowerCase().trim());
+        if (!waitlistEntry) {
+          return c.json({
+            error: "Parrot is currently in private beta. Join the waitlist to get early access.",
+            waitlistMode: true,
+          }, 403);
+        }
+      }
+      user = await createOAuthUser(payload.email, payload.sub, payload.name);
     }
 
-    const session = createSession(user.id);
+    const session = await createSession(user.id);
 
     return c.json({
       user: {
@@ -141,7 +291,7 @@ auth.post("/onboarding", authMiddleware, async (c) => {
     const user = c.get("user");
     const { completed, setup_mode } = await c.req.json();
 
-    updateUserOnboarding(user.id, completed, setup_mode);
+    await updateUserOnboarding(user.id, completed, setup_mode);
 
     return c.json({
       user: {
@@ -157,10 +307,18 @@ auth.post("/onboarding", authMiddleware, async (c) => {
 });
 
 // Logout
-auth.post("/logout", authMiddleware, (c) => {
+auth.post("/logout", authMiddleware, async (c) => {
   const sessionId = c.get("sessionId");
-  deleteSession(sessionId);
+  await deleteSession(sessionId);
   return c.json({ success: true });
+});
+
+// Check signup availability (waitlist mode)
+auth.get("/status", (c) => {
+  return c.json({
+    signupEnabled: !isWaitlistMode(),
+    waitlistMode: isWaitlistMode(),
+  });
 });
 
 // Helper to decode Google ID token (simplified - in production use a proper library)

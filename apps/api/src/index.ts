@@ -15,6 +15,7 @@ import { history } from "./routes/history";
 import { profile } from "./routes/profile";
 import { sync } from "./routes/sync";
 import { transcribe } from "./routes/transcribe";
+import { waitlistRoute } from "./routes/waitlist";
 
 const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? "http://localhost:4318";
 
@@ -61,6 +62,7 @@ app.route("/api/history", history);
 app.route("/api/profile", profile);
 app.route("/api/audio", audio);
 app.route("/api/sync", sync);
+app.route("/api/waitlist", waitlistRoute);
 
 export default {
 	port: 3001,

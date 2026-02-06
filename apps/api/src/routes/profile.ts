@@ -9,10 +9,10 @@ profile.get("/", async (c) => {
 
   if (!sessionId) return c.json({ error: "Unauthorized" }, 401);
 
-  const session = getSession(sessionId);
+  const session = await getSession(sessionId);
   if (!session) return c.json({ error: "Invalid or expired session" }, 401);
 
-  const p = getProfile(session.userId);
+  const p = await getProfile(session.userId);
   return c.json({
     custom_words: p?.customWords || "[]",
     context_prompt: p?.contextPrompt || "",
@@ -26,7 +26,7 @@ profile.put("/", async (c) => {
 
   if (!sessionId) return c.json({ error: "Unauthorized" }, 401);
 
-  const session = getSession(sessionId);
+  const session = await getSession(sessionId);
   if (!session) return c.json({ error: "Invalid or expired session" }, 401);
 
   const body = await c.req.json<{
@@ -35,7 +35,7 @@ profile.put("/", async (c) => {
     writing_style?: string;
   }>();
 
-  upsertProfile(
+  await upsertProfile(
     session.userId,
     body.custom_words,
     body.context_prompt,

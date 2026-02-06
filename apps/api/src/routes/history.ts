@@ -9,13 +9,13 @@ history.get("/", async (c) => {
 
   if (!sessionId) return c.json({ error: "Unauthorized" }, 401);
 
-  const session = getSession(sessionId);
+  const session = await getSession(sessionId);
   if (!session) return c.json({ error: "Invalid or expired session" }, 401);
 
   const query = c.req.query("q");
   const entries = query
-    ? searchHistory(session.userId, query)
-    : getHistory(session.userId);
+    ? await searchHistory(session.userId, query)
+    : await getHistory(session.userId);
 
   return c.json({ entries });
 });
@@ -26,7 +26,7 @@ history.post("/", async (c) => {
 
   if (!sessionId) return c.json({ error: "Unauthorized" }, 401);
 
-  const session = getSession(sessionId);
+  const session = await getSession(sessionId);
   if (!session) return c.json({ error: "Invalid or expired session" }, 401);
 
   const body = await c.req.json<{
@@ -37,7 +37,7 @@ history.post("/", async (c) => {
     duration_ms: number;
   }>();
 
-  insertDictation(
+  await insertDictation(
     session.userId,
     body.id,
     body.raw_text,
@@ -55,13 +55,13 @@ history.patch("/:id", async (c) => {
 
   if (!sessionId) return c.json({ error: "Unauthorized" }, 401);
 
-  const session = getSession(sessionId);
+  const session = await getSession(sessionId);
   if (!session) return c.json({ error: "Invalid or expired session" }, 401);
 
   const id = c.req.param("id");
   const body = await c.req.json<{ cleaned_text: string }>();
 
-  updateDictationCleaned(id, body.cleaned_text);
+  await updateDictationCleaned(id, body.cleaned_text);
 
   return c.json({ status: "ok" });
 });
