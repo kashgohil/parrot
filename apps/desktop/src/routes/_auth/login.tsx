@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/api";
@@ -7,6 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { useRef, useState } from "react";
+import { Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_auth/login")({
 	component: LoginPage,
@@ -34,17 +34,27 @@ function LoginPage() {
 	};
 
 	return (
-		<Card>
-			<form onSubmit={handleSubmit}>
-				<CardContent>
-					{error && (
-						<div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg border border-red-200">
-							{error}
-						</div>
-					)}
+		<div className="w-full max-w-sm mx-auto">
+			<div className="text-center mb-8">
+				<h2 className="text-2xl font-bold text-foreground mb-2">Welcome back</h2>
+				<p className="text-sm text-muted-foreground">
+					Sign in to continue to Parrot
+				</p>
+			</div>
 
-					<div className="space-y-2 mb-4">
-						<Label htmlFor="email">Email</Label>
+			<form onSubmit={handleSubmit} className="space-y-5">
+				{error && (
+					<div className="p-3.5 rounded-xl border border-red-200 bg-red-50 text-sm text-red-600">
+						{error}
+					</div>
+				)}
+
+				<div className="space-y-2">
+					<Label htmlFor="email" className="text-sm font-medium">
+						Email
+					</Label>
+					<div className="relative">
+						<Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 						<Input
 							id="email"
 							type="email"
@@ -53,11 +63,17 @@ function LoginPage() {
 							onChange={(e) => setEmail(e.target.value)}
 							required
 							autoFocus
+							className="pl-10 h-12"
 						/>
 					</div>
+				</div>
 
-					<div className="space-y-2 mb-4">
-						<Label htmlFor="password">Password</Label>
+				<div className="space-y-2">
+					<Label htmlFor="password" className="text-sm font-medium">
+						Password
+					</Label>
+					<div className="relative">
+						<Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 						<Input
 							id="password"
 							type="password"
@@ -65,44 +81,56 @@ function LoginPage() {
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							required
+							className="pl-10 h-12"
 						/>
 					</div>
+				</div>
 
-					<Button type="submit" className="w-full" disabled={isSubmitting}>
-						{isSubmitting ? "Signing in..." : "Sign in"}
-					</Button>
+				<Button 
+					type="submit" 
+					className="w-full h-12 text-base"
+					disabled={isSubmitting}
+				>
+					{isSubmitting ? (
+						<>
+							<Loader2 className="w-4 h-4 mr-2 animate-spin" />
+							Signing in...
+						</>
+					) : (
+						<>
+							Sign in
+							<ArrowRight className="w-4 h-4 ml-2" />
+						</>
+					)}
+				</Button>
 
-					<div className="relative my-4">
-						<div className="absolute inset-0 flex items-center">
-							<div className="w-full border-t border-border" />
-						</div>
-						<div className="relative flex justify-center text-xs uppercase">
-							<span className="bg-card px-2 text-muted-foreground">or</span>
-						</div>
+				<div className="relative py-2">
+					<div className="absolute inset-0 flex items-center">
+						<div className="w-full border-t border-border" />
 					</div>
+					<div className="relative flex justify-center text-xs uppercase">
+						<span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+					</div>
+				</div>
 
-					<GoogleSignInButton />
-				</CardContent>
-
-				<CardFooter className="justify-center gap-2 mt-4">
-					<p className="text-sm text-muted-foreground">
-						Don't have an account?{" "}
-						<Link
-							to="/signup"
-							className="text-primary font-medium hover:underline"
-						>
-							Sign up
-						</Link>
-					</p>
-				</CardFooter>
+				<GoogleSignInButton />
 			</form>
-		</Card>
+
+			<p className="mt-8 text-center text-sm text-muted-foreground">
+				Don't have an account?{" "}
+				<Link
+					to="/signup"
+					className="font-semibold text-primary hover:text-primary/80 transition-colors"
+				>
+					Sign up
+				</Link>
+			</p>
+		</div>
 	);
 }
 
 function GoogleSignInButton() {
 	const [isLoading, setIsLoading] = useState(false);
-
 	const pollingRef = useRef<ReturnType<typeof setInterval> | undefined>(
 		undefined,
 	);
@@ -144,30 +172,12 @@ function GoogleSignInButton() {
 		<Button
 			type="button"
 			variant="outline"
-			className="w-full gap-3 h-10 font-medium bg-white hover:bg-gray-50 border-border text-foreground"
+			className="w-full h-12 gap-3 font-medium"
 			onClick={handleGoogleSignIn}
 			disabled={isLoading}
 		>
 			{isLoading ? (
-				<svg
-					className="w-5 h-5 animate-spin text-muted-foreground"
-					viewBox="0 0 24 24"
-					fill="none"
-				>
-					<circle
-						className="opacity-25"
-						cx="12"
-						cy="12"
-						r="10"
-						stroke="currentColor"
-						strokeWidth="4"
-					/>
-					<path
-						className="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-					/>
-				</svg>
+				<Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
 			) : (
 				<svg className="w-5 h-5" viewBox="0 0 24 24">
 					<path
@@ -188,7 +198,7 @@ function GoogleSignInButton() {
 					/>
 				</svg>
 			)}
-			{isLoading ? "Signing in..." : "Continue with Google"}
+			{isLoading ? "Connecting..." : "Continue with Google"}
 		</Button>
 	);
 }

@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth";
@@ -7,6 +6,7 @@ import { api } from "@/lib/api";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { useState, useRef } from "react";
+import { User, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_auth/signup")({
 	component: SignupPage,
@@ -46,26 +46,36 @@ function SignupPage() {
 	};
 
 	return (
-		<Card>
-			<form onSubmit={handleSubmit}>
-				<CardContent>
-					{error && (
-						<div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg border border-red-200 mb-4">
-							{error}
-							{isWaitlistMode && (
-								<button
-									type="button"
-									onClick={() => openUrl("https://tryparrot.app/waitlist")}
-									className="block mt-2 text-primary font-medium hover:underline"
-								>
-									Join the waitlist &rarr;
-								</button>
-							)}
-						</div>
-					)}
+		<div className="w-full max-w-sm mx-auto">
+			<div className="text-center mb-8">
+				<h2 className="text-2xl font-bold text-foreground mb-2">Create account</h2>
+				<p className="text-sm text-muted-foreground">
+					Sign up to start using Parrot
+				</p>
+			</div>
 
-					<div className="space-y-2 mb-4">
-						<Label htmlFor="name">Name (optional)</Label>
+			<form onSubmit={handleSubmit} className="space-y-5">
+				{error && (
+					<div className={`p-3.5 rounded-xl border text-sm ${isWaitlistMode ? "bg-amber-50 border-amber-200 text-amber-700" : "bg-red-50 border-red-200 text-red-600"}`}>
+						{error}
+						{isWaitlistMode && (
+							<button
+								type="button"
+								onClick={() => openUrl("https://tryparrot.app/waitlist")}
+								className="block mt-2 text-primary font-semibold hover:underline"
+							>
+								Join the waitlist →
+							</button>
+						)}
+					</div>
+				)}
+
+				<div className="space-y-2">
+					<Label htmlFor="name" className="text-sm font-medium">
+						Name <span className="text-muted-foreground font-normal">(optional)</span>
+					</Label>
+					<div className="relative">
+						<User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 						<Input
 							id="name"
 							type="text"
@@ -73,11 +83,17 @@ function SignupPage() {
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							autoFocus
+							className="pl-10 h-12"
 						/>
 					</div>
+				</div>
 
-					<div className="space-y-2 mb-4">
-						<Label htmlFor="email">Email</Label>
+				<div className="space-y-2">
+					<Label htmlFor="email" className="text-sm font-medium">
+						Email
+					</Label>
+					<div className="relative">
+						<Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 						<Input
 							id="email"
 							type="email"
@@ -85,11 +101,17 @@ function SignupPage() {
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							required
+							className="pl-10 h-12"
 						/>
 					</div>
+				</div>
 
-					<div className="space-y-2 mb-4">
-						<Label htmlFor="password">Password</Label>
+				<div className="space-y-2">
+					<Label htmlFor="password" className="text-sm font-medium">
+						Password
+					</Label>
+					<div className="relative">
+						<Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 						<Input
 							id="password"
 							type="password"
@@ -98,45 +120,60 @@ function SignupPage() {
 							onChange={(e) => setPassword(e.target.value)}
 							required
 							minLength={8}
+							className="pl-10 h-12"
 						/>
 					</div>
-
-					<Button type="submit" className="w-full" disabled={isSubmitting}>
-						{isSubmitting ? "Creating account..." : "Create account"}
-					</Button>
-
-					<div className="relative my-4">
-						<div className="absolute inset-0 flex items-center">
-							<div className="w-full border-t border-border" />
-						</div>
-						<div className="relative flex justify-center text-xs uppercase">
-							<span className="bg-card px-2 text-muted-foreground">or</span>
-						</div>
-					</div>
-
-					<GoogleSignUpButton />
-				</CardContent>
-
-				<CardFooter className="justify-center">
-					<p className="text-sm text-muted-foreground mt-2">
-						Already have an account?{" "}
-						<Link
-							to="/login"
-							className="text-primary font-medium hover:underline"
-						>
-							Sign in
-						</Link>
+					<p className="text-xs text-muted-foreground">
+						Must be at least 8 characters
 					</p>
-				</CardFooter>
+				</div>
+
+				<Button 
+					type="submit" 
+					className="w-full h-12 text-base"
+					disabled={isSubmitting}
+				>
+					{isSubmitting ? (
+						<>
+							<Loader2 className="w-4 h-4 mr-2 animate-spin" />
+							Creating account...
+						</>
+					) : (
+						<>
+							Create account
+							<ArrowRight className="w-4 h-4 ml-2" />
+						</>
+					)}
+				</Button>
+
+				<div className="relative py-2">
+					<div className="absolute inset-0 flex items-center">
+						<div className="w-full border-t border-border" />
+					</div>
+					<div className="relative flex justify-center text-xs uppercase">
+						<span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+					</div>
+				</div>
+
+				<GoogleSignUpButton />
 			</form>
-		</Card>
+
+			<p className="mt-8 text-center text-sm text-muted-foreground">
+				Already have an account?{" "}
+				<Link
+					to="/login"
+					className="font-semibold text-primary hover:text-primary/80 transition-colors"
+				>
+					Sign in
+				</Link>
+			</p>
+		</div>
 	);
 }
 
 function GoogleSignUpButton() {
 	const [isLoading, setIsLoading] = useState(false);
-	const { googleAuth } = useAuth();
-	const pollingRef = useRef<ReturnType<typeof setInterval>>();
+	const pollingRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
 	const handleGoogleSignUp = async () => {
 		setIsLoading(true);
@@ -174,30 +211,12 @@ function GoogleSignUpButton() {
 		<Button
 			type="button"
 			variant="outline"
-			className="w-full gap-3 h-10 font-medium bg-white hover:bg-gray-50 border-border text-foreground"
+			className="w-full h-12 gap-3 font-medium"
 			onClick={handleGoogleSignUp}
 			disabled={isLoading}
 		>
 			{isLoading ? (
-				<svg
-					className="w-5 h-5 animate-spin text-muted-foreground"
-					viewBox="0 0 24 24"
-					fill="none"
-				>
-					<circle
-						className="opacity-25"
-						cx="12"
-						cy="12"
-						r="10"
-						stroke="currentColor"
-						strokeWidth="4"
-					/>
-					<path
-						className="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-					/>
-				</svg>
+				<Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
 			) : (
 				<svg className="w-5 h-5" viewBox="0 0 24 24">
 					<path
@@ -218,7 +237,7 @@ function GoogleSignUpButton() {
 					/>
 				</svg>
 			)}
-			{isLoading ? "Signing up..." : "Continue with Google"}
+			{isLoading ? "Connecting..." : "Continue with Google"}
 		</Button>
 	);
 }
