@@ -14,6 +14,7 @@ bun run dev
 # Run individual apps
 bun run dev:api              # API server on port 3001
 bun run dev:desktop          # Desktop app (Vite on 1420, Tauri dev)
+bun run dev:hero             # Marketing site on port 3002
 
 # Build desktop app
 bun run build:desktop
@@ -21,11 +22,17 @@ bun run build:desktop
 # Database migrations (API)
 bun run db:generate          # Generate Drizzle migrations
 bun run db:migrate           # Apply migrations
+bun run db:studio            # Open Drizzle Studio
+
+# Hero app commands (run from apps/hero/)
+bun run test                 # Run tests with Vitest
+bun run lint                 # Lint with Biome
+bun run check                # Type check + lint with Biome
 ```
 
 ## Architecture Overview
 
-Parrot is a **voice dictation app** built as a Bun monorepo with two apps:
+Parrot is a **voice dictation app** built as a Bun monorepo with three apps:
 
 ### Desktop App (`apps/desktop/`)
 - **Frontend**: React 19 + TanStack Router (file-based) + Tailwind CSS 4
@@ -52,7 +59,24 @@ Parrot is a **voice dictation app** built as a Bun monorepo with two apps:
 
 **Routes** (`src/routes/`):
 - `/api/auth/*` - Signup, login, logout, session validation, Google OAuth
+- `/api/subscription/*` - Subscription management
 - `/health` - Health check
+
+### Hero/Marketing Site (`apps/hero/`)
+- **Framework**: React 19 + TanStack Router (file-based) + Vite
+- **Styling**: Tailwind CSS 4 + custom CSS animations
+- **Components**: Radix UI primitives + shadcn/ui patterns
+
+**Key pages** (`src/routes/`):
+- `/index.tsx` - Landing page with interactive demos
+- `/pricing.tsx`, `/about.tsx`, `/download.tsx` - Marketing pages
+- `/blog/` - Blog with MDX-like posts
+- `/privacy.tsx`, `/terms.tsx`, `/contact.tsx` - Legal/support pages
+
+**Adding shadcn components** (from `apps/hero/`):
+```bash
+pnpm dlx shadcn@latest add <component>
+```
 
 ## Data Flow
 
@@ -67,5 +91,6 @@ Parrot is a **voice dictation app** built as a Bun monorepo with two apps:
 - **Desktop DB**: `~/Library/Application Support/com.kash.parrot/parrot.db`
 - **API DB**: `./parrot.db` in API directory
 - **Tauri identifier**: `com.kash.parrot`
-- **Vite dev server**: port 1420 (HMR on 1421)
+- **Vite dev server (desktop)**: port 1420 (HMR on 1421)
+- **Vite dev server (hero)**: port 3002
 - **API server**: port 3001
