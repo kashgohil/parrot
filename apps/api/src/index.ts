@@ -4,16 +4,13 @@ import { logger } from "hono/logger";
 import { NodeSDK } from "@opentelemetry/sdk-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
-import { MeterProvider } from "@opentelemetry/sdk-metrics";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import { httpInstrumentationMiddleware } from "@hono/otel";
-import { prometheus } from "@hono/prometheus";
 import { audio } from "./routes/audio";
 import { auth } from "./routes/auth";
 import { cleanup } from "./routes/cleanup";
 import { history } from "./routes/history";
 import { profile } from "./routes/profile";
-import { sync } from "./routes/sync";
 import { subscription } from "./routes/subscription";
 import { sync } from "./routes/sync";
 import { transcribe } from "./routes/transcribe";
@@ -43,9 +40,6 @@ try {
 
 const app = new Hono();
 
-const { printMetrics, registerMetrics } = prometheus();
-app.use("*", registerMetrics);
-
 app.use("*", cors());
 app.use("*", logger());
 app.use(
@@ -56,7 +50,6 @@ app.use(
 );
 
 app.get("/health", (c) => c.json({ status: "ok" }));
-app.get("/metrics", printMetrics);
 
 app.route("/api/auth", auth);
 app.route("/api/transcribe", transcribe);
