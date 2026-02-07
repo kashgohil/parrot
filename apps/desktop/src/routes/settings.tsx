@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createFileRoute } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Keyboard, FileText, Save, Eye, EyeOff, Wand2, Database, Check } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
 	component: SettingsPage,
@@ -26,6 +27,8 @@ function SettingsPage() {
 	const [saved, setSaved] = useState(false);
 	const [contextPrompt, setContextPrompt] = useState("");
 	const [writingStyle, setWritingStyle] = useState("");
+	const [showApiKey, setShowApiKey] = useState(false);
+	const [showLlmKey, setShowLlmKey] = useState(false);
 
 	const keysRef = useRef<Set<string>>(new Set());
 	const recorderRef = useRef<HTMLDivElement>(null);
@@ -169,180 +172,281 @@ function SettingsPage() {
 		}
 	}
 
+	function formatHotkey(hk: string): string {
+		return hk
+			.replace(/CmdOrCtrl/g, navigator.platform.includes("Mac") ? "⌘" : "Ctrl")
+			.replace(/Shift/g, "⇧")
+			.replace(/Alt/g, "⌥")
+			.replace(/Space/g, "Space")
+			.replace(/Plus/g, "+")
+			.replace(/\+/g, " + ");
+	}
+
 	return (
-		<div>
-			<div className="flex flex-col gap-5">
-				{/* Hotkey */}
-				<div className="flex flex-col gap-1.5">
-					<Label>Hotkey</Label>
+		<div className="space-y-8">
+			{/* Page header */}
+			<div>
+				<h1 className="text-2xl font-bold text-foreground tracking-tight">
+					Settings
+				</h1>
+				<p className="text-sm text-muted-foreground mt-1">
+					Customize how Parrot works for you
+				</p>
+			</div>
+
+			{/* Hotkey Section */}
+			<section className="bg-card rounded-2xl border border-border p-5">
+				<div className="flex items-start gap-4 mb-4">
+					<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+						<Keyboard className="w-5 h-5 text-primary" />
+					</div>
+					<div className="flex-1">
+						<h2 className="text-base font-semibold text-foreground">Hotkey</h2>
+						<p className="text-sm text-muted-foreground">
+							Set the keyboard shortcut to start and stop recording
+						</p>
+					</div>
+				</div>
+
+				<div className="space-y-3">
 					{recording ? (
 						<div
 							ref={recorderRef}
-							className="flex items-center justify-center h-10 rounded-md border-2 border-primary bg-primary/5 text-sm font-medium text-primary animate-pulse"
+							className="flex items-center justify-center h-14 rounded-xl border-2 border-primary bg-primary/5 text-base font-semibold text-primary animate-pulse"
 						>
 							Press your key combination...
 						</div>
 					) : (
-						<div className="flex gap-2 items-center">
-							<kbd className="flex-1 flex items-center justify-center h-10 rounded-md border border-border bg-muted text-sm font-medium tracking-wide">
-								{hotkey
-									.replace(
-										/CmdOrCtrl/g,
-										navigator.platform.includes("Mac") ? "\u2318" : "Ctrl",
-									)
-									.replace(/Shift/g, "\u21E7")
-									.replace(/Alt/g, "\u2325")
-									.replace(/\+/g, " + ")}
-							</kbd>
+						<div className="flex gap-3 items-center">
+							<div className="flex-1 flex items-center justify-center h-14 rounded-xl border border-border bg-muted">
+								<kbd className="text-lg font-mono font-semibold tracking-wider text-foreground">
+									{formatHotkey(hotkey)}
+								</kbd>
+							</div>
 							<Button
 								variant="outline"
-								className="shrink-0 h-10"
 								onClick={startRecording}
+								className="h-14 px-5"
 							>
 								Record
 							</Button>
 						</div>
 					)}
-					<span className="text-xs text-muted-foreground">
-						Click Record then press your desired key combination.
-					</span>
-				</div>
-
-				<hr className="border-border" />
-
-				{/* Writing Preferences */}
-				<section>
-					<h3 className="text-lg font-medium mb-1">Writing Preferences</h3>
-					<p className="text-sm text-muted-foreground mb-4">
-						Configure how the LLM cleans up your dictations.
+					<p className="text-xs text-muted-foreground">
+						Click Record, then press your desired key combination
 					</p>
-					<div className="flex flex-col gap-5">
-						<div className="flex flex-col gap-1.5">
-							<Label htmlFor="contextPrompt" className="text-[15px]">
-								Context / Instructions
-							</Label>
-							<Textarea
-								id="contextPrompt"
-								className="text-[15px]"
-								value={contextPrompt}
-								onChange={(e) => setContextPrompt(e.target.value)}
-								placeholder="e.g. I'm a software engineer writing technical docs. Use American English."
-								rows={4}
-							/>
-							<span className="text-sm text-muted-foreground">
-								Tell the LLM about yourself so it can better clean up your
-								dictations.
-							</span>
-						</div>
-						<div className="flex flex-col gap-1.5">
-							<Label htmlFor="writingStyle" className="text-[15px]">
-								Writing Style
-							</Label>
-							<Textarea
-								id="writingStyle"
-								className="text-[15px]"
-								value={writingStyle}
-								onChange={(e) => setWritingStyle(e.target.value)}
-								placeholder="e.g. Concise and direct. No fluff. Use lowercase for casual messages."
-								rows={3}
-							/>
-							<span className="text-sm text-muted-foreground">
-								How should the cleaned text sound?
-							</span>
-						</div>
+				</div>
+			</section>
+
+			{/* Writing Preferences Section */}
+			<section className="bg-card rounded-2xl border border-border p-5">
+				<div className="flex items-start gap-4 mb-5">
+					<div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
+						<Wand2 className="w-5 h-5 text-purple-500" />
 					</div>
-				</section>
-
-				<hr className="border-border" />
-
-				{/* API Keys */}
-				<div className="flex flex-col gap-3">
-					<div className="flex items-center justify-between">
-						<div className="flex flex-col gap-0.5">
-							<Label>Use my own API keys</Label>
-							<span className="text-xs text-muted-foreground max-w-sm">
-								By default, Parrot handles everything for you. Turn this on if
-								you'd rather use your own API keys.
-							</span>
-						</div>
-						<button
-							type="button"
-							role="switch"
-							aria-checked={useOwnKeys}
-							onClick={() => setUseOwnKeys(!useOwnKeys)}
-							className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
-								useOwnKeys ? "bg-primary" : "bg-muted"
-							}`}
-						>
-							<span
-								className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-background shadow-lg transition-transform ${
-									useOwnKeys ? "translate-x-5" : "translate-x-0"
-								}`}
-							/>
-						</button>
+					<div className="flex-1">
+						<h2 className="text-base font-semibold text-foreground">Writing Preferences</h2>
+						<p className="text-sm text-muted-foreground">
+							Configure how the AI cleans up your dictations
+						</p>
 					</div>
-
-					{useOwnKeys && (
-						<div className="flex flex-col gap-4 pt-1">
-							<div className="flex flex-col gap-1.5">
-								<Label htmlFor="apiKey">Transcription API Key</Label>
-								<Input
-									id="apiKey"
-									type="password"
-									value={apiKey}
-									onChange={(e) => setApiKey(e.target.value)}
-									placeholder="Your transcription provider key"
-								/>
-								<span className="text-xs text-muted-foreground">
-									The key used to turn your voice into text (e.g. OpenAI
-									Whisper, Deepgram, ElevenLabs).
-								</span>
-							</div>
-							<div className="flex flex-col gap-1.5">
-								<Label htmlFor="llmApiKey">Cleanup API Key (OpenAI)</Label>
-								<Input
-									id="llmApiKey"
-									type="password"
-									value={llmApiKey}
-									onChange={(e) => setLlmApiKey(e.target.value)}
-									placeholder="Your OpenAI key for text cleanup"
-								/>
-								<span className="text-xs text-muted-foreground">
-									Optional — powers the AI that tidies up your transcriptions.
-								</span>
-							</div>
-						</div>
-					)}
 				</div>
 
-				{/* Save Audio */}
-				<div className="flex items-center justify-between">
-					<div className="flex flex-col gap-0.5">
-						<Label htmlFor="saveAudio">Save audio recordings</Label>
-						<span className="text-xs text-muted-foreground">
-							Keep WAV files after transcription
-						</span>
+				<div className="space-y-5">
+					<div className="space-y-2">
+						<Label htmlFor="contextPrompt" className="text-sm font-medium">
+							Context / Instructions
+						</Label>
+						<Textarea
+							id="contextPrompt"
+							value={contextPrompt}
+							onChange={(e) => setContextPrompt(e.target.value)}
+							placeholder="e.g. I'm a software engineer writing technical docs. Use American English."
+							rows={3}
+							className="resize-none"
+						/>
+						<p className="text-xs text-muted-foreground">
+							Tell the AI about yourself so it can better clean up your dictations
+						</p>
+					</div>
+
+					<div className="space-y-2">
+						<Label htmlFor="writingStyle" className="text-sm font-medium">
+							Writing Style
+						</Label>
+						<Textarea
+							id="writingStyle"
+							value={writingStyle}
+							onChange={(e) => setWritingStyle(e.target.value)}
+							placeholder="e.g. Concise and direct. No fluff. Use lowercase for casual messages."
+							rows={3}
+							className="resize-none"
+						/>
+						<p className="text-xs text-muted-foreground">
+							How should the cleaned text sound?
+						</p>
+					</div>
+				</div>
+			</section>
+
+			{/* API Keys Section */}
+			<section className="bg-card rounded-2xl border border-border p-5">
+				<div className="flex items-start gap-4 mb-5">
+					<div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
+						<FileText className="w-5 h-5 text-blue-500" />
+					</div>
+					<div className="flex-1">
+						<h2 className="text-base font-semibold text-foreground">API Keys</h2>
+						<p className="text-sm text-muted-foreground">
+							Use your own API keys for transcription and cleanup
+						</p>
+					</div>
+				</div>
+
+				<div className="flex items-center justify-between p-4 rounded-xl bg-muted/50 mb-5">
+					<div>
+						<p className="text-sm font-medium text-foreground">Use my own API keys</p>
+						<p className="text-xs text-muted-foreground mt-0.5">
+							Parrot handles everything by default. Enable this to use your own keys.
+						</p>
 					</div>
 					<button
-						id="saveAudio"
 						type="button"
 						role="switch"
-						aria-checked={saveAudio}
-						onClick={() => setSaveAudio(!saveAudio)}
-						className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
-							saveAudio ? "bg-primary" : "bg-muted"
-						}`}
+						aria-checked={useOwnKeys}
+						onClick={() => setUseOwnKeys(!useOwnKeys)}
+						className={`
+							relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent
+							transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+							${useOwnKeys ? "bg-primary" : "bg-muted-foreground/30"}
+						`}
 					>
 						<span
-							className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-background shadow-lg transition-transform ${
-								saveAudio ? "translate-x-5" : "translate-x-0"
-							}`}
+							className={`
+								pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg ring-0
+								transition-transform duration-200 ease-in-out
+								${useOwnKeys ? "translate-x-5" : "translate-x-0"}
+							`}
 						/>
 					</button>
 				</div>
 
-				<Button className="self-start" onClick={saveAll}>
-					{saved ? "Saved!" : "Save"}
+				{useOwnKeys && (
+					<div className="space-y-5">
+						<div className="space-y-2">
+							<Label htmlFor="apiKey" className="text-sm font-medium">
+								Transcription API Key
+							</Label>
+							<div className="relative">
+								<Input
+									id="apiKey"
+									type={showApiKey ? "text" : "password"}
+									value={apiKey}
+									onChange={(e) => setApiKey(e.target.value)}
+									placeholder="Your transcription provider key"
+								/>
+								<button
+									type="button"
+									onClick={() => setShowApiKey(!showApiKey)}
+									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+								>
+									{showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+								</button>
+							</div>
+							<p className="text-xs text-muted-foreground">
+								Used to turn your voice into text (e.g. OpenAI Whisper, Deepgram, ElevenLabs)
+							</p>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="llmApiKey" className="text-sm font-medium">
+								Cleanup API Key (OpenAI)
+							</Label>
+							<div className="relative">
+								<Input
+									id="llmApiKey"
+									type={showLlmKey ? "text" : "password"}
+									value={llmApiKey}
+									onChange={(e) => setLlmApiKey(e.target.value)}
+									placeholder="Your OpenAI key for text cleanup"
+								/>
+								<button
+									type="button"
+									onClick={() => setShowLlmKey(!showLlmKey)}
+									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+								>
+									{showLlmKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+								</button>
+							</div>
+							<p className="text-xs text-muted-foreground">
+								Optional — powers the AI that tidies up your transcriptions
+							</p>
+						</div>
+					</div>
+				)}
+			</section>
+
+			{/* Data Section */}
+			<section className="bg-card rounded-2xl border border-border p-5">
+				<div className="flex items-start gap-4 mb-4">
+					<div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
+						<Database className="w-5 h-5 text-amber-500" />
+					</div>
+					<div className="flex-1">
+						<h2 className="text-base font-semibold text-foreground">Data Storage</h2>
+						<p className="text-sm text-muted-foreground">
+							Control how your recordings are stored
+						</p>
+					</div>
+				</div>
+
+				<div className="flex items-center justify-between p-4 rounded-xl bg-muted/50">
+					<div>
+						<p className="text-sm font-medium text-foreground">Save audio recordings</p>
+						<p className="text-xs text-muted-foreground mt-0.5">
+							Keep WAV files after transcription on your device
+						</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						aria-checked={saveAudio}
+						onClick={() => setSaveAudio(!saveAudio)}
+						className={`
+							relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent
+							transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+							${saveAudio ? "bg-primary" : "bg-muted-foreground/30"}
+						`}
+					>
+						<span
+							className={`
+								pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg ring-0
+								transition-transform duration-200 ease-in-out
+								${saveAudio ? "translate-x-5" : "translate-x-0"}
+							`}
+						/>
+					</button>
+				</div>
+			</section>
+
+			{/* Save button */}
+			<div className="pt-4">
+				<Button 
+					onClick={saveAll}
+					size="lg"
+					className="w-full sm:w-auto px-8"
+				>
+					{saved ? (
+						<>
+							<Check className="w-4 h-4 mr-2" />
+							Saved!
+						</>
+					) : (
+						<>
+							<Save className="w-4 h-4 mr-2" />
+							Save Changes
+						</>
+					)}
 				</Button>
 			</div>
 		</div>

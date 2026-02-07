@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useSubscription } from "@/lib/subscription";
 import { createFileRoute } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+import { Search, Copy, Check, Clock, Mic, Sparkles, AlertTriangle, Lightbulb } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface DictationEntry {
@@ -130,112 +130,174 @@ function HomePage() {
 	}, [entries]);
 
 	return (
-		<div>
+		<div className="space-y-6">
+			{/* Page header */}
+			<div className="flex items-start justify-between gap-4">
+				<div>
+					<h1 className="text-2xl font-bold text-foreground tracking-tight">
+						Dictation History
+					</h1>
+					<p className="text-sm text-muted-foreground mt-1">
+						Review and copy your past transcriptions
+					</p>
+				</div>
+				{entries.length > 0 && (
+					<div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-lg text-xs text-muted-foreground">
+						<Mic className="w-3.5 h-3.5" />
+						<span>{entries.length} entries</span>
+					</div>
+				)}
+			</div>
+
 			{/* Usage warning */}
 			{isApproachingLimit() && subscription && (
-				<div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 mb-4">
-					<p className="text-xs font-semibold text-amber-600 mb-1">
-						Usage limit
-					</p>
-					<p className="text-sm text-foreground">
-						You've used {subscription.usage.transcriptionMinutes} of{" "}
-						{subscription.limits.transcriptionMinutes} transcription minutes
-						this month.
-					</p>
+				<div className="rounded-xl border border-amber-500/30 bg-amber-50/50 px-4 py-3.5 flex items-start gap-3">
+					<AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+					<div>
+						<p className="text-sm font-semibold text-amber-700">
+							Approaching usage limit
+						</p>
+						<p className="text-sm text-amber-600 mt-0.5">
+							You've used {subscription.usage.transcriptionMinutes} of{" "}
+							{subscription.limits.transcriptionMinutes} transcription minutes this month.
+						</p>
+					</div>
 				</div>
 			)}
 
-			{/* Tip of the day */}
-			<div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 mb-6">
-				<p className="text-xs font-semibold text-primary mb-1">
-					Tip of the day
-				</p>
-				<p className="text-sm text-foreground">{tip}</p>
+			{/* Tip card */}
+			<div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3.5 flex items-start gap-3">
+				<Lightbulb className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+				<div>
+					<p className="text-xs font-semibold text-primary uppercase tracking-wide">
+						Tip of the day
+					</p>
+					<p className="text-sm text-foreground mt-1">{tip}</p>
+				</div>
 			</div>
 
 			{/* Search */}
-			<Input
-				className="mb-5"
-				type="text"
-				placeholder="Search dictations..."
-				value={search}
-				onChange={(e) => setSearch(e.target.value)}
-			/>
+			<div className="relative">
+				<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+				<Input
+					className="pl-10 h-11 bg-background"
+					type="text"
+					placeholder="Search dictations..."
+					value={search}
+					onChange={(e) => setSearch(e.target.value)}
+				/>
+			</div>
 
 			{/* Timeline */}
 			{entries.length === 0 ? (
-				<p className="text-muted-foreground text-sm">
-					{search
-						? "No results found."
-						: "No dictations yet. Press your hotkey to start recording."}
-				</p>
+				<div className="text-center py-16 px-4">
+					<div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+						<Mic className="w-8 h-8 text-muted-foreground/50" />
+					</div>
+					<h3 className="text-lg font-semibold text-foreground mb-1">
+						{search ? "No results found" : "No dictations yet"}
+					</h3>
+					<p className="text-sm text-muted-foreground max-w-xs mx-auto">
+						{search
+							? "Try a different search term"
+							: "Press your hotkey to start recording your first dictation"}
+					</p>
+				</div>
 			) : (
-				<div className="flex flex-col gap-6">
+				<div className="space-y-8">
 					{grouped.map((group) => (
 						<div key={group.label}>
-							<h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+							<h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+								<span className="w-1.5 h-1.5 rounded-full bg-primary/40" />
 								{group.label}
 							</h3>
-							<div className="relative pl-4 border-l-2 border-border flex flex-col gap-2">
+							<div className="space-y-3">
 								{group.entries.map((entry) => {
 									const display = entry.cleaned_text || entry.raw_text;
 									const isExpanded = expandedId === entry.id;
 									const hasCleaned =
 										entry.cleaned_text && entry.cleaned_text !== entry.raw_text;
+									const isCopied = copiedId === entry.id;
 
 									return (
-										<div key={entry.id} className="relative">
-											{/* Timeline dot */}
-											<div className="absolute -left-[21px] top-3.5 w-2.5 h-2.5 rounded-full bg-primary/40 border-2 border-background" />
-											<Card
-												className={`cursor-pointer transition-colors ${
-													isExpanded
-														? "border-primary"
-														: "hover:border-muted-foreground"
-												}`}
-												onClick={() =>
-													setExpandedId(isExpanded ? null : entry.id)
-												}
-											>
-												<CardContent className="px-3.5 py-3">
-													<div className="flex justify-between items-center mb-1.5">
-														<div className="flex gap-2.5 text-xs text-muted-foreground">
-															<span>{formatTime(entry.created_at)}</span>
-															<span className="capitalize">
-																{entry.provider}
-															</span>
-															<span>{formatDuration(entry.duration_ms)}</span>
-														</div>
-														<Button
-															variant="outline"
-															size="sm"
-															onClick={(e) => {
-																e.stopPropagation();
-																copyEntry(entry);
-															}}
-														>
-															{copiedId === entry.id ? "Copied!" : "Copy"}
-														</Button>
-													</div>
-													<p
-														className={`text-sm leading-relaxed text-foreground ${
-															isExpanded ? "" : "line-clamp-3"
-														}`}
-													>
-														{display}
-													</p>
-													{isExpanded && hasCleaned && (
-														<div className="mt-2.5 pt-2.5 border-t border-border">
-															<span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide block mb-1">
-																Raw transcription:
-															</span>
-															<p className="text-[13px] leading-relaxed text-muted-foreground">
-																{entry.raw_text}
-															</p>
-														</div>
+										<div
+											key={entry.id}
+											className={`
+												group bg-card rounded-2xl border transition-all duration-200 overflow-hidden
+												${isExpanded ? "border-primary/50 shadow-lg shadow-primary/5" : "border-border hover:border-primary/30 hover:shadow-md"}
+											`}
+										>
+											{/* Card header */}
+											<div className="px-4 py-3 border-b border-border/50 flex items-center justify-between gap-3">
+												<div className="flex items-center gap-3 text-xs text-muted-foreground">
+													<span className="flex items-center gap-1">
+														<Clock className="w-3 h-3" />
+														{formatTime(entry.created_at)}
+													</span>
+													<span className="capitalize px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium">
+														{entry.provider}
+													</span>
+													<span className="flex items-center gap-1">
+														<Mic className="w-3 h-3" />
+														{formatDuration(entry.duration_ms)}
+													</span>
+													{hasCleaned && (
+														<span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium">
+															<Sparkles className="w-3 h-3" />
+															Cleaned
+														</span>
 													)}
-												</CardContent>
-											</Card>
+												</div>
+												<Button
+													variant="ghost"
+													size="sm"
+													onClick={(e) => {
+														e.stopPropagation();
+														copyEntry(entry);
+													}}
+													className={`
+														h-8 px-3 text-xs font-medium transition-all
+														${isCopied ? "bg-green-500/10 text-green-600 hover:bg-green-500/20 hover:text-green-700" : "hover:bg-primary/10 hover:text-primary"}
+													`}
+												>
+													{isCopied ? (
+														<>
+															<Check className="w-3.5 h-3.5 mr-1" />
+															Copied
+														</>
+													) : (
+														<>
+															<Copy className="w-3.5 h-3.5 mr-1" />
+															Copy
+														</>
+													)}
+												</Button>
+											</div>
+
+											{/* Card content */}
+											<div 
+												className="p-4 cursor-pointer"
+												onClick={() => setExpandedId(isExpanded ? null : entry.id)}
+											>
+												<p className={`text-[15px] leading-relaxed text-foreground ${isExpanded ? "" : "line-clamp-3"}`}>
+													{display}
+												</p>
+											</div>
+
+											{/* Expanded raw view */}
+											{isExpanded && hasCleaned && (
+												<div className="px-4 pb-4">
+													<div className="pt-3 border-t border-border/50">
+														<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1">
+															<span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+															Raw transcription
+														</p>
+														<p className="text-sm text-muted-foreground italic leading-relaxed">
+															"{entry.raw_text}"
+														</p>
+													</div>
+												</div>
+											)}
 										</div>
 									);
 								})}
