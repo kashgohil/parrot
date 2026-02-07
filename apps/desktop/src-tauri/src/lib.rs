@@ -2,6 +2,7 @@ mod audio;
 mod cleanup;
 mod cloud_api;
 mod db;
+mod local_setup;
 mod transcription;
 
 use audio::AudioRecorder;
@@ -513,6 +514,148 @@ async fn install_tool(name: String) -> Result<String, String> {
     }
 }
 
+// Local setup commands
+use local_setup::SetupProgress;
+use std::sync::atomic::{AtomicBool, Ordering};
+
+static SETUP_CANCELLED: AtomicBool = AtomicBool::new(false);
+
+#[tauri::command]
+async fn check_local_setup_status(
+    db: tauri::State<'_, Database>,
+) -> Result<serde_json::Value, String> {
+    let config = db
+        .get_local_setup_config()
+        .map_err(|e| format!("Failed to get setup config: {}", e))?;
+    
+    // Check if tools are installed
+    let whisper_installed = local_setup::command_exists("whisper-cli").await;
+    let ollama_installed = local_setup::command_exists("ollama").await;
+    
+    Ok(serde_json::json!({
+        "setup_completed": config.setup_completed,
+        "whisper_installed": whisper_installed,
+        "ollama_installed": ollama_installed,
+        "config": config,
+    }))
+}
+
+#[derive(serde::Deserialize)]
+pub struct StartSetupRequest {
+    pub whisper_model: String,
+    pub ollama_model: String,
+}
+
+#[tauri::command]
+async fn start_local_setup(
+    request: StartSetupRequest,
+    app: tauri::AppHandle,
+    _db: tauri::State<'_, Database>,
+) -> Result<(), String> {
+    SETUP_CANCELLED.store(false, Ordering::SeqCst);
+    
+    let whisper_model = request.whisper_model;
+    let ollama_model = request.ollama_model;
+    
+    tokio::spawn(async move {
+        let app_clone = app.clone();
+        
+        let result = local_setup::run_setup(
+            whisper_model,
+            ollama_model,
+            move |progress: SetupProgress| {
+                let app = app_clone.clone();
+                tokio::spawn(async move {
+                    let _ = app.emit("setup-progress", progress);
+                });
+            },
+        ).await;
+        
+        match result {
+            Ok(config) => {
+                // Save config to database
+                let db = app.state::<Database>();
+                if let Err(e) = db.set_local_setup_config(&config) {
+                    let _ = app.emit("setup-complete", serde_json::json!({
+                        "success": false,
+                        "error": format!("Failed to save config: {}", e),
+                    }));
+                } else {
+                    let _ = app.emit("setup-complete", serde_json::json!({
+                        "success": true,
+                        "config": config,
+                    }));
+                }
+            }
+            Err(e) => {
+                let error_msg = e.to_string();
+                if error_msg.contains("Manual intervention required") {
+                    // This is handled by the progress events
+                } else {
+                    let _ = app.emit("setup-complete", serde_json::json!({
+                        "success": false,
+                        "error": error_msg,
+                    }));
+                }
+            }
+        }
+    });
+    
+    Ok(())
+}
+
+#[tauri::command]
+async fn continue_local_setup(
+    _db: tauri::State<'_, Database>,
+) -> Result<(), String> {
+    // This is called after manual intervention to continue the setup
+    // In a full implementation, we'd resume from where we left off
+    // For now, we just acknowledge the continuation
+    Ok(())
+}
+
+#[tauri::command]
+async fn start_local_servers(
+    db: tauri::State<'_, Database>,
+) -> Result<serde_json::Value, String> {
+    let config = db
+        .get_local_setup_config()
+        .map_err(|e| format!("Failed to get setup config: {}", e))?;
+    
+    if !config.setup_completed {
+        return Err("Local setup not completed".to_string());
+    }
+    
+    // Start whisper server
+    let (_whisper_child, whisper_port) = local_setup::start_whisper_server(
+        &config.whisper_model_path,
+        config.whisper_server_port,
+    )
+    .await
+    .map_err(|e| format!("Failed to start whisper server: {}", e))?;
+    
+    // Start Ollama server
+    let (_ollama_child, ollama_port) = local_setup::start_ollama_server(config.ollama_server_port)
+        .await
+        .map_err(|e| format!("Failed to start Ollama server: {}", e))?;
+    
+    // Store the child processes (in a real implementation, we'd keep these handles)
+    // For now, we just return success
+    
+    Ok(serde_json::json!({
+        "whisper_port": whisper_port,
+        "ollama_port": ollama_port,
+        "status": "running",
+    }))
+}
+
+#[tauri::command]
+async fn stop_local_servers() -> Result<(), String> {
+    // In a full implementation, we'd stop the stored child processes
+    // For now, we just return success
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let db = Database::new().expect("Failed to initialize database");
@@ -585,6 +728,11 @@ pub fn run() {
             get_audio_url,
             check_command_exists,
             install_tool,
+            check_local_setup_status,
+            start_local_setup,
+            continue_local_setup,
+            start_local_servers,
+            stop_local_servers,
         ])
         .setup(|app| {
             setup_tray(app.handle())?;
@@ -598,6 +746,30 @@ pub fn run() {
                     let _ = w.hide();
                 }
             });
+
+            // Auto-start local servers if in local mode
+            let db = app.state::<Database>();
+            let setup_mode = db.get_setting("setup_mode").ok().flatten();
+            if setup_mode == Some("local".to_string()) {
+                let config = db.get_local_setup_config();
+                if let Ok(config) = config {
+                    if config.setup_completed {
+                        let app_handle = app.handle().clone();
+                        tokio::spawn(async move {
+                            // Try to start servers in the background
+                            match start_local_servers(app_handle.state::<Database>()).await {
+                                Ok(_) => {
+                                    println!("Local servers started successfully");
+                                }
+                                Err(e) => {
+                                    eprintln!("Failed to auto-start local servers: {}", e);
+                                    // Don't show error to user on auto-start, they'll see it when they try to use it
+                                }
+                            }
+                        });
+                    }
+                }
+            }
 
             Ok(())
         })
