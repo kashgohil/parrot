@@ -34,3 +34,10 @@ gen
 .vscode
 .claude
 .cursor*
+
+.env
+.vercel
+.env*.local
+.output
+.agents/*
+.agent/*
