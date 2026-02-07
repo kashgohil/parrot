@@ -12,8 +12,11 @@
     "dev:desktop": "bun run --filter @parrot/desktop tauri dev",
     "dev:hero": "bun run --filter hero dev",
     "build:desktop": "bun run --filter @parrot/desktop tauri build",
+    "build:hero": "bun run --filter hero build",
+    "generate-seo": "bun run --filter hero generate-seo",
     "db:generate": "bun run --filter @parrot/api db:generate",
-    "db:migrate": "bun run --filter @parrot/api db:migrate"
+    "db:migrate": "bun run --filter @parrot/api db:migrate",
+    "db:studio": "bun run --filter @parrot/api db:studio"
   },
   "dependencies": {
     "react": "^19.1.0",
