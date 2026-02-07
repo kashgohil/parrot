@@ -6,7 +6,7 @@ import {
 	Outlet,
 	useLocation,
 } from "@tanstack/react-router";
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/_onboarding")({
 	component: OnboardingLayout,
@@ -53,99 +53,122 @@ function OnboardingLayout() {
 			  );
 
 	return (
-		<div className="h-screen flex relative overflow-hidden">
+		<div className="h-screen flex relative overflow-hidden bg-background">
 			<div
 				data-tauri-drag-region
 				className="absolute inset-x-0 top-0 h-8 cursor-default z-10"
 			/>
 
 			{/* Left panel — branding & progress */}
-			<div className="hidden md:flex md:w-[220px] lg:w-[280px] xl:w-[340px] 2xl:w-[400px] bg-primary flex-col justify-between p-6 lg:p-8 xl:p-10 relative overflow-hidden shrink-0">
+			<div className="hidden md:flex md:w-[260px] lg:w-[300px] bg-[#7cb342] flex-col justify-between p-6 lg:p-8 relative overflow-hidden shrink-0">
 				{/* Background decoration */}
-				<div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full" />
-				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full" />
-				<div className="absolute top-1/2 right-10 w-40 h-40 bg-white/5 rounded-full" />
+				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
+				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+				<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl" />
 
+				{/* Brand header */}
 				<div className="relative z-10">
-					<div className="flex items-center gap-3 mb-2">
-						<img
-							src="/parrot-transparent.png"
-							alt="Parrot"
-							className="w-12 h-12 drop-shadow-lg"
-						/>
-						<h1 className="text-2xl font-bold text-primary-foreground">
-							Parrot
-						</h1>
+					<div className="flex items-center gap-3">
+						<div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-lg">
+							<img
+								src="/parrot-transparent.png"
+								alt="Parrot"
+								className="w-8 h-8 drop-shadow-md"
+							/>
+						</div>
+						<div>
+							<h1 className="text-2xl font-bold text-white tracking-tight">
+								Parrot
+							</h1>
+							<p className="text-white/60 text-xs font-medium">Setup</p>
+						</div>
 					</div>
 				</div>
 
 				{/* Step progress */}
-				<div className="relative z-10 space-y-3">
-					<p className="text-primary-foreground/60 text-sm mb-12">
+				<div className="relative z-10">
+					<p className="text-white/50 text-sm mb-6 font-medium">
 						Let's get you set up
 					</p>
-					{visibleSteps.map((step, index) => {
-						const stepIndex = STEPS.findIndex((s) => s.path === step.path);
-						const isActive = currentPath.startsWith(step.path);
-						const isCompleted = stepIndex < currentStepIndex;
+					<div className="space-y-2">
+						{visibleSteps.map((step, idx) => {
+							const stepIndex = STEPS.findIndex((s) => s.path === step.path);
+							const isActive = currentPath.startsWith(step.path);
+							const isCompleted = stepIndex < currentStepIndex;
 
-						return (
-							<div key={step.path} className="flex items-center gap-4">
-								<div
-									className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 transition-colors ${
-										isActive
-											? "bg-primary-foreground text-primary"
-											: isCompleted
-											? "bg-white/25 text-primary-foreground"
-											: "bg-white/10 text-primary-foreground/40"
-									}`}
-								>
-									{isCompleted ? (
-										<Check className="w-4 h-4" strokeWidth={2.5} />
-									) : (
-										index + 1
-									)}
+							return (
+								<div key={step.path} className="flex items-center gap-3">
+									<div
+										className={`
+											w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0
+											transition-all duration-200
+											${
+												isActive
+													? "bg-white text-[#7cb342] shadow-lg"
+													: isCompleted
+													? "bg-white/25 text-white"
+													: "bg-white/10 text-white/40"
+											}
+										`}
+									>
+										{isCompleted ? (
+											<Check className="w-4 h-4" strokeWidth={2.5} />
+										) : (
+											idx + 1
+										)}
+									</div>
+									<span
+										className={`
+											text-sm font-medium transition-colors
+											${
+												isActive
+													? "text-white"
+													: isCompleted
+													? "text-white/70"
+													: "text-white/40"
+											}
+										`}
+									>
+										{step.label}
+									</span>
 								</div>
-								<span
-									className={`text-sm font-medium transition-colors ${
-										isActive
-											? "text-primary-foreground"
-											: isCompleted
-											? "text-primary-foreground/70"
-											: "text-primary-foreground/40"
-									}`}
-								>
-									{step.label}
-								</span>
-							</div>
-						);
-					})}
+							);
+						})}
+					</div>
 				</div>
 
-				<p className="relative z-10 text-primary-foreground/40 text-xs">
-					{user?.email}
-				</p>
+				{/* User email */}
+				<div className="relative z-10">
+					<div className="flex items-center gap-2 px-3 py-2 bg-white/10 rounded-xl">
+						<div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+							<Sparkles className="w-3 h-3 text-white" />
+						</div>
+						<p className="text-white/60 text-xs truncate">{user?.email}</p>
+					</div>
+				</div>
 			</div>
 
 			{/* Right panel — onboarding content */}
 			<div className="flex-1 bg-background relative overflow-x-hidden overflow-y-auto">
-				<DoodleBackground opacity={0.1} />
+				<DoodleBackground opacity={0.06} />
 
-				<div className="min-h-full flex items-center justify-center p-6 lg:p-8 xl:p-10">
-					<div className="w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl animate-fade-in-up relative z-10 py-8">
+				<div className="min-h-full flex items-center justify-center p-6 lg:p-10">
+					<div className="w-full max-w-md animate-fade-in-up relative z-10 py-8">
 						{/* Mobile-only branding + progress */}
 						<div className="flex flex-col items-center text-center mb-8 md:hidden">
-							<img
-								src="/parrot-transparent.png"
-								alt="Parrot"
-								className="w-14 h-14 mx-auto mb-3 drop-shadow-lg"
-							/>
-							<h1 className="text-xl font-bold text-foreground mb-3">
+							<div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+								<img
+									src="/parrot-transparent.png"
+									alt="Parrot"
+									className="w-10 h-10"
+								/>
+							</div>
+							<h1 className="text-xl font-bold text-foreground mb-4">
 								Parrot Setup
 							</h1>
 							{/* Mobile step dots */}
 							<div className="flex items-center gap-2">
-								{visibleSteps.map((step, index) => {
+								{visibleSteps.map((step) => {
 									const stepIndex = STEPS.findIndex(
 										(s) => s.path === step.path,
 									);

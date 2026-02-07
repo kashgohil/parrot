@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
 	ChevronLeft,
 	ChevronRight,
-	Clipboard,
 	History,
 	Mic,
 	User,
+	Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -23,13 +22,15 @@ const SLIDES = [
 		description:
 			"Press Cmd+Shift+Space (or your custom hotkey) to start dictating. Press again to stop. Parrot captures your voice in high quality.",
 		color: "bg-primary",
+		gradient: "from-primary/20 to-primary/5",
 	},
 	{
-		icon: Clipboard,
-		title: "Auto-Paste",
+		icon: Sparkles,
+		title: "AI Cleanup",
 		description:
-			"Your transcription is automatically cleaned up using AI and pasted where your cursor is. No manual copy-paste needed.",
+			"Your transcription is automatically cleaned up using AI — grammar, punctuation, and style. No manual editing needed.",
 		color: "bg-blue-500",
+		gradient: "from-blue-500/20 to-blue-500/5",
 	},
 	{
 		icon: History,
@@ -37,13 +38,15 @@ const SLIDES = [
 		description:
 			"All your dictations are saved. Search through past transcriptions and copy them anytime from the History tab.",
 		color: "bg-purple-500",
+		gradient: "from-purple-500/20 to-purple-500/5",
 	},
 	{
 		icon: User,
 		title: "Personalize",
 		description:
-			"Add custom vocabulary (names, technical terms) and describe your writing style in the Profile tab for better results.",
+			"Add custom vocabulary (names, technical terms) and describe your writing style in the Vocabulary tab for better results.",
 		color: "bg-orange-500",
+		gradient: "from-orange-500/20 to-orange-500/5",
 	},
 ];
 
@@ -85,6 +88,7 @@ function TourPage() {
 
 	return (
 		<div className="space-y-8">
+			{/* Header */}
 			<div className="text-center">
 				<h2 className="text-2xl font-bold text-foreground mb-2">Quick Tour</h2>
 				<p className="text-muted-foreground">
@@ -92,17 +96,21 @@ function TourPage() {
 				</p>
 			</div>
 
-			<Card className="overflow-hidden">
-				<CardContent className="p-8">
+			{/* Slide card */}
+			<div className="bg-card rounded-3xl border border-border overflow-hidden shadow-sm">
+				<div className={`p-8 bg-gradient-to-br ${slide.gradient}`}>
 					<div className="flex flex-col items-center text-center space-y-6">
 						<div
-							className={`w-20 h-20 rounded-2xl ${slide.color} flex items-center justify-center`}
+							className={`
+								w-24 h-24 rounded-3xl ${slide.color} flex items-center justify-center
+								shadow-lg shadow-${slide.color}/25
+							`}
 						>
-							<Icon className="w-10 h-10 text-white" />
+							<Icon className="w-12 h-12 text-white" />
 						</div>
 
 						<div className="space-y-3 max-w-md">
-							<h3 className="text-xl font-semibold text-foreground">
+							<h3 className="text-xl font-bold text-foreground">
 								{slide.title}
 							</h3>
 							<p className="text-muted-foreground leading-relaxed">
@@ -110,18 +118,20 @@ function TourPage() {
 							</p>
 						</div>
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</div>
 
-			{/* Dot indicators */}
+			{/* Progress indicators */}
 			<div className="flex justify-center gap-2">
-				{SLIDES.map((_, index) => (
+				{SLIDES.map((_, idx) => (
 					<button
-						key={index}
-						onClick={() => setCurrentSlide(index)}
-						className={`w-2.5 h-2.5 rounded-full transition-colors ${
-							index === currentSlide ? "bg-primary" : "bg-border"
-						}`}
+						key={idx}
+						onClick={() => setCurrentSlide(idx)}
+						className={`
+							h-2 rounded-full transition-all duration-300
+							${idx === currentSlide ? "w-8 bg-primary" : "w-2 bg-border hover:bg-primary/50"}
+						`}
+						aria-label={`Go to slide ${idx + 1}`}
 					/>
 				))}
 			</div>
@@ -132,8 +142,10 @@ function TourPage() {
 					variant="outline"
 					onClick={handlePrev}
 					disabled={currentSlide === 0}
+					size="lg"
+					className="px-6"
 				>
-					<ChevronLeft className="w-4 h-4 mr-1" />
+					<ChevronLeft className="w-4 h-4 mr-2" />
 					Back
 				</Button>
 
@@ -141,16 +153,19 @@ function TourPage() {
 					onClick={handleNext}
 					disabled={completing}
 					size="lg"
-					className="px-6"
+					className="px-8"
 				>
 					{completing ? (
-						"Finishing..."
+						"Getting ready..."
 					) : isLastSlide ? (
-						"Get Started"
+						<>
+							Get Started
+							<Sparkles className="w-4 h-4 ml-2" />
+						</>
 					) : (
 						<>
 							Next
-							<ChevronRight className="w-4 h-4 ml-1" />
+							<ChevronRight className="w-4 h-4 ml-2" />
 						</>
 					)}
 				</Button>
@@ -160,10 +175,10 @@ function TourPage() {
 			{!isLastSlide && (
 				<div className="text-center">
 					<Button
-						variant="link"
+						variant="ghost"
 						onClick={completeOnboarding}
 						disabled={completing}
-						className="text-muted-foreground"
+						className="text-muted-foreground hover:text-foreground"
 					>
 						Skip tour
 					</Button>
