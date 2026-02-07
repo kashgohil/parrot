@@ -1,3 +1,7 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
 receivers:
   otlp:
     protocols:
@@ -19,6 +23,7 @@ processors:
     send_batch_size: 1000
 
 service:
+  extensions: [health_check]
   pipelines:
     traces:
       receivers: [otlp]
