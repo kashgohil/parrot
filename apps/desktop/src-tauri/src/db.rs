@@ -3,6 +3,8 @@ use rusqlite::Connection;
 use std::path::PathBuf;
 use std::sync::Mutex;
 
+use crate::local_setup::LocalSetupConfig;
+
 pub struct Database {
     conn: Mutex<Connection>,
 }
@@ -71,6 +73,31 @@ impl Database {
                 "
                 ALTER TABLE dictation_history ADD COLUMN audio_path TEXT;
                 INSERT INTO _migrations (name) VALUES ('add_audio_path');
+                ",
+            )?;
+        }
+
+        // Migration: add local_setup table
+        let has_local_setup: bool = conn
+            .prepare("SELECT COUNT(*) FROM _migrations WHERE name = 'add_local_setup'")?
+            .query_row([], |row| row.get::<_, i64>(0))
+            .unwrap_or(0)
+            > 0;
+
+        if !has_local_setup {
+            conn.execute_batch(
+                "
+                CREATE TABLE IF NOT EXISTS local_setup (
+                    id INTEGER PRIMARY KEY CHECK (id = 1),
+                    whisper_model_path TEXT NOT NULL DEFAULT '',
+                    whisper_server_port INTEGER NOT NULL DEFAULT 8080,
+                    ollama_server_port INTEGER NOT NULL DEFAULT 11434,
+                    ollama_model TEXT NOT NULL DEFAULT 'llama3.2',
+                    setup_completed BOOLEAN NOT NULL DEFAULT 0,
+                    setup_version TEXT NOT NULL DEFAULT '1.0'
+                );
+                INSERT OR IGNORE INTO local_setup (id) VALUES (1);
+                INSERT INTO _migrations (name) VALUES ('add_local_setup');
                 ",
             )?;
         }
@@ -189,7 +216,10 @@ impl Database {
     pub fn get_audio_path(&self, id: &str) -> Result<Option<String>> {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn.prepare("SELECT audio_path FROM dictation_history WHERE id = ?1")?;
-        let result = stmt.query_row([id], |row| row.get::<_, Option<String>>(0)).ok().flatten();
+        let result = stmt
+            .query_row([id], |row| row.get::<_, Option<String>>(0))
+            .ok()
+            .flatten();
         Ok(result)
     }
 
@@ -209,6 +239,40 @@ impl Database {
         conn.execute(
             "UPDATE profile SET custom_words = ?1, context_prompt = ?2, writing_style = ?3 WHERE id = 1",
             [custom_words, context_prompt, writing_style],
+        )?;
+        Ok(())
+    }
+
+    pub fn get_local_setup_config(&self) -> Result<LocalSetupConfig> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT whisper_model_path, whisper_server_port, ollama_server_port, ollama_model, setup_completed, setup_version FROM local_setup WHERE id = 1",
+        )?;
+        let config = stmt.query_row([], |row| {
+            Ok(LocalSetupConfig {
+                whisper_model_path: row.get(0)?,
+                whisper_server_port: row.get(1)?,
+                ollama_server_port: row.get(2)?,
+                ollama_model: row.get(3)?,
+                setup_completed: row.get::<_, i64>(4)? != 0,
+                setup_version: row.get(5)?,
+            })
+        })?;
+        Ok(config)
+    }
+
+    pub fn set_local_setup_config(&self, config: &LocalSetupConfig) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT OR REPLACE INTO local_setup (id, whisper_model_path, whisper_server_port, ollama_server_port, ollama_model, setup_completed, setup_version) VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6)",
+            rusqlite::params![
+                config.whisper_model_path,
+                config.whisper_server_port,
+                config.ollama_server_port,
+                config.ollama_model,
+                config.setup_completed as i64,
+                config.setup_version,
+            ],
         )?;
         Ok(())
     }
