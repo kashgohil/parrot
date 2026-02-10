@@ -6,7 +6,9 @@ import {
 	Outlet,
 	useLocation,
 } from "@tanstack/react-router";
+import { invoke } from "@tauri-apps/api/core";
 import { Check, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_onboarding")({
 	component: OnboardingLayout,
@@ -14,6 +16,7 @@ export const Route = createFileRoute("/_onboarding")({
 
 const STEPS = [
 	{ path: "/setup-mode", label: "Setup Mode" },
+	{ path: "/local-profile", label: "Your Profile" },
 	{ path: "/local-setup", label: "Local Setup" },
 	{ path: "/cloud-setup", label: "Cloud Setup" },
 	{ path: "/tour", label: "Quick Tour" },
@@ -22,8 +25,25 @@ const STEPS = [
 function OnboardingLayout() {
 	const { isAuthenticated, isLoading, user } = useAuth();
 	const location = useLocation();
+	const [setupMode, setSetupMode] = useState<string | null>(null);
+	const [isCheckingMode, setIsCheckingMode] = useState(true);
 
-	if (isLoading) {
+	// Check setup mode
+	useEffect(() => {
+		const checkMode = async () => {
+			try {
+				const mode = await invoke<string | null>("get_setting", { key: "setup_mode" });
+				setSetupMode(mode);
+			} catch {
+				setSetupMode(null);
+			} finally {
+				setIsCheckingMode(false);
+			}
+		};
+		checkMode();
+	}, []);
+
+	if (isLoading || isCheckingMode) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-background">
 				<div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin-fast" />
@@ -31,9 +51,13 @@ function OnboardingLayout() {
 		);
 	}
 
-	if (!isAuthenticated) {
+	// For cloud mode, require authentication
+	if (setupMode === "cloud" && !isAuthenticated) {
 		return <Navigate to="/login" />;
 	}
+
+	// For local mode or no mode selected yet, allow without auth
+	// (local mode doesn't require login)
 
 	if (user?.onboarding_completed) {
 		return <Navigate to="/" />;
@@ -44,10 +68,10 @@ function OnboardingLayout() {
 		currentPath.startsWith(s.path),
 	);
 	const visibleSteps =
-		user?.setup_mode === "local"
+		setupMode === "local"
 			? STEPS.filter((s) => s.path !== "/cloud-setup")
-			: user?.setup_mode === "cloud"
-			? STEPS.filter((s) => s.path !== "/local-setup")
+			: setupMode === "cloud"
+			? STEPS.filter((s) => s.path !== "/local-setup" && s.path !== "/local-profile")
 			: STEPS.filter(
 					(s) => !s.path.includes("-setup") || s.path.includes("setup-mode"),
 			  );
@@ -137,13 +161,15 @@ function OnboardingLayout() {
 					</div>
 				</div>
 
-				{/* User email */}
+				{/* User info or local mode indicator */}
 				<div className="relative z-10">
 					<div className="flex items-center gap-2 px-3 py-2 bg-white/10 rounded-xl">
 						<div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
 							<Sparkles className="w-3 h-3 text-white" />
 						</div>
-						<p className="text-white/60 text-xs truncate">{user?.email}</p>
+						<p className="text-white/60 text-xs truncate">
+							{user?.email || (setupMode === "local" ? "Local Mode" : "Setting up...")}
+						</p>
 					</div>
 				</div>
 			</div>

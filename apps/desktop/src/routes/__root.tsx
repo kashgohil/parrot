@@ -32,6 +32,23 @@ function RootLayout() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [showWelcome, setShowWelcome] = useState(false);
+	const [setupMode, setSetupMode] = useState<string | null>(null);
+	const [isCheckingSetup, setIsCheckingSetup] = useState(true);
+
+	// Check setup mode on mount
+	useEffect(() => {
+		const checkSetupMode = async () => {
+			try {
+				const mode = await invoke<string | null>("get_setting", { key: "setup_mode" });
+				setSetupMode(mode);
+			} catch {
+				setSetupMode(null);
+			} finally {
+				setIsCheckingSetup(false);
+			}
+		};
+		checkSetupMode();
+	}, []);
 
 	// Show welcome screen after login
 	useEffect(() => {
@@ -47,7 +64,7 @@ function RootLayout() {
 
 	// Auth redirect logic — skip while welcome screen is showing
 	useEffect(() => {
-		if (isLoading || showWelcome) return;
+		if (isLoading || isCheckingSetup || showWelcome) return;
 
 		const isAuthRoute =
 			location.pathname.startsWith("/login") ||
@@ -55,35 +72,71 @@ function RootLayout() {
 		const onboardingPaths = [
 			"/setup-mode",
 			"/cloud-setup",
+			"/local-profile",
 			"/local-setup",
 			"/tour",
 		];
 		const isOnboardingRoute = onboardingPaths.some((p) =>
 			location.pathname.startsWith(p),
 		);
+		const isModeSelection = location.pathname === "/mode-selection";
 
-		if (!isAuthenticated && !isAuthRoute) {
-			navigate({ to: "/login" });
-		} else if (
-			isAuthenticated &&
-			!user?.onboarding_completed &&
-			!isOnboardingRoute
-		) {
-			navigate({ to: "/setup-mode" });
-		} else if (
-			isAuthenticated &&
-			user?.onboarding_completed &&
-			(isOnboardingRoute || isAuthRoute)
-		) {
-			navigate({ to: "/" });
+		// If no mode selected yet, go to mode selection (first time setup)
+		if (!setupMode && !isModeSelection && !isAuthRoute) {
+			navigate({ to: "/mode-selection" });
+			return;
+		}
+
+		// Local mode: no API auth required
+		if (setupMode === "local") {
+			// Allow access to all onboarding routes without API auth
+			if (isOnboardingRoute || isModeSelection) {
+				return; // Allow access
+			}
+			
+			// Check if local user has completed onboarding
+			if (!user?.onboarding_completed) {
+				// Redirect to appropriate onboarding step
+				if (!user?.name) {
+					navigate({ to: "/local-profile" });
+				} else {
+					navigate({ to: "/local-setup" });
+				}
+				return;
+			}
+			
+			// Local mode users with completed onboarding can access main app
+			// No API authentication needed
+			return;
+		}
+
+		// Cloud mode: require auth
+		if (setupMode === "cloud" || !setupMode) {
+			if (!isAuthenticated && !isAuthRoute && !isModeSelection) {
+				navigate({ to: "/login" });
+			} else if (
+				isAuthenticated &&
+				!user?.onboarding_completed &&
+				!isOnboardingRoute
+			) {
+				navigate({ to: "/setup-mode" });
+			} else if (
+				isAuthenticated &&
+				user?.onboarding_completed &&
+				(isOnboardingRoute || isAuthRoute)
+			) {
+				navigate({ to: "/" });
+			}
 		}
 	}, [
 		isAuthenticated,
 		isLoading,
+		isCheckingSetup,
 		user,
 		location.pathname,
 		navigate,
 		showWelcome,
+		setupMode,
 	]);
 
 	// Welcome animation after login
@@ -96,8 +149,10 @@ function RootLayout() {
 		location.pathname.startsWith("/login") ||
 		location.pathname.startsWith("/signup");
 	const onboardingPaths = [
+		"/mode-selection",
 		"/setup-mode",
 		"/cloud-setup",
+		"/local-profile",
 		"/local-setup",
 		"/tour",
 	];

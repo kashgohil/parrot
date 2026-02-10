@@ -3,7 +3,7 @@ import { useAuth } from "@/lib/auth";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { Check, HardDrive, Key, Sparkles } from "lucide-react";
+import { Check, Key, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_onboarding/setup-mode")({
@@ -12,30 +12,8 @@ export const Route = createFileRoute("/_onboarding/setup-mode")({
 
 const TIERS = [
 	{
-		id: "local" as const,
-		name: "Local",
-		tagline: "Your Mac does everything.",
-		price: "$0",
-		priceSub: "forever",
-		description:
-			"Whisper.cpp transcription and Ollama AI cleanup running entirely on your device. No network, no keys, no costs.",
-		icon: HardDrive,
-		accent: "border-emerald-500/30 bg-emerald-50/50",
-		accentSelected: "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-500/20",
-		iconBg: "bg-emerald-100 text-emerald-700",
-		iconBgSelected: "bg-emerald-500 text-white",
-		features: [
-			"On-device transcription (Whisper.cpp)",
-			"On-device AI cleanup (Ollama)",
-			"Custom vocabulary & writing style",
-			"Works completely offline",
-			"No API keys required",
-		],
-		requiresSubscription: false,
-	},
-	{
 		id: "byok" as const,
-		name: "Cloud — Bring Your Key",
+		name: "Bring Your Key",
 		tagline: "Your keys. Our infrastructure.",
 		price: "$5",
 		priceSub: "/ month",
@@ -61,7 +39,7 @@ const TIERS = [
 	},
 	{
 		id: "managed" as const,
-		name: "Cloud — Managed",
+		name: "Managed",
 		tagline: "You talk, we handle the rest.",
 		price: "$15",
 		priceSub: "/ month",
@@ -89,7 +67,7 @@ type TierId = (typeof TIERS)[number]["id"];
 
 function SetupModePage() {
 	const navigate = useNavigate();
-	const { updateOnboarding, user } = useAuth();
+	const { updateOnboarding } = useAuth();
 	const [selected, setSelected] = useState<TierId | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -111,17 +89,11 @@ function SetupModePage() {
 				return;
 			}
 
-			// For local tier, proceed directly
-			const setupMode = selected === "local" ? "local" : "cloud";
-			await invoke("set_setting", { key: "setup_mode", value: setupMode });
+			// Save cloud tier selection
 			await invoke("set_setting", { key: "subscription_tier", value: selected });
-			await updateOnboarding(false, setupMode);
+			await updateOnboarding(false, "cloud");
 
-			if (selected === "local") {
-				navigate({ to: "/local-setup" });
-			} else {
-				navigate({ to: "/cloud-setup" });
-			}
+			navigate({ to: "/cloud-setup" });
 		} catch (err) {
 			console.error("Failed to save setup mode:", err);
 		} finally {
@@ -135,10 +107,10 @@ function SetupModePage() {
 		<div className="space-y-6">
 			<div className="text-center">
 				<h2 className="text-2xl font-bold text-foreground mb-2">
-					Choose Your Plan
+					Choose Your Cloud Plan
 				</h2>
 				<p className="text-muted-foreground">
-					Start free with local processing, or unlock cloud features.
+					Select how you want to handle transcription and AI cleanup in the cloud.
 				</p>
 			</div>
 
