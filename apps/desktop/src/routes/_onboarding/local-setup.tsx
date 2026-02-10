@@ -23,7 +23,7 @@ function LocalSetupPage() {
 					<Button
 						variant="ghost"
 						size="icon"
-						onClick={() => navigate({ to: "/setup-mode" })}
+						onClick={() => navigate({ to: "/local-profile" })}
 					>
 						<ArrowLeft className="w-5 h-5" />
 					</Button>
