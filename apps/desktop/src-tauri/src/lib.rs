@@ -442,6 +442,44 @@ async fn update_profile(
     }
 }
 
+#[derive(serde::Serialize, serde::Deserialize, Clone)]
+struct LocalUserData {
+    name: String,
+    email: String,
+    onboarding_completed: bool,
+}
+
+#[tauri::command]
+fn get_local_user(db: tauri::State<'_, Database>) -> Result<LocalUserData, String> {
+    let user = db.get_local_user().map_err(|e| e.to_string())?;
+    Ok(LocalUserData {
+        name: user.name,
+        email: user.email,
+        onboarding_completed: user.onboarding_completed,
+    })
+}
+
+#[tauri::command]
+fn set_local_user(
+    name: String,
+    email: String,
+    db: tauri::State<'_, Database>,
+) -> Result<(), String> {
+    let user = db::LocalUser {
+        name,
+        email,
+        onboarding_completed: false,
+    };
+    db.set_local_user(&user).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn complete_local_onboarding(db: tauri::State<'_, Database>) -> Result<(), String> {
+    let mut user = db.get_local_user().map_err(|e| e.to_string())?;
+    user.onboarding_completed = true;
+    db.set_local_user(&user).map_err(|e| e.to_string())
+}
+
 #[tauri::command]
 async fn get_audio_url(
     id: &str,
@@ -725,6 +763,9 @@ pub fn run() {
             set_setting,
             get_profile,
             update_profile,
+            get_local_user,
+            set_local_user,
+            complete_local_onboarding,
             get_audio_url,
             check_command_exists,
             install_tool,

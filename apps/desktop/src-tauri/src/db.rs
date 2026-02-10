@@ -102,6 +102,29 @@ impl Database {
             )?;
         }
 
+        // Migration: add local_user table
+        let has_local_user: bool = conn
+            .prepare("SELECT COUNT(*) FROM _migrations WHERE name = 'add_local_user'")?
+            .query_row([], |row| row.get::<_, i64>(0))
+            .unwrap_or(0)
+            > 0;
+
+        if !has_local_user {
+            conn.execute_batch(
+                "
+                CREATE TABLE IF NOT EXISTS local_user (
+                    id INTEGER PRIMARY KEY CHECK (id = 1),
+                    name TEXT NOT NULL DEFAULT '',
+                    email TEXT NOT NULL DEFAULT '',
+                    onboarding_completed BOOLEAN NOT NULL DEFAULT 0,
+                    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+                );
+                INSERT OR IGNORE INTO local_user (id) VALUES (1);
+                INSERT INTO _migrations (name) VALUES ('add_local_user');
+                ",
+            )?;
+        }
+
         Ok(())
     }
 
@@ -276,6 +299,33 @@ impl Database {
         )?;
         Ok(())
     }
+
+    pub fn get_local_user(&self) -> Result<LocalUser> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt =
+            conn.prepare("SELECT name, email, onboarding_completed FROM local_user WHERE id = 1")?;
+        let user = stmt.query_row([], |row| {
+            Ok(LocalUser {
+                name: row.get(0)?,
+                email: row.get(1)?,
+                onboarding_completed: row.get::<_, i64>(2)? != 0,
+            })
+        })?;
+        Ok(user)
+    }
+
+    pub fn set_local_user(&self, user: &LocalUser) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT OR REPLACE INTO local_user (id, name, email, onboarding_completed) VALUES (1, ?1, ?2, ?3)",
+            rusqlite::params![
+                user.name,
+                user.email,
+                user.onboarding_completed as i64,
+            ],
+        )?;
+        Ok(())
+    }
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Clone)]
@@ -294,4 +344,11 @@ pub struct Profile {
     pub custom_words: String,
     pub context_prompt: String,
     pub writing_style: String,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Clone)]
+pub struct LocalUser {
+    pub name: String,
+    pub email: String,
+    pub onboarding_completed: bool,
 }
