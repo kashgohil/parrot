@@ -12,6 +12,10 @@ interface SubscriptionStatus {
 	tier: string;
 	status: string | null;
 	expiresAt: string | null;
+	trial: {
+		endsAt: string;
+		daysRemaining: number;
+	} | null;
 	usage: {
 		month: string;
 		transcriptionMinutes: number;
@@ -29,6 +33,8 @@ interface SubscriptionContextType {
 	refresh: () => Promise<void>;
 	canUseFeature: (feature: "transcription" | "cleanup" | "sync") => boolean;
 	isApproachingLimit: () => boolean;
+	isTrialing: boolean;
+	trialDaysRemaining: number | null;
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType | null>(null);
@@ -61,7 +67,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 			if (!subscription) return true; // allow offline/local usage
 			const tier = subscription.tier;
 			if (feature === "sync") {
-				return ["byok", "managed", "teams", "enterprise"].includes(tier);
+				return ["managed", "teams", "enterprise"].includes(tier);
 			}
 			if (tier === "local") return true; // local mode uses local providers
 			if (!subscription.limits.transcriptionMinutes) return true; // unlimited
@@ -91,6 +97,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 		);
 	}, [subscription]);
 
+	const isTrialing =
+		subscription?.trial !== null && subscription?.trial !== undefined;
+	const trialDaysRemaining = subscription?.trial?.daysRemaining ?? null;
+
 	return (
 		<SubscriptionContext.Provider
 			value={{
@@ -99,6 +109,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 				refresh,
 				canUseFeature,
 				isApproachingLimit,
+				isTrialing,
+				trialDaysRemaining,
 			}}
 		>
 			{children}

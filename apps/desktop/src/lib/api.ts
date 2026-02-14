@@ -57,7 +57,9 @@ class ApiClient {
 			const error = await response
 				.json()
 				.catch(() => ({ error: "Request failed" }));
-			const err = new Error(error.error || "Request failed") as Error & { waitlistMode?: boolean };
+			const err = new Error(error.error || "Request failed") as Error & {
+				waitlistMode?: boolean;
+			};
 			if (error.waitlistMode) {
 				err.waitlistMode = true;
 			}
@@ -102,12 +104,20 @@ class ApiClient {
 		return `${API_BASE_URL}/api/auth/google/redirect?state=${encodeURIComponent(state)}`;
 	}
 
-	async pollGoogleAuth(state: string): Promise<{ status: string; user?: AuthUser; token?: string }> {
-		const response = await fetch(`${API_BASE_URL}/api/auth/google/poll?state=${encodeURIComponent(state)}`);
+	async pollGoogleAuth(
+		state: string,
+	): Promise<{ status: string; user?: AuthUser; token?: string }> {
+		const response = await fetch(
+			`${API_BASE_URL}/api/auth/google/poll?state=${encodeURIComponent(state)}`,
+		);
 		if (!response.ok) {
 			throw new Error("Poll failed");
 		}
-		const data = await response.json() as { status: string; user?: AuthUser; token?: string };
+		const data = (await response.json()) as {
+			status: string;
+			user?: AuthUser;
+			token?: string;
+		};
 		if (data.status === "complete" && data.token) {
 			this.setToken(data.token);
 		}
@@ -132,10 +142,13 @@ class ApiClient {
 		return this.request("/api/subscription/status");
 	}
 
-	async createCheckoutSession(tier: string): Promise<{ url: string }> {
+	async createCheckoutSession(
+		tier: string,
+		billingPeriod?: "monthly" | "annual",
+	): Promise<{ url: string }> {
 		return this.request("/api/subscription/checkout", {
 			method: "POST",
-			body: JSON.stringify({ tier }),
+			body: JSON.stringify({ tier, billingPeriod }),
 		});
 	}
 

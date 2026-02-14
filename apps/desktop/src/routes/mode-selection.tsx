@@ -43,7 +43,7 @@ const MODES = [
 		description:
 			"Access your dictation history across all devices. Higher accuracy models. Managed for you.",
 		icon: Cloud,
-		badge: "From $5/mo",
+		badge: "From $8/mo",
 		features: [
 			{ icon: Cloud, text: "Sync across devices" },
 			{ icon: Zap, text: "Higher accuracy" },
@@ -70,7 +70,7 @@ function ModeSelectionPage() {
 
 		console.log("Continue clicked, selected mode:", selected);
 		setIsSubmitting(true);
-		
+
 		try {
 			// Save the mode preference
 			console.log("Saving setup_mode setting...");
@@ -286,9 +286,7 @@ function ModeSelectionPage() {
 											</motion.div>
 
 											{/* Badge */}
-											<div
-												className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 bg-pk-primary text-white"
-											>
+											<div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 bg-pk-primary text-white">
 												{mode.badge}
 											</div>
 

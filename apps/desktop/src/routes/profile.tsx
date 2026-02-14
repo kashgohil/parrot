@@ -1,7 +1,15 @@
 import { useAuth } from "@/lib/auth";
 import { useSubscription } from "@/lib/subscription";
 import { createFileRoute } from "@tanstack/react-router";
-import { User, Mail, Crown, Zap, ExternalLink, Shield, Check } from "lucide-react";
+import {
+	Check,
+	Crown,
+	ExternalLink,
+	Mail,
+	Shield,
+	User,
+	Zap,
+} from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
 	component: ProfilePage,
@@ -9,19 +17,19 @@ export const Route = createFileRoute("/profile")({
 
 function ProfilePage() {
 	const { user } = useAuth();
-	const { subscription } = useSubscription();
+	const { subscription, isTrialing, trialDaysRemaining } = useSubscription();
 
 	const tierColors: Record<string, string> = {
-		free: "bg-slate-500",
-		starter: "bg-blue-500",
-		pro: "bg-purple-500",
+		local: "bg-slate-500",
+		managed: "bg-purple-500",
+		teams: "bg-blue-500",
 		enterprise: "bg-amber-500",
 	};
 
 	const tierNames: Record<string, string> = {
-		free: "Free",
-		starter: "Starter",
-		pro: "Pro",
+		local: "Free",
+		managed: "Pro",
+		teams: "Teams",
 		enterprise: "Enterprise",
 	};
 
@@ -57,8 +65,12 @@ function ProfilePage() {
 							<User className="w-5 h-5 text-primary" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Name</p>
-							<p className="text-base font-medium text-foreground">{user?.name || "—"}</p>
+							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+								Name
+							</p>
+							<p className="text-base font-medium text-foreground">
+								{user?.name || "—"}
+							</p>
 						</div>
 					</div>
 
@@ -67,8 +79,12 @@ function ProfilePage() {
 							<Mail className="w-5 h-5 text-primary" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Email</p>
-							<p className="text-base font-medium text-foreground">{user?.email || "—"}</p>
+							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+								Email
+							</p>
+							<p className="text-base font-medium text-foreground">
+								{user?.email || "—"}
+							</p>
 						</div>
 					</div>
 				</div>
@@ -81,7 +97,9 @@ function ProfilePage() {
 						<Crown className="w-5 h-5 text-amber-500" />
 					</div>
 					<div className="flex-1">
-						<h2 className="text-base font-semibold text-foreground">Subscription</h2>
+						<h2 className="text-base font-semibold text-foreground">
+							Subscription
+						</h2>
 						<p className="text-sm text-muted-foreground">
 							Your current plan and usage
 						</p>
@@ -104,7 +122,9 @@ function ProfilePage() {
 						{/* Plan badge */}
 						<div className="flex items-center justify-between p-4 rounded-xl bg-muted/50">
 							<div className="flex items-center gap-3">
-								<div className={`w-10 h-10 rounded-full ${tierColors[subscription.tier] || "bg-slate-500"} flex items-center justify-center shrink-0`}>
+								<div
+									className={`w-10 h-10 rounded-full ${tierColors[subscription.tier] || "bg-slate-500"} flex items-center justify-center shrink-0`}
+								>
 									<Zap className="w-5 h-5 text-white" />
 								</div>
 								<div>
@@ -112,22 +132,42 @@ function ProfilePage() {
 										<span className="text-base font-bold text-foreground">
 											{tierNames[subscription.tier] || subscription.tier}
 										</span>
-										<span className={`
+										<span
+											className={`
 											inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide
-											${subscription.status === "active" 
-												? "bg-green-500/10 text-green-600" 
-												: "bg-amber-500/10 text-amber-600"
+											${
+												isTrialing
+													? "bg-purple-500/10 text-purple-600"
+													: subscription.status === "active"
+														? "bg-green-500/10 text-green-600"
+														: "bg-amber-500/10 text-amber-600"
 											}
-										`}>
-											<span className={`
+										`}
+										>
+											<span
+												className={`
 												w-1.5 h-1.5 rounded-full
-												${subscription.status === "active" ? "bg-green-500" : "bg-amber-500"}
-											`} />
-											{subscription.status === "active" ? "Active" : subscription.status}
+												${
+													isTrialing
+														? "bg-purple-500"
+														: subscription.status === "active"
+															? "bg-green-500"
+															: "bg-amber-500"
+												}
+											`}
+											/>
+											{isTrialing
+												? `Trial \u2022 ${trialDaysRemaining} days left`
+												: subscription.status === "active"
+													? "Active"
+													: subscription.status}
 										</span>
 									</div>
 									<p className="text-xs text-muted-foreground mt-0.5">
-										{subscription.usage.month && `Resets ${subscription.usage.month}`}
+										{isTrialing
+											? "Upgrade to keep Pro features after your trial"
+											: subscription.usage.month &&
+												`Resets ${subscription.usage.month}`}
 									</p>
 								</div>
 							</div>
@@ -139,7 +179,9 @@ function ProfilePage() {
 								<div className="flex items-baseline justify-between">
 									<div className="flex items-center gap-2">
 										<Zap className="w-3.5 h-3.5 text-muted-foreground" />
-										<span className="text-sm font-medium text-foreground">Transcription</span>
+										<span className="text-sm font-medium text-foreground">
+											Transcription
+										</span>
 									</div>
 									<span className="text-sm tabular-nums text-muted-foreground">
 										<span className="text-foreground font-semibold">
@@ -156,9 +198,9 @@ function ProfilePage() {
 											subscription.limits.transcriptionMinutes * 0.9
 												? "bg-red-500"
 												: subscription.usage.transcriptionMinutes >=
-												  subscription.limits.transcriptionMinutes * 0.7
-												? "bg-amber-500"
-												: "bg-primary"
+													  subscription.limits.transcriptionMinutes * 0.7
+													? "bg-amber-500"
+													: "bg-primary"
 										}`}
 										style={{
 											width: `${Math.min(
@@ -178,7 +220,9 @@ function ProfilePage() {
 								<div className="flex items-baseline justify-between">
 									<div className="flex items-center gap-2">
 										<Crown className="w-3.5 h-3.5 text-muted-foreground" />
-										<span className="text-sm font-medium text-foreground">AI Cleanup</span>
+										<span className="text-sm font-medium text-foreground">
+											AI Cleanup
+										</span>
 									</div>
 									<span className="text-sm tabular-nums text-muted-foreground">
 										<span className="text-foreground font-semibold">
@@ -195,9 +239,9 @@ function ProfilePage() {
 											subscription.limits.cleanupRequests * 0.9
 												? "bg-red-500"
 												: subscription.usage.cleanupRequests >=
-												  subscription.limits.cleanupRequests * 0.7
-												? "bg-amber-500"
-												: "bg-purple-500"
+													  subscription.limits.cleanupRequests * 0.7
+													? "bg-amber-500"
+													: "bg-purple-500"
 										}`}
 										style={{
 											width: `${Math.min(
@@ -244,9 +288,12 @@ function ProfilePage() {
 							<Check className="w-3.5 h-3.5 text-pk-primary" />
 						</div>
 						<div>
-							<p className="text-sm font-medium text-foreground">Local-first privacy</p>
+							<p className="text-sm font-medium text-foreground">
+								Local-first privacy
+							</p>
 							<p className="text-xs text-muted-foreground mt-1">
-								Your transcriptions are stored locally on your device. Audio is processed and discarded unless you choose to save it.
+								Your transcriptions are stored locally on your device. Audio is
+								processed and discarded unless you choose to save it.
 							</p>
 						</div>
 					</div>
