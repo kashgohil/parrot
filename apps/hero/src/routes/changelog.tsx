@@ -6,20 +6,26 @@ export const Route = createFileRoute("/changelog")({
 	component: ChangelogPage,
 	head: () => ({
 		meta: [
-			{ title: "Changelog - Parrot" },
+			{ title: "Parrot Changelog - Voice Dictation App Updates" },
 			{
 				name: "description",
 				content:
 					"Follow Parrot's development progress. See what we've built and what's coming next.",
 			},
-			{ property: "og:title", content: "Changelog - Parrot" },
+			{
+				property: "og:title",
+				content: "Parrot Changelog - Voice Dictation App Updates",
+			},
 			{
 				property: "og:description",
 				content:
 					"Follow Parrot's development progress. See what we've built and what's coming next.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/changelog" },
-			{ name: "twitter:title", content: "Changelog - Parrot" },
+			{
+				name: "twitter:title",
+				content: "Parrot Changelog - Voice Dictation App Updates",
+			},
 			{
 				name: "twitter:description",
 				content:
@@ -32,6 +38,24 @@ export const Route = createFileRoute("/changelog")({
 			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/changelog" }],
+		scripts: [
+			{
+				type: "application/ld+json",
+				children: JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "WebPage",
+					name: "Parrot Changelog",
+					description:
+						"Follow Parrot's development progress. See what we've built and what's coming next.",
+					url: "https://tryparrot.app/changelog",
+					publisher: {
+						"@type": "Organization",
+						name: "Parrot",
+						url: "https://tryparrot.app",
+					},
+				}),
+			},
+		],
 	}),
 });
 
@@ -126,7 +150,7 @@ function ChangelogPage() {
 						Changelog
 					</p>
 					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5 animate-fade-in-up-delay-1">
-						Development progress
+						Parrot Changelog
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl animate-fade-in-up-delay-2">
 						Parrot is in active development. Here's what we've built so far and

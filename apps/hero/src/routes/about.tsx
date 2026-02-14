@@ -48,6 +48,22 @@ export const Route = createFileRoute("/about")({
 					url: "https://tryparrot.app",
 					description:
 						"Native Mac voice dictation app with AI cleanup, custom vocabulary, and local-first privacy.",
+					logo: {
+						"@type": "ImageObject",
+						url: "https://tryparrot.app/parrot-transparent.png",
+					},
+					sameAs: ["https://x.com/tryparrot"],
+					founder: {
+						"@type": "Person",
+						name: "Kash Gohil",
+						url: "https://x.com/kashhh",
+					},
+					foundingDate: "2025",
+					contactPoint: {
+						"@type": "ContactPoint",
+						email: "hello@tryparrot.app",
+						contactType: "customer support",
+					},
 				}),
 			},
 		],
@@ -64,9 +80,9 @@ function AboutPage() {
 						About
 					</p>
 					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5 animate-fade-in-up-delay-1">
-						Typing is slow.
+						About Parrot.
 						<br />
-						We fixed that.
+						Voice dictation, rebuilt.
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl animate-fade-in-up-delay-2">
 						Parrot is a native Mac dictation app. Press a hotkey, talk, and your

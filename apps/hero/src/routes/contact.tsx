@@ -7,20 +7,26 @@ export const Route = createFileRoute("/contact")({
 	component: ContactPage,
 	head: () => ({
 		meta: [
-			{ title: "Contact Us - Parrot" },
+			{ title: "Contact Parrot - Voice Dictation Support for Mac" },
 			{
 				name: "description",
 				content:
 					"Get in touch with the Parrot team. We're here to help with questions, feedback, and support.",
 			},
-			{ property: "og:title", content: "Contact Us - Parrot" },
+			{
+				property: "og:title",
+				content: "Contact Parrot - Voice Dictation Support for Mac",
+			},
 			{
 				property: "og:description",
 				content:
 					"Get in touch with the Parrot team. We're here to help with questions, feedback, and support.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/contact" },
-			{ name: "twitter:title", content: "Contact Us - Parrot" },
+			{
+				name: "twitter:title",
+				content: "Contact Parrot - Voice Dictation Support for Mac",
+			},
 			{
 				name: "twitter:description",
 				content:
@@ -33,6 +39,26 @@ export const Route = createFileRoute("/contact")({
 			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/contact" }],
+		scripts: [
+			{
+				type: "application/ld+json",
+				children: JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "ContactPage",
+					name: "Contact Parrot",
+					description:
+						"Get in touch with the Parrot team for questions, feedback, and support.",
+					url: "https://tryparrot.app/contact",
+					mainEntity: {
+						"@type": "Organization",
+						name: "Parrot",
+						url: "https://tryparrot.app",
+						email: "hello@tryparrot.app",
+						sameAs: ["https://x.com/tryparrot"],
+					},
+				}),
+			},
+		],
 	}),
 });
 
@@ -46,7 +72,7 @@ function ContactPage() {
 						Contact
 					</p>
 					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5 animate-fade-in-up-delay-1">
-						Let's talk.
+						Contact Parrot
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl animate-fade-in-up-delay-2">
 						Have a question, found a bug, or just want to say hi? We'd love to
