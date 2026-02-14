@@ -6,44 +6,31 @@ import {
 	Outlet,
 	useLocation,
 } from "@tanstack/react-router";
-import { invoke } from "@tauri-apps/api/core";
-import { Check, Sparkles } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Check, User, Settings, BookOpen } from "lucide-react";
 
 export const Route = createFileRoute("/_onboarding")({
 	component: OnboardingLayout,
 });
 
-const STEPS = [
-	{ path: "/setup-mode", label: "Setup Mode" },
-	{ path: "/local-profile", label: "Your Profile" },
-	{ path: "/local-setup", label: "Local Setup" },
-	{ path: "/cloud-setup", label: "Cloud Setup" },
-	{ path: "/tour", label: "Quick Tour" },
+// Steps for Local mode
+const LOCAL_STEPS = [
+	{ path: "/local-profile", label: "Your Profile", icon: User, description: "Create your local profile" },
+	{ path: "/local-setup", label: "Local Setup", icon: Settings, description: "Configure local AI models" },
+	{ path: "/tour", label: "Quick Tour", icon: BookOpen, description: "Learn how to use Parrot" },
+];
+
+// Steps for Cloud mode
+const CLOUD_STEPS = [
+	{ path: "/setup-mode", label: "Choose Plan", icon: Settings, description: "Select your subscription" },
+	{ path: "/cloud-setup", label: "Cloud Setup", icon: Settings, description: "Configure API keys" },
+	{ path: "/tour", label: "Quick Tour", icon: BookOpen, description: "Learn how to use Parrot" },
 ];
 
 function OnboardingLayout() {
-	const { isAuthenticated, isLoading, user } = useAuth();
+	const { isAuthenticated, isLoading, user, setupMode } = useAuth();
 	const location = useLocation();
-	const [setupMode, setSetupMode] = useState<string | null>(null);
-	const [isCheckingMode, setIsCheckingMode] = useState(true);
 
-	// Check setup mode
-	useEffect(() => {
-		const checkMode = async () => {
-			try {
-				const mode = await invoke<string | null>("get_setting", { key: "setup_mode" });
-				setSetupMode(mode);
-			} catch {
-				setSetupMode(null);
-			} finally {
-				setIsCheckingMode(false);
-			}
-		};
-		checkMode();
-	}, []);
-
-	if (isLoading || isCheckingMode) {
+	if (isLoading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-background">
 				<div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin-fast" />
@@ -63,18 +50,16 @@ function OnboardingLayout() {
 		return <Navigate to="/" />;
 	}
 
+	// Determine which steps to show based on mode
+	const steps = setupMode === "local" ? LOCAL_STEPS : CLOUD_STEPS;
 	const currentPath = location.pathname;
-	const currentStepIndex = STEPS.findIndex((s) =>
+	const currentStepIndex = steps.findIndex((s) =>
 		currentPath.startsWith(s.path),
 	);
-	const visibleSteps =
-		setupMode === "local"
-			? STEPS.filter((s) => s.path !== "/cloud-setup")
-			: setupMode === "cloud"
-			? STEPS.filter((s) => s.path !== "/local-setup" && s.path !== "/local-profile")
-			: STEPS.filter(
-					(s) => !s.path.includes("-setup") || s.path.includes("setup-mode"),
-			  );
+
+	// Get current step info
+	const currentStep = steps[currentStepIndex];
+	const StepIcon = currentStep?.icon || User;
 
 	return (
 		<div className="h-screen flex relative overflow-hidden bg-background">
@@ -84,7 +69,7 @@ function OnboardingLayout() {
 			/>
 
 			{/* Left panel — branding & progress */}
-			<div className="hidden md:flex md:w-[260px] lg:w-[300px] bg-[#7cb342] flex-col justify-between p-6 lg:p-8 relative overflow-hidden shrink-0">
+			<div className="hidden md:flex md:w-[280px] lg:w-[320px] bg-pk-primary flex-col justify-between p-6 lg:p-8 relative overflow-hidden shrink-0">
 				{/* Background decoration */}
 				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
 				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
@@ -114,21 +99,20 @@ function OnboardingLayout() {
 					<p className="text-white/50 text-sm mb-6 font-medium">
 						Let's get you set up
 					</p>
-					<div className="space-y-2">
-						{visibleSteps.map((step, idx) => {
-							const stepIndex = STEPS.findIndex((s) => s.path === step.path);
+					<div className="space-y-3">
+						{steps.map((step, idx) => {
 							const isActive = currentPath.startsWith(step.path);
-							const isCompleted = stepIndex < currentStepIndex;
+							const isCompleted = idx < currentStepIndex;
 
 							return (
-								<div key={step.path} className="flex items-center gap-3">
+								<div key={step.path} className="flex items-start gap-3">
 									<div
 										className={`
 											w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0
-											transition-all duration-200
+											transition-all duration-200 mt-0.5
 											${
 												isActive
-													? "bg-white text-[#7cb342] shadow-lg"
+													? "bg-white text-pk-primary shadow-lg"
 													: isCompleted
 													? "bg-white/25 text-white"
 													: "bg-white/10 text-white/40"
@@ -141,35 +125,52 @@ function OnboardingLayout() {
 											idx + 1
 										)}
 									</div>
-									<span
-										className={`
-											text-sm font-medium transition-colors
-											${
-												isActive
-													? "text-white"
-													: isCompleted
-													? "text-white/70"
-													: "text-white/40"
-											}
-										`}
-									>
-										{step.label}
-									</span>
+									<div className="flex-1 min-w-0">
+										<span
+											className={`
+												text-sm font-medium transition-colors block
+												${
+													isActive
+														? "text-white"
+														: isCompleted
+														? "text-white/70"
+														: "text-white/40"
+												}
+											`}
+										>
+											{step.label}
+										</span>
+										{isActive && (
+											<span className="text-xs text-white/60 mt-0.5 block">
+												{step.description}
+											</span>
+										)}
+									</div>
 								</div>
 							);
 						})}
 					</div>
 				</div>
 
-				{/* User info or local mode indicator */}
+				{/* Current step indicator */}
 				<div className="relative z-10">
-					<div className="flex items-center gap-2 px-3 py-2 bg-white/10 rounded-xl">
-						<div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-							<Sparkles className="w-3 h-3 text-white" />
+					<div className="px-3 py-3 bg-white/10 rounded-xl border border-white/10">
+						<div className="flex items-center gap-2">
+							<div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+								<StepIcon className="w-4 h-4 text-white" />
+							</div>
+							<div className="flex-1 min-w-0">
+								<p className="text-white/60 text-xs">Current Step</p>
+								<p className="text-white text-sm font-medium truncate">
+									{currentStep?.label || "Getting started"}
+								</p>
+							</div>
 						</div>
-						<p className="text-white/60 text-xs truncate">
-							{user?.email || (setupMode === "local" ? "Local Mode" : "Setting up...")}
-						</p>
+						{currentStep && (
+							<p className="text-white/50 text-xs mt-2 pt-2 border-t border-white/10">
+								Step {currentStepIndex + 1} of {steps.length}
+							</p>
+						)}
 					</div>
 				</div>
 			</div>
@@ -179,36 +180,38 @@ function OnboardingLayout() {
 				<DoodleBackground opacity={0.06} />
 
 				<div className="min-h-full flex items-center justify-center p-6 lg:p-10">
-					<div className="w-full max-w-md animate-fade-in-up relative z-10 py-8">
+					<div className="w-full max-w-md relative z-10 py-8">
 						{/* Mobile-only branding + progress */}
 						<div className="flex flex-col items-center text-center mb-8 md:hidden">
-							<div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+							<div className="w-14 h-14 rounded-2xl bg-pk-primary flex items-center justify-center mb-3">
 								<img
 									src="/parrot-transparent.png"
 									alt="Parrot"
 									className="w-10 h-10"
 								/>
 							</div>
-							<h1 className="text-xl font-bold text-foreground mb-4">
+							<h1 className="text-xl font-bold text-foreground mb-2">
 								Parrot Setup
 							</h1>
+							{currentStep && (
+								<p className="text-muted-foreground text-sm mb-4">
+									Step {currentStepIndex + 1} of {steps.length}: {currentStep.label}
+								</p>
+							)}
 							{/* Mobile step dots */}
 							<div className="flex items-center gap-2">
-								{visibleSteps.map((step) => {
-									const stepIndex = STEPS.findIndex(
-										(s) => s.path === step.path,
-									);
+								{steps.map((step, idx) => {
 									const isActive = currentPath.startsWith(step.path);
-									const isCompleted = stepIndex < currentStepIndex;
+									const isCompleted = idx < currentStepIndex;
 
 									return (
 										<div
 											key={step.path}
 											className={`h-2 rounded-full transition-all ${
 												isActive
-													? "w-6 bg-primary"
+													? "w-6 bg-pk-primary"
 													: isCompleted
-													? "w-2 bg-primary/50"
+													? "w-2 bg-pk-primary/50"
 													: "w-2 bg-border"
 											}`}
 										/>
