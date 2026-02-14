@@ -138,18 +138,45 @@ function SystemCheckStep({
 	requirements: SystemRequirements | null;
 	onContinue: () => void;
 }) {
-	if (!requirements) {
+	const [isLoading, setIsLoading] = useState(true);
+	const [showTimeoutMessage, setShowTimeoutMessage] = useState(false);
+
+	useEffect(() => {
+		if (requirements) {
+			setIsLoading(false);
+		} else {
+			// Show timeout message after 5 seconds if still loading
+			const timer = setTimeout(() => {
+				setShowTimeoutMessage(true);
+			}, 5000);
+			return () => clearTimeout(timer);
+		}
+	}, [requirements]);
+
+	if (isLoading) {
 		return (
-			<div className="flex items-center justify-center py-8">
+			<div className="flex flex-col items-center justify-center py-8 space-y-4">
 				<Loader2 className="w-8 h-8 animate-spin text-primary" />
+				<p className="text-sm text-muted-foreground">Checking your system...</p>
+				{showTimeoutMessage && (
+					<div className="text-center max-w-sm">
+						<p className="text-sm text-yellow-600 mb-2">
+							Taking longer than expected...
+						</p>
+						<p className="text-xs text-muted-foreground">
+							Check the browser console for errors (Cmd+Option+I)
+						</p>
+					</div>
+				)}
 			</div>
 		);
 	}
 
+	// We know requirements is not null here because of the early return above
+	const reqs = requirements!;
+
 	const allGood =
-		requirements.macos_supported &&
-		requirements.free_space_gb >= 5 &&
-		requirements.has_homebrew;
+		reqs.macos_supported && reqs.free_space_gb >= 5 && reqs.has_homebrew;
 
 	return (
 		<div className="space-y-4">
@@ -157,39 +184,31 @@ function SystemCheckStep({
 				<RequirementItem
 					icon={<Cpu className="w-4 h-4" />}
 					label="macOS Version"
-					value={requirements.macos_version}
-					status={requirements.macos_supported ? "success" : "error"}
+					value={reqs.macos_version}
+					status={reqs.macos_supported ? "success" : "error"}
 					detail={
-						!requirements.macos_supported
-							? "macOS 12 or later required"
-							: undefined
+						!reqs.macos_supported ? "macOS 12 or later required" : undefined
 					}
 				/>
 				<RequirementItem
 					icon={<Server className="w-4 h-4" />}
 					label="Free Disk Space"
-					value={`${requirements.free_space_gb.toFixed(1)} GB`}
-					status={requirements.free_space_gb >= 5 ? "success" : "error"}
-					detail={
-						requirements.free_space_gb < 5
-							? "At least 5 GB required"
-							: undefined
-					}
+					value={`${reqs.free_space_gb.toFixed(1)} GB`}
+					status={reqs.free_space_gb >= 5 ? "success" : "error"}
+					detail={reqs.free_space_gb < 5 ? "At least 5 GB required" : undefined}
 				/>
 				<RequirementItem
 					icon={<Terminal className="w-4 h-4" />}
 					label="Homebrew"
-					value={requirements.has_homebrew ? "Installed" : "Not installed"}
-					status={requirements.has_homebrew ? "success" : "warning"}
-					detail={
-						!requirements.has_homebrew ? "Will install during setup" : undefined
-					}
+					value={reqs.has_homebrew ? "Installed" : "Not installed"}
+					status={reqs.has_homebrew ? "success" : "warning"}
+					detail={!reqs.has_homebrew ? "Will install during setup" : undefined}
 				/>
 			</div>
 
 			{allGood ? (
-				<div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-					<div className="flex items-center gap-2 text-green-700">
+				<div className="p-4 bg-pk-primary/10 border border-pk-primary/30 rounded-lg">
+					<div className="flex items-center gap-2 text-[#5a8a2e]">
 						<Check className="w-5 h-5" />
 						<span className="font-medium">Everything looks good!</span>
 					</div>
@@ -232,7 +251,7 @@ function RequirementItem({
 	detail?: string;
 }) {
 	return (
-		<div className="flex items-center justify-between p-3 bg-card rounded-lg border">
+			<div className="flex items-center justify-between p-3 bg-card rounded-lg border">
 			<div className="flex items-center gap-3">
 				<div className="text-muted-foreground">{icon}</div>
 				<div>
@@ -244,7 +263,7 @@ function RequirementItem({
 			<div
 				className={`w-2 h-2 rounded-full ${
 					status === "success"
-						? "bg-green-500"
+						? "bg-pk-primary"
 						: status === "warning"
 							? "bg-yellow-500"
 							: "bg-red-500"
@@ -269,13 +288,115 @@ function ModelSelectionStep({
 }) {
 	const whisperModel = WHISPER_MODELS.find((m) => m.id === selectedWhisper);
 	const ollamaModel = OLLAMA_MODELS.find((m) => m.id === selectedOllama);
+	const [downloadedModels, setDownloadedModels] = useState<{
+		whisper: string[];
+		ollama: string[];
+	}>({ whisper: [], ollama: [] });
+	const [isCheckingModels, setIsCheckingModels] = useState(true);
 
-	const totalSize =
-		parseFloat(whisperModel?.size || "0") +
-		parseFloat(ollamaModel?.size || "0");
+	// Check which models are already downloaded
+	useEffect(() => {
+		const checkDownloadedModels = async () => {
+			try {
+				const status = await invoke<{
+					setup_completed: boolean;
+					whisper_installed: boolean;
+					ollama_installed: boolean;
+					config: { whisper_model_path?: string; ollama_model?: string };
+				}>("check_local_setup_status");
+
+				const whisperDownloaded: string[] = [];
+				const ollamaDownloaded: string[] = [];
+
+				// Check whisper models by looking at the config
+				if (status.config?.whisper_model_path) {
+					const path = status.config.whisper_model_path;
+					// Extract model name from path (e.g., "ggml-base.en.bin" -> "base.en")
+					WHISPER_MODELS.forEach((model) => {
+						if (path.includes(model.id)) {
+							whisperDownloaded.push(model.id);
+						}
+					});
+				}
+
+				// Check ollama models
+				if (status.ollama_installed) {
+					try {
+						const result = await invoke<string>("check_command_exists", {
+							command: "ollama",
+						});
+						if (result) {
+							// Try to list ollama models
+							const { invoke: shellInvoke } =
+								await import("@tauri-apps/api/core");
+							const listResult = await shellInvoke<string>("execute_command", {
+								command: "ollama list",
+							});
+							OLLAMA_MODELS.forEach((model) => {
+								if (listResult.includes(model.id.split(":")[0])) {
+									ollamaDownloaded.push(model.id);
+								}
+							});
+						}
+					} catch {
+						// Ollama not available, skip
+					}
+				}
+
+				setDownloadedModels({
+					whisper: whisperDownloaded,
+					ollama: ollamaDownloaded,
+				});
+			} catch (error) {
+				console.error("Failed to check downloaded models:", error);
+			} finally {
+				setIsCheckingModels(false);
+			}
+		};
+
+		checkDownloadedModels();
+	}, []);
+
+	// Parse size strings like "150 MB" or "2 GB" and convert to GB
+	const parseSizeToGB = (sizeStr: string): number => {
+		const num = parseFloat(sizeStr);
+		if (sizeStr.includes("GB")) {
+			return num;
+		} else if (sizeStr.includes("MB")) {
+			return num / 1024; // Convert MB to GB
+		}
+		return num;
+	};
+
+	// Calculate total download size (only for models not yet downloaded)
+	const calculateDownloadSize = (): number => {
+		let total = 0;
+
+		// Add whisper model size if not downloaded
+		if (whisperModel && !downloadedModels.whisper.includes(whisperModel.id)) {
+			total += parseSizeToGB(whisperModel.size);
+		}
+
+		// Add ollama model size if not downloaded
+		if (ollamaModel && !downloadedModels.ollama.includes(ollamaModel.id)) {
+			total += parseSizeToGB(ollamaModel.size);
+		}
+
+		return total;
+	};
+
+	const totalSizeGB = calculateDownloadSize();
+	const hasDownloads = totalSizeGB > 0;
 
 	return (
 		<div className="space-y-6">
+			{isCheckingModels && (
+				<div className="flex items-center gap-2 text-sm text-muted-foreground">
+					<Loader2 className="w-4 h-4 animate-spin" />
+					Checking for existing models...
+				</div>
+			)}
+
 			{/* Whisper Models */}
 			<div>
 				<div className="flex items-center gap-2 mb-3">
@@ -288,6 +409,7 @@ function ModelSelectionStep({
 							key={model.id}
 							model={model}
 							selected={selectedWhisper === model.id}
+							isDownloaded={downloadedModels.whisper.includes(model.id)}
 							onSelect={() => onSelectWhisper(model.id)}
 						/>
 					))}
@@ -306,6 +428,7 @@ function ModelSelectionStep({
 							key={model.id}
 							model={model}
 							selected={selectedOllama === model.id}
+							isDownloaded={downloadedModels.ollama.includes(model.id)}
 							onSelect={() => onSelectOllama(model.id)}
 						/>
 					))}
@@ -314,8 +437,14 @@ function ModelSelectionStep({
 
 			<div className="p-4 bg-muted rounded-lg">
 				<div className="flex items-center justify-between text-sm">
-					<span className="text-muted-foreground">Total download size:</span>
-					<span className="font-medium">~{totalSize.toFixed(2)} GB</span>
+					<span className="text-muted-foreground">
+						{hasDownloads ? "Download required:" : "All models ready!"}
+					</span>
+					<span className="font-medium">
+						{hasDownloads
+							? `~${totalSizeGB.toFixed(2)} GB`
+							: "No download needed"}
+					</span>
 				</div>
 			</div>
 
@@ -332,10 +461,12 @@ function ModelSelectionStep({
 function ModelCard({
 	model,
 	selected,
+	isDownloaded,
 	onSelect,
 }: {
 	model: (typeof WHISPER_MODELS)[0];
 	selected: boolean;
+	isDownloaded?: boolean;
 	onSelect: () => void;
 }) {
 	return (
@@ -363,13 +494,24 @@ function ModelCard({
 								Recommended
 							</span>
 						)}
+						{isDownloaded && (
+							<span className="text-xs bg-pk-primary/10 text-pk-primary px-2 py-0.5 rounded-full flex items-center gap-1">
+								<Check className="w-3 h-3" />
+								Downloaded
+							</span>
+						)}
 					</div>
 					<div className="text-sm text-muted-foreground">
 						{model.description}
 					</div>
 				</div>
 			</div>
-			<div className="text-sm text-muted-foreground">{model.size}</div>
+			<div className="flex items-center gap-2">
+				{isDownloaded && (
+					<span className="text-xs text-pk-primary">Ready to use</span>
+				)}
+				<span className="text-sm text-muted-foreground">{model.size}</span>
+			</div>
 		</button>
 	);
 }
@@ -448,7 +590,7 @@ function InstallationProgressStep({
 						<div
 							className={`w-10 h-10 rounded-full flex items-center justify-center ${
 								status.type === "completed"
-									? "bg-green-100 text-green-600"
+									? "bg-pk-primary/15 text-pk-primary"
 									: status.type === "failed"
 										? "bg-red-100 text-red-600"
 										: "bg-primary/10 text-primary"
@@ -601,7 +743,7 @@ function ManualInterventionStep({
 						key={index}
 						className={`p-4 border rounded-lg ${
 							completedSteps.has(index)
-								? "bg-green-50 border-green-200"
+								? "bg-pk-primary/10 border-pk-primary/30"
 								: "bg-card"
 						}`}
 					>
@@ -609,7 +751,7 @@ function ManualInterventionStep({
 							<div
 								className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium ${
 									completedSteps.has(index)
-										? "bg-green-500 text-white"
+										? "bg-pk-primary text-white"
 										: "bg-muted text-muted-foreground"
 								}`}
 							>
@@ -699,8 +841,8 @@ function CompletionStep({
 	return (
 		<div className="space-y-6">
 			<div className="text-center py-8">
-				<div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-					<Check className="w-8 h-8 text-green-600" />
+				<div className="w-16 h-16 bg-pk-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
+					<Check className="w-8 h-8 text-pk-primary" />
 				</div>
 				<h2 className="text-xl font-bold mb-2">Setup Complete!</h2>
 				<p className="text-muted-foreground">
@@ -714,12 +856,12 @@ function CompletionStep({
 				<div
 					className={`flex items-center gap-3 p-3 rounded-lg border ${
 						testResults?.transcription
-							? "bg-green-50 border-green-200"
+							? "bg-pk-primary/10 border-pk-primary/30"
 							: "bg-red-50 border-red-200"
 					}`}
 				>
 					{testResults?.transcription ? (
-						<Check className="w-5 h-5 text-green-600" />
+						<Check className="w-5 h-5 text-pk-primary" />
 					) : (
 						<X className="w-5 h-5 text-red-600" />
 					)}
@@ -736,12 +878,12 @@ function CompletionStep({
 				<div
 					className={`flex items-center gap-3 p-3 rounded-lg border ${
 						testResults?.cleanup
-							? "bg-green-50 border-green-200"
+							? "bg-pk-primary/10 border-pk-primary/30"
 							: "bg-red-50 border-red-200"
 					}`}
 				>
 					{testResults?.cleanup ? (
-						<Check className="w-5 h-5 text-green-600" />
+						<Check className="w-5 h-5 text-pk-primary" />
 					) : (
 						<X className="w-5 h-5 text-red-600" />
 					)}
@@ -807,12 +949,19 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 	useEffect(() => {
 		const loadRequirements = async () => {
 			try {
+				console.log("Checking system requirements...");
 				const result = await invoke<SystemRequirements>(
 					"check_system_requirements",
 				);
+				console.log("System requirements:", result);
 				setSystemRequirements(result);
 			} catch (error) {
 				console.error("Failed to check requirements:", error);
+				// Show error in UI
+				setLogMessages((prev) => [
+					...prev,
+					`Error checking requirements: ${error instanceof Error ? error.message : String(error)}`,
+				]);
 			}
 		};
 		loadRequirements();
@@ -919,7 +1068,7 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 							<div
 								className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
 									index < currentStepIndex
-										? "bg-green-500 text-white"
+										? "bg-pk-primary text-white"
 										: index === currentStepIndex
 											? "bg-primary text-primary-foreground"
 											: "bg-muted text-muted-foreground"
@@ -934,7 +1083,7 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 							{index < steps.length - 1 && (
 								<div
 									className={`w-12 h-0.5 mx-2 ${
-										index < currentStepIndex ? "bg-green-500" : "bg-muted"
+										index < currentStepIndex ? "bg-pk-primary" : "bg-muted"
 									}`}
 								/>
 							)}
