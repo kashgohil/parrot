@@ -11,6 +11,7 @@ export const Route = createFileRoute("/blog/$slug")({
 			title: post.title,
 			description: post.description,
 			date: post.date,
+			dateModified: post.dateModified || post.date,
 			readingTime: post.readingTime,
 			category: post.category,
 			keywords: post.keywords,
@@ -41,7 +42,7 @@ export const Route = createFileRoute("/blog/$slug")({
 				},
 				{
 					property: "article:modified_time",
-					content: post.date,
+					content: post.dateModified || post.date,
 				},
 				{
 					property: "article:author",
@@ -74,7 +75,7 @@ export const Route = createFileRoute("/blog/$slug")({
 						headline: post.title,
 						description: post.description,
 						datePublished: post.date,
-						dateModified: post.date,
+						dateModified: post.dateModified || post.date,
 						author: {
 							"@type": "Person",
 							name: "Kash Gohil",
