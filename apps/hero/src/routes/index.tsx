@@ -142,6 +142,8 @@ export const Route = createFileRoute("/")({
 						"Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.",
 					image: "https://tryparrot.app/og-image.png",
 					screenshot: "https://tryparrot.app/og-image.png",
+					downloadUrl: "https://tryparrot.app/download",
+					softwareVersion: "1.0.0",
 					author: {
 						"@type": "Person",
 						name: "Kash Gohil",
@@ -188,14 +190,6 @@ export const Route = createFileRoute("/")({
 					mainEntity: [
 						{
 							"@type": "Question",
-							name: "How fast is voice dictation compared to typing?",
-							acceptedAnswer: {
-								"@type": "Answer",
-								text: "Voice dictation is approximately 3x faster than typing. According to a Stanford University study (2017), the average person speaks at 130-150 words per minute compared to 40 WPM typing. Parrot captures your speech and pastes it directly where your cursor is, making it the fastest way to write on a Mac.",
-							},
-						},
-						{
-							"@type": "Question",
 							name: "What's local mode?",
 							acceptedAnswer: {
 								"@type": "Answer",
@@ -204,23 +198,23 @@ export const Route = createFileRoute("/")({
 						},
 						{
 							"@type": "Question",
-							name: "Which transcription providers does Parrot support?",
+							name: "Which providers work in BYOK mode?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Cloud providers: OpenAI Whisper ($0.006/min), Deepgram Nova-2 ($0.0043/min, fastest latency), and ElevenLabs Scribe. Local: Whisper.cpp (free, runs on-device). For AI cleanup: GPT-4o-mini or Anthropic Claude (cloud) or Ollama (local). You can switch providers anytime in settings.",
+								text: "Cloud providers: OpenAI Whisper, Deepgram, and ElevenLabs. Local: Whisper.cpp. For cleanup: OpenAI or Anthropic models (cloud) or Ollama (local). You can switch providers anytime in settings.",
 							},
 						},
 						{
 							"@type": "Question",
-							name: "Does Parrot work offline?",
+							name: "Does it work offline?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Yes - in local mode, Parrot works fully offline once models are downloaded. Transcription uses Whisper.cpp and cleanup uses Ollama, both running entirely on your Mac. Cloud mode requires internet. You can switch between local and cloud anytime.",
+								text: "Local mode: Yes - fully offline once models are downloaded. Cloud mode: Needs internet. You can switch between local and cloud anytime.",
 							},
 						},
 						{
 							"@type": "Question",
-							name: "How does the AI cleanup work?",
+							name: "How does the cleanup work?",
 							acceptedAnswer: {
 								"@type": "Answer",
 								text: "After transcription, an AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. Cleanup is optional and can be toggled per-dictation. It uses GPT-4o-mini (cloud) or Ollama (local).",
@@ -228,10 +222,10 @@ export const Route = createFileRoute("/")({
 						},
 						{
 							"@type": "Question",
-							name: "What about privacy?",
+							name: "What about my privacy?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Local mode: nothing leaves your Mac - zero audio, zero text, zero telemetry. Cloud mode: audio goes directly to your chosen provider using your own API key. Parrot never stores your audio or transcriptions on any Parrot server. All history is stored locally in an SQLite database on your device.",
+								text: "Local mode: nothing leaves your Mac. Cloud mode: we store your transcription and audio to show you your history. If you don't want that, you can turn it off in settings.",
 							},
 						},
 					],
@@ -1433,9 +1427,9 @@ function HomePage() {
 								"animate-fade-in-up-delay-1",
 							)}`}
 						>
-							Your voice,
+							Voice dictation
 							<br />
-							their inbox.
+							for Mac.
 						</h1>
 
 						<p
@@ -1531,7 +1525,7 @@ function HomePage() {
 						Cleanup
 					</p>
 					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-3">
-						You ramble. Parrot edits.
+						AI cleanup for voice dictation
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px]">
 						The optional cleanup pass removes filler words, fixes grammar, and
@@ -1547,7 +1541,7 @@ function HomePage() {
 						Context
 					</p>
 					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-3">
-						See it in any context
+						Dictate into any app
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px]">
 						Parrot works wherever your cursor is. Watch it transcribe for
@@ -1563,9 +1557,9 @@ function HomePage() {
 						Your setup
 					</p>
 					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
-						Runs on your machine.
+						Local or cloud transcription.
 						<br />
-						Or doesn't. Up to you.
+						Your choice.
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px]">
 						Switch between local and cloud anytime in settings. No data
@@ -1577,144 +1571,158 @@ function HomePage() {
 			</section>
 
 			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
-				<div className="max-w-5xl mx-auto space-y-20 md:space-y-28">
-					<FeatureRow
-						title="Custom vocabulary that actually remembers"
-						body="Add names, acronyms, brand terms, and jargon. Parrot feeds them to the transcription engine so 'Kubernetes' doesn't become 'Cooper Netties' and your coworker's name isn't butchered every time."
-						visual={
-							<div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-								<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
-									Your vocabulary
-								</p>
-								<div className="flex flex-wrap gap-2">
-									{[
-										"Kubernetes",
-										"GraphQL",
-										"Supabase",
-										"Dr. Nakamura",
-										"Anthropic",
-										"YC W24",
-										"Series A",
-										"OAuth2",
-										"Tailwind",
-										"PostgreSQL",
-									].map((word) => (
-										<span
-											key={word}
-											className="px-3 py-1.5 bg-primary/6 border border-primary/12 rounded-lg text-sm text-foreground font-medium"
-										>
-											{word}
-										</span>
-									))}
-								</div>
-							</div>
-						}
-					/>
-
-					<FeatureRow
-						flipped
-						title="Pick how your text sounds"
-						body="Set your writing context and style. The cleanup matches your tone - whether that's terse Slack messages, formal legal prose, or casual blog posts. You write it once, Parrot applies it every time."
-						visual={
-							<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-								<div className="border-b border-border px-5 py-3">
-									<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-										Writing style
+				<div className="max-w-5xl mx-auto">
+					<div className="max-w-4xl mb-12 md:mb-16">
+						<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
+							Features
+						</p>
+						<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-3">
+							Voice dictation features that work for you
+						</h2>
+						<p className="text-muted-foreground max-w-lg text-[15px]">
+							Custom vocabulary, writing style, and searchable history built
+							into a native Mac app.
+						</p>
+					</div>
+					<div className="space-y-20 md:space-y-28">
+						<FeatureRow
+							title="Custom vocabulary that actually remembers"
+							body="Add names, acronyms, brand terms, and jargon. Parrot feeds them to the transcription engine so 'Kubernetes' doesn't become 'Cooper Netties' and your coworker's name isn't butchered every time."
+							visual={
+								<div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+									<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
+										Your vocabulary
 									</p>
-								</div>
-								<div className="p-5 space-y-4">
-									<div>
-										<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
-											Context
-										</p>
-										<p className="text-sm text-foreground bg-muted/50 rounded-lg p-3 border border-border">
-											I'm a senior engineer writing technical docs and Slack
-											messages to my team.
-										</p>
-									</div>
-									<div>
-										<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
-											Tone
-										</p>
-										<div className="flex gap-2">
-											{["Concise", "Technical", "Friendly"].map((t, i) => (
-												<span
-													key={t}
-													className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
-														i === 0
-															? "bg-foreground text-background border-foreground"
-															: "bg-muted/50 text-muted-foreground border-border"
-													}`}
-												>
-													{t}
-												</span>
-											))}
-										</div>
+									<div className="flex flex-wrap gap-2">
+										{[
+											"Kubernetes",
+											"GraphQL",
+											"Supabase",
+											"Dr. Nakamura",
+											"Anthropic",
+											"YC W24",
+											"Series A",
+											"OAuth2",
+											"Tailwind",
+											"PostgreSQL",
+										].map((word) => (
+											<span
+												key={word}
+												className="px-3 py-1.5 bg-primary/6 border border-primary/12 rounded-lg text-sm text-foreground font-medium"
+											>
+												{word}
+											</span>
+										))}
 									</div>
 								</div>
-							</div>
-						}
-					/>
+							}
+						/>
 
-					<FeatureRow
-						title="Everything searchable, nothing lost"
-						body="Every dictation is saved with full text, timestamp, and audio duration. Search past transcriptions, copy them again, or review what you said last Tuesday. You can turn it off if you want to keep it private."
-						visual={
-							<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-								<div className="px-5 py-3 border-b border-border flex items-center gap-3">
-									<div className="flex-1 bg-muted/50 rounded-lg px-3 py-2 border border-border">
-										<span className="text-xs text-muted-foreground">
-											Search dictations...
-										</span>
+						<FeatureRow
+							flipped
+							title="Pick how your text sounds"
+							body="Set your writing context and style. The cleanup matches your tone - whether that's terse Slack messages, formal legal prose, or casual blog posts. You write it once, Parrot applies it every time."
+							visual={
+								<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+									<div className="border-b border-border px-5 py-3">
+										<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+											Writing style
+										</p>
 									</div>
-								</div>
-								<div className="divide-y divide-border">
-									{[
-										{
-											text: "Move the meeting to Thursday - Monday doesn't work for Sarah.",
-											time: "2 min ago",
-											dur: "0:08",
-										},
-										{
-											text: "Patient presents with elevated BP (~150/95). Recommend full metabolic panel.",
-											time: "1 hour ago",
-											dur: "0:14",
-										},
-										{
-											text: "Can you send me the Q3 report with revenue numbers?",
-											time: "Yesterday",
-											dur: "0:06",
-										},
-									].map((entry, i) => (
-										<div
-											key={i}
-											className="px-5 py-3.5 hover:bg-muted/30 transition-colors"
-										>
-											<p className="text-sm text-foreground truncate">
-												{entry.text}
+									<div className="p-5 space-y-4">
+										<div>
+											<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+												Context
 											</p>
-											<div className="flex items-center gap-3 mt-1">
-												<span className="text-[11px] text-muted-foreground">
-													{entry.time}
-												</span>
-												<span className="text-[11px] text-muted-foreground">
-													{entry.dur}
-												</span>
+											<p className="text-sm text-foreground bg-muted/50 rounded-lg p-3 border border-border">
+												I'm a senior engineer writing technical docs and Slack
+												messages to my team.
+											</p>
+										</div>
+										<div>
+											<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+												Tone
+											</p>
+											<div className="flex gap-2">
+												{["Concise", "Technical", "Friendly"].map((t, i) => (
+													<span
+														key={t}
+														className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
+															i === 0
+																? "bg-foreground text-background border-foreground"
+																: "bg-muted/50 text-muted-foreground border-border"
+														}`}
+													>
+														{t}
+													</span>
+												))}
 											</div>
 										</div>
-									))}
+									</div>
 								</div>
-							</div>
-						}
-					/>
+							}
+						/>
+
+						<FeatureRow
+							title="Everything searchable, nothing lost"
+							body="Every dictation is saved with full text, timestamp, and audio duration. Search past transcriptions, copy them again, or review what you said last Tuesday. You can turn it off if you want to keep it private."
+							visual={
+								<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+									<div className="px-5 py-3 border-b border-border flex items-center gap-3">
+										<div className="flex-1 bg-muted/50 rounded-lg px-3 py-2 border border-border">
+											<span className="text-xs text-muted-foreground">
+												Search dictations...
+											</span>
+										</div>
+									</div>
+									<div className="divide-y divide-border">
+										{[
+											{
+												text: "Move the meeting to Thursday - Monday doesn't work for Sarah.",
+												time: "2 min ago",
+												dur: "0:08",
+											},
+											{
+												text: "Patient presents with elevated BP (~150/95). Recommend full metabolic panel.",
+												time: "1 hour ago",
+												dur: "0:14",
+											},
+											{
+												text: "Can you send me the Q3 report with revenue numbers?",
+												time: "Yesterday",
+												dur: "0:06",
+											},
+										].map((entry, i) => (
+											<div
+												key={i}
+												className="px-5 py-3.5 hover:bg-muted/30 transition-colors"
+											>
+												<p className="text-sm text-foreground truncate">
+													{entry.text}
+												</p>
+												<div className="flex items-center gap-3 mt-1">
+													<span className="text-[11px] text-muted-foreground">
+														{entry.time}
+													</span>
+													<span className="text-[11px] text-muted-foreground">
+														{entry.dur}
+													</span>
+												</div>
+											</div>
+										))}
+									</div>
+								</div>
+							}
+						/>
+					</div>
 				</div>
 			</section>
 
 			<section className="py-16 md:py-20 px-6 border-y border-border">
 				<div className="max-w-5xl mx-auto">
-					<p className="text-center text-lg font-bold text-foreground mb-2">
-						Works everywhere your cursor is
-					</p>
+					<h2 className="text-center text-lg font-bold text-foreground mb-2">
+						Voice dictation in any Mac app
+					</h2>
 					<p className="text-center text-sm text-muted-foreground mb-8">
 						Parrot pastes into any app on your Mac. No plugins, no integrations.
 					</p>
@@ -1744,7 +1752,7 @@ function HomePage() {
 						People using Parrot
 					</p>
 					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-14">
-						They talked. Parrot typed.
+						What users say about Parrot
 					</h2>
 
 					<div className="grid md:grid-cols-2 gap-5">
@@ -1855,6 +1863,61 @@ function HomePage() {
 				</div>
 			</section>
 
+			<section className="py-16 md:py-20 px-6 border-t border-border">
+				<div className="max-w-4xl mx-auto">
+					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
+						From the blog
+					</p>
+					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
+						Learn more about voice dictation
+					</h2>
+					<div className="grid sm:grid-cols-3 gap-5">
+						<a
+							href="/blog/best-voice-dictation-apps-mac-2026"
+							className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-colors no-underline block"
+						>
+							<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+								Comparison
+							</span>
+							<p className="text-[15px] font-bold text-foreground mt-2 mb-2 leading-snug">
+								Best Voice Dictation Apps for Mac in 2026
+							</p>
+							<p className="text-sm text-muted-foreground line-clamp-2">
+								A head-to-head comparison of the top dictation apps.
+							</p>
+						</a>
+						<a
+							href="/blog/voice-dictation-vs-typing"
+							className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-colors no-underline block"
+						>
+							<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+								Comparison
+							</span>
+							<p className="text-[15px] font-bold text-foreground mt-2 mb-2 leading-snug">
+								Voice Dictation vs. Typing: Which Is Faster?
+							</p>
+							<p className="text-sm text-muted-foreground line-clamp-2">
+								We compared speed, accuracy, and when each method wins.
+							</p>
+						</a>
+						<a
+							href="/blog/local-voice-dictation-mac"
+							className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-colors no-underline block"
+						>
+							<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+								Tutorial
+							</span>
+							<p className="text-[15px] font-bold text-foreground mt-2 mb-2 leading-snug">
+								How to Set Up Local Voice Dictation on Mac
+							</p>
+							<p className="text-sm text-muted-foreground line-clamp-2">
+								Run dictation entirely on your Mac with no internet required.
+							</p>
+						</a>
+					</div>
+				</div>
+			</section>
+
 			<FinalCTA />
 
 			<Footer />
@@ -1893,7 +1956,7 @@ function FinalCTA() {
 		<section className="py-20 md:py-28 px-6 bg-foreground">
 			<div className="max-w-2xl mx-auto text-center">
 				<h2 className="text-3xl md:text-4xl font-black text-background tracking-tight mb-4">
-					Start talking. Stop typing.
+					Start dictating. Stop typing.
 				</h2>
 				<p className="text-background/50 mb-8 text-[15px]">
 					Coming soon. Join the waitlist to be first in line.
