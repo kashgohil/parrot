@@ -1438,16 +1438,7 @@ function HomePage() {
 							)}`}
 						>
 							Parrot transcribes what you say and pastes it where your cursor
-							is. Speaking is 3x faster than typing (
-							<a
-								href="https://dl.acm.org/doi/10.1145/3025453.3025580"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="text-primary/80 hover:text-primary underline-offset-2 hover:underline"
-							>
-								Stanford, 2017
-							</a>
-							). Custom vocabulary, AI cleanup, and full history. Runs on your
+							is. Custom vocabulary, AI cleanup, and full history. Runs on your
 							Mac locally or with cloud APIs.
 						</p>
 
