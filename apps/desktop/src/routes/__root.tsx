@@ -11,7 +11,15 @@ import {
 } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { BookA, CircleCheck, Settings, User, LogOut, Sparkles, History } from "lucide-react";
+import {
+	BookA,
+	CircleCheck,
+	History,
+	LogOut,
+	Settings,
+	Sparkles,
+	User,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 export const Route = createRootRoute({
@@ -27,28 +35,17 @@ interface DictationResult {
 }
 
 function RootLayout() {
-	const { isAuthenticated, isLoading, user, justLoggedIn, clearJustLoggedIn } =
-		useAuth();
+	const {
+		isAuthenticated,
+		isLoading,
+		user,
+		justLoggedIn,
+		clearJustLoggedIn,
+		setupMode,
+	} = useAuth();
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [showWelcome, setShowWelcome] = useState(false);
-	const [setupMode, setSetupMode] = useState<string | null>(null);
-	const [isCheckingSetup, setIsCheckingSetup] = useState(true);
-
-	// Check setup mode on mount
-	useEffect(() => {
-		const checkSetupMode = async () => {
-			try {
-				const mode = await invoke<string | null>("get_setting", { key: "setup_mode" });
-				setSetupMode(mode);
-			} catch {
-				setSetupMode(null);
-			} finally {
-				setIsCheckingSetup(false);
-			}
-		};
-		checkSetupMode();
-	}, []);
 
 	// Show welcome screen after login
 	useEffect(() => {
@@ -64,7 +61,7 @@ function RootLayout() {
 
 	// Auth redirect logic — skip while welcome screen is showing
 	useEffect(() => {
-		if (isLoading || isCheckingSetup || showWelcome) return;
+		if (isLoading || showWelcome) return;
 
 		const isAuthRoute =
 			location.pathname.startsWith("/login") ||
@@ -93,7 +90,7 @@ function RootLayout() {
 			if (isOnboardingRoute || isModeSelection) {
 				return; // Allow access
 			}
-			
+
 			// Check if local user has completed onboarding
 			if (!user?.onboarding_completed) {
 				// Redirect to appropriate onboarding step
@@ -104,7 +101,7 @@ function RootLayout() {
 				}
 				return;
 			}
-			
+
 			// Local mode users with completed onboarding can access main app
 			// No API authentication needed
 			return;
@@ -131,7 +128,6 @@ function RootLayout() {
 	}, [
 		isAuthenticated,
 		isLoading,
-		isCheckingSetup,
 		user,
 		location.pathname,
 		navigate,
@@ -257,7 +253,7 @@ function AuthenticatedLayout() {
 			/>
 
 			{/* Left Sidebar */}
-			<div className="hidden md:flex md:w-[240px] lg:w-[260px] bg-[#7cb342] flex-col relative overflow-hidden shrink-0">
+			<div className="hidden md:flex md:w-[240px] lg:w-[260px] bg-pk-primary flex-col relative overflow-hidden shrink-0">
 				{/* Decorative elements */}
 				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
 				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
@@ -277,7 +273,9 @@ function AuthenticatedLayout() {
 							<h1 className="text-2xl font-bold text-white tracking-tight">
 								Parrot
 							</h1>
-							<p className="text-white/60 text-xs font-medium">Voice dictation that just works</p>
+							<p className="text-white/60 text-xs font-medium">
+								Voice dictation that just works
+							</p>
 						</div>
 					</div>
 				</div>
@@ -320,13 +318,13 @@ function AuthenticatedLayout() {
 			{/* Main content area */}
 			<div className="flex-1 flex flex-col relative overflow-hidden">
 				<DoodleBackground opacity={0.06} />
-				
+
 				{/* Mobile header */}
 				<div
 					data-tauri-drag-region
 					className="h-8 shrink-0 cursor-default md:hidden"
 				/>
-				
+
 				{/* Mobile navigation bar */}
 				<div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-border bg-background/80 backdrop-blur-sm relative z-10">
 					<div className="flex items-center gap-2">
@@ -340,7 +338,7 @@ function AuthenticatedLayout() {
 						<span className="font-bold text-foreground">Parrot</span>
 					</div>
 				</div>
-				
+
 				{/* Mobile tab bar */}
 				<div className="md:hidden flex items-center justify-around px-2 py-2 border-b border-border bg-background/80 backdrop-blur-sm relative z-10">
 					<MobileNavLink to="/" icon={History} label="History" />
@@ -422,14 +420,12 @@ function MobileNavLink({
 			className={`
 				flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium no-underline
 				transition-all duration-200
-				${
-					isActive
-						? "text-primary"
-						: "text-muted-foreground hover:text-foreground"
-				}
+				${isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"}
 			`}
 		>
-			<div className={`p-2 rounded-xl transition-colors ${isActive ? "bg-primary/10" : ""}`}>
+			<div
+				className={`p-2 rounded-xl transition-colors ${isActive ? "bg-primary/10" : ""}`}
+			>
 				<Icon className={`w-4 h-4 ${isActive ? "text-primary" : ""}`} />
 			</div>
 			{label}
@@ -449,7 +445,7 @@ function RecordingOverlay() {
 	const secs = elapsed % 60;
 
 	return (
-		<div className="fixed top-5 right-5 z-[1000] flex items-center gap-2.5 px-[18px] py-2.5 rounded-2xl text-sm font-semibold text-white bg-pk-accent shadow-lg animate-pulse-glow">
+		<div className="fixed top-5 right-5 z-1000 flex items-center gap-2.5 px-[18px] py-2.5 rounded-2xl text-sm font-semibold text-white bg-pk-accent shadow-lg animate-pulse-glow">
 			<div className="w-2.5 h-2.5 bg-white rounded-full animate-blink" />
 			<div className="flex items-center gap-0.5 h-[18px]">
 				{[...Array(5)].map((_, i) => (
@@ -470,7 +466,7 @@ function RecordingOverlay() {
 
 function ProcessingOverlay({ label }: { label: string }) {
 	return (
-		<div className="fixed top-5 right-5 z-[1000] flex items-center gap-2.5 px-[18px] py-2.5 rounded-2xl text-sm font-semibold text-white bg-blue-500 shadow-lg">
+		<div className="fixed top-5 right-5 z-1000 flex items-center gap-2.5 px-[18px] py-2.5 rounded-2xl text-sm font-semibold text-white bg-blue-500 shadow-lg">
 			<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin-fast" />
 			<span>{label}</span>
 		</div>
@@ -493,7 +489,7 @@ function ResultOverlay({
 
 	return (
 		<div
-			className="fixed top-5 right-5 z-[1000] bg-card border border-border rounded-2xl px-5 py-4 max-w-[420px] cursor-pointer shadow-xl animate-slide-in-right"
+			className="fixed top-5 right-5 z-1000 bg-card border border-border rounded-2xl px-5 py-4 max-w-[420px] cursor-pointer shadow-xl animate-slide-in-right"
 			onClick={onDismiss}
 		>
 			<div className="flex items-start gap-3">
@@ -501,7 +497,9 @@ function ResultOverlay({
 					<Sparkles className="w-4 h-4 text-primary" />
 				</div>
 				<div className="flex-1 min-w-0">
-					<p className="text-sm leading-relaxed text-foreground line-clamp-3">{display}</p>
+					<p className="text-sm leading-relaxed text-foreground line-clamp-3">
+						{display}
+					</p>
 					{result.pasted ? (
 						<Badge className="mt-3 bg-green-500/10 text-green-600 border-green-500/20 hover:bg-green-500/20">
 							Pasted successfully
@@ -531,7 +529,7 @@ function ErrorOverlay({
 
 	return (
 		<div
-			className="fixed top-5 right-5 z-[1000] flex items-center gap-3 px-5 py-3 rounded-2xl text-[13px] font-medium text-white bg-red-500 shadow-lg max-w-[400px] cursor-pointer animate-slide-in-right"
+			className="fixed top-5 right-5 z-1000 flex items-center gap-3 px-5 py-3 rounded-2xl text-[13px] font-medium text-white bg-red-500 shadow-lg max-w-[400px] cursor-pointer animate-slide-in-right"
 			onClick={onDismiss}
 		>
 			<div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
