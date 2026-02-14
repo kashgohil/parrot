@@ -578,6 +578,13 @@ async fn check_local_setup_status(
     }))
 }
 
+#[tauri::command]
+async fn check_system_requirements() -> Result<local_setup::SystemRequirements, String> {
+    local_setup::check_system_requirements()
+        .await
+        .map_err(|e| e.to_string())
+}
+
 #[derive(serde::Deserialize)]
 pub struct StartSetupRequest {
     pub whisper_model: String,
@@ -770,6 +777,7 @@ pub fn run() {
             check_command_exists,
             install_tool,
             check_local_setup_status,
+            check_system_requirements,
             start_local_setup,
             continue_local_setup,
             start_local_servers,
