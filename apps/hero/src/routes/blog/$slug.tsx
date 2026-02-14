@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { getPostBySlug, posts } from "@/lib/blog";
 import BlogPostLayout from "@/components/BlogPost";
+import { getPostBySlug } from "@/lib/blog";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/blog/$slug")({
 	loader: ({ params }) => {
@@ -33,8 +33,28 @@ export const Route = createFileRoute("/blog/$slug")({
 				{ property: "og:type", content: "article" },
 				{
 					property: "og:image",
-					content: "https://tryparrot.app/parrot-transparent.png",
+					content: "https://tryparrot.app/og-image.png",
 				},
+				{
+					property: "article:published_time",
+					content: post.date,
+				},
+				{
+					property: "article:modified_time",
+					content: post.date,
+				},
+				{
+					property: "article:author",
+					content: "Kash Gohil",
+				},
+				{
+					property: "article:section",
+					content: post.category,
+				},
+				...post.keywords.map((keyword: string) => ({
+					property: "article:tag",
+					content: keyword,
+				})),
 				{ name: "twitter:title", content: `${post.title} - Parrot Blog` },
 				{ name: "twitter:description", content: post.description },
 				{ name: "keywords", content: post.keywords.join(", ") },
