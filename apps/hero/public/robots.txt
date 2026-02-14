@@ -1,6 +1,33 @@
 # https://www.robotstxt.org/robotstxt.html
+
+# Allow all crawlers
 User-agent: *
 Disallow:
+
+# Explicitly allow AI search engine bots
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: BraveBot
+Allow: /
 
 Sitemap: https://tryparrot.app/sitemap.xml
 RSS: https://tryparrot.app/rss.xml
