@@ -127,19 +127,27 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 						Try Parrot
 					</h2>
 					<p className="text-background/50 mb-6 text-[15px]">
-						Voice dictation for Mac. No account required for local mode.
+						Voice dictation for Mac. Free local mode, Pro from $8/mo.
 					</p>
-					<Link
-						to="/download"
-						className="group inline-flex items-center gap-2.5 px-7 py-3 bg-primary text-primary-foreground font-semibold rounded-2xl hover:bg-primary/90 transition-colors no-underline shadow-[0_4px_20px_rgba(124,179,66,0.3)]"
-					>
-						Download for Mac
-						<ArrowRight
-							size={16}
-							strokeWidth={2.5}
-							className="transition-transform group-hover:translate-x-0.5"
-						/>
-					</Link>
+					<div className="flex items-center justify-center gap-4 flex-wrap">
+						<Link
+							to="/download"
+							className="group inline-flex items-center gap-2.5 px-7 py-3 bg-primary text-primary-foreground font-semibold rounded-2xl hover:bg-primary/90 transition-colors no-underline shadow-[0_4px_20px_rgba(124,179,66,0.3)]"
+						>
+							Download for Mac
+							<ArrowRight
+								size={16}
+								strokeWidth={2.5}
+								className="transition-transform group-hover:translate-x-0.5"
+							/>
+						</Link>
+						<Link
+							to="/pricing"
+							className="inline-flex items-center gap-2 px-6 py-3 border border-background/20 text-background/70 font-medium rounded-2xl hover:text-background hover:border-background/40 transition-colors no-underline text-sm"
+						>
+							See pricing
+						</Link>
+					</div>
 				</div>
 			</section>
 			<Footer />
