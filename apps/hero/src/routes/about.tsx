@@ -31,6 +31,11 @@ export const Route = createFileRoute("/about")({
 				content:
 					"Learn how Parrot delivers fast, private voice dictation using native audio capture and AI-powered text cleanup.",
 			},
+			{
+				name: "keywords",
+				content:
+					"about Parrot, voice dictation app, native mac dictation, Tauri app, local-first privacy, AI cleanup, speech to text mac",
+			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/about" }],
 		scripts: [

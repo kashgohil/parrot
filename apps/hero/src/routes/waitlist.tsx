@@ -26,6 +26,11 @@ export const Route = createFileRoute("/waitlist")({
 				content:
 					"Be the first to try Parrot. Voice dictation for Mac with cleanup, custom vocabulary, and local-first privacy.",
 			},
+			{
+				name: "keywords",
+				content:
+					"Parrot waitlist, voice dictation app, mac dictation, speech to text, early access dictation",
+			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/waitlist" }],
 	}),

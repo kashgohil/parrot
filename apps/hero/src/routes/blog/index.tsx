@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { posts } from "@/lib/blog";
 import Footer from "@/components/Footer";
 import { WaitlistCTA } from "@/components/WaitlistCTA";
+import { posts } from "@/lib/blog";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/blog/")({
 	component: BlogIndex,
@@ -26,6 +26,11 @@ export const Route = createFileRoute("/blog/")({
 				name: "twitter:description",
 				content:
 					"Articles about voice dictation, transcription APIs, productivity, and building native Mac apps.",
+			},
+			{
+				name: "keywords",
+				content:
+					"voice dictation blog, speech to text articles, transcription guides, dictation tips, voice typing productivity",
 			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/blog" }],

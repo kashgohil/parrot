@@ -25,6 +25,11 @@ export const Route = createFileRoute("/changelog")({
 				content:
 					"Follow Parrot's development progress. See what we've built and what's coming next.",
 			},
+			{
+				name: "keywords",
+				content:
+					"Parrot changelog, voice dictation updates, Parrot release notes, dictation app roadmap",
+			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/changelog" }],
 	}),
