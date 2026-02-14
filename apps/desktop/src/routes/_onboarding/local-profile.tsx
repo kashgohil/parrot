@@ -47,8 +47,8 @@ function LocalProfilePage() {
 		<div className="space-y-6">
 			{/* Header */}
 			<div className="text-center space-y-2">
-				<div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-					<HardDrive className="w-8 h-8 text-emerald-600" />
+				<div className="w-16 h-16 bg-pk-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
+					<HardDrive className="w-8 h-8 text-pk-primary" />
 				</div>
 				<h2 className="text-2xl font-bold text-foreground">
 					Set Up Your Local Profile
@@ -59,14 +59,14 @@ function LocalProfilePage() {
 			</div>
 
 			{/* Info Card */}
-			<div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+			<div className="p-4 bg-pk-primary/10 border border-pk-primary/30 rounded-lg">
 				<div className="flex items-start gap-3">
-					<div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
-						<HardDrive className="w-4 h-4 text-emerald-600" />
+					<div className="w-8 h-8 rounded-full bg-[#7cb342]/100/10 flex items-center justify-center shrink-0">
+						<HardDrive className="w-4 h-4 text-pk-primary" />
 					</div>
 					<div>
-						<h3 className="font-medium text-emerald-900">Local Mode</h3>
-						<p className="text-sm text-emerald-700 mt-1">
+						<h3 className="font-medium text-[#5a8a2e]">Local Mode</h3>
+						<p className="text-sm text-pk-primary mt-1">
 							Your data stays on your device. No account required, no cloud sync.
 						</p>
 					</div>
