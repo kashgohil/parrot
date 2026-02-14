@@ -7,13 +7,16 @@ export const Route = createFileRoute("/blog/")({
 	component: BlogIndex,
 	head: () => ({
 		meta: [
-			{ title: "Blog - Parrot" },
+			{ title: "Voice Dictation Blog - Guides & Tips | Parrot" },
 			{
 				name: "description",
 				content:
 					"Articles about voice dictation, transcription APIs, productivity, and building native Mac apps.",
 			},
-			{ property: "og:title", content: "Blog - Parrot" },
+			{
+				property: "og:title",
+				content: "Voice Dictation Blog - Guides & Tips | Parrot",
+			},
 			{
 				property: "og:description",
 				content:
@@ -21,7 +24,10 @@ export const Route = createFileRoute("/blog/")({
 			},
 			{ property: "og:url", content: "https://tryparrot.app/blog" },
 			{ property: "og:type", content: "website" },
-			{ name: "twitter:title", content: "Blog - Parrot" },
+			{
+				name: "twitter:title",
+				content: "Voice Dictation Blog - Guides & Tips | Parrot",
+			},
 			{
 				name: "twitter:description",
 				content:
@@ -34,6 +40,28 @@ export const Route = createFileRoute("/blog/")({
 			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/blog" }],
+		scripts: [
+			{
+				type: "application/ld+json",
+				children: JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "CollectionPage",
+					name: "Voice Dictation Blog",
+					description:
+						"Articles about voice dictation, transcription APIs, productivity, and building native Mac apps.",
+					url: "https://tryparrot.app/blog",
+					publisher: {
+						"@type": "Organization",
+						name: "Parrot",
+						url: "https://tryparrot.app",
+						logo: {
+							"@type": "ImageObject",
+							url: "https://tryparrot.app/parrot-transparent.png",
+						},
+					},
+				}),
+			},
+		],
 	}),
 });
 
@@ -47,7 +75,7 @@ function BlogIndex() {
 						Blog
 					</p>
 					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5 animate-fade-in-up-delay-1">
-						Words about words
+						Voice Dictation Blog
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl animate-fade-in-up-delay-2">
 						Guides, comparisons, and stories about voice dictation,
