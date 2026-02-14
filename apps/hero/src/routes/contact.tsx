@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import { WaitlistCTA } from "@/components/WaitlistCTA";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
 	component: ContactPage,
@@ -26,6 +26,11 @@ export const Route = createFileRoute("/contact")({
 				content:
 					"Get in touch with the Parrot team. We're here to help with questions, feedback, and support.",
 			},
+			{
+				name: "keywords",
+				content:
+					"contact Parrot, voice dictation support, Parrot help, dictation app contact",
+			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/contact" }],
 	}),
@@ -44,8 +49,8 @@ function ContactPage() {
 						Let's talk.
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl animate-fade-in-up-delay-2">
-						Have a question, found a bug, or just want to say hi?
-						We'd love to hear from you.
+						Have a question, found a bug, or just want to say hi? We'd love to
+						hear from you.
 					</p>
 				</div>
 			</section>
@@ -61,8 +66,8 @@ function ContactPage() {
 									Email us
 								</h2>
 								<p className="text-[15px] text-muted-foreground leading-relaxed">
-									For questions, feedback, bug reports, or anything else.
-									We typically respond within 24-48 hours.
+									For questions, feedback, bug reports, or anything else. We
+									typically respond within 24-48 hours.
 								</p>
 							</div>
 							<a
@@ -79,7 +84,11 @@ function ContactPage() {
 					<div className="grid gap-6 sm:grid-cols-2">
 						<div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-colors">
 							<div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
-								<svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+								<svg
+									className="w-5 h-5"
+									fill="currentColor"
+									viewBox="0 0 24 24"
+								>
 									<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
 								</svg>
 							</div>
@@ -143,4 +152,3 @@ function ContactPage() {
 		</div>
 	);
 }
-
