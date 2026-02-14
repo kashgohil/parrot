@@ -6,9 +6,8 @@ const TIER_LIMITS: Record<
 	{ transcriptionMinutes: number; cleanupRequests: number }
 > = {
 	local: { transcriptionMinutes: 0, cleanupRequests: 0 },
-	byok: { transcriptionMinutes: Infinity, cleanupRequests: Infinity }, // user pays provider directly
-	managed: { transcriptionMinutes: 2000, cleanupRequests: Infinity },
-	teams: { transcriptionMinutes: 5000, cleanupRequests: Infinity },
+	managed: { transcriptionMinutes: 120, cleanupRequests: Infinity }, // Pro tier: ~2 hrs/month
+	teams: { transcriptionMinutes: 300, cleanupRequests: Infinity }, // Per user/month
 	enterprise: { transcriptionMinutes: Infinity, cleanupRequests: Infinity },
 };
 
