@@ -61,7 +61,6 @@ const staticPages: {
 	{ path: "/", changefreq: "weekly", priority: 1.0 },
 	{ path: "/about", changefreq: "monthly", priority: 0.7 },
 	{ path: "/pricing", changefreq: "monthly", priority: 0.8 },
-	{ path: "/download", changefreq: "monthly", priority: 0.9 },
 	{ path: "/changelog", changefreq: "weekly", priority: 0.6 },
 	{ path: "/contact", changefreq: "monthly", priority: 0.5 },
 	{ path: "/waitlist", changefreq: "monthly", priority: 0.7 },
@@ -70,9 +69,7 @@ const staticPages: {
 	{ path: "/terms", changefreq: "yearly", priority: 0.3 },
 ];
 
-function generateSitemap(
-	posts: ReturnType<typeof parseBlogPosts>,
-): string {
+function generateSitemap(posts: ReturnType<typeof parseBlogPosts>): string {
 	const today = new Date().toISOString().split("T")[0];
 	const latestPostDate = posts.length > 0 ? posts[0].date : today;
 
@@ -140,7 +137,9 @@ const publicDir = resolve(import.meta.dir, "../public");
 
 const sitemap = generateSitemap(posts);
 writeFileSync(resolve(publicDir, "sitemap.xml"), sitemap);
-console.log(`sitemap.xml generated with ${staticPages.length + posts.length} URLs`);
+console.log(
+	`sitemap.xml generated with ${staticPages.length + posts.length} URLs`,
+);
 
 const rss = generateRSS(posts);
 writeFileSync(resolve(publicDir, "rss.xml"), rss);
