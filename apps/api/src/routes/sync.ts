@@ -4,11 +4,7 @@ import { requireTier } from "../middleware/feature-gate";
 
 export const sync = new Hono();
 
-sync.use(
-	"*",
-	authMiddleware,
-	requireTier("byok", "managed", "teams", "enterprise"),
-);
+sync.use("*", authMiddleware, requireTier("managed", "teams", "enterprise"));
 
 // Placeholder for cloud sync endpoints
 sync.post("/push", async (c) => {

@@ -16,8 +16,7 @@ export const webhooks = new Hono();
 // Map Polar product IDs to tier names
 function tierFromProductId(productId: string): string | null {
 	const map: Record<string, string> = {
-		[process.env.POLAR_PRODUCT_BYOK || ""]: "byok",
-		[process.env.POLAR_PRODUCT_MANAGED || ""]: "managed",
+		[process.env.POLAR_PRODUCT_PRO || ""]: "managed",
 		[process.env.POLAR_PRODUCT_TEAMS || ""]: "teams",
 	};
 	return map[productId] || null;

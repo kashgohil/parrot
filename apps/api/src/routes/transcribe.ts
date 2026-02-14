@@ -1,5 +1,7 @@
 import { Hono } from "hono";
-import { getSession, incrementUsage } from "../db";
+import { incrementUsage } from "../db";
+import { authMiddleware } from "../middleware/auth";
+import { checkUsageLimits } from "../middleware/feature-gate";
 
 /** Copy Uint8Array to a plain ArrayBuffer for use as BlobPart / BodyInit (avoids SharedArrayBuffer typing). */
 function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
@@ -10,19 +12,10 @@ function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
 
 export const transcribe = new Hono();
 
+transcribe.use("*", authMiddleware, checkUsageLimits("transcriptionMinutes"));
+
 transcribe.post("/", async (c) => {
-	// Get session from Authorization header
-	const authHeader = c.req.header("Authorization");
-	const sessionId = authHeader?.replace("Bearer ", "");
-
-	if (!sessionId) {
-		return c.json({ error: "Unauthorized" }, 401);
-	}
-
-	const session = await getSession(sessionId);
-	if (!session) {
-		return c.json({ error: "Invalid or expired session" }, 401);
-	}
+	const user = c.get("user");
 
 	const formData = await c.req.formData();
 	const file = formData.get("file") as File | null;
@@ -48,7 +41,7 @@ transcribe.post("/", async (c) => {
 			apiKey,
 		);
 		// Track usage: estimate 1 minute per request (rough; could use audio duration)
-		await incrementUsage(session.userId, "transcriptionMinutes", 1);
+		await incrementUsage(user.id, "transcriptionMinutes", 1);
 		return c.json({ text });
 	} catch (e) {
 		return c.json({ error: String(e) }, 500);

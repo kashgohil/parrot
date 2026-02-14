@@ -12,10 +12,26 @@ subscription.get("/status", authMiddleware, async (c) => {
 	const usage = await getOrCreateUsage(user.id, month);
 	const limits = getTierLimits(tier);
 
+	// Calculate trial info
+	const trialEndsAt = user.trial_ends_at;
+	const isTrialing = user.subscription_status === "trialing" && !!trialEndsAt;
+	const trialDaysRemaining = isTrialing
+		? Math.max(
+				0,
+				Math.ceil(
+					(new Date(trialEndsAt).getTime() - Date.now()) /
+						(1000 * 60 * 60 * 24),
+				),
+			)
+		: null;
+
 	return c.json({
 		tier,
 		status: user.subscription_status || null,
 		expiresAt: user.subscription_expires_at || null,
+		trial: isTrialing
+			? { endsAt: trialEndsAt, daysRemaining: trialDaysRemaining }
+			: null,
 		usage: {
 			month,
 			transcriptionMinutes: usage.transcriptionMinutes || 0,
@@ -34,15 +50,29 @@ subscription.get("/status", authMiddleware, async (c) => {
 
 subscription.post("/checkout", authMiddleware, async (c) => {
 	const user = c.get("user");
-	const { tier } = await c.req.json<{ tier: string }>();
+	const { tier, billingPeriod } = await c.req.json<{
+		tier: string;
+		billingPeriod?: "monthly" | "annual";
+	}>();
 
-	const productMap: Record<string, string | undefined> = {
-		byok: process.env.POLAR_PRODUCT_BYOK,
-		managed: process.env.POLAR_PRODUCT_MANAGED,
-		teams: process.env.POLAR_PRODUCT_TEAMS,
+	const period = billingPeriod || "monthly";
+
+	// Product IDs: monthly and annual variants per tier
+	const productMap: Record<string, Record<string, string | undefined>> = {
+		managed: {
+			monthly: process.env.POLAR_PRODUCT_PRO,
+			annual:
+				process.env.POLAR_PRODUCT_PRO_ANNUAL || process.env.POLAR_PRODUCT_PRO,
+		},
+		teams: {
+			monthly: process.env.POLAR_PRODUCT_TEAMS,
+			annual:
+				process.env.POLAR_PRODUCT_TEAMS_ANNUAL ||
+				process.env.POLAR_PRODUCT_TEAMS,
+		},
 	};
 
-	const productId = productMap[tier];
+	const productId = productMap[tier]?.[period];
 	if (!productId) {
 		return c.json({ error: "Invalid tier" }, 400);
 	}

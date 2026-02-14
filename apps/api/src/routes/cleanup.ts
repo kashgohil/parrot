@@ -1,6 +1,8 @@
 import { Hono } from "hono";
-import { getProfile, getSession, incrementUsage } from "../db";
+import { getProfile, incrementUsage } from "../db";
 import type { Profile } from "../db/schema";
+import { authMiddleware } from "../middleware/auth";
+import { checkUsageLimits } from "../middleware/feature-gate";
 
 export const cleanup = new Hono();
 
@@ -8,23 +10,13 @@ interface CleanupRequest {
 	text: string;
 }
 
+cleanup.use("*", authMiddleware, checkUsageLimits("cleanupRequests"));
+
 cleanup.post("/", async (c) => {
-	// Get session from Authorization header
-	const authHeader = c.req.header("Authorization");
-	const sessionId = authHeader?.replace("Bearer ", "");
-
-	if (!sessionId) {
-		return c.json({ error: "Unauthorized" }, 401);
-	}
-
-	// Validate session
-	const session = await getSession(sessionId);
-	if (!session) {
-		return c.json({ error: "Invalid or expired session" }, 401);
-	}
+	const user = c.get("user");
 
 	// Get user's profile
-	const profile = await getProfile(session.userId);
+	const profile = await getProfile(user.id);
 
 	// Use user's API key if provided, otherwise fall back to server's key
 	const userApiKey = c.req.header("X-API-Key");
@@ -41,7 +33,7 @@ cleanup.post("/", async (c) => {
 
 	try {
 		const cleaned = await cleanupText(body.text, apiKey, profile);
-		await incrementUsage(session.userId, "cleanupRequests", 1);
+		await incrementUsage(user.id, "cleanupRequests", 1);
 		return c.json({ text: cleaned });
 	} catch (e) {
 		return c.json({ error: String(e) }, 500);
