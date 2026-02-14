@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import {
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/mode-selection")({
 	component: ModeSelectionPage,
 });
 
+const PARROT_GREEN = "#7cb342";
+
 const MODES = [
 	{
 		id: "local" as const,
@@ -26,15 +29,12 @@ const MODES = [
 			"Process everything locally on your machine. No account, no subscriptions, no data ever leaves your device.",
 		icon: HardDrive,
 		badge: "Free Forever",
-		badgeColor: "bg-emerald-500 text-white",
 		features: [
 			{ icon: WifiOff, text: "Works 100% offline" },
 			{ icon: Shield, text: "Maximum privacy" },
 			{ icon: Zap, text: "No subscription fees" },
 		],
 		setupTime: "2 min setup",
-		accent: "emerald",
-		gradient: "from-emerald-500/20 to-teal-500/5",
 	},
 	{
 		id: "cloud" as const,
@@ -44,15 +44,12 @@ const MODES = [
 			"Access your dictation history across all devices. Higher accuracy models. Managed for you.",
 		icon: Cloud,
 		badge: "From $5/mo",
-		badgeColor: "bg-sky-500 text-white",
 		features: [
 			{ icon: Cloud, text: "Sync across devices" },
 			{ icon: Zap, text: "Higher accuracy" },
 			{ icon: Shield, text: "Cloud backup" },
 		],
 		setupTime: "See pricing →",
-		accent: "sky",
-		gradient: "from-sky-500/20 to-indigo-500/5",
 	},
 ] as const;
 
@@ -60,25 +57,41 @@ type ModeId = (typeof MODES)[number]["id"];
 
 function ModeSelectionPage() {
 	const navigate = useNavigate();
+	const { refreshUser } = useAuth();
 	const [selected, setSelected] = useState<ModeId | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isHovering, setIsHovering] = useState<ModeId | null>(null);
 
 	const handleContinue = async () => {
-		if (!selected) return;
+		if (!selected) {
+			console.log("No mode selected");
+			return;
+		}
 
+		console.log("Continue clicked, selected mode:", selected);
 		setIsSubmitting(true);
+		
 		try {
+			// Save the mode preference
+			console.log("Saving setup_mode setting...");
 			await invoke("set_setting", { key: "setup_mode", value: selected });
+			console.log("Setting saved successfully");
+
+			// Refresh auth context to update setupMode state
+			console.log("Refreshing user state...");
+			await refreshUser();
+			console.log("User state refreshed");
 
 			if (selected === "local") {
+				console.log("Navigating to local-profile...");
 				navigate({ to: "/local-profile" });
 			} else {
-				// For cloud, go to setup-mode which shows pricing options
+				console.log("Navigating to setup-mode...");
 				navigate({ to: "/setup-mode" });
 			}
 		} catch (err) {
 			console.error("Failed to save mode:", err);
+			alert("Error: " + (err instanceof Error ? err.message : String(err)));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -94,7 +107,10 @@ function ModeSelectionPage() {
 			/>
 
 			{/* Left panel — animated gradient */}
-			<div className="hidden lg:flex lg:w-[320px] xl:w-[380px] bg-[#7cb342] flex-col justify-between p-8 xl:p-10 relative overflow-hidden shrink-0">
+			<div
+				className="hidden lg:flex lg:w-[320px] xl:w-[380px] flex-col justify-between p-8 xl:p-10 relative overflow-hidden shrink-0"
+				style={{ backgroundColor: PARROT_GREEN }}
+			>
 				{/* Animated background blobs */}
 				<motion.div
 					className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl"
@@ -154,13 +170,7 @@ function ModeSelectionPage() {
 								transition={{ duration: 0.3 }}
 								className="space-y-6"
 							>
-								<div
-									className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
-										selectedMode.id === "local"
-											? "bg-emerald-500/20 text-emerald-100 border border-emerald-400/30"
-											: "bg-sky-500/20 text-sky-100 border border-sky-400/30"
-									}`}
-								>
+								<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-white/20 text-white border border-white/30">
 									<selectedMode.icon className="w-4 h-4" />
 									{selectedMode.name} Selected
 								</div>
@@ -212,7 +222,10 @@ function ModeSelectionPage() {
 					<div className="w-full max-w-2xl animate-fade-in-up relative z-10 py-8">
 						{/* Mobile branding */}
 						<div className="flex flex-col items-center text-center mb-10 lg:hidden">
-							<div className="w-16 h-16 rounded-2xl bg-[#7cb342] flex items-center justify-center mb-4 shadow-lg">
+							<div
+								className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-lg"
+								style={{ backgroundColor: PARROT_GREEN }}
+							>
 								<img
 									src="/parrot-transparent.png"
 									alt="Parrot"
@@ -238,26 +251,26 @@ function ModeSelectionPage() {
 									return (
 										<motion.button
 											key={mode.id}
-											onClick={() => setSelected(mode.id)}
+											type="button"
+											onClick={() => {
+												console.log("Selected mode:", mode.id);
+												setSelected(mode.id);
+											}}
 											onMouseEnter={() => setIsHovering(mode.id)}
 											onMouseLeave={() => setIsHovering(null)}
 											whileHover={{ scale: 1.02 }}
 											whileTap={{ scale: 0.98 }}
 											className={`relative text-left rounded-2xl border-2 p-6 transition-all duration-300 ${
 												isSelected
-													? mode.id === "local"
-														? "border-emerald-500 bg-emerald-50/50 shadow-xl shadow-emerald-500/10"
-														: "border-sky-500 bg-sky-50/50 shadow-xl shadow-sky-500/10"
-													: "border-border bg-card hover:border-foreground/20 hover:shadow-lg"
+													? "border-pk-primary bg-pk-primary/10 shadow-xl shadow-pk-primary/10"
+													: "border-border bg-card hover:border-pk-primary/50 hover:shadow-lg"
 											}`}
 										>
 											{/* Selection indicator */}
 											<motion.div
 												className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center ${
 													isSelected
-														? mode.id === "local"
-															? "bg-emerald-500"
-															: "bg-sky-500"
+														? "bg-pk-primary"
 														: "bg-muted border-2 border-muted-foreground/20"
 												}`}
 												animate={{
@@ -274,7 +287,7 @@ function ModeSelectionPage() {
 
 											{/* Badge */}
 											<div
-												className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 ${mode.badgeColor}`}
+												className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 bg-pk-primary text-white"
 											>
 												{mode.badge}
 											</div>
@@ -283,12 +296,8 @@ function ModeSelectionPage() {
 											<div
 												className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-colors ${
 													isSelected
-														? mode.id === "local"
-															? "bg-emerald-500 text-white"
-															: "bg-sky-500 text-white"
-														: mode.id === "local"
-															? "bg-emerald-100 text-emerald-600"
-															: "bg-sky-100 text-sky-600"
+														? "bg-pk-primary text-white"
+														: "bg-pk-primary/15 text-pk-primary"
 												}`}
 											>
 												<Icon className="w-7 h-7" />
@@ -312,9 +321,7 @@ function ModeSelectionPage() {
 														<feature.icon
 															className={`w-4 h-4 ${
 																isSelected
-																	? mode.id === "local"
-																		? "text-emerald-600"
-																		: "text-sky-600"
+																	? "text-pk-primary"
 																	: "text-muted-foreground"
 															}`}
 														/>
@@ -329,9 +336,7 @@ function ModeSelectionPage() {
 											<div
 												className={`mt-5 pt-4 border-t text-xs font-medium ${
 													isSelected
-														? mode.id === "local"
-															? "border-emerald-200 text-emerald-700"
-															: "border-sky-200 text-sky-700"
+														? "border-pk-primary/30 text-[#5a8a2e]"
 														: "border-border text-muted-foreground"
 												}`}
 											>
@@ -353,13 +358,20 @@ function ModeSelectionPage() {
 									size="lg"
 									onClick={handleContinue}
 									disabled={!selected || isSubmitting}
-									className={`px-10 h-12 text-base font-semibold transition-all ${
-										selected === "local"
-											? "bg-emerald-600 hover:bg-emerald-700"
-											: selected === "cloud"
-												? "bg-sky-600 hover:bg-sky-700"
-												: ""
-									}`}
+									className="px-10 h-12 text-base font-semibold transition-all"
+									style={{
+										backgroundColor: selected ? PARROT_GREEN : undefined,
+									}}
+									onMouseEnter={(e) => {
+										if (selected) {
+											e.currentTarget.style.backgroundColor = "#6a9a38";
+										}
+									}}
+									onMouseLeave={(e) => {
+										if (selected) {
+											e.currentTarget.style.backgroundColor = PARROT_GREEN;
+										}
+									}}
 								>
 									{isSubmitting ? (
 										<span className="flex items-center gap-2">
