@@ -1,7 +1,0 @@
-{
-	"$schema": "https://openapi.vercel.sh/vercel.json",
-	"framework": null,
-	"installCommand": "bun install",
-	"buildCommand": "cd apps/hero && bun run build && mkdir -p ../../.vercel && cp -r .vercel/output ../../.vercel/",
-	"ignoreCommand": "bash -c 'git fetch --depth=1 origin $VERCEL_GIT_PREVIOUS_SHA && git diff $VERCEL_GIT_PREVIOUS_SHA HEAD --quiet apps/hero vercel.json'"
-}
