@@ -47,6 +47,15 @@ export const Route = createFileRoute("/pricing")({
 				content:
 					"voice dictation pricing, dictation app price, speech to text cost, Parrot pricing, free dictation app, voice typing subscription",
 			},
+			{
+				name: "twitter:title",
+				content: "Pricing - Parrot voice dictation for Mac",
+			},
+			{
+				name: "twitter:description",
+				content:
+					"Simple pricing for voice dictation. Free local mode forever, Pro from $8/mo.",
+			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/pricing" }],
 		scripts: [
@@ -443,9 +452,9 @@ function PricingPage() {
 						Pricing
 					</p>
 					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5 animate-fade-in-up-delay-1">
-						Works offline.
+						Voice dictation pricing.
 						<br />
-						Gets better in the cloud.
+						Free forever, Pro when ready.
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl animate-fade-in-up-delay-2">
 						Free local mode forever. Try Pro for 14 days free — cloud-powered

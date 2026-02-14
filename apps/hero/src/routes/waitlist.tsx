@@ -83,7 +83,7 @@ function WaitlistPage() {
 						Coming soon
 					</p>
 					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5 animate-fade-in-up-delay-1">
-						Be the first to try Parrot
+						Join the Parrot Waitlist
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl mb-10 animate-fade-in-up-delay-2">
 						Voice dictation for Mac. 3x faster than typing, with cleanup that
