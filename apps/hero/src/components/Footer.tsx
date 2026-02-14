@@ -67,7 +67,8 @@ export default function Footer() {
 					</nav>
 				</div>
 				<p className="text-center text-muted-foreground/50 text-xs mt-8">
-					Voice dictation that just works.
+					&copy; {new Date().getFullYear()} Parrot. Voice dictation that just
+					works.
 				</p>
 			</div>
 		</footer>
