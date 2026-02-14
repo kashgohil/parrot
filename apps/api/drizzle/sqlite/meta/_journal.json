@@ -8,6 +8,13 @@
       "when": 1770295750668,
       "tag": "0000_hard_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1770381600000,
+      "tag": "0001_add_trial_ends_at",
+      "breakpoints": true
     }
   ]
 }

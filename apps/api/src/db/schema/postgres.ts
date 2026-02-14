@@ -19,6 +19,7 @@ export const users = pgTable("users", {
 	polarSubscriptionId: text("polar_subscription_id"),
 	subscriptionStatus: text("subscription_status"),
 	subscriptionExpiresAt: text("subscription_expires_at"),
+	trialEndsAt: text("trial_ends_at"),
 	createdAt: timestamp("created_at").defaultNow(),
 });
 
