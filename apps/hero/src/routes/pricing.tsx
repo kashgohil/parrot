@@ -5,6 +5,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Switch } from "@/components/ui/switch";
 import { WaitlistCTA } from "@/components/WaitlistCTA";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
@@ -19,7 +20,6 @@ import {
 	Users,
 	Zap,
 } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
 import { useState, type ReactNode } from "react";
 
 export const Route = createFileRoute("/pricing")({
@@ -42,8 +42,80 @@ export const Route = createFileRoute("/pricing")({
 					"Simple pricing for voice dictation. Free local mode forever, Pro from $8/mo.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/pricing" },
+			{
+				name: "keywords",
+				content:
+					"voice dictation pricing, dictation app price, speech to text cost, Parrot pricing, free dictation app, voice typing subscription",
+			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/pricing" }],
+		scripts: [
+			{
+				type: "application/ld+json",
+				children: JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "FAQPage",
+					mainEntity: [
+						{
+							"@type": "Question",
+							name: "Is there a free trial?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Yes. Every new account gets a 14-day Pro trial — no credit card required. You get full access to cloud transcription, AI cleanup, and sync. After the trial, you can upgrade to Pro or continue using local mode for free.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "Can I use Parrot without paying?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Yes. Local mode is completely free, forever. It runs Whisper.cpp and Ollama on your Mac — no account, no subscription, no data leaves your device. Cloud mode adds higher accuracy, AI cleanup, and sync across devices.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: 'What does "Bring your own API keys" mean?',
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Pro and Teams users can plug in their own OpenAI, Deepgram, or ElevenLabs API keys. This gives you unlimited cloud transcription at your provider's rates, while still using Parrot for cleanup, vocabulary, sync, and history.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "What happens if I hit my transcription limit?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "You'll get a warning at 80% usage. Once you reach 100%, cloud transcription pauses until next month. Local transcription always works. You can also add your own API keys for unlimited cloud usage.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "How accurate is local vs. cloud transcription?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Local: Whisper.cpp — very good for general use. Cloud: Deepgram Nova-2 or OpenAI Whisper API — noticeably better for accents, technical terms, and noisy environments.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "Can I switch between plans?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Yes, upgrade or downgrade anytime. Your local data is always yours. Cloud data syncs as long as you're on a paid plan.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "Is there an annual discount?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Yes — 25% off when you pay annually. Pro drops from $8/mo to $6/mo, and Teams from $14/user/mo to $11/user/mo.",
+							},
+						},
+					],
+				}),
+			},
+		],
 	}),
 });
 
@@ -387,10 +459,7 @@ function PricingPage() {
 						>
 							Monthly
 						</span>
-						<Switch
-							checked={annual}
-							onCheckedChange={setAnnual}
-						/>
+						<Switch checked={annual} onCheckedChange={setAnnual} />
 						<span
 							className={`text-sm font-semibold transition-colors ${annual ? "text-foreground" : "text-muted-foreground"}`}
 						>
