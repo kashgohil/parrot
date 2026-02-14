@@ -16,7 +16,7 @@ function CodeBlock({ children }: { children: string }) {
 			<button
 				type="button"
 				onClick={copy}
-				className="absolute top-2 right-2 px-2 py-1 rounded-md text-[11px] font-medium opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer bg-foreground/[0.05] hover:bg-foreground/[0.1] text-foreground/50"
+				className="absolute top-2 right-2 px-2 py-1 rounded-md text-[11px] font-medium opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer bg-foreground/5] hover:bg-foreground/10 text-foreground/50"
 			>
 				{copied ? "Copied" : "Copy"}
 			</button>
@@ -31,10 +31,13 @@ export default function LocalVoiceDictationMac() {
 	return (
 		<>
 			<p>
-				Most voice dictation tools send your audio to a cloud API for
-				transcription. That works, but it means your words travel over the
-				internet, you need an API key or subscription, and it won't work
-				offline. Parrot's local mode is different: everything runs on your Mac.
+				<strong>
+					You can run voice dictation entirely on your Mac with zero internet,
+					zero API keys, and zero data leaving your device.
+				</strong>{" "}
+				Parrot's local mode uses Whisper.cpp for transcription and Ollama for AI
+				cleanup, both running on-device. Setup takes under 5 minutes, and once
+				the models (~4GB) are downloaded, it works fully offline.
 			</p>
 			<p>
 				This guide walks through every step - from installing the prerequisites
@@ -265,7 +268,10 @@ export default function LocalVoiceDictationMac() {
 				<li>
 					<strong>Custom vocabulary</strong> - add names, technical terms, and
 					jargon so Whisper recognizes them correctly. See our guide on{" "}
-					<Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>
+					<Link
+						to="/blog/$slug"
+						params={{ slug: "custom-vocabulary-voice-dictation" }}
+					>
 						custom vocabulary
 					</Link>
 					.
@@ -306,7 +312,10 @@ export default function LocalVoiceDictationMac() {
 				Accuracy is very good with the medium Whisper model. It won't match the
 				latest cloud offerings from Deepgram or ElevenLabs on edge cases, but
 				for everyday dictation it's more than sufficient. Adding{" "}
-				<Link to="/blog/$slug" params={{ slug: "custom-vocabulary-voice-dictation" }}>
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "custom-vocabulary-voice-dictation" }}
+				>
 					custom vocabulary
 				</Link>{" "}
 				helps significantly with proper nouns.
@@ -345,7 +354,10 @@ export default function LocalVoiceDictationMac() {
 			<ul>
 				<li>
 					<strong>Privacy</strong> - nothing leaves your Mac. Important for{" "}
-					<Link to="/blog/$slug" params={{ slug: "voice-dictation-medical-hipaa" }}>
+					<Link
+						to="/blog/$slug"
+						params={{ slug: "voice-dictation-medical-hipaa" }}
+					>
 						medical professionals
 					</Link>
 					, lawyers, and anyone handling sensitive information.
@@ -363,14 +375,18 @@ export default function LocalVoiceDictationMac() {
 			<h2>When to consider cloud instead</h2>
 			<p>
 				If you need the absolute fastest transcription, or you're on an older
-				Intel Mac where local processing is slow, Parrot offers two cloud options:
+				Intel Mac where local processing is slow, Parrot offers two cloud
+				options:
 			</p>
 			<ul>
 				<li>
 					<strong>BYOK (Bring Your Own Key)</strong> - use your own API keys for
 					OpenAI Whisper, Deepgram, or ElevenLabs. You control the provider
 					relationship. Check our{" "}
-					<Link to="/blog/$slug" params={{ slug: "transcription-apis-compared" }}>
+					<Link
+						to="/blog/$slug"
+						params={{ slug: "transcription-apis-compared" }}
+					>
 						comparison of transcription APIs
 					</Link>{" "}
 					to pick one.
