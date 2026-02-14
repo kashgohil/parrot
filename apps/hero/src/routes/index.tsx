@@ -61,7 +61,7 @@ import {
 	Zap,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 const emptySubscribe = () => () => {};
 function useHydrated() {
@@ -101,6 +101,11 @@ export const Route = createFileRoute("/")({
 				content:
 					"Voice dictation for Mac. 3x faster than typing, with cleanup, custom vocabulary, and local-first privacy.",
 			},
+			{
+				name: "keywords",
+				content:
+					"voice dictation, voice dictation mac, speech to text, dictation app, voice typing, mac dictation, AI transcription, local voice dictation",
+			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/" }],
 		scripts: [
@@ -108,12 +113,71 @@ export const Route = createFileRoute("/")({
 				type: "application/ld+json",
 				children: JSON.stringify({
 					"@context": "https://schema.org",
+					"@type": "WebSite",
+					name: "Parrot",
+					url: "https://tryparrot.app",
+					description:
+						"Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.",
+					publisher: {
+						"@type": "Organization",
+						name: "Parrot",
+						url: "https://tryparrot.app",
+						logo: {
+							"@type": "ImageObject",
+							url: "https://tryparrot.app/parrot-transparent.png",
+						},
+					},
+				}),
+			},
+			{
+				type: "application/ld+json",
+				children: JSON.stringify({
+					"@context": "https://schema.org",
 					"@type": "SoftwareApplication",
 					name: "Parrot",
+					url: "https://tryparrot.app",
 					operatingSystem: "macOS",
 					applicationCategory: "UtilitiesApplication",
 					description:
-						"Voice dictation for Mac. 3x faster than typing, with cleanup, custom vocabulary, and local-first privacy.",
+						"Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.",
+					image: "https://tryparrot.app/og-image.png",
+					screenshot: "https://tryparrot.app/og-image.png",
+					author: {
+						"@type": "Person",
+						name: "Kash Gohil",
+						url: "https://x.com/kashhh",
+					},
+					publisher: {
+						"@type": "Organization",
+						name: "Parrot",
+						url: "https://tryparrot.app",
+					},
+					offers: [
+						{
+							"@type": "Offer",
+							name: "Free",
+							price: "0",
+							priceCurrency: "USD",
+							description:
+								"Unlimited local transcription with Whisper.cpp, local AI cleanup via Ollama, custom vocabulary, and offline support.",
+						},
+						{
+							"@type": "Offer",
+							name: "Pro",
+							price: "8",
+							priceCurrency: "USD",
+							priceSpecification: {
+								"@type": "UnitPriceSpecification",
+								price: "8",
+								priceCurrency: "USD",
+								billingDuration: "P1M",
+							},
+							description:
+								"120 min/month cloud transcription, unlimited AI cleanup with GPT-4o-mini, cloud history and sync.",
+						},
+					],
+					featureList:
+						"Voice dictation, AI text cleanup, Custom vocabulary, Local-first privacy, Multiple transcription providers, Global hotkey, Works in any app, Dictation history",
 				}),
 			},
 			{
@@ -124,42 +188,50 @@ export const Route = createFileRoute("/")({
 					mainEntity: [
 						{
 							"@type": "Question",
+							name: "How fast is voice dictation compared to typing?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Voice dictation is approximately 3x faster than typing. According to a Stanford University study (2017), the average person speaks at 130-150 words per minute compared to 40 WPM typing. Parrot captures your speech and pastes it directly where your cursor is, making it the fastest way to write on a Mac.",
+							},
+						},
+						{
+							"@type": "Question",
 							name: "What's local mode?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Whisper.cpp runs on your Mac for transcription, Ollama handles cleanup. Everything happens on-device. You download models once (~4GB), then no internet needed.",
+								text: "In local mode, Whisper.cpp runs on your Mac for transcription and Ollama handles AI cleanup. Everything happens on-device - zero data leaves your computer. You download models once (~4GB), then no internet is needed. This is ideal for HIPAA-sensitive work, legal documents, or anyone who values privacy.",
 							},
 						},
 						{
 							"@type": "Question",
-							name: "Which providers work?",
+							name: "Which transcription providers does Parrot support?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Cloud: OpenAI Whisper, Deepgram, ElevenLabs. Local: Whisper.cpp. For cleanup: GPT-4o-mini (cloud) or Ollama (local). Switch anytime in settings.",
+								text: "Cloud providers: OpenAI Whisper ($0.006/min), Deepgram Nova-2 ($0.0043/min, fastest latency), and ElevenLabs Scribe. Local: Whisper.cpp (free, runs on-device). For AI cleanup: GPT-4o-mini or Anthropic Claude (cloud) or Ollama (local). You can switch providers anytime in settings.",
 							},
 						},
 						{
 							"@type": "Question",
-							name: "Works offline?",
+							name: "Does Parrot work offline?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Local mode, yes - fully offline once models are downloaded. Cloud mode needs internet.",
+								text: "Yes - in local mode, Parrot works fully offline once models are downloaded. Transcription uses Whisper.cpp and cleanup uses Ollama, both running entirely on your Mac. Cloud mode requires internet. You can switch between local and cloud anytime.",
 							},
 						},
 						{
 							"@type": "Question",
-							name: "How does the cleanup work?",
+							name: "How does the AI cleanup work?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "After transcription, an LLM pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. It's optional and you can toggle it per-dictation.",
+								text: "After transcription, an AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. Cleanup is optional and can be toggled per-dictation. It uses GPT-4o-mini (cloud) or Ollama (local).",
 							},
 						},
 						{
 							"@type": "Question",
-							name: "What about my privacy?",
+							name: "What about privacy?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Local mode: nothing leaves your Mac. Cloud mode: audio goes directly to your chosen provider with your API key. Parrot never stores your audio or text on any server.",
+								text: "Local mode: nothing leaves your Mac - zero audio, zero text, zero telemetry. Cloud mode: audio goes directly to your chosen provider using your own API key. Parrot never stores your audio or transcriptions on any Parrot server. All history is stored locally in an SQLite database on your device.",
 							},
 						},
 					],
@@ -168,30 +240,6 @@ export const Route = createFileRoute("/")({
 		],
 	}),
 });
-
-// ---------------------------------------------------------------------------
-// Hook: IntersectionObserver trigger
-// ---------------------------------------------------------------------------
-function useInView(options?: IntersectionObserverInit) {
-	const ref = useRef<HTMLDivElement>(null);
-	const [inView, setInView] = useState(false);
-	useEffect(() => {
-		const el = ref.current;
-		if (!el) return;
-		const obs = new IntersectionObserver(
-			([entry]) => {
-				if (entry.isIntersecting) {
-					setInView(true);
-					obs.disconnect();
-				}
-			},
-			{ threshold: 0.2, ...options },
-		);
-		obs.observe(el);
-		return () => obs.disconnect();
-	}, []);
-	return { ref, inView };
-}
 
 // ---------------------------------------------------------------------------
 // 1. Hero: Live Dictation Simulation
@@ -472,7 +520,6 @@ function BeforeAfter() {
 	const [idx, setIdx] = useState(0);
 	const [key, setKey] = useState(0); // Used to reset the timer on manual selection
 	const [isTransitioning, setIsTransitioning] = useState(false);
-	const ex = examples[idx];
 
 	// Auto-rotate every 5 seconds, reset when key changes (manual selection)
 	useEffect(() => {
@@ -932,103 +979,6 @@ function FeatureRow({
 				</p>
 			</div>
 			<div className="flex-1 min-w-0 w-full">{visual}</div>
-		</div>
-	);
-}
-
-// ---------------------------------------------------------------------------
-// 7. Animated Stats
-// ---------------------------------------------------------------------------
-function AnimatedCounter({
-	target,
-	suffix = "",
-	prefix = "",
-}: {
-	target: number;
-	suffix?: string;
-	prefix?: string;
-}) {
-	const { ref, inView } = useInView();
-	const [value, setValue] = useState(0);
-
-	useEffect(() => {
-		if (!inView) return;
-		const duration = 1500;
-		const steps = 60;
-		const increment = target / steps;
-		let current = 0;
-		const interval = setInterval(() => {
-			current += increment;
-			if (current >= target) {
-				setValue(target);
-				clearInterval(interval);
-			} else {
-				setValue(Math.floor(current));
-			}
-		}, duration / steps);
-		return () => clearInterval(interval);
-	}, [inView, target]);
-
-	return (
-		<div ref={ref} className="text-center">
-			<p className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
-				{prefix}
-				{inView ? value : 0}
-				{suffix}
-			</p>
-		</div>
-	);
-}
-
-function LiveWordCounter() {
-	const [count, setCount] = useState(847293);
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setCount((c) => c + Math.floor(Math.random() * 3) + 1);
-		}, 200);
-		return () => clearInterval(interval);
-	}, []);
-	return (
-		<div className="text-center">
-			<p className="text-4xl md:text-5xl font-black text-foreground tracking-tight tabular-nums">
-				{count.toLocaleString()}
-			</p>
-			<p className="text-sm text-muted-foreground mt-1">words dictated</p>
-		</div>
-	);
-}
-
-function AnimatedStats() {
-	const { ref, inView } = useInView();
-	return (
-		<div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
-			<div>
-				<AnimatedCounter target={3} suffix="x" />
-				<p className="text-sm text-muted-foreground mt-1 text-center">
-					faster than typing
-				</p>
-			</div>
-			<div className="text-center">
-				<p className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
-					{"<"}1s
-				</p>
-				<p className="text-sm text-muted-foreground mt-1">to start recording</p>
-			</div>
-			<div className="text-center">
-				<p className="text-4xl md:text-5xl font-black text-foreground tracking-tight">
-					<span
-						className={`inline-block transition-all duration-700 ${
-							inView ? "scale-110" : "scale-100"
-						}`}
-					>
-						0
-					</span>
-				</p>
-				<p className="text-sm text-muted-foreground mt-1">
-					data on our servers
-				</p>
-			</div>
-			<LiveWordCounter />
 		</div>
 	);
 }
@@ -1494,8 +1444,17 @@ function HomePage() {
 							)}`}
 						>
 							Parrot transcribes what you say and pastes it where your cursor
-							is. Custom vocabulary, cleanup, and full history. Runs on your Mac
-							locally or with cloud APIs, your choice.
+							is. Speaking is 3x faster than typing (
+							<a
+								href="https://dl.acm.org/doi/10.1145/3025453.3025580"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="text-primary/80 hover:text-primary underline-offset-2 hover:underline"
+							>
+								Stanford, 2017
+							</a>
+							). Custom vocabulary, AI cleanup, and full history. Runs on your
+							Mac locally or with cloud APIs.
 						</p>
 
 						<div
