@@ -29,6 +29,12 @@ export default function Footer() {
 							About
 						</Link>
 						<Link
+							to="/pricing"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Pricing
+						</Link>
+						<Link
 							to="/waitlist"
 							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
 						>
