@@ -2,8 +2,11 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { AuthProvider } from "./lib/auth";
+import { initTelemetry } from "./lib/telemetry";
 import { routeTree } from "./routeTree.gen";
 import "./styles.css";
+
+initTelemetry();
 
 const router = createRouter({ routeTree });
 

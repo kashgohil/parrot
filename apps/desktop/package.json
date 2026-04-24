@@ -10,6 +10,8 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@sentry/react": "^8.47.0",
+    "posthog-js": "^1.205.0",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
