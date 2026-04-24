@@ -168,6 +168,121 @@ pub async fn get_audio_url(session_token: &str, dictation_id: &str) -> Result<St
     Ok(result.url)
 }
 
+// -- Migration / Sync --
+
+#[derive(Deserialize, Serialize, Clone)]
+pub struct MigrationStatus {
+    #[serde(rename = "tierOk")]
+    pub tier_ok: bool,
+    pub paid: bool,
+    pub completed: bool,
+    #[serde(rename = "paidAt")]
+    pub paid_at: Option<String>,
+    #[serde(rename = "completedAt")]
+    pub completed_at: Option<String>,
+}
+
+pub async fn get_migration_status(session_token: &str) -> Result<MigrationStatus> {
+    let client = reqwest::Client::new();
+    let resp = client
+        .get(format!("{}/api/sync/migration/status", BACKEND_URL))
+        .header("Authorization", format!("Bearer {}", session_token))
+        .send()
+        .await?;
+    if !resp.status().is_success() {
+        let status = resp.status();
+        let body = resp.text().await.unwrap_or_default();
+        anyhow::bail!("Migration status error {}: {}", status, body);
+    }
+    Ok(resp.json().await?)
+}
+
+#[derive(Deserialize)]
+struct CheckoutResponse {
+    url: String,
+}
+
+pub async fn get_migration_checkout_url(session_token: &str) -> Result<String> {
+    let client = reqwest::Client::new();
+    let resp = client
+        .post(format!("{}/api/sync/migration/checkout", BACKEND_URL))
+        .header("Authorization", format!("Bearer {}", session_token))
+        .send()
+        .await?;
+    if !resp.status().is_success() {
+        let status = resp.status();
+        let body = resp.text().await.unwrap_or_default();
+        anyhow::bail!("Migration checkout error {}: {}", status, body);
+    }
+    let result: CheckoutResponse = resp.json().await?;
+    Ok(result.url)
+}
+
+#[derive(Serialize)]
+pub struct ImportEntry {
+    pub id: String,
+    pub raw_text: String,
+    pub cleaned_text: String,
+    pub provider: String,
+    pub duration_ms: i64,
+    pub created_at: String,
+}
+
+#[derive(Serialize)]
+pub struct ImportProfile {
+    pub custom_words: String,
+    pub context_prompt: String,
+    pub writing_style: String,
+}
+
+#[derive(Serialize)]
+struct ImportRequest<'a> {
+    entries: &'a [ImportEntry],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    profile: Option<&'a ImportProfile>,
+}
+
+#[derive(Deserialize)]
+pub struct ImportResult {
+    pub inserted: i64,
+    pub skipped: i64,
+}
+
+pub async fn sync_import(
+    session_token: &str,
+    entries: &[ImportEntry],
+    profile: Option<&ImportProfile>,
+) -> Result<ImportResult> {
+    let client = reqwest::Client::new();
+    let resp = client
+        .post(format!("{}/api/sync/import", BACKEND_URL))
+        .header("Authorization", format!("Bearer {}", session_token))
+        .json(&ImportRequest { entries, profile })
+        .send()
+        .await?;
+    if !resp.status().is_success() {
+        let status = resp.status();
+        let body = resp.text().await.unwrap_or_default();
+        anyhow::bail!("Sync import error {}: {}", status, body);
+    }
+    Ok(resp.json().await?)
+}
+
+pub async fn sync_import_complete(session_token: &str) -> Result<()> {
+    let client = reqwest::Client::new();
+    let resp = client
+        .post(format!("{}/api/sync/import/complete", BACKEND_URL))
+        .header("Authorization", format!("Bearer {}", session_token))
+        .send()
+        .await?;
+    if !resp.status().is_success() {
+        let status = resp.status();
+        let body = resp.text().await.unwrap_or_default();
+        anyhow::bail!("Sync complete error {}: {}", status, body);
+    }
+    Ok(())
+}
+
 // -- Profile --
 
 #[derive(Deserialize, Clone, serde::Serialize)]

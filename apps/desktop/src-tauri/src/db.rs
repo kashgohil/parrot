@@ -102,6 +102,38 @@ impl Database {
             )?;
         }
 
+        // Migration: add migrated_at column (cloud migration tracking)
+        let has_migrated_at: bool = conn
+            .prepare("SELECT COUNT(*) FROM _migrations WHERE name = 'add_migrated_at'")?
+            .query_row([], |row| row.get::<_, i64>(0))
+            .unwrap_or(0)
+            > 0;
+
+        if !has_migrated_at {
+            conn.execute_batch(
+                "
+                ALTER TABLE dictation_history ADD COLUMN migrated_at TEXT;
+                INSERT INTO _migrations (name) VALUES ('add_migrated_at');
+                ",
+            )?;
+        }
+
+        // Migration: add audio_migrated_at for retry tracking
+        let has_audio_migrated_at: bool = conn
+            .prepare("SELECT COUNT(*) FROM _migrations WHERE name = 'add_audio_migrated_at'")?
+            .query_row([], |row| row.get::<_, i64>(0))
+            .unwrap_or(0)
+            > 0;
+
+        if !has_audio_migrated_at {
+            conn.execute_batch(
+                "
+                ALTER TABLE dictation_history ADD COLUMN audio_migrated_at TEXT;
+                INSERT INTO _migrations (name) VALUES ('add_audio_migrated_at');
+                ",
+            )?;
+        }
+
         // Migration: add local_user table
         let has_local_user: bool = conn
             .prepare("SELECT COUNT(*) FROM _migrations WHERE name = 'add_local_user'")?
@@ -232,6 +264,92 @@ impl Database {
         conn.execute(
             "UPDATE dictation_history SET audio_path = ?1 WHERE id = ?2",
             [audio_path, id],
+        )?;
+        Ok(())
+    }
+
+    pub fn list_unmigrated_history(&self) -> Result<Vec<DictationEntry>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, raw_text, cleaned_text, provider, duration_ms, created_at, audio_path FROM dictation_history WHERE migrated_at IS NULL ORDER BY created_at ASC",
+        )?;
+        let entries = stmt
+            .query_map([], |row| {
+                Ok(DictationEntry {
+                    id: row.get(0)?,
+                    raw_text: row.get(1)?,
+                    cleaned_text: row.get(2)?,
+                    provider: row.get(3)?,
+                    duration_ms: row.get(4)?,
+                    created_at: row.get(5)?,
+                    audio_path: row.get(6)?,
+                })
+            })?
+            .collect::<std::result::Result<Vec<_>, _>>()?;
+        Ok(entries)
+    }
+
+    pub fn mark_dictation_migrated(&self, id: &str, migrated_at: &str) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "UPDATE dictation_history SET migrated_at = ?1 WHERE id = ?2",
+            [migrated_at, id],
+        )?;
+        Ok(())
+    }
+
+    pub fn count_unmigrated_history(&self) -> Result<i64> {
+        let conn = self.conn.lock().unwrap();
+        let count: i64 = conn
+            .prepare("SELECT COUNT(*) FROM dictation_history WHERE migrated_at IS NULL")?
+            .query_row([], |row| row.get(0))?;
+        Ok(count)
+    }
+
+    pub fn count_total_history(&self) -> Result<i64> {
+        let conn = self.conn.lock().unwrap();
+        let count: i64 = conn
+            .prepare("SELECT COUNT(*) FROM dictation_history")?
+            .query_row([], |row| row.get(0))?;
+        Ok(count)
+    }
+
+    pub fn list_pending_audio(&self) -> Result<Vec<DictationEntry>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, raw_text, cleaned_text, provider, duration_ms, created_at, audio_path FROM dictation_history WHERE audio_path IS NOT NULL AND audio_migrated_at IS NULL ORDER BY created_at ASC",
+        )?;
+        let entries = stmt
+            .query_map([], |row| {
+                Ok(DictationEntry {
+                    id: row.get(0)?,
+                    raw_text: row.get(1)?,
+                    cleaned_text: row.get(2)?,
+                    provider: row.get(3)?,
+                    duration_ms: row.get(4)?,
+                    created_at: row.get(5)?,
+                    audio_path: row.get(6)?,
+                })
+            })?
+            .collect::<std::result::Result<Vec<_>, _>>()?;
+        Ok(entries)
+    }
+
+    pub fn count_pending_audio(&self) -> Result<i64> {
+        let conn = self.conn.lock().unwrap();
+        let count: i64 = conn
+            .prepare(
+                "SELECT COUNT(*) FROM dictation_history WHERE audio_path IS NOT NULL AND audio_migrated_at IS NULL",
+            )?
+            .query_row([], |row| row.get(0))?;
+        Ok(count)
+    }
+
+    pub fn mark_audio_migrated(&self, id: &str, migrated_at: &str) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "UPDATE dictation_history SET audio_migrated_at = ?1 WHERE id = ?2",
+            [migrated_at, id],
         )?;
         Ok(())
     }
