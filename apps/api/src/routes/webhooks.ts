@@ -8,6 +8,7 @@ import {
 	getUserByPolarCustomerId,
 	hasPolarEvent,
 	insertPolarEvent,
+	markMigrationPaid,
 	updateUserSubscription,
 } from "../db/index";
 
@@ -73,6 +74,22 @@ webhooks.post("/polar", async (c) => {
 			email,
 		});
 		return c.json({ status: "no_matching_user" });
+	}
+
+	// One-time migration purchase: keyed by product ID, not subscription event.
+	const migrationProductId = process.env.POLAR_PRODUCT_MIGRATION;
+	if (
+		migrationProductId &&
+		productId === migrationProductId &&
+		(type === "order.created" ||
+			type === "order.paid" ||
+			type === "order.updated" ||
+			type === "checkout.updated")
+	) {
+		if (!user.migrationPaidAt) {
+			await markMigrationPaid(user.id, new Date().toISOString());
+		}
+		return c.json({ status: "ok" });
 	}
 
 	switch (type) {
