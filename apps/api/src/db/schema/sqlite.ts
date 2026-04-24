@@ -17,6 +17,8 @@ export const users = sqliteTable("users", {
 	subscriptionStatus: text("subscription_status"),
 	subscriptionExpiresAt: text("subscription_expires_at"),
 	trialEndsAt: text("trial_ends_at"),
+	migrationPaidAt: text("migration_paid_at"),
+	migrationCompletedAt: text("migration_completed_at"),
 	createdAt: text("created_at").default(sql`(datetime('now'))`),
 });
 

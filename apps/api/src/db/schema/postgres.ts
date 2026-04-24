@@ -20,6 +20,8 @@ export const users = pgTable("users", {
 	subscriptionStatus: text("subscription_status"),
 	subscriptionExpiresAt: text("subscription_expires_at"),
 	trialEndsAt: text("trial_ends_at"),
+	migrationPaidAt: text("migration_paid_at"),
+	migrationCompletedAt: text("migration_completed_at"),
 	createdAt: timestamp("created_at").defaultNow(),
 });
 
