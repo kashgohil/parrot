@@ -3,6 +3,7 @@ mod cleanup;
 mod cloud_api;
 mod db;
 mod local_setup;
+mod migration;
 mod transcription;
 
 use audio::AudioRecorder;
@@ -553,10 +554,9 @@ async fn install_tool(name: String) -> Result<String, String> {
 }
 
 // Local setup commands
-use local_setup::SetupProgress;
-use std::sync::atomic::{AtomicBool, Ordering};
-
-static SETUP_CANCELLED: AtomicBool = AtomicBool::new(false);
+use local_setup::{SetupProgress, ServerProcesses, SharedServerProcesses};
+use std::sync::Arc;
+use tokio::sync::RwLock;
 
 #[tauri::command]
 async fn check_local_setup_status(
@@ -586,28 +586,70 @@ async fn check_system_requirements() -> Result<local_setup::SystemRequirements, 
 }
 
 #[derive(serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct StartSetupRequest {
     pub whisper_model: String,
     pub ollama_model: String,
+}
+
+#[derive(serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CheckModelDownloadStatusRequest {
+    pub whisper_models: Vec<String>,
+    pub ollama_models: Vec<String>,
+}
+
+#[tauri::command]
+async fn check_model_download_status(
+    request: CheckModelDownloadStatusRequest,
+) -> Result<serde_json::Value, String> {
+    let mut downloaded_whisper = Vec::new();
+    let mut downloaded_ollama = Vec::new();
+
+    for model in &request.whisper_models {
+        if local_setup::is_whisper_model_downloaded(model)
+            .await
+            .map_err(|e| format!("Failed to check Whisper model {}: {}", model, e))?
+        {
+            downloaded_whisper.push(model.clone());
+        }
+    }
+
+    if local_setup::command_exists("ollama").await {
+        for model in &request.ollama_models {
+            if local_setup::is_ollama_model_downloaded(model)
+                .await
+                .map_err(|e| format!("Failed to check Ollama model {}: {}", model, e))?
+            {
+                downloaded_ollama.push(model.clone());
+            }
+        }
+    }
+
+    Ok(serde_json::json!({
+        "whisper": downloaded_whisper,
+        "ollama": downloaded_ollama,
+    }))
 }
 
 #[tauri::command]
 async fn start_local_setup(
     request: StartSetupRequest,
     app: tauri::AppHandle,
+    servers: tauri::State<'_, SharedServerProcesses>,
     _db: tauri::State<'_, Database>,
 ) -> Result<(), String> {
-    SETUP_CANCELLED.store(false, Ordering::SeqCst);
-    
     let whisper_model = request.whisper_model;
     let ollama_model = request.ollama_model;
-    
+    let servers = servers.inner().clone();
+
     tokio::spawn(async move {
         let app_clone = app.clone();
-        
+
         let result = local_setup::run_setup(
             whisper_model,
             ollama_model,
+            servers,
             move |progress: SetupProgress| {
                 let app = app_clone.clone();
                 tokio::spawn(async move {
@@ -662,31 +704,50 @@ async fn continue_local_setup(
 #[tauri::command]
 async fn start_local_servers(
     db: tauri::State<'_, Database>,
+    servers: tauri::State<'_, SharedServerProcesses>,
 ) -> Result<serde_json::Value, String> {
     let config = db
         .get_local_setup_config()
         .map_err(|e| format!("Failed to get setup config: {}", e))?;
-    
+
     if !config.setup_completed {
         return Err("Local setup not completed".to_string());
     }
-    
-    // Start whisper server
-    let (_whisper_child, whisper_port) = local_setup::start_whisper_server(
+
+    // If servers are already running, return their ports
+    {
+        let guard = servers.read().await;
+        if let (Some(wp), Some(op)) = (guard.whisper_port, guard.ollama_port) {
+            if guard.whisper.is_some() && guard.ollama.is_some() {
+                return Ok(serde_json::json!({
+                    "whisper_port": wp,
+                    "ollama_port": op,
+                    "status": "running",
+                }));
+            }
+        }
+    }
+
+    let (whisper_child, whisper_port) = local_setup::start_whisper_server(
         &config.whisper_model_path,
         config.whisper_server_port,
     )
     .await
     .map_err(|e| format!("Failed to start whisper server: {}", e))?;
-    
-    // Start Ollama server
-    let (_ollama_child, ollama_port) = local_setup::start_ollama_server(config.ollama_server_port)
-        .await
-        .map_err(|e| format!("Failed to start Ollama server: {}", e))?;
-    
-    // Store the child processes (in a real implementation, we'd keep these handles)
-    // For now, we just return success
-    
+
+    let (ollama_child, ollama_port) =
+        local_setup::start_ollama_server(config.ollama_server_port)
+            .await
+            .map_err(|e| format!("Failed to start Ollama server: {}", e))?;
+
+    {
+        let mut guard = servers.write().await;
+        guard.whisper = Some(whisper_child);
+        guard.ollama = Some(ollama_child);
+        guard.whisper_port = Some(whisper_port);
+        guard.ollama_port = Some(ollama_port);
+    }
+
     Ok(serde_json::json!({
         "whisper_port": whisper_port,
         "ollama_port": ollama_port,
@@ -695,14 +756,59 @@ async fn start_local_servers(
 }
 
 #[tauri::command]
-async fn stop_local_servers() -> Result<(), String> {
-    // In a full implementation, we'd stop the stored child processes
-    // For now, we just return success
+async fn stop_local_servers(
+    servers: tauri::State<'_, SharedServerProcesses>,
+) -> Result<(), String> {
+    let mut guard = servers.write().await;
+    guard.stop_all().await;
     Ok(())
+}
+
+#[tauri::command]
+async fn validate_local_servers(
+    db: tauri::State<'_, Database>,
+    servers: tauri::State<'_, SharedServerProcesses>,
+) -> Result<serde_json::Value, String> {
+    let config = db
+        .get_local_setup_config()
+        .map_err(|e| format!("Failed to get setup config: {}", e))?;
+
+    let (whisper_port, ollama_port) = {
+        let guard = servers.read().await;
+        (
+            guard.whisper_port.unwrap_or(config.whisper_server_port),
+            guard.ollama_port.unwrap_or(config.ollama_server_port),
+        )
+    };
+
+    let transcription_ok = local_setup::test_transcription(whisper_port).await.is_ok();
+    let cleanup_ok =
+        local_setup::test_cleanup(ollama_port, &config.ollama_model)
+            .await
+            .is_ok();
+
+    Ok(serde_json::json!({
+        "transcription": transcription_ok,
+        "cleanup": cleanup_ok,
+    }))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let _sentry_guard = option_env!("SENTRY_DSN").map(|dsn| {
+        let guard = sentry::init((
+            dsn,
+            sentry::ClientOptions {
+                release: sentry::release_name!(),
+                ..Default::default()
+            },
+        ));
+        sentry::configure_scope(|scope| {
+            scope.set_tag("app", "parrot-desktop-rust");
+        });
+        guard
+    });
+
     let db = Database::new().expect("Failed to initialize database");
     let recorder = AudioRecorder::new().expect("Failed to initialize audio recorder");
     let recorder_state = RecorderState {
@@ -759,6 +865,7 @@ pub fn run() {
         .plugin(tauri_plugin_clipboard_manager::init())
         .manage(db)
         .manage(recorder_state)
+        .manage::<SharedServerProcesses>(Arc::new(RwLock::new(ServerProcesses::new())))
         .invoke_handler(tauri::generate_handler![
             start_recording,
             stop_recording,
@@ -777,11 +884,19 @@ pub fn run() {
             check_command_exists,
             install_tool,
             check_local_setup_status,
+            check_model_download_status,
             check_system_requirements,
             start_local_setup,
             continue_local_setup,
             start_local_servers,
             stop_local_servers,
+            validate_local_servers,
+            migration::get_migration_status,
+            migration::get_migration_checkout_url,
+            migration::get_migration_snapshot,
+            migration::migrate_local_to_cloud,
+            migration::retry_failed_audio,
+            migration::revert_to_local,
         ])
         .setup(|app| {
             setup_tray(app.handle())?;
@@ -806,7 +921,12 @@ pub fn run() {
                         let app_handle = app.handle().clone();
                         tokio::spawn(async move {
                             // Try to start servers in the background
-                            match start_local_servers(app_handle.state::<Database>()).await {
+                            match start_local_servers(
+                                app_handle.state::<Database>(),
+                                app_handle.state::<SharedServerProcesses>(),
+                            )
+                            .await
+                            {
                                 Ok(_) => {
                                     println!("Local servers started successfully");
                                 }

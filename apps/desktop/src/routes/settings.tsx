@@ -1,3 +1,4 @@
+import { CloudMigration } from "@/components/cloud-migration";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -428,6 +429,8 @@ function SettingsPage() {
 					</button>
 				</div>
 			</section>
+
+			<CloudMigration />
 
 			{/* Save button */}
 			<div className="pt-4">

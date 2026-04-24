@@ -31,3 +31,4 @@ uuid = { version = "1", features = ["v4"] }
 dirs = "5"
 arboard = "3"
 urlencoding = "2"
+sentry = { version = "0.34", default-features = false, features = ["backtrace", "contexts", "panic", "reqwest", "rustls"] }
