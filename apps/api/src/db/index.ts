@@ -85,6 +85,19 @@ interface DbOperations {
 		payload: string,
 	): Promise<void>;
 	searchHistory(userId: string, query: string): Promise<DictationEntry[]>;
+	insertDictationMany(
+		userId: string,
+		entries: Array<{
+			id: string;
+			rawText: string;
+			cleanedText: string;
+			provider: string;
+			durationMs: number;
+			createdAt?: string;
+		}>,
+	): Promise<{ inserted: number; skipped: number }>;
+	markMigrationPaid(userId: string, paidAt: string): Promise<void>;
+	markMigrationCompleted(userId: string, completedAt: string): Promise<void>;
 	addToWaitlist(email: string, source?: string): Promise<WaitlistEntry>;
 	getWaitlistEntry(email: string): Promise<WaitlistEntry | null>;
 	getWaitlistCount(): Promise<number>;
@@ -338,6 +351,39 @@ if (isPostgres) {
 					...r,
 					createdAt: r.createdAt?.toISOString() ?? null,
 				})) as DictationEntry[];
+		},
+		async insertDictationMany(userId, entries) {
+			if (entries.length === 0) return { inserted: 0, skipped: 0 };
+			const rows = entries.map((e) => ({
+				id: e.id,
+				userId,
+				rawText: e.rawText,
+				cleanedText: e.cleanedText,
+				provider: e.provider,
+				durationMs: e.durationMs,
+				...(e.createdAt ? { createdAt: new Date(e.createdAt) } : {}),
+			}));
+			const result = await db
+				.insert(dictationHistory)
+				.values(rows)
+				.onConflictDoNothing({ target: dictationHistory.id })
+				.returning({ id: dictationHistory.id });
+			return {
+				inserted: result.length,
+				skipped: entries.length - result.length,
+			};
+		},
+		async markMigrationPaid(userId, paidAt) {
+			await db
+				.update(users)
+				.set({ migrationPaidAt: paidAt })
+				.where(eq(users.id, userId));
+		},
+		async markMigrationCompleted(userId, completedAt) {
+			await db
+				.update(users)
+				.set({ migrationCompletedAt: completedAt })
+				.where(eq(users.id, userId));
 		},
 		async addToWaitlist(email, source) {
 			const id = crypto.randomUUID();
@@ -606,6 +652,40 @@ if (isPostgres) {
 				(e) => e.rawText.includes(query) || e.cleanedText.includes(query),
 			);
 		},
+		async insertDictationMany(userId, entries) {
+			if (entries.length === 0) return { inserted: 0, skipped: 0 };
+			const rows = entries.map((e) => ({
+				id: e.id,
+				userId,
+				rawText: e.rawText,
+				cleanedText: e.cleanedText,
+				provider: e.provider,
+				durationMs: e.durationMs,
+				...(e.createdAt ? { createdAt: e.createdAt } : {}),
+			}));
+			const result = db
+				.insert(dictationHistory)
+				.values(rows)
+				.onConflictDoNothing({ target: dictationHistory.id })
+				.returning({ id: dictationHistory.id })
+				.all();
+			return {
+				inserted: result.length,
+				skipped: entries.length - result.length,
+			};
+		},
+		async markMigrationPaid(userId, paidAt) {
+			db.update(users)
+				.set({ migrationPaidAt: paidAt })
+				.where(eq(users.id, userId))
+				.run();
+		},
+		async markMigrationCompleted(userId, completedAt) {
+			db.update(users)
+				.set({ migrationCompletedAt: completedAt })
+				.where(eq(users.id, userId))
+				.run();
+		},
 		async addToWaitlist(email, source) {
 			const id = crypto.randomUUID();
 			db.insert(waitlist)
@@ -662,6 +742,9 @@ export const incrementUsage = dbOps.incrementUsage.bind(dbOps);
 export const hasPolarEvent = dbOps.hasPolarEvent.bind(dbOps);
 export const insertPolarEvent = dbOps.insertPolarEvent.bind(dbOps);
 export const searchHistory = dbOps.searchHistory.bind(dbOps);
+export const insertDictationMany = dbOps.insertDictationMany.bind(dbOps);
+export const markMigrationPaid = dbOps.markMigrationPaid.bind(dbOps);
+export const markMigrationCompleted = dbOps.markMigrationCompleted.bind(dbOps);
 export const addToWaitlist = dbOps.addToWaitlist.bind(dbOps);
 export const getWaitlistEntry = dbOps.getWaitlistEntry.bind(dbOps);
 export const getWaitlistCount = dbOps.getWaitlistCount.bind(dbOps);
