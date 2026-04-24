@@ -298,55 +298,17 @@ function ModelSelectionStep({
 	useEffect(() => {
 		const checkDownloadedModels = async () => {
 			try {
-				const status = await invoke<{
-					setup_completed: boolean;
-					whisper_installed: boolean;
-					ollama_installed: boolean;
-					config: { whisper_model_path?: string; ollama_model?: string };
-				}>("check_local_setup_status");
-
-				const whisperDownloaded: string[] = [];
-				const ollamaDownloaded: string[] = [];
-
-				// Check whisper models by looking at the config
-				if (status.config?.whisper_model_path) {
-					const path = status.config.whisper_model_path;
-					// Extract model name from path (e.g., "ggml-base.en.bin" -> "base.en")
-					WHISPER_MODELS.forEach((model) => {
-						if (path.includes(model.id)) {
-							whisperDownloaded.push(model.id);
-						}
-					});
-				}
-
-				// Check ollama models
-				if (status.ollama_installed) {
-					try {
-						const result = await invoke<string>("check_command_exists", {
-							command: "ollama",
-						});
-						if (result) {
-							// Try to list ollama models
-							const { invoke: shellInvoke } =
-								await import("@tauri-apps/api/core");
-							const listResult = await shellInvoke<string>("execute_command", {
-								command: "ollama list",
-							});
-							OLLAMA_MODELS.forEach((model) => {
-								if (listResult.includes(model.id.split(":")[0])) {
-									ollamaDownloaded.push(model.id);
-								}
-							});
-						}
-					} catch {
-						// Ollama not available, skip
-					}
-				}
-
-				setDownloadedModels({
-					whisper: whisperDownloaded,
-					ollama: ollamaDownloaded,
+				const downloaded = await invoke<{
+					whisper: string[];
+					ollama: string[];
+				}>("check_model_download_status", {
+					request: {
+						whisperModels: WHISPER_MODELS.map((model) => model.id),
+						ollamaModels: OLLAMA_MODELS.map((model) => model.id),
+					},
 				});
+
+				setDownloadedModels(downloaded);
 			} catch (error) {
 				console.error("Failed to check downloaded models:", error);
 			} finally {
@@ -450,7 +412,7 @@ function ModelSelectionStep({
 
 			<div className="flex justify-end pt-4">
 				<Button onClick={onContinue}>
-					Start Setup
+					{!isCheckingModels && !hasDownloads ? "Continue" : "Start Setup"}
 					<Play className="w-4 h-4 ml-1" />
 				</Button>
 			</div>
@@ -519,9 +481,11 @@ function ModelCard({
 function InstallationProgressStep({
 	progress,
 	logMessages,
+	onRetry,
 }: {
 	progress: SetupProgress | null;
 	logMessages: string[];
+	onRetry: () => void;
 }) {
 	if (!progress) {
 		return (
@@ -650,6 +614,29 @@ function InstallationProgressStep({
 					)}
 				</div>
 			</div>
+
+			{/* Failure banner */}
+			{status.type === "failed" && (
+				<div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+					<div className="flex items-start gap-2">
+						<X className="w-5 h-5 text-red-600 mt-0.5" />
+						<div className="flex-1">
+							<p className="font-medium text-red-900">Setup failed</p>
+							<p className="text-sm text-red-700 mt-1 break-words">
+								{status.error}
+							</p>
+							<Button
+								variant="outline"
+								size="sm"
+								className="mt-3"
+								onClick={onRetry}
+							>
+								Retry
+							</Button>
+						</div>
+					</div>
+				</div>
+			)}
 
 			{/* Educational tooltip */}
 			<div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -1004,8 +991,19 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 				// Run validation tests
 				runValidationTests();
 			} else {
-				// Handle error
-				setLogMessages((prev) => [...prev, `Error: ${event.payload.error}`]);
+				const err = event.payload.error ?? "Unknown error";
+				setLogMessages((prev) => [
+					...prev,
+					`${new Date().toLocaleTimeString()} - Error: ${err}`,
+				]);
+				setSetupProgress((prev) =>
+					prev
+						? {
+								...prev,
+								status: { type: "failed", error: err, recoverable: false },
+							}
+						: prev,
+				);
 			}
 		});
 
@@ -1015,12 +1013,15 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 	}, []);
 
 	const runValidationTests = async () => {
-		// In a real implementation, we'd test the actual servers
-		// For now, we'll simulate success
-		setTestResults({
-			transcription: true,
-			cleanup: true,
-		});
+		try {
+			const results = await invoke<{ transcription: boolean; cleanup: boolean }>(
+				"validate_local_servers",
+			);
+			setTestResults(results);
+		} catch (error) {
+			console.error("Validation failed:", error);
+			setTestResults({ transcription: false, cleanup: false });
+		}
 		setCurrentStep("completion");
 	};
 
@@ -1036,7 +1037,17 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 				},
 			});
 		} catch (error) {
+			const msg = error instanceof Error ? error.message : String(error);
 			console.error("Failed to start setup:", error);
+			setLogMessages((prev) => [
+				...prev,
+				`${new Date().toLocaleTimeString()} - Failed to start setup: ${msg}`,
+			]);
+			setSetupProgress({
+				step: "system_check",
+				status: { type: "failed", error: msg, recoverable: false },
+				overall_progress: 0,
+			});
 		}
 	}, [selectedWhisperModel, selectedOllamaModel]);
 
@@ -1114,6 +1125,7 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 				<InstallationProgressStep
 					progress={setupProgress}
 					logMessages={logMessages}
+					onRetry={startInstallation}
 				/>
 			)}
 

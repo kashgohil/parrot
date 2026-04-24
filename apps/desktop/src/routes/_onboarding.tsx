@@ -5,8 +5,10 @@ import {
 	Navigate,
 	Outlet,
 	useLocation,
+	useNavigate,
 } from "@tanstack/react-router";
-import { Check, User, Settings, BookOpen } from "lucide-react";
+import { invoke } from "@tauri-apps/api/core";
+import { Check, User, Settings, BookOpen, Cloud, HardDrive } from "lucide-react";
 
 export const Route = createFileRoute("/_onboarding")({
 	component: OnboardingLayout,
@@ -153,7 +155,7 @@ function OnboardingLayout() {
 				</div>
 
 				{/* Current step indicator */}
-				<div className="relative z-10">
+				<div className="relative z-10 space-y-3">
 					<div className="px-3 py-3 bg-white/10 rounded-xl border border-white/10">
 						<div className="flex items-center gap-2">
 							<div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
@@ -172,6 +174,8 @@ function OnboardingLayout() {
 							</p>
 						)}
 					</div>
+
+					<SwitchModeButton setupMode={setupMode} />
 				</div>
 			</div>
 
@@ -224,5 +228,35 @@ function OnboardingLayout() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+function SwitchModeButton({ setupMode }: { setupMode: string | null }) {
+	const navigate = useNavigate();
+	const { refreshUser } = useAuth();
+
+	const isLocal = setupMode === "local";
+	const targetMode = isLocal ? "cloud" : "local";
+	const Icon = isLocal ? Cloud : HardDrive;
+	const label = isLocal ? "Switch to Cloud" : "Switch to Local";
+
+	const handleSwitch = async () => {
+		await invoke("set_setting", { key: "setup_mode", value: targetMode });
+		await refreshUser();
+		if (targetMode === "cloud") {
+			navigate({ to: "/setup-mode" });
+		} else {
+			navigate({ to: "/local-profile" });
+		}
+	};
+
+	return (
+		<button
+			onClick={handleSwitch}
+			className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-white/50 hover:text-white/80 hover:bg-white/10 transition-all text-sm cursor-pointer"
+		>
+			<Icon className="w-4 h-4" />
+			<span>{label}</span>
+		</button>
 	);
 }

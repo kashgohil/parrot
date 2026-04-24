@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use std::process::Stdio;
 use std::sync::Arc;
 use std::time::Duration;
-use tokio::io::{AsyncBufReadExt, BufReader};
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::process::Command;
 use tokio::sync::RwLock;
 
@@ -81,23 +81,35 @@ pub struct LocalSetupConfig {
 }
 
 /// Server process handles
-#[allow(dead_code)]
 pub struct ServerProcesses {
     pub whisper: Option<tokio::process::Child>,
     pub ollama: Option<tokio::process::Child>,
+    pub whisper_port: Option<u16>,
+    pub ollama_port: Option<u16>,
 }
 
-#[allow(dead_code)]
 impl ServerProcesses {
     pub fn new() -> Self {
         Self {
             whisper: None,
             ollama: None,
+            whisper_port: None,
+            ollama_port: None,
         }
+    }
+
+    pub async fn stop_all(&mut self) {
+        if let Some(mut child) = self.whisper.take() {
+            let _ = child.kill().await;
+        }
+        if let Some(mut child) = self.ollama.take() {
+            let _ = child.kill().await;
+        }
+        self.whisper_port = None;
+        self.ollama_port = None;
     }
 }
 
-#[allow(dead_code)]
 pub type SharedServerProcesses = Arc<RwLock<ServerProcesses>>;
 
 /// Check if a command exists in PATH
@@ -272,13 +284,63 @@ pub fn get_whisper_model_url(model: &str) -> String {
     )
 }
 
+fn get_whisper_model_file_name(model: &str) -> String {
+    format!("ggml-{}.bin", model)
+}
+
+pub fn get_whisper_model_path(model: &str) -> Result<PathBuf> {
+    let models_dir = get_models_dir()?;
+    Ok(models_dir.join(get_whisper_model_file_name(model)))
+}
+
+pub async fn is_whisper_model_downloaded(model: &str) -> Result<bool> {
+    Ok(get_whisper_model_path(model)?.exists())
+}
+
+pub async fn list_ollama_models() -> Result<Vec<String>> {
+    if !command_exists("ollama").await {
+        return Ok(vec![]);
+    }
+
+    let output = Command::new("ollama")
+        .args(["list"])
+        .output()
+        .await
+        .context("Failed to list Ollama models")?;
+
+    if !output.status.success() {
+        anyhow::bail!("Failed to list Ollama models");
+    }
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let mut models = Vec::new();
+
+    for line in stdout.lines().skip(1) {
+        if let Some(first_col) = line.split_whitespace().next() {
+            if !first_col.is_empty() {
+                models.push(first_col.to_string());
+            }
+        }
+    }
+
+    Ok(models)
+}
+
+pub async fn is_ollama_model_downloaded(model: &str) -> Result<bool> {
+    let installed = list_ollama_models().await?;
+    let requested_base = model.split(':').next().unwrap_or(model);
+
+    Ok(installed.iter().any(|installed_model| {
+        installed_model == model || installed_model.split(':').next().unwrap_or(installed_model) == requested_base
+    }))
+}
+
 /// Download whisper model with progress
 pub async fn download_whisper_model<F>(model: &str, progress_callback: F) -> Result<PathBuf>
 where
     F: Fn(String, f32) + Send + 'static,
 {
-    let models_dir = get_models_dir()?;
-    let model_path = models_dir.join(format!("ggml-{}.bin", model));
+    let model_path = get_whisper_model_path(model)?;
     
     // Check if already exists
     if model_path.exists() {
@@ -291,38 +353,50 @@ where
     let url = get_whisper_model_url(model);
     let temp_path = model_path.with_extension("tmp");
     
-    // Use curl with progress
-    let mut child = Command::new("curl")
-        .args(&[
-            "-L",
-            "--progress-bar",
-            "-o",
-            temp_path.to_str().unwrap(),
-            &url,
-        ])
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .context("Failed to start model download")?;
-    
-    // Parse curl progress from stderr
-    let stderr = child.stderr.take().unwrap();
-    let reader = BufReader::new(stderr);
-    let mut lines = reader.lines();
-    
-    while let Ok(Some(line)) = lines.next_line().await {
-        // Parse curl progress: "# 12.5M  0:00:05  2.5M/s"
-        if line.contains('%') || line.contains("M") {
-            progress_callback(format!("Downloading: {}", line), -1.0);
+    let client = reqwest::Client::new();
+    let mut response = client
+        .get(&url)
+        .send()
+        .await
+        .context("Failed to start model download")?
+        .error_for_status()
+        .context("Model download request failed")?;
+
+    let total_bytes = response.content_length();
+    let mut downloaded_bytes: u64 = 0;
+    let mut temp_file = tokio::fs::File::create(&temp_path)
+        .await
+        .context("Failed to create temporary model file")?;
+
+    while let Some(chunk) = response.chunk().await.context("Failed while downloading model")? {
+        temp_file
+            .write_all(&chunk)
+            .await
+            .context("Failed to write model data")?;
+
+        downloaded_bytes += chunk.len() as u64;
+
+        if let Some(total) = total_bytes {
+            if total > 0 {
+                let progress = (downloaded_bytes as f32 / total as f32) * 100.0;
+                progress_callback(
+                    format!("Downloading {} model...", model),
+                    progress.min(99.0),
+                );
+            }
+        } else {
+            let downloaded_mb = downloaded_bytes as f64 / (1024.0 * 1024.0);
+            progress_callback(
+                format!("Downloaded {:.1} MB...", downloaded_mb),
+                0.0,
+            );
         }
     }
-    
-    let status = child.wait().await?;
-    
-    if !status.success() {
-        let _ = tokio::fs::remove_file(&temp_path).await;
-        anyhow::bail!("Model download failed");
-    }
+
+    temp_file
+        .flush()
+        .await
+        .context("Failed to finalize downloaded model")?;
     
     // Move temp file to final location
     tokio::fs::rename(&temp_path, &model_path).await?;
@@ -381,15 +455,8 @@ where
     F: Fn(String, f32) + Send + 'static,
 {
     progress_callback(format!("Checking for {} model...", model), 0.0);
-    
-    // Check if model already exists
-    let output = Command::new("ollama")
-        .args(&["list"])
-        .output()
-        .await?;
-    
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    if stdout.contains(model.split(':').next().unwrap_or(model)) {
+
+    if is_ollama_model_downloaded(model).await? {
         progress_callback(format!("Model {} already exists", model), 100.0);
         return Ok(());
     }
@@ -397,9 +464,9 @@ where
     progress_callback(format!("Downloading {} model...", model), 10.0);
     
     let mut child = Command::new("ollama")
-        .args(&["pull", model])
+        .args(["pull", model, "--json"])
         .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
+        .stderr(Stdio::null())
         .spawn()
         .context("Failed to start ollama pull")?;
     
@@ -409,7 +476,40 @@ where
     
     let mut progress: f32 = 10.0;
     while let Ok(Some(line)) = lines.next_line().await {
-        progress = (progress + 2.0f32).min(95.0f32);
+        if line.trim().is_empty() {
+            continue;
+        }
+
+        let parsed: std::result::Result<serde_json::Value, _> = serde_json::from_str(&line);
+        if let Ok(value) = parsed {
+            let status = value
+                .get("status")
+                .and_then(|v| v.as_str())
+                .unwrap_or("Downloading model")
+                .to_string();
+
+            let completed = value.get("completed").and_then(|v| v.as_u64());
+            let total = value.get("total").and_then(|v| v.as_u64());
+
+            if let (Some(done), Some(total)) = (completed, total) {
+                if total > 0 {
+                    let pct = (done as f32 / total as f32) * 100.0;
+                    progress = pct.clamp(progress, 99.0);
+                    progress_callback(status, progress);
+                    continue;
+                }
+            }
+
+            if status.contains("success") {
+                progress_callback("Finalizing model...".to_string(), 99.0);
+            } else {
+                progress = (progress + 1.0f32).min(95.0f32);
+                progress_callback(status, progress);
+            }
+            continue;
+        }
+
+        progress = (progress + 1.0f32).min(95.0f32);
         progress_callback(line, progress);
     }
     
@@ -451,18 +551,19 @@ pub async fn start_whisper_server(
         .await
         .ok_or_else(|| anyhow::anyhow!("No available ports found"))?;
     
-    let child = Command::new("whisper-cli")
+    let child = Command::new("whisper-server")
         .args(&[
-            "--server",
             "--model",
             model_path,
+            "--host",
+            "127.0.0.1",
             "--port",
             &port.to_string(),
         ])
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()
-        .context("Failed to start whisper server")?;
+        .context("Failed to start whisper server. Make sure whisper-cpp is installed via Homebrew (provides whisper-server).")?;
     
     // Wait a moment for server to start
     tokio::time::sleep(Duration::from_secs(2)).await;
@@ -516,7 +617,6 @@ pub async fn start_ollama_server(preferred_port: u16) -> Result<(tokio::process:
 }
 
 /// Test transcription
-#[allow(dead_code)]
 pub async fn test_transcription(port: u16) -> Result<()> {
     // Create a simple test - we'll just verify the endpoint exists
     let client = reqwest::Client::new();
@@ -534,7 +634,6 @@ pub async fn test_transcription(port: u16) -> Result<()> {
 }
 
 /// Test text cleanup
-#[allow(dead_code)]
 pub async fn test_cleanup(port: u16, model: &str) -> Result<()> {
     let client = reqwest::Client::new();
     
@@ -665,6 +764,7 @@ pub fn get_model_manual_instructions(model_type: &str, model_name: &str) -> Manu
 pub async fn run_setup<F>(
     whisper_model: String,
     ollama_model: String,
+    servers: SharedServerProcesses,
     progress_emitter: F,
 ) -> Result<LocalSetupConfig>
 where
@@ -894,32 +994,68 @@ where
     // Step 6: Start servers
     progress_emitter(SetupProgress {
         step: SetupStep::StartServers,
-        status: SetupStatus::InProgress { message: "Starting local servers...".to_string(), progress: 0.0 },
+        status: SetupStatus::InProgress { message: "Starting whisper server...".to_string(), progress: 0.0 },
         overall_progress: current_step / total_steps,
     });
-    
-    // Note: In the actual implementation, we'd store these child processes
-    // For now, we'll just find available ports and assume they start
-    let whisper_port = find_available_port(8080, 8090).await.unwrap_or(8080);
-    let ollama_port = find_available_port(11434, 11444).await.unwrap_or(11434);
-    
+
+    // Stop any previously running servers before spawning new ones
+    {
+        let mut guard = servers.write().await;
+        guard.stop_all().await;
+    }
+
+    let model_path_str = model_path.to_string_lossy().to_string();
+    let (whisper_child, whisper_port) =
+        start_whisper_server(&model_path_str, 8080)
+            .await
+            .context("Failed to start whisper server")?;
+
+    progress_emitter(SetupProgress {
+        step: SetupStep::StartServers,
+        status: SetupStatus::InProgress { message: "Starting Ollama server...".to_string(), progress: 50.0 },
+        overall_progress: (current_step + 0.5) / total_steps,
+    });
+
+    let (ollama_child, ollama_port) = start_ollama_server(11434)
+        .await
+        .context("Failed to start Ollama server")?;
+
+    {
+        let mut guard = servers.write().await;
+        guard.whisper = Some(whisper_child);
+        guard.ollama = Some(ollama_child);
+        guard.whisper_port = Some(whisper_port);
+        guard.ollama_port = Some(ollama_port);
+    }
+
     current_step += 1.0;
     progress_emitter(SetupProgress {
         step: SetupStep::StartServers,
         status: SetupStatus::Completed,
         overall_progress: current_step / total_steps,
     });
-    
+
     // Step 7: Validate setup
     progress_emitter(SetupProgress {
         step: SetupStep::ValidateSetup,
-        status: SetupStatus::InProgress { message: "Validating setup...".to_string(), progress: 0.0 },
+        status: SetupStatus::InProgress { message: "Testing transcription server...".to_string(), progress: 0.0 },
         overall_progress: current_step / total_steps,
     });
-    
-    // Validation would happen here - for now we assume success
-    // In practice, we'd try to connect to the servers
-    
+
+    test_transcription(whisper_port)
+        .await
+        .context("Whisper server validation failed")?;
+
+    progress_emitter(SetupProgress {
+        step: SetupStep::ValidateSetup,
+        status: SetupStatus::InProgress { message: "Testing cleanup server...".to_string(), progress: 50.0 },
+        overall_progress: (current_step + 0.5) / total_steps,
+    });
+
+    test_cleanup(ollama_port, &ollama_model)
+        .await
+        .context("Ollama validation failed")?;
+
     progress_emitter(SetupProgress {
         step: SetupStep::ValidateSetup,
         status: SetupStatus::Completed,
