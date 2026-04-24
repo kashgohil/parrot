@@ -12,6 +12,8 @@ export interface AuthUser {
 	subscription_status: string | null;
 	subscription_expires_at: string | null;
 	trial_ends_at: string | null;
+	migration_paid_at: string | null;
+	migration_completed_at: string | null;
 }
 
 declare module "hono" {
@@ -83,6 +85,8 @@ export async function authMiddleware(c: Context, next: Next) {
 		subscription_status: user.subscriptionStatus || null,
 		subscription_expires_at: user.subscriptionExpiresAt || null,
 		trial_ends_at: user.trialEndsAt || null,
+		migration_paid_at: user.migrationPaidAt || null,
+		migration_completed_at: user.migrationCompletedAt || null,
 	});
 	c.set("sessionId", sessionId);
 
