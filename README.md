@@ -155,8 +155,7 @@ parrot/
 │   ├── desktop/          # Tauri 2 (Rust) + React 19 desktop app
 │   ├── api/              # Hono 4 API server on Bun
 │   └── hero/             # Marketing site (tryparrot.app)
-├── package.json          # Bun monorepo root
-└── docker-compose.observability.yml
+└── package.json          # Bun monorepo root
 ```
 
 ### Desktop App
@@ -199,7 +198,7 @@ Backend for cloud mode -- authentication, transcription proxying, history sync, 
 | [PostgreSQL](https://www.postgresql.org) | Database |
 | [Polar.sh](https://polar.sh) | Subscription billing |
 | [MinIO](https://min.io) | S3-compatible audio storage |
-| [OpenTelemetry](https://opentelemetry.io) | Observability (traces + metrics) |
+| [Sentry](https://sentry.io) | Error monitoring |
 
 ### Marketing Site
 
