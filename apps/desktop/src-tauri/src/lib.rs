@@ -209,13 +209,13 @@ async fn transcribe_last(
         _ => raw_text.clone(),
     };
 
-    // Step 3: Copy to clipboard and paste
+    // Step 3: Copy to clipboard and paste into the previously-focused field.
     let output_text = if cleaned_text.is_empty() {
-        &raw_text
+        raw_text.clone()
     } else {
-        &cleaned_text
+        cleaned_text.clone()
     };
-    let pasted = copy_and_paste(output_text);
+    let pasted = copy_and_paste_safely(&app, output_text).await;
 
     let result = DictationResult {
         raw_text: raw_text.clone(),
@@ -226,29 +226,96 @@ async fn transcribe_last(
     Ok(result)
 }
 
-fn copy_and_paste(text: &str) -> bool {
-    use enigo::{Direction, Enigo, Key, Keyboard, Settings};
+/// Copy text to the clipboard via Tauri's clipboard plugin and paste it into
+/// whatever app currently holds key focus by shelling out to `osascript`.
+///
+/// We deliberately avoid arboard/enigo here: on macOS those libs go through
+/// AppKit/CoreGraphics in ways that can `abort()` (not panic) under certain
+/// thread/entitlement conditions, and an Objective-C abort cannot be caught
+/// by `std::panic::catch_unwind`. Pushing the keystroke synthesis into a
+/// child process means even a worst-case failure can't take down Parrot.
+async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
+    use tauri_plugin_clipboard_manager::ClipboardExt;
 
-    // Copy to clipboard
-    let mut clipboard = arboard::Clipboard::new();
-    let Ok(ref mut cb) = clipboard else {
-        eprintln!("Failed to access clipboard");
-        return false;
-    };
-    if cb.set_text(text).is_err() {
-        eprintln!("Failed to set clipboard text");
+    if let Err(e) = app.clipboard().write_text(text.clone()) {
+        eprintln!("Failed to set clipboard text: {}", e);
         return false;
     }
 
-    // Small delay then Cmd+V to paste into focused field
-    std::thread::sleep(std::time::Duration::from_millis(50));
-    let Ok(mut enigo) = Enigo::new(&Settings::default()) else {
-        return false;
+    // Give the system a beat to register the new pasteboard contents before
+    // we synthesize Cmd+V into whatever app currently holds focus.
+    tokio::time::sleep(std::time::Duration::from_millis(80)).await;
+
+    let paste_result = tauri::async_runtime::spawn_blocking(|| {
+        std::process::Command::new("osascript")
+            .args([
+                "-e",
+                "tell application \"System Events\" to keystroke \"v\" using command down",
+            ])
+            .output()
+    })
+    .await;
+
+    match paste_result {
+        Ok(Ok(output)) if output.status.success() => true,
+        Ok(Ok(output)) => {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            let trimmed = stderr.trim();
+            eprintln!(
+                "osascript paste failed (status {:?}): {}",
+                output.status.code(),
+                trimmed
+            );
+            // macOS error 1002 = "not allowed to send keystrokes" → Accessibility
+            // permission missing. Surface a structured event so the UI can offer
+            // a one-click "Open Settings" path.
+            if trimmed.contains("1002")
+                || trimmed.contains("not allowed to send keystrokes")
+            {
+                let _ = app.emit(
+                    "paste-permission-needed",
+                    serde_json::json!({ "details": trimmed }),
+                );
+            }
+            false
+        }
+        Ok(Err(e)) => {
+            eprintln!("Failed to invoke osascript: {}", e);
+            false
+        }
+        Err(e) => {
+            eprintln!("osascript task join error: {}", e);
+            false
+        }
+    }
+}
+
+/// Open a specific pane in macOS System Settings.
+///
+/// Accepts a logical key (e.g. `"accessibility"`, `"microphone"`) and routes to
+/// the right `x-apple.systempreferences:` URL. Any failure is reported as a
+/// human-readable string so the frontend can surface it.
+#[tauri::command]
+fn open_system_settings(pane: String) -> Result<(), String> {
+    let url = match pane.as_str() {
+        "accessibility" => {
+            "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+        }
+        "microphone" => {
+            "x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone"
+        }
+        "automation" => {
+            "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation"
+        }
+        other => return Err(format!("Unknown system settings pane: {}", other)),
     };
-    let _ = enigo.key(Key::Meta, Direction::Press);
-    let _ = enigo.key(Key::Unicode('v'), Direction::Click);
-    let _ = enigo.key(Key::Meta, Direction::Release);
-    true
+
+    std::process::Command::new("open")
+        .arg(url)
+        .spawn()
+        .map_err(|e| format!("Failed to open System Settings: {}", e))?;
+
+    Ok(())
 }
 
 /// DictationEntry type used by both local and cloud modes in command responses
@@ -891,6 +958,7 @@ pub fn run() {
             start_local_servers,
             stop_local_servers,
             validate_local_servers,
+            open_system_settings,
             migration::get_migration_status,
             migration::get_migration_checkout_url,
             migration::get_migration_snapshot,
@@ -919,8 +987,7 @@ pub fn run() {
                 if let Ok(config) = config {
                     if config.setup_completed {
                         let app_handle = app.handle().clone();
-                        tokio::spawn(async move {
-                            // Try to start servers in the background
+                        tauri::async_runtime::spawn(async move {
                             match start_local_servers(
                                 app_handle.state::<Database>(),
                                 app_handle.state::<SharedServerProcesses>(),
@@ -932,7 +999,6 @@ pub fn run() {
                                 }
                                 Err(e) => {
                                     eprintln!("Failed to auto-start local servers: {}", e);
-                                    // Don't show error to user on auto-start, they'll see it when they try to use it
                                 }
                             }
                         });
