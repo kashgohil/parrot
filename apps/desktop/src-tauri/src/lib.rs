@@ -8,9 +8,17 @@ mod transcription;
 
 use audio::AudioRecorder;
 use db::Database;
+use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::Instant;
 use tauri::{Emitter, Manager};
+use tokio::sync::RwLock;
+use transcription::LocalWhisperProvider;
+
+/// Shared handle to the in-process whisper provider. `None` until the model
+/// finishes loading (eager-async at startup) — falls through to a friendly
+/// error if a dictation arrives before then.
+pub type SharedWhisperProvider = Arc<RwLock<Option<Arc<LocalWhisperProvider>>>>;
 
 pub struct RecorderState {
     recorder: Mutex<AudioRecorder>,
@@ -72,6 +80,7 @@ struct DictationResult {
 async fn transcribe_last(
     recorder_state: tauri::State<'_, RecorderState>,
     db: tauri::State<'_, Database>,
+    whisper: tauri::State<'_, SharedWhisperProvider>,
     app: tauri::AppHandle,
 ) -> Result<DictationResult, String> {
     let wav_data = recorder_state
@@ -91,9 +100,15 @@ async fn transcribe_last(
 
     // Step 1: Transcribe
     let _ = app.emit("transcription-started", ());
+    let local_provider = if setup_mode == "local" {
+        wait_for_whisper_provider(whisper.inner(), std::time::Duration::from_secs(30)).await
+    } else {
+        None
+    };
     let raw_text = transcription::transcribe_audio(
         &wav_data,
         &setup_mode,
+        local_provider.as_deref(),
         session_token.as_deref(),
         api_key.as_deref(),
     )
@@ -622,8 +637,6 @@ async fn install_tool(name: String) -> Result<String, String> {
 
 // Local setup commands
 use local_setup::{SetupProgress, ServerProcesses, SharedServerProcesses};
-use std::sync::Arc;
-use tokio::sync::RwLock;
 
 #[tauri::command]
 async fn check_local_setup_status(
@@ -724,7 +737,7 @@ async fn start_local_setup(
                 });
             },
         ).await;
-        
+
         match result {
             Ok(config) => {
                 // Save config to database
@@ -735,6 +748,14 @@ async fn start_local_setup(
                         "error": format!("Failed to save config: {}", e),
                     }));
                 } else {
+                    // Kick off the in-process whisper model load now that the
+                    // file is on disk. UI keeps moving; provider becomes
+                    // available a beat later.
+                    let whisper_state = app.state::<SharedWhisperProvider>();
+                    load_whisper_provider(
+                        whisper_state.inner().clone(),
+                        config.whisper_model_path.clone(),
+                    );
                     let _ = app.emit("setup-complete", serde_json::json!({
                         "success": true,
                         "config": config,
@@ -772,6 +793,7 @@ async fn continue_local_setup(
 async fn start_local_servers(
     db: tauri::State<'_, Database>,
     servers: tauri::State<'_, SharedServerProcesses>,
+    whisper: tauri::State<'_, SharedWhisperProvider>,
 ) -> Result<serde_json::Value, String> {
     let config = db
         .get_local_setup_config()
@@ -781,26 +803,25 @@ async fn start_local_servers(
         return Err("Local setup not completed".to_string());
     }
 
-    // If servers are already running, return their ports
+    // Whisper now runs in-process — kick off the (eager-async) model load if
+    // it hasn't been loaded yet. Errors here are surfaced via the toast layer
+    // when transcription is actually attempted.
+    if whisper.read().await.is_none() && !config.whisper_model_path.is_empty() {
+        load_whisper_provider(whisper.inner().clone(), config.whisper_model_path.clone());
+    }
+
+    // If the Ollama daemon is already running, reuse it.
     {
         let guard = servers.read().await;
-        if let (Some(wp), Some(op)) = (guard.whisper_port, guard.ollama_port) {
-            if guard.whisper.is_some() && guard.ollama.is_some() {
+        if let Some(op) = guard.ollama_port {
+            if guard.ollama.is_some() {
                 return Ok(serde_json::json!({
-                    "whisper_port": wp,
                     "ollama_port": op,
                     "status": "running",
                 }));
             }
         }
     }
-
-    let (whisper_child, whisper_port) = local_setup::start_whisper_server(
-        &config.whisper_model_path,
-        config.whisper_server_port,
-    )
-    .await
-    .map_err(|e| format!("Failed to start whisper server: {}", e))?;
 
     let (ollama_child, ollama_port) =
         local_setup::start_ollama_server(config.ollama_server_port)
@@ -809,17 +830,56 @@ async fn start_local_servers(
 
     {
         let mut guard = servers.write().await;
-        guard.whisper = Some(whisper_child);
         guard.ollama = Some(ollama_child);
-        guard.whisper_port = Some(whisper_port);
         guard.ollama_port = Some(ollama_port);
     }
 
     Ok(serde_json::json!({
-        "whisper_port": whisper_port,
         "ollama_port": ollama_port,
         "status": "running",
     }))
+}
+
+/// Wait briefly for the whisper provider to finish loading. Returns the
+/// provider as soon as it's available, or `None` after `timeout` so the caller
+/// surfaces a friendly error rather than blocking forever.
+async fn wait_for_whisper_provider(
+    state: &SharedWhisperProvider,
+    timeout: std::time::Duration,
+) -> Option<Arc<transcription::LocalWhisperProvider>> {
+    if let Some(p) = state.read().await.clone() {
+        return Some(p);
+    }
+    let start = std::time::Instant::now();
+    while start.elapsed() < timeout {
+        tokio::time::sleep(std::time::Duration::from_millis(150)).await;
+        if let Some(p) = state.read().await.clone() {
+            return Some(p);
+        }
+    }
+    None
+}
+
+/// Load the whisper model in the background. Stores the resulting provider in
+/// shared state once ready; logs and discards errors (the user will see a
+/// friendly toast on the next dictation attempt if loading failed).
+fn load_whisper_provider(state: SharedWhisperProvider, model_path: String) {
+    tauri::async_runtime::spawn(async move {
+        let path = std::path::PathBuf::from(model_path);
+        match tokio::task::spawn_blocking(move || LocalWhisperProvider::load(&path)).await {
+            Ok(Ok(provider)) => {
+                let mut slot = state.write().await;
+                *slot = Some(Arc::new(provider));
+                println!("Whisper model loaded");
+            }
+            Ok(Err(e)) => {
+                eprintln!("Failed to load whisper model: {}", e);
+            }
+            Err(e) => {
+                eprintln!("Whisper load task join error: {}", e);
+            }
+        }
+    });
 }
 
 #[tauri::command]
@@ -835,20 +895,20 @@ async fn stop_local_servers(
 async fn validate_local_servers(
     db: tauri::State<'_, Database>,
     servers: tauri::State<'_, SharedServerProcesses>,
+    whisper: tauri::State<'_, SharedWhisperProvider>,
 ) -> Result<serde_json::Value, String> {
     let config = db
         .get_local_setup_config()
         .map_err(|e| format!("Failed to get setup config: {}", e))?;
 
-    let (whisper_port, ollama_port) = {
+    let ollama_port = {
         let guard = servers.read().await;
-        (
-            guard.whisper_port.unwrap_or(config.whisper_server_port),
-            guard.ollama_port.unwrap_or(config.ollama_server_port),
-        )
+        guard.ollama_port.unwrap_or(config.ollama_server_port)
     };
 
-    let transcription_ok = local_setup::test_transcription(whisper_port).await.is_ok();
+    // Transcription "validation" is now just a check that the whisper model
+    // loaded successfully — it lives in-process, no network probe needed.
+    let transcription_ok = whisper.read().await.is_some();
     let cleanup_ok =
         local_setup::test_cleanup(ollama_port, &config.ollama_model)
             .await
@@ -933,6 +993,7 @@ pub fn run() {
         .manage(db)
         .manage(recorder_state)
         .manage::<SharedServerProcesses>(Arc::new(RwLock::new(ServerProcesses::new())))
+        .manage::<SharedWhisperProvider>(Arc::new(RwLock::new(None)))
         .invoke_handler(tauri::generate_handler![
             start_recording,
             stop_recording,
@@ -979,27 +1040,32 @@ pub fn run() {
                 }
             });
 
-            // Auto-start local servers if in local mode
+            // Auto-start local services if in local mode.
             let db = app.state::<Database>();
             let setup_mode = db.get_setting("setup_mode").ok().flatten();
             if setup_mode == Some("local".to_string()) {
                 let config = db.get_local_setup_config();
                 if let Ok(config) = config {
                     if config.setup_completed {
+                        // 1. Load the whisper model in-process (eager async).
+                        let whisper_state = app.state::<SharedWhisperProvider>();
+                        load_whisper_provider(
+                            whisper_state.inner().clone(),
+                            config.whisper_model_path.clone(),
+                        );
+
+                        // 2. Make sure the Ollama daemon is running.
                         let app_handle = app.handle().clone();
                         tauri::async_runtime::spawn(async move {
                             match start_local_servers(
                                 app_handle.state::<Database>(),
                                 app_handle.state::<SharedServerProcesses>(),
+                                app_handle.state::<SharedWhisperProvider>(),
                             )
                             .await
                             {
-                                Ok(_) => {
-                                    println!("Local servers started successfully");
-                                }
-                                Err(e) => {
-                                    eprintln!("Failed to auto-start local servers: {}", e);
-                                }
+                                Ok(_) => println!("Local services started"),
+                                Err(e) => eprintln!("Failed to auto-start local services: {}", e),
                             }
                         });
                     }

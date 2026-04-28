@@ -386,17 +386,19 @@ impl Database {
 
     pub fn get_local_setup_config(&self) -> Result<LocalSetupConfig> {
         let conn = self.conn.lock().unwrap();
+        // `whisper_server_port` is still in the schema for backwards
+        // compatibility with v1.0 configs; we ignore it now that whisper runs
+        // in-process. New writes leave it at its default.
         let mut stmt = conn.prepare(
-            "SELECT whisper_model_path, whisper_server_port, ollama_server_port, ollama_model, setup_completed, setup_version FROM local_setup WHERE id = 1",
+            "SELECT whisper_model_path, ollama_server_port, ollama_model, setup_completed, setup_version FROM local_setup WHERE id = 1",
         )?;
         let config = stmt.query_row([], |row| {
             Ok(LocalSetupConfig {
                 whisper_model_path: row.get(0)?,
-                whisper_server_port: row.get(1)?,
-                ollama_server_port: row.get(2)?,
-                ollama_model: row.get(3)?,
-                setup_completed: row.get::<_, i64>(4)? != 0,
-                setup_version: row.get(5)?,
+                ollama_server_port: row.get(1)?,
+                ollama_model: row.get(2)?,
+                setup_completed: row.get::<_, i64>(3)? != 0,
+                setup_version: row.get(4)?,
             })
         })?;
         Ok(config)
@@ -405,10 +407,9 @@ impl Database {
     pub fn set_local_setup_config(&self, config: &LocalSetupConfig) -> Result<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute(
-            "INSERT OR REPLACE INTO local_setup (id, whisper_model_path, whisper_server_port, ollama_server_port, ollama_model, setup_completed, setup_version) VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6)",
+            "INSERT OR REPLACE INTO local_setup (id, whisper_model_path, whisper_server_port, ollama_server_port, ollama_model, setup_completed, setup_version) VALUES (1, ?1, 0, ?2, ?3, ?4, ?5)",
             rusqlite::params![
                 config.whisper_model_path,
-                config.whisper_server_port,
                 config.ollama_server_port,
                 config.ollama_model,
                 config.setup_completed as i64,

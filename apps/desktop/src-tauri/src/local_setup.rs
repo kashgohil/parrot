@@ -43,11 +43,10 @@ pub struct ManualStep {
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum SetupStep {
     SystemCheck,
-    InstallWhisperCpp,
     DownloadWhisperModel { model: String },
     InstallOllama,
     DownloadOllamaModel { model: String },
-    StartServers,
+    StartOllama,
     ValidateSetup,
 }
 
@@ -70,43 +69,38 @@ pub struct SystemRequirements {
     pub architecture: String,
 }
 
-/// Local setup configuration
+/// Local setup configuration. `setup_version` is bumped to "2.0" with the
+/// transition to in-process whisper-rs (no whisper server, no port).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LocalSetupConfig {
     pub whisper_model_path: String,
-    pub whisper_server_port: u16,
     pub ollama_server_port: u16,
     pub ollama_model: String,
     pub setup_completed: bool,
     pub setup_version: String,
 }
 
-/// Server process handles
+pub const CURRENT_SETUP_VERSION: &str = "2.0";
+
+/// Background process handles. With whisper running in-process, only the
+/// Ollama daemon needs lifecycle tracking now.
 pub struct ServerProcesses {
-    pub whisper: Option<tokio::process::Child>,
     pub ollama: Option<tokio::process::Child>,
-    pub whisper_port: Option<u16>,
     pub ollama_port: Option<u16>,
 }
 
 impl ServerProcesses {
     pub fn new() -> Self {
         Self {
-            whisper: None,
             ollama: None,
-            whisper_port: None,
             ollama_port: None,
         }
     }
 
     pub async fn stop_all(&mut self) {
-        if let Some(mut child) = self.whisper.take() {
-            let _ = child.kill().await;
-        }
         if let Some(mut child) = self.ollama.take() {
             let _ = child.kill().await;
         }
-        self.whisper_port = None;
         self.ollama_port = None;
     }
 }
@@ -233,48 +227,6 @@ pub fn get_models_dir() -> Result<PathBuf> {
     let models_dir = data_dir.join("com.kash.parrot").join("models");
     std::fs::create_dir_all(&models_dir)?;
     Ok(models_dir)
-}
-
-/// Install whisper.cpp via Homebrew
-pub async fn install_whisper_cpp<F>(progress_callback: F) -> Result<()>
-where
-    F: Fn(String, f32) + Send + 'static,
-{
-    progress_callback("Checking for whisper.cpp...".to_string(), 0.0);
-    
-    if command_exists("whisper-cli").await {
-        progress_callback("whisper.cpp already installed".to_string(), 100.0);
-        return Ok(());
-    }
-    
-    progress_callback("Installing whisper.cpp via Homebrew...".to_string(), 10.0);
-    
-    let mut child = Command::new("brew")
-        .args(&["install", "whisper-cpp"])
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .context("Failed to start brew install")?;
-    
-    // Monitor output for progress
-    let stdout = child.stdout.take().unwrap();
-    let reader = BufReader::new(stdout);
-    let mut lines = reader.lines();
-    
-    let mut progress: f32 = 10.0;
-    while let Ok(Some(line)) = lines.next_line().await {
-        progress = (progress + 2.0f32).min(90.0f32);
-        progress_callback(line, progress);
-    }
-    
-    let status = child.wait().await?;
-    
-    if !status.success() {
-        anyhow::bail!("Homebrew installation failed");
-    }
-    
-    progress_callback("whisper.cpp installed successfully".to_string(), 100.0);
-    Ok(())
 }
 
 /// Get the download URL for a whisper model
@@ -625,83 +577,6 @@ pub async fn find_available_port(start: u16, end: u16) -> Option<u16> {
 
 /// Start whisper.cpp server.
 ///
-/// `whisper-server` takes several seconds to load its Metal/BLAS backends and
-/// the model before it begins listening, so we poll the HTTP endpoint until it
-/// responds (up to ~45s) instead of using a fixed sleep.
-pub async fn start_whisper_server(
-    model_path: &str,
-    preferred_port: u16,
-) -> Result<(tokio::process::Child, u16)> {
-    use tokio::io::AsyncReadExt;
-
-    let port = find_available_port(preferred_port, preferred_port + 10)
-        .await
-        .ok_or_else(|| anyhow::anyhow!("No available ports found"))?;
-
-    let mut child = Command::new("whisper-server")
-        .args(&[
-            "--model",
-            model_path,
-            "--host",
-            "127.0.0.1",
-            "--port",
-            &port.to_string(),
-        ])
-        .stdout(Stdio::null())
-        .stderr(Stdio::piped())
-        .spawn()
-        .context("Failed to start whisper server. Make sure whisper-cpp is installed via Homebrew (provides whisper-server).")?;
-
-    let client = reqwest::Client::new();
-    let url = format!("http://127.0.0.1:{}/", port);
-
-    for _ in 0..90 {
-        // If the process died before binding, surface stderr instead of polling forever.
-        if let Ok(Some(status)) = child.try_wait() {
-            let mut err = String::new();
-            if let Some(mut stderr) = child.stderr.take() {
-                let _ = stderr.read_to_string(&mut err).await;
-            }
-            anyhow::bail!(
-                "whisper-server exited (code {:?}) before binding: {}",
-                status.code(),
-                err.trim()
-            );
-        }
-
-        if client
-            .get(&url)
-            .timeout(Duration::from_secs(2))
-            .send()
-            .await
-            .is_ok()
-        {
-            return Ok((child, port));
-        }
-
-        tokio::time::sleep(Duration::from_millis(500)).await;
-    }
-
-    // Capture whatever stderr produced so the UI shows something useful.
-    let mut err = String::new();
-    if let Some(mut stderr) = child.stderr.take() {
-        let _ = tokio::time::timeout(
-            Duration::from_millis(200),
-            stderr.read_to_string(&mut err),
-        )
-        .await;
-    }
-    let _ = child.kill().await;
-    if err.trim().is_empty() {
-        anyhow::bail!("whisper-server did not start listening within 45 seconds");
-    } else {
-        anyhow::bail!(
-            "whisper-server did not start listening within 45 seconds: {}",
-            err.trim()
-        );
-    }
-}
-
 /// Start Ollama server, polling until the API responds.
 pub async fn start_ollama_server(preferred_port: u16) -> Result<(tokio::process::Child, u16)> {
     use tokio::io::AsyncReadExt;
@@ -751,23 +626,6 @@ pub async fn start_ollama_server(preferred_port: u16) -> Result<(tokio::process:
     anyhow::bail!("Ollama server did not start listening within 30 seconds");
 }
 
-/// Test transcription
-pub async fn test_transcription(port: u16) -> Result<()> {
-    // Create a simple test - we'll just verify the endpoint exists
-    let client = reqwest::Client::new();
-    let resp = client
-        .get(&format!("http://127.0.0.1:{}/", port))
-        .timeout(Duration::from_secs(10))
-        .send()
-        .await?;
-    
-    if resp.status().is_success() {
-        Ok(())
-    } else {
-        anyhow::bail!("Transcription test failed");
-    }
-}
-
 /// Test text cleanup
 pub async fn test_cleanup(port: u16, model: &str) -> Result<()> {
     let client = reqwest::Client::new();
@@ -795,39 +653,6 @@ pub async fn test_cleanup(port: u16, model: &str) -> Result<()> {
     } else {
         let body = resp.text().await.unwrap_or_default();
         anyhow::bail!("Cleanup test failed: {}", body);
-    }
-}
-
-/// Generate manual instructions for whisper.cpp installation
-pub fn get_whisper_manual_instructions(error: &str) -> ManualInstructions {
-    ManualInstructions {
-        title: "Install whisper.cpp manually".to_string(),
-        description: format!("We couldn't install whisper.cpp automatically. Error: {}", error),
-        steps: vec![
-            ManualStep {
-                label: "Open Terminal".to_string(),
-                command: None,
-                explanation: "Press Cmd+Space, type 'Terminal', press Enter".to_string(),
-                skippable: false,
-                skip_condition: None,
-            },
-            ManualStep {
-                label: "Install Homebrew (if not installed)".to_string(),
-                command: Some("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"".to_string()),
-                explanation: "Homebrew is a package manager for macOS that makes installing software easy".to_string(),
-                skippable: true,
-                skip_condition: Some("Homebrew already installed".to_string()),
-            },
-            ManualStep {
-                label: "Install whisper.cpp".to_string(),
-                command: Some("brew install whisper-cpp".to_string()),
-                explanation: "This installs the speech-to-text engine that runs locally on your Mac".to_string(),
-                skippable: false,
-                skip_condition: None,
-            },
-        ],
-        verification_command: Some("which whisper-cli".to_string()),
-        verification_success: Some("Should return path like /opt/homebrew/bin/whisper-cli".to_string()),
     }
 }
 
@@ -905,7 +730,7 @@ pub async fn run_setup<F>(
 where
     F: Fn(SetupProgress) + Send + Sync + 'static,
 {
-    let total_steps = 7.0;
+    let total_steps = 6.0;
     let mut current_step = 0.0;
     let progress_emitter = std::sync::Arc::new(progress_emitter);
     
@@ -981,43 +806,8 @@ where
         status: SetupStatus::Completed,
         overall_progress: current_step / total_steps,
     });
-    
-    // Step 2: Install whisper.cpp
-    progress_emitter(SetupProgress {
-        step: SetupStep::InstallWhisperCpp,
-        status: SetupStatus::InProgress { message: "Installing whisper.cpp...".to_string(), progress: 0.0 },
-        overall_progress: current_step / total_steps,
-    });
-    
-    let progress_emitter_clone = progress_emitter.clone();
-    let current_step_clone = current_step;
-    let whisper_result = install_whisper_cpp(move |msg, progress| {
-        progress_emitter_clone(SetupProgress {
-            step: SetupStep::InstallWhisperCpp,
-            status: SetupStatus::InProgress { message: msg, progress },
-            overall_progress: (current_step_clone + progress / 100.0) / total_steps,
-        });
-    }).await;
-    
-    if let Err(e) = whisper_result {
-        progress_emitter(SetupProgress {
-            step: SetupStep::InstallWhisperCpp,
-            status: SetupStatus::ManualInterventionRequired {
-                instructions: get_whisper_manual_instructions(&e.to_string()),
-            },
-            overall_progress: current_step / total_steps,
-        });
-        return Err(anyhow::anyhow!("Manual intervention required: whisper.cpp installation"));
-    }
-    
-    current_step += 1.0;
-    progress_emitter(SetupProgress {
-        step: SetupStep::InstallWhisperCpp,
-        status: SetupStatus::Completed,
-        overall_progress: current_step / total_steps,
-    });
-    
-    // Step 3: Download whisper model
+
+    // Step 2: Download whisper model
     progress_emitter(SetupProgress {
         step: SetupStep::DownloadWhisperModel { model: whisper_model.clone() },
         status: SetupStatus::InProgress { message: format!("Downloading {} model...", whisper_model), progress: 0.0 },
@@ -1126,30 +916,21 @@ where
         overall_progress: current_step / total_steps,
     });
     
-    // Step 6: Start servers
+    // Step 5: Start the Ollama daemon (whisper now runs in-process — no
+    // server to spawn for it).
     progress_emitter(SetupProgress {
-        step: SetupStep::StartServers,
-        status: SetupStatus::InProgress { message: "Starting whisper server...".to_string(), progress: 0.0 },
+        step: SetupStep::StartOllama,
+        status: SetupStatus::InProgress {
+            message: "Starting Ollama server...".to_string(),
+            progress: 0.0,
+        },
         overall_progress: current_step / total_steps,
     });
 
-    // Stop any previously running servers before spawning new ones
     {
         let mut guard = servers.write().await;
         guard.stop_all().await;
     }
-
-    let model_path_str = model_path.to_string_lossy().to_string();
-    let (whisper_child, whisper_port) =
-        start_whisper_server(&model_path_str, 8080)
-            .await
-            .context("Failed to start whisper server")?;
-
-    progress_emitter(SetupProgress {
-        step: SetupStep::StartServers,
-        status: SetupStatus::InProgress { message: "Starting Ollama server...".to_string(), progress: 50.0 },
-        overall_progress: (current_step + 0.5) / total_steps,
-    });
 
     let (ollama_child, ollama_port) = start_ollama_server(11434)
         .await
@@ -1157,34 +938,25 @@ where
 
     {
         let mut guard = servers.write().await;
-        guard.whisper = Some(whisper_child);
         guard.ollama = Some(ollama_child);
-        guard.whisper_port = Some(whisper_port);
         guard.ollama_port = Some(ollama_port);
     }
 
     current_step += 1.0;
     progress_emitter(SetupProgress {
-        step: SetupStep::StartServers,
+        step: SetupStep::StartOllama,
         status: SetupStatus::Completed,
         overall_progress: current_step / total_steps,
     });
 
-    // Step 7: Validate setup
+    // Step 6: Validate the cleanup model end-to-end.
     progress_emitter(SetupProgress {
         step: SetupStep::ValidateSetup,
-        status: SetupStatus::InProgress { message: "Testing transcription server...".to_string(), progress: 0.0 },
+        status: SetupStatus::InProgress {
+            message: "Testing cleanup model...".to_string(),
+            progress: 0.0,
+        },
         overall_progress: current_step / total_steps,
-    });
-
-    test_transcription(whisper_port)
-        .await
-        .context("Whisper server validation failed")?;
-
-    progress_emitter(SetupProgress {
-        step: SetupStep::ValidateSetup,
-        status: SetupStatus::InProgress { message: "Testing cleanup server...".to_string(), progress: 50.0 },
-        overall_progress: (current_step + 0.5) / total_steps,
     });
 
     test_cleanup(ollama_port, &ollama_model)
@@ -1196,13 +968,12 @@ where
         status: SetupStatus::Completed,
         overall_progress: 1.0,
     });
-    
+
     Ok(LocalSetupConfig {
         whisper_model_path: model_path.to_string_lossy().to_string(),
-        whisper_server_port: whisper_port,
         ollama_server_port: ollama_port,
         ollama_model,
         setup_completed: true,
-        setup_version: "1.0".to_string(),
+        setup_version: CURRENT_SETUP_VERSION.to_string(),
     })
 }
