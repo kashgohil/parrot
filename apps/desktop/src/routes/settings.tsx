@@ -19,8 +19,11 @@ interface Profile {
 }
 
 function SettingsPage() {
-	const [hotkey, setHotkey] = useState("CmdOrCtrl+Shift+Space");
+	const [hotkey, setHotkey] = useState("");
+	const [defaultHotkey, setDefaultHotkey] = useState("");
+	const [platform, setPlatform] = useState<string>("");
 	const [recording, setRecording] = useState(false);
+	const [hotkeyDirty, setHotkeyDirty] = useState(false);
 	const [apiKey, setApiKey] = useState("");
 	const [llmApiKey, setLlmApiKey] = useState("");
 	const [useOwnKeys, setUseOwnKeys] = useState(false);
@@ -82,7 +85,9 @@ function SettingsPage() {
 			}
 
 			if (parts.length > 0) {
-				setHotkey(parts.join("+"));
+				const next = parts.join("+");
+				setHotkey(next);
+				setHotkeyDirty(true);
 				setRecording(false);
 			}
 
@@ -121,8 +126,13 @@ function SettingsPage() {
 
 	async function loadSettings() {
 		try {
+			const def = await invoke<{ default: string; platform: string }>(
+				"get_default_dictation_hotkey",
+			);
+			setDefaultHotkey(def.default);
+			setPlatform(def.platform);
 			const hk = await invoke<string | null>("get_setting", { key: "hotkey" });
-			if (hk) setHotkey(hk);
+			setHotkey(hk && hk.trim() ? hk : def.default);
 			const ak = await invoke<string | null>("get_setting", { key: "api_key" });
 			if (ak) setApiKey(ak);
 			const lk = await invoke<string | null>("get_setting", {
@@ -174,6 +184,7 @@ function SettingsPage() {
 	}
 
 	function formatHotkey(hk: string): string {
+		if (hk.toLowerCase() === "fn") return "fn";
 		return hk
 			.replace(/CmdOrCtrl/g, navigator.platform.includes("Mac") ? "⌘" : "Ctrl")
 			.replace(/Shift/g, "⇧")
@@ -181,6 +192,17 @@ function SettingsPage() {
 			.replace(/Space/g, "Space")
 			.replace(/Plus/g, "+")
 			.replace(/\+/g, " + ");
+	}
+
+	function setFnHotkey() {
+		setHotkey("fn");
+		setHotkeyDirty(true);
+		setRecording(false);
+	}
+
+	function resetHotkey() {
+		setHotkey(defaultHotkey);
+		setHotkeyDirty(true);
 	}
 
 	return (
@@ -202,9 +224,11 @@ function SettingsPage() {
 						<Keyboard className="w-5 h-5 text-primary" />
 					</div>
 					<div className="flex-1">
-						<h2 className="text-base font-semibold text-foreground">Hotkey</h2>
+						<h2 className="text-base font-semibold text-foreground">
+							Dictation shortcut
+						</h2>
 						<p className="text-sm text-muted-foreground">
-							Set the keyboard shortcut to start and stop recording
+							Hold to record, release to transcribe.
 						</p>
 					</div>
 				</div>
@@ -233,9 +257,45 @@ function SettingsPage() {
 							</Button>
 						</div>
 					)}
+
+					<div className="flex flex-wrap items-center gap-2 text-xs">
+						{platform === "macos" && hotkey.toLowerCase() !== "fn" && (
+							<button
+								type="button"
+								onClick={setFnHotkey}
+								className="text-primary hover:underline"
+							>
+								Use fn key instead
+							</button>
+						)}
+						{hotkey !== defaultHotkey && defaultHotkey && (
+							<button
+								type="button"
+								onClick={resetHotkey}
+								className="text-muted-foreground hover:text-foreground hover:underline"
+							>
+								Reset to default ({formatHotkey(defaultHotkey)})
+							</button>
+						)}
+					</div>
+
 					<p className="text-xs text-muted-foreground">
-						Click Record, then press your desired key combination
+						{recording
+							? "Press the key or combination you want to use, or click outside to cancel."
+							: platform === "macos"
+								? "Click Record to capture a custom combination, or use the fn key for one-press dictation."
+								: "Click Record, then press your desired key combination."}
 					</p>
+
+					{hotkeyDirty && (
+						<div className="flex items-start gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs">
+							<span className="font-semibold">Restart required.</span>
+							<span>
+								Save your changes and restart Parrot for the new shortcut to
+								take effect.
+							</span>
+						</div>
+					)}
 				</div>
 			</section>
 
