@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
-import { ArrowRight, User, Mail, HardDrive } from "lucide-react";
+import { ArrowRight, User, Mail } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_onboarding/local-profile")({
@@ -48,29 +48,12 @@ function LocalProfilePage() {
 			{/* Header */}
 			<div className="text-center space-y-2">
 				<div className="w-16 h-16 bg-pk-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
-					<HardDrive className="w-8 h-8 text-pk-primary" />
+					<User className="w-8 h-8 text-pk-primary" />
 				</div>
-				<h2 className="text-2xl font-bold text-foreground">
-					Set Up Your Local Profile
-				</h2>
+				<h2 className="text-2xl font-bold text-foreground">Welcome to Parrot</h2>
 				<p className="text-muted-foreground">
-					Enter your details to personalize your local Parrot experience
+					Enter your details to personalize your experience
 				</p>
-			</div>
-
-			{/* Info Card */}
-			<div className="p-4 bg-pk-primary/10 border border-pk-primary/30 rounded-lg">
-				<div className="flex items-start gap-3">
-					<div className="w-8 h-8 rounded-full bg-[#7cb342]/100/10 flex items-center justify-center shrink-0">
-						<HardDrive className="w-4 h-4 text-pk-primary" />
-					</div>
-					<div>
-						<h3 className="font-medium text-[#5a8a2e]">Local Mode</h3>
-						<p className="text-sm text-pk-primary mt-1">
-							Your data stays on your device. No account required, no cloud sync.
-						</p>
-					</div>
-				</div>
 			</div>
 
 			{/* Form */}
@@ -136,16 +119,16 @@ function LocalProfilePage() {
 					{isSubmitting ? (
 						"Saving..."
 					) : (
-						<>
-							Continue to Installation
-							<ArrowRight className="w-4 h-4 ml-2" />
-						</>
+					<>
+						Continue
+						<ArrowRight className="w-4 h-4 ml-2" />
+					</>
 					)}
 				</Button>
 			</div>
 
 			<p className="text-center text-xs text-muted-foreground">
-				You can change these details later in Settings
+				Your data stays on your device. You can change these details later in Settings.
 			</p>
 		</div>
 	);

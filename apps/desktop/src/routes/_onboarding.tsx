@@ -1,4 +1,5 @@
 import { DoodleBackground } from "@/components/doodle-background";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import {
 	createFileRoute,
@@ -7,30 +8,104 @@ import {
 	useLocation,
 	useNavigate,
 } from "@tanstack/react-router";
-import { invoke } from "@tauri-apps/api/core";
-import { Check, User, Settings, BookOpen, Cloud, HardDrive } from "lucide-react";
+import { ArrowLeft, Check, User, Settings, BookOpen } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+
+const pageTransition = { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
+
+const SMOOTH = [0.22, 1, 0.36, 1] as const;
+const INTRO_HOLD_MS = 1900;
+const HIDE_MS = 280;
+const MORPH_MS = 600;
+const REVEAL_MS = 380;
+
+type Phase = "intro" | "hide" | "morph" | "reveal" | "ready";
+
+// Module-level: splash plays once per app launch.
+let splashShownThisLaunch = false;
 
 export const Route = createFileRoute("/_onboarding")({
 	component: OnboardingLayout,
 });
 
-// Steps for Local mode
-const LOCAL_STEPS = [
-	{ path: "/local-profile", label: "Your Profile", icon: User, description: "Create your local profile" },
-	{ path: "/local-setup", label: "Local Setup", icon: Settings, description: "Configure local AI models" },
-	{ path: "/tour", label: "Quick Tour", icon: BookOpen, description: "Learn how to use Parrot" },
+const ONBOARDING_STEPS = [
+	{
+		path: "/local-profile",
+		label: "Your Profile",
+		icon: User,
+		description: "Create your profile",
+	},
+	{
+		path: "/local-setup",
+		label: "AI Setup",
+		icon: Settings,
+		description: "Configure AI models",
+	},
+	{
+		path: "/tour",
+		label: "Quick Tour",
+		icon: BookOpen,
+		description: "Learn how to use Parrot",
+	},
 ];
 
-// Steps for Cloud mode
-const CLOUD_STEPS = [
-	{ path: "/setup-mode", label: "Choose Plan", icon: Settings, description: "Select your subscription" },
-	{ path: "/cloud-setup", label: "Cloud Setup", icon: Settings, description: "Configure API keys" },
-	{ path: "/tour", label: "Quick Tour", icon: BookOpen, description: "Learn how to use Parrot" },
-];
+function BackButton() {
+	const navigate = useNavigate();
+	return (
+		<Button
+			variant="ghost"
+			size="sm"
+			onClick={() => navigate({ to: "/local-profile" })}
+		>
+			<ArrowLeft className="w-4 h-4 mr-2" />
+			Back
+		</Button>
+	);
+}
 
 function OnboardingLayout() {
-	const { isAuthenticated, isLoading, user, setupMode } = useAuth();
+	const { isLoading, user } = useAuth();
 	const location = useLocation();
+	const [phase, setPhase] = useState<Phase>(
+		splashShownThisLaunch ? "ready" : "intro",
+	);
+
+	// Measure the real panel's actual width so the overlay can retract to
+	// the exact pixel it occupies — no guessing, no jolt possible.
+	const panelRef = useRef<HTMLDivElement>(null);
+	const [panelPx, setPanelPx] = useState<number>(320);
+
+	useEffect(() => {
+		const el = panelRef.current;
+		if (!el) return;
+		const update = () => setPanelPx(el.offsetWidth);
+		update();
+		const ro = new ResizeObserver(update);
+		ro.observe(el);
+		return () => ro.disconnect();
+	}, []);
+
+	useEffect(() => {
+		if (splashShownThisLaunch) return;
+		const timers: ReturnType<typeof setTimeout>[] = [];
+		timers.push(setTimeout(() => setPhase("hide"), INTRO_HOLD_MS));
+		timers.push(
+			setTimeout(() => setPhase("morph"), INTRO_HOLD_MS + HIDE_MS),
+		);
+		// morph → reveal driven by overlay's onAnimationComplete.
+		// reveal → ready triggered after REVEAL_MS below.
+		return () => timers.forEach(clearTimeout);
+	}, []);
+
+	useEffect(() => {
+		if (phase !== "reveal") return;
+		const t = setTimeout(() => {
+			setPhase("ready");
+			splashShownThisLaunch = true;
+		}, REVEAL_MS);
+		return () => clearTimeout(t);
+	}, [phase]);
 
 	if (isLoading) {
 		return (
@@ -40,45 +115,46 @@ function OnboardingLayout() {
 		);
 	}
 
-	// For cloud mode, require authentication
-	if (setupMode === "cloud" && !isAuthenticated) {
-		return <Navigate to="/login" />;
-	}
-
-	// For local mode or no mode selected yet, allow without auth
-	// (local mode doesn't require login)
-
 	if (user?.onboarding_completed) {
 		return <Navigate to="/" />;
 	}
 
-	// Determine which steps to show based on mode
-	const steps = setupMode === "local" ? LOCAL_STEPS : CLOUD_STEPS;
+	const steps = ONBOARDING_STEPS;
 	const currentPath = location.pathname;
 	const currentStepIndex = steps.findIndex((s) =>
 		currentPath.startsWith(s.path),
 	);
 
-	// Get current step info
-	const currentStep = steps[currentStepIndex];
-	const StepIcon = currentStep?.icon || User;
+	const isSplashing = phase !== "ready";
+	const showCenteredBrand = phase === "intro" || phase === "hide";
+	const isOverlayFullScreen = phase === "intro" || phase === "hide";
+	// Content (brand, steps, outlet) starts fading in during reveal.
+	const showContent = phase === "reveal" || phase === "ready";
 
 	return (
 		<div className="h-screen flex relative overflow-hidden bg-background">
 			<div
 				data-tauri-drag-region
-				className="absolute inset-x-0 top-0 h-8 cursor-default z-10"
+				className="absolute inset-x-0 top-0 h-8 cursor-default z-50"
 			/>
 
-			{/* Left panel — branding & progress */}
-			<div className="hidden md:flex md:w-[280px] lg:w-[320px] bg-pk-primary flex-col justify-between p-6 lg:p-8 relative overflow-hidden shrink-0">
-				{/* Background decoration */}
-				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
-				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-				<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl" />
+			{/* REAL panel — always at natural width. Never animates layout. */}
+			<div
+				ref={panelRef}
+				className="md:w-[280px] lg:w-[320px] bg-pk-primary relative overflow-hidden shrink-0 flex flex-col justify-between p-6 lg:p-8 z-10"
+			>
+				{/* Decorative blobs */}
+				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl pointer-events-none" />
+				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+				<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl pointer-events-none" />
 
 				{/* Brand header */}
-				<div className="relative z-10">
+				<motion.div
+					initial={false}
+					animate={{ opacity: showContent ? 1 : 0 }}
+					transition={{ duration: REVEAL_MS / 1000, ease: SMOOTH }}
+					className="relative z-10"
+				>
 					<div className="flex items-center gap-3">
 						<div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-lg">
 							<img
@@ -94,10 +170,19 @@ function OnboardingLayout() {
 							<p className="text-white/60 text-xs font-medium">Setup</p>
 						</div>
 					</div>
-				</div>
+				</motion.div>
 
-				{/* Step progress */}
-				<div className="relative z-10">
+				{/* Step progress list */}
+				<motion.div
+					initial={false}
+					animate={{ opacity: showContent ? 1 : 0 }}
+					transition={{
+						duration: REVEAL_MS / 1000,
+						ease: SMOOTH,
+						delay: showContent ? 0.05 : 0,
+					}}
+					className="relative z-10"
+				>
 					<p className="text-white/50 text-sm mb-6 font-medium">
 						Let's get you set up
 					</p>
@@ -116,8 +201,8 @@ function OnboardingLayout() {
 												isActive
 													? "bg-white text-pk-primary shadow-lg"
 													: isCompleted
-													? "bg-white/25 text-white"
-													: "bg-white/10 text-white/40"
+														? "bg-white/25 text-white"
+														: "bg-white/10 text-white/40"
 											}
 										`}
 									>
@@ -135,8 +220,8 @@ function OnboardingLayout() {
 													isActive
 														? "text-white"
 														: isCompleted
-														? "text-white/70"
-														: "text-white/40"
+															? "text-white/70"
+															: "text-white/40"
 												}
 											`}
 										>
@@ -152,111 +237,139 @@ function OnboardingLayout() {
 							);
 						})}
 					</div>
-				</div>
-
-				{/* Current step indicator */}
-				<div className="relative z-10 space-y-3">
-					<div className="px-3 py-3 bg-white/10 rounded-xl border border-white/10">
-						<div className="flex items-center gap-2">
-							<div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-								<StepIcon className="w-4 h-4 text-white" />
-							</div>
-							<div className="flex-1 min-w-0">
-								<p className="text-white/60 text-xs">Current Step</p>
-								<p className="text-white text-sm font-medium truncate">
-									{currentStep?.label || "Getting started"}
-								</p>
-							</div>
-						</div>
-						{currentStep && (
-							<p className="text-white/50 text-xs mt-2 pt-2 border-t border-white/10">
-								Step {currentStepIndex + 1} of {steps.length}
-							</p>
-						)}
-					</div>
-
-					<SwitchModeButton setupMode={setupMode} />
-				</div>
+				</motion.div>
 			</div>
 
-			{/* Right panel — onboarding content */}
+			{/* RIGHT side — Outlet. Always rendered, opacity gated by phase. */}
 			<div className="flex-1 bg-background relative overflow-x-hidden overflow-y-auto">
 				<DoodleBackground opacity={0.06} />
 
-				<div className="min-h-full flex items-center justify-center p-6 lg:p-10">
+				{currentPath.startsWith("/local-setup") && (
+					<motion.div
+						initial={false}
+						animate={{ opacity: showContent ? 1 : 0 }}
+						transition={{
+							duration: REVEAL_MS / 1000,
+							ease: SMOOTH,
+							delay: showContent ? 0.1 : 0,
+						}}
+						className="absolute top-6 left-6 lg:top-10 lg:left-10 z-20"
+					>
+						<BackButton />
+					</motion.div>
+				)}
+
+				<motion.div
+					initial={false}
+					animate={{ opacity: showContent ? 1 : 0 }}
+					transition={{
+						duration: REVEAL_MS / 1000,
+						ease: SMOOTH,
+						delay: showContent ? 0.1 : 0,
+					}}
+					className="min-h-full flex items-center justify-center p-6 lg:p-10"
+				>
 					<div className="w-full max-w-md relative z-10 py-8">
-						{/* Mobile-only branding + progress */}
-						<div className="flex flex-col items-center text-center mb-8 md:hidden">
-							<div className="w-14 h-14 rounded-2xl bg-pk-primary flex items-center justify-center mb-3">
-								<img
-									src="/parrot-transparent.png"
-									alt="Parrot"
-									className="w-10 h-10"
-								/>
-							</div>
-							<h1 className="text-xl font-bold text-foreground mb-2">
-								Parrot Setup
-							</h1>
-							{currentStep && (
-								<p className="text-muted-foreground text-sm mb-4">
-									Step {currentStepIndex + 1} of {steps.length}: {currentStep.label}
-								</p>
-							)}
-							{/* Mobile step dots */}
-							<div className="flex items-center gap-2">
-								{steps.map((step, idx) => {
-									const isActive = currentPath.startsWith(step.path);
-									const isCompleted = idx < currentStepIndex;
-
-									return (
-										<div
-											key={step.path}
-											className={`h-2 rounded-full transition-all ${
-												isActive
-													? "w-6 bg-pk-primary"
-													: isCompleted
-													? "w-2 bg-pk-primary/50"
-													: "w-2 bg-border"
-											}`}
-										/>
-									);
-								})}
-							</div>
-						</div>
-						<Outlet />
+						{/* No mode="wait": both children render simultaneously, so the
+						    new mount paints over the old immediately and there's no
+						    "exiting child showing new content" flash. Both children
+						    are absolutely positioned and overlap during the swap. */}
+						<AnimatePresence initial={false}>
+							<motion.div
+								key={currentPath}
+								initial={{ opacity: 0, x: 24 }}
+								animate={{ opacity: 1, x: 0 }}
+								exit={{ opacity: 0, x: -24 }}
+								transition={pageTransition}
+								style={{ willChange: "transform, opacity" }}
+								className="w-full"
+							>
+								<Outlet />
+							</motion.div>
+						</AnimatePresence>
 					</div>
-				</div>
+				</motion.div>
 			</div>
+
+			{/* SPLASH OVERLAY — covers everything during intro/hide, retracts to
+			    panel width during morph, fades out during reveal. The real panel
+			    underneath never changes size, so there's nothing to flicker. */}
+			{isSplashing && (
+				<motion.div
+					initial={false}
+					animate={{
+						width: isOverlayFullScreen ? "100vw" : panelPx,
+						opacity: phase === "reveal" ? 0 : 1,
+					}}
+					transition={{
+						width: { duration: MORPH_MS / 1000, ease: SMOOTH },
+						opacity: { duration: REVEAL_MS / 1000, ease: SMOOTH },
+					}}
+					onAnimationComplete={(latest) => {
+						// width animation finishing → enter reveal (overlay starts fading).
+						if (
+							phase === "morph" &&
+							typeof latest === "object" &&
+							"width" in latest
+						) {
+							setPhase("reveal");
+						}
+					}}
+					className="absolute inset-y-0 left-0 bg-pk-primary overflow-hidden z-30 pointer-events-none"
+				>
+					{/* Decorative blobs — match the real panel so the handoff is
+					    visually identical when the overlay reaches panel width. */}
+					<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
+					<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+					<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl" />
+
+					{/* Centered intro brand */}
+					<AnimatePresence>
+						{showCenteredBrand && (
+							<motion.div
+								key="intro-brand"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{
+									opacity: 0,
+									transition: { duration: HIDE_MS / 1000, ease: SMOOTH },
+								}}
+								transition={{ duration: 0.4, ease: SMOOTH }}
+								className="absolute inset-0 flex flex-col items-center justify-center"
+							>
+								<motion.div
+									initial={{ opacity: 0, y: 18, scale: 0.92 }}
+									animate={{ opacity: 1, y: 0, scale: 1 }}
+									transition={{ duration: 0.6, ease: SMOOTH, delay: 0.1 }}
+									className="w-24 h-24 rounded-3xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-2xl shadow-black/10 border border-white/10"
+								>
+									<img
+										src="/parrot-transparent.png"
+										alt="Parrot"
+										className="w-16 h-16 drop-shadow-lg"
+									/>
+								</motion.div>
+								<motion.h1
+									initial={{ opacity: 0, y: 18 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, ease: SMOOTH, delay: 0.32 }}
+									className="text-5xl font-bold text-white tracking-tight mt-6 whitespace-nowrap"
+								>
+									Parrot
+								</motion.h1>
+								<motion.p
+									initial={{ opacity: 0, y: 14 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, ease: SMOOTH, delay: 0.7 }}
+									className="text-white/70 text-base font-medium mt-3 tracking-wide whitespace-nowrap"
+								>
+									Voice dictation that just works
+								</motion.p>
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</motion.div>
+			)}
 		</div>
-	);
-}
-
-function SwitchModeButton({ setupMode }: { setupMode: string | null }) {
-	const navigate = useNavigate();
-	const { refreshUser } = useAuth();
-
-	const isLocal = setupMode === "local";
-	const targetMode = isLocal ? "cloud" : "local";
-	const Icon = isLocal ? Cloud : HardDrive;
-	const label = isLocal ? "Switch to Cloud" : "Switch to Local";
-
-	const handleSwitch = async () => {
-		await invoke("set_setting", { key: "setup_mode", value: targetMode });
-		await refreshUser();
-		if (targetMode === "cloud") {
-			navigate({ to: "/setup-mode" });
-		} else {
-			navigate({ to: "/local-profile" });
-		}
-	};
-
-	return (
-		<button
-			onClick={handleSwitch}
-			className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-white/50 hover:text-white/80 hover:bg-white/10 transition-all text-sm cursor-pointer"
-		>
-			<Icon className="w-4 h-4" />
-			<span>{label}</span>
-		</button>
 	);
 }

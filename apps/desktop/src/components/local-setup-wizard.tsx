@@ -22,7 +22,15 @@ import {
 	Terminal,
 	X,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+const stepVariants = {
+	initial: { opacity: 0, x: 24 },
+	animate: { opacity: 1, x: 0 },
+	exit: { opacity: 0, x: -24 },
+};
+const stepTransition = { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
 
 // Types matching the Rust backend
 interface SystemRequirements {
@@ -60,13 +68,13 @@ interface ManualInstructions {
 }
 
 type SetupStep =
-	| "system_check"
-	| "install_whisper_cpp"
+	| { type: "system_check" }
+	| { type: "install_whisper_cpp" }
 	| { type: "download_whisper_model"; model: string }
-	| "install_ollama"
+	| { type: "install_ollama" }
 	| { type: "download_ollama_model"; model: string }
-	| "start_servers"
-	| "validate_setup";
+	| { type: "start_servers" }
+	| { type: "validate_setup" };
 
 type SetupStatus =
 	| { type: "pending" }
@@ -434,30 +442,30 @@ function ModelCard({
 	return (
 		<button
 			onClick={onSelect}
-			className={`flex items-center justify-between p-4 rounded-lg border text-left transition-all ${
+			className={`flex items-center justify-between gap-3 p-4 rounded-lg border text-left transition-all ${
 				selected
 					? "border-primary bg-primary/5"
 					: "border-border hover:border-primary/50"
 			}`}
 		>
-			<div className="flex items-center gap-3">
+			<div className="flex items-center gap-3 min-w-0 flex-1">
 				<div
-					className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+					className={`w-5 h-5 shrink-0 rounded-full border-2 flex items-center justify-center ${
 						selected ? "border-primary" : "border-muted-foreground"
 					}`}
 				>
 					{selected && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
 				</div>
-				<div>
-					<div className="flex items-center gap-2">
-						<span className="font-medium">{model.name}</span>
+				<div className="min-w-0 flex-1">
+					<div className="flex items-center flex-wrap gap-x-2 gap-y-1">
+						<span className="font-medium whitespace-nowrap">{model.name}</span>
 						{model.recommended && (
-							<span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+							<span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
 								Recommended
 							</span>
 						)}
 						{isDownloaded && (
-							<span className="text-xs bg-pk-primary/10 text-pk-primary px-2 py-0.5 rounded-full flex items-center gap-1">
+							<span className="text-xs bg-pk-primary/10 text-pk-primary px-2 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap shrink-0">
 								<Check className="w-3 h-3" />
 								Downloaded
 							</span>
@@ -468,12 +476,9 @@ function ModelCard({
 					</div>
 				</div>
 			</div>
-			<div className="flex items-center gap-2">
-				{isDownloaded && (
-					<span className="text-xs text-pk-primary">Ready to use</span>
-				)}
-				<span className="text-sm text-muted-foreground">{model.size}</span>
-			</div>
+			<span className="text-sm text-muted-foreground whitespace-nowrap shrink-0">
+				{model.size}
+			</span>
 		</button>
 	);
 }
@@ -496,38 +501,49 @@ function InstallationProgressStep({
 	}
 
 	const getStepName = (step: SetupStep): string => {
-		if (typeof step === "string") {
-			return (
-				{
-					system_check: "System Check",
-					install_whisper_cpp: "Installing whisper.cpp",
-					install_ollama: "Installing Ollama",
-					start_servers: "Starting servers",
-					validate_setup: "Validating setup",
-				} as Record<string, string>
-			)[step];
+		switch (step.type) {
+			case "system_check":
+				return "System Check";
+			case "install_whisper_cpp":
+				return "Installing whisper.cpp";
+			case "install_ollama":
+				return "Installing Ollama";
+			case "start_servers":
+				return "Starting servers";
+			case "validate_setup":
+				return "Validating setup";
+			case "download_whisper_model":
+				return `Downloading ${step.model} model`;
+			case "download_ollama_model":
+				return `Downloading ${step.model} model`;
 		}
-		if (step.type === "download_whisper_model") {
-			return `Downloading ${step.model} model`;
-		}
-		if (step.type === "download_ollama_model") {
-			return `Downloading ${step.model} model`;
-		}
-		return "Unknown step";
 	};
 
 	const getStepIcon = (step: SetupStep) => {
-		if (typeof step === "string") {
-			if (step === "system_check") return <Cpu className="w-4 h-4" />;
-			if (step === "install_whisper_cpp") return <Mic className="w-4 h-4" />;
-			if (step === "install_ollama") return <Brain className="w-4 h-4" />;
-			if (step === "start_servers") return <Server className="w-4 h-4" />;
-			if (step === "validate_setup") return <Check className="w-4 h-4" />;
+		switch (step.type) {
+			case "system_check":
+				return <Cpu className="w-4 h-4" />;
+			case "install_whisper_cpp":
+				return <Mic className="w-4 h-4" />;
+			case "install_ollama":
+				return <Brain className="w-4 h-4" />;
+			case "start_servers":
+				return <Server className="w-4 h-4" />;
+			case "validate_setup":
+				return <Check className="w-4 h-4" />;
+			default:
+				return <DownloadIcon className="w-4 h-4" />;
 		}
-		return <DownloadIcon className="w-4 h-4" />;
 	};
 
 	const status = progress.status;
+	const logRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (logRef.current) {
+			logRef.current.scrollTop = logRef.current.scrollHeight;
+		}
+	}, [logMessages]);
 
 	return (
 		<div className="space-y-6">
@@ -600,7 +616,10 @@ function InstallationProgressStep({
 						Setup Log
 					</div>
 				</div>
-				<div className="p-4 h-48 overflow-y-auto font-mono text-xs space-y-1">
+				<div
+					ref={logRef}
+					className="p-4 h-48 overflow-y-auto font-mono text-xs space-y-1"
+				>
 					{logMessages.length === 0 ? (
 						<div className="text-muted-foreground italic">
 							Waiting to start...
@@ -670,29 +689,22 @@ function DownloadIcon({ className }: { className?: string }) {
 }
 
 function getEducationalTooltip(step: SetupStep): string {
-	if (typeof step === "string") {
-		switch (step) {
-			case "system_check":
-				return "We're checking your Mac meets the requirements for running AI models locally.";
-			case "install_whisper_cpp":
-				return "whisper.cpp converts your speech to text using your Mac's Neural Engine. Your voice never leaves your computer.";
-			case "install_ollama":
-				return "Ollama runs AI models locally to clean up your dictation text (fix grammar, remove filler words).";
-			case "start_servers":
-				return "Starting the local servers that will handle your voice dictation and text cleanup.";
-			case "validate_setup":
-				return "Running quick tests to make sure everything is working correctly.";
-		}
-	}
-	if (typeof step === "object") {
-		if (step.type === "download_whisper_model") {
+	switch (step.type) {
+		case "system_check":
+			return "We're checking your Mac meets the requirements for running AI models locally.";
+		case "install_whisper_cpp":
+			return "whisper.cpp converts your speech to text using your Mac's Neural Engine. Your voice never leaves your computer.";
+		case "install_ollama":
+			return "Ollama runs AI models locally to clean up your dictation text (fix grammar, remove filler words).";
+		case "start_servers":
+			return "Starting the local servers that will handle your voice dictation and text cleanup.";
+		case "validate_setup":
+			return "Running quick tests to make sure everything is working correctly.";
+		case "download_whisper_model":
 			return "The speech recognition model is what converts your voice into text. Larger models are more accurate but use more memory.";
-		}
-		if (step.type === "download_ollama_model") {
+		case "download_ollama_model":
 			return "The AI model cleans up your text (fixes grammar, punctuation, removes 'um' and 'uh'). It runs entirely on your Mac.";
-		}
 	}
-	return "";
 }
 
 function ManualInterventionStep({
@@ -1044,7 +1056,7 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 				`${new Date().toLocaleTimeString()} - Failed to start setup: ${msg}`,
 			]);
 			setSetupProgress({
-				step: "system_check",
+				step: { type: "system_check" },
 				status: { type: "failed", error: msg, recoverable: false },
 				overall_progress: 0,
 			});
@@ -1060,85 +1072,57 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 		}
 	};
 
-	const steps = [
-		{ id: "system-check", label: "System Check" },
-		{ id: "model-selection", label: "Choose Models" },
-		{ id: "installation", label: "Installation" },
-		{ id: "completion", label: "Complete" },
-	];
-
-	const currentStepIndex = steps.findIndex((s) => s.id === currentStep);
-
 	return (
 		<div className="space-y-6">
-			{/* Progress indicator */}
-			<div className="flex items-center justify-center">
-				<div className="flex items-center gap-2">
-					{steps.map((step, index) => (
-						<div key={step.id} className="flex items-center">
-							<div
-								className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-									index < currentStepIndex
-										? "bg-pk-primary text-white"
-										: index === currentStepIndex
-											? "bg-primary text-primary-foreground"
-											: "bg-muted text-muted-foreground"
-								}`}
-							>
-								{index < currentStepIndex ? (
-									<Check className="w-4 h-4" />
-								) : (
-									index + 1
-								)}
-							</div>
-							{index < steps.length - 1 && (
-								<div
-									className={`w-12 h-0.5 mx-2 ${
-										index < currentStepIndex ? "bg-pk-primary" : "bg-muted"
-									}`}
-								/>
-							)}
-						</div>
-					))}
-				</div>
-			</div>
-
 			{/* Step content */}
-			{currentStep === "system-check" && (
-				<SystemCheckStep
-					requirements={systemRequirements}
-					onContinue={() => setCurrentStep("model-selection")}
-				/>
-			)}
+			<div className="relative overflow-hidden">
+				<AnimatePresence mode="wait" initial={false}>
+					<motion.div
+						key={currentStep}
+						variants={stepVariants}
+						initial="initial"
+						animate="animate"
+						exit="exit"
+						transition={stepTransition}
+					>
+						{currentStep === "system-check" && (
+							<SystemCheckStep
+								requirements={systemRequirements}
+								onContinue={() => setCurrentStep("model-selection")}
+							/>
+						)}
 
-			{currentStep === "model-selection" && (
-				<ModelSelectionStep
-					selectedWhisper={selectedWhisperModel}
-					selectedOllama={selectedOllamaModel}
-					onSelectWhisper={setSelectedWhisperModel}
-					onSelectOllama={setSelectedOllamaModel}
-					onContinue={startInstallation}
-				/>
-			)}
+						{currentStep === "model-selection" && (
+							<ModelSelectionStep
+								selectedWhisper={selectedWhisperModel}
+								selectedOllama={selectedOllamaModel}
+								onSelectWhisper={setSelectedWhisperModel}
+								onSelectOllama={setSelectedOllamaModel}
+								onContinue={startInstallation}
+							/>
+						)}
 
-			{currentStep === "installation" && (
-				<InstallationProgressStep
-					progress={setupProgress}
-					logMessages={logMessages}
-					onRetry={startInstallation}
-				/>
-			)}
+						{currentStep === "installation" && (
+							<InstallationProgressStep
+								progress={setupProgress}
+								logMessages={logMessages}
+								onRetry={startInstallation}
+							/>
+						)}
 
-			{currentStep === "manual-intervention" && manualInstructions && (
-				<ManualInterventionStep
-					instructions={manualInstructions}
-					onContinue={continueAfterManualIntervention}
-				/>
-			)}
+						{currentStep === "manual-intervention" && manualInstructions && (
+							<ManualInterventionStep
+								instructions={manualInstructions}
+								onContinue={continueAfterManualIntervention}
+							/>
+						)}
 
-			{currentStep === "completion" && (
-				<CompletionStep onFinish={onComplete} testResults={testResults} />
-			)}
+						{currentStep === "completion" && (
+							<CompletionStep onFinish={onComplete} testResults={testResults} />
+						)}
+					</motion.div>
+				</AnimatePresence>
+			</div>
 		</div>
 	);
 }
