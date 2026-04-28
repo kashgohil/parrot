@@ -443,3 +443,55 @@ body {
 	background: var(--primary);
 	color: var(--primary-foreground);
 }
+
+/* Sonner toasts: text on its own row, action buttons stacked beneath it */
+[data-sonner-toast] {
+	display: flex !important;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 0.5rem 0.625rem;
+	padding: 0.875rem 1rem !important;
+	width: 380px !important;
+}
+
+[data-sonner-toast] [data-icon] {
+	order: 1;
+	flex-shrink: 0;
+}
+
+[data-sonner-toast] [data-content] {
+	order: 2;
+	flex: 1 1 0;
+	min-width: 0;
+}
+
+[data-sonner-toast] [data-close-button] {
+	order: 3;
+}
+
+/* Force any action/cancel buttons onto a new row below the text. */
+[data-sonner-toast]::before {
+	content: "";
+	order: 4;
+	flex-basis: 100%;
+	height: 0;
+	margin: 0;
+}
+
+[data-sonner-toast] [data-button] {
+	order: 5;
+	flex: 0 0 auto;
+	margin-left: 0 !important;
+}
+
+[data-sonner-toast] [data-title] {
+	font-size: 13px;
+	line-height: 1.35;
+	font-weight: 500;
+}
+
+[data-sonner-toast] [data-description] {
+	font-size: 12px;
+	line-height: 1.4;
+	margin-top: 2px;
+}

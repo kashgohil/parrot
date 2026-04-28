@@ -1,6 +1,11 @@
 import { DoodleBackground } from "@/components/doodle-background";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth";
+import {
+	installGlobalErrorHandlers,
+	showAccessibilityPermissionToast,
+	showError,
+} from "@/lib/errors";
 import { SubscriptionProvider } from "@/lib/subscription";
 import {
 	createRootRoute,
@@ -21,6 +26,7 @@ import {
 	User,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Toaster } from "sonner";
 
 export const Route = createRootRoute({
 	component: RootLayout,
@@ -47,6 +53,20 @@ function RootLayout() {
 	const navigate = useNavigate();
 	const [showWelcome, setShowWelcome] = useState(false);
 
+	useEffect(() => {
+		installGlobalErrorHandlers();
+
+		const unlisten = listen<{ details?: string }>(
+			"paste-permission-needed",
+			(event) => {
+				showAccessibilityPermissionToast(event.payload?.details);
+			},
+		);
+		return () => {
+			unlisten.then((fn) => fn());
+		};
+	}, []);
+
 	// Show welcome screen after login
 	useEffect(() => {
 		if (justLoggedIn && isAuthenticated) {
@@ -66,29 +86,42 @@ function RootLayout() {
 		const isAuthRoute =
 			location.pathname.startsWith("/login") ||
 			location.pathname.startsWith("/signup");
-		const onboardingPaths = [
-			"/setup-mode",
-			"/cloud-setup",
+		const localOnboardingPaths = [
 			"/local-profile",
 			"/local-setup",
 			"/tour",
 		];
-		const isOnboardingRoute = onboardingPaths.some((p) =>
+		const isLocalOnboardingRoute = localOnboardingPaths.some((p) =>
 			location.pathname.startsWith(p),
 		);
 		const isModeSelection = location.pathname === "/mode-selection";
 
-		// If no mode selected yet, go to mode selection (first time setup)
-		if (!setupMode && !isModeSelection && !isAuthRoute) {
-			navigate({ to: "/mode-selection" });
-			return;
-		}
+		// Default to local mode for new users - skip mode selection
+		// Only redirect to mode selection if explicitly requested (for settings)
 
-		// Local mode: no API auth required
-		if (setupMode === "local") {
-			// Allow access to all onboarding routes without API auth
-			if (isOnboardingRoute || isModeSelection) {
+		// Local mode: no API auth required (default mode)
+		if (setupMode === "local" || !setupMode) {
+			// Allow access to local onboarding routes
+			if (isLocalOnboardingRoute) {
 				return; // Allow access
+			}
+
+			// Skip mode selection - go straight to local onboarding for new users
+			if (!setupMode && !isModeSelection && !isAuthRoute) {
+				// Set local as default mode silently
+				invoke("set_setting", { key: "setup_mode", value: "local" })
+					.then(() => {
+						// Check if user needs onboarding
+						if (!user?.onboarding_completed) {
+							if (!user?.name) {
+								navigate({ to: "/local-profile" });
+							} else {
+								navigate({ to: "/local-setup" });
+							}
+						}
+					})
+					.catch((e) => showError(e, { context: "saving your mode preference" }));
+				return;
 			}
 
 			// Check if local user has completed onboarding
@@ -108,19 +141,24 @@ function RootLayout() {
 		}
 
 		// Cloud mode: require auth
-		if (setupMode === "cloud" || !setupMode) {
+		if (setupMode === "cloud") {
+			const cloudOnboardingPaths = ["/setup-mode", "/cloud-setup", "/tour"];
+			const isCloudOnboardingRoute = cloudOnboardingPaths.some((p) =>
+				location.pathname.startsWith(p),
+			);
+
 			if (!isAuthenticated && !isAuthRoute && !isModeSelection) {
 				navigate({ to: "/login" });
 			} else if (
 				isAuthenticated &&
 				!user?.onboarding_completed &&
-				!isOnboardingRoute
+				!isCloudOnboardingRoute
 			) {
 				navigate({ to: "/setup-mode" });
 			} else if (
 				isAuthenticated &&
 				user?.onboarding_completed &&
-				(isOnboardingRoute || isAuthRoute)
+				(isCloudOnboardingRoute || isAuthRoute)
 			) {
 				navigate({ to: "/" });
 			}
@@ -135,50 +173,40 @@ function RootLayout() {
 		setupMode,
 	]);
 
-	// Welcome animation after login
-	if (showWelcome) {
-		return <WelcomeScreen name={user?.name} />;
-	}
-
-	// Check if we should render the full layout or just the outlet
 	const isAuthRoute =
 		location.pathname.startsWith("/login") ||
 		location.pathname.startsWith("/signup");
-	const onboardingPaths = [
-		"/mode-selection",
-		"/setup-mode",
-		"/cloud-setup",
-		"/local-profile",
-		"/local-setup",
-		"/tour",
-	];
-	const isOnboardingRoute = onboardingPaths.some((p) =>
+	const localOnboardingPaths = ["/local-profile", "/local-setup", "/tour"];
+	const isLocalOnboardingRoute = localOnboardingPaths.some((p) =>
 		location.pathname.startsWith(p),
 	);
 
-	// For auth and onboarding routes, just render the outlet (they have their own layouts)
-	if (isAuthRoute || isOnboardingRoute) {
-		return <Outlet />;
-	}
-
-	// Show loading while checking auth
-	if (isLoading) {
-		return (
+	let content: React.ReactNode;
+	if (showWelcome) {
+		content = <WelcomeScreen name={user?.name} />;
+	} else if (isAuthRoute || isLocalOnboardingRoute) {
+		content = <Outlet />;
+	} else if (isLoading) {
+		content = (
 			<div className="min-h-screen flex items-center justify-center bg-background">
 				<div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin-fast" />
 			</div>
 		);
-	}
-
-	// If not authenticated, don't render the main layout
-	if (!isAuthenticated) {
-		return null;
+	} else if (!isAuthenticated) {
+		content = null;
+	} else {
+		content = (
+			<SubscriptionProvider>
+				<AuthenticatedLayout />
+			</SubscriptionProvider>
+		);
 	}
 
 	return (
-		<SubscriptionProvider>
-			<AuthenticatedLayout />
-		</SubscriptionProvider>
+		<>
+			{content}
+			<Toaster position="bottom-right" richColors closeButton />
+		</>
 	);
 }
 
@@ -217,14 +245,12 @@ function AuthenticatedLayout() {
 	const { user, logout } = useAuth();
 	const [status, setStatus] = useState<AppStatus>("idle");
 	const [result, setResult] = useState<DictationResult | null>(null);
-	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const unsubs = [
 			listen("recording-started", () => {
 				setStatus("recording");
 				setResult(null);
-				setError(null);
 			}),
 			listen<number>("recording-stopped", async () => {
 				setStatus("transcribing");
@@ -232,7 +258,7 @@ function AuthenticatedLayout() {
 					const res = await invoke<DictationResult>("transcribe_last");
 					setResult(res);
 				} catch (e) {
-					setError(String(e));
+					showError(e, { context: "transcribing your dictation" });
 				}
 				setStatus("idle");
 			}),
@@ -363,9 +389,6 @@ function AuthenticatedLayout() {
 			{status === "cleaning" && <ProcessingOverlay label="Cleaning up..." />}
 			{result && (
 				<ResultOverlay result={result} onDismiss={() => setResult(null)} />
-			)}
-			{error && (
-				<ErrorOverlay message={error} onDismiss={() => setError(null)} />
 			)}
 		</div>
 	);
@@ -515,27 +538,3 @@ function ResultOverlay({
 	);
 }
 
-function ErrorOverlay({
-	message,
-	onDismiss,
-}: {
-	message: string;
-	onDismiss: () => void;
-}) {
-	useEffect(() => {
-		const timer = setTimeout(onDismiss, 5000);
-		return () => clearTimeout(timer);
-	}, [onDismiss]);
-
-	return (
-		<div
-			className="fixed top-5 right-5 z-1000 flex items-center gap-3 px-5 py-3 rounded-2xl text-[13px] font-medium text-white bg-red-500 shadow-lg max-w-[400px] cursor-pointer animate-slide-in-right"
-			onClick={onDismiss}
-		>
-			<div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-				<span className="text-sm">!</span>
-			</div>
-			<span className="flex-1">{message}</span>
-		</div>
-	);
-}
