@@ -908,7 +908,20 @@ async fn validate_local_servers(
 
     // Transcription "validation" is now just a check that the whisper model
     // loaded successfully — it lives in-process, no network probe needed.
-    let transcription_ok = whisper.read().await.is_some();
+    // The load is kicked off in a background task when setup finishes, so
+    // poll briefly here to avoid racing the user to the completion screen.
+    let transcription_ok = {
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
+        loop {
+            if whisper.read().await.is_some() {
+                break true;
+            }
+            if std::time::Instant::now() >= deadline {
+                break false;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(250)).await;
+        }
+    };
     let cleanup_ok =
         local_setup::test_cleanup(ollama_port, &config.ollama_model)
             .await
