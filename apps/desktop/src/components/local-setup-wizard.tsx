@@ -44,7 +44,6 @@ interface SystemRequirements {
 
 interface LocalSetupConfig {
 	whisper_model_path: string;
-	whisper_server_port: number;
 	ollama_server_port: number;
 	ollama_model: string;
 	setup_completed: boolean;
@@ -69,11 +68,10 @@ interface ManualInstructions {
 
 type SetupStep =
 	| { type: "system_check" }
-	| { type: "install_whisper_cpp" }
 	| { type: "download_whisper_model"; model: string }
 	| { type: "install_ollama" }
 	| { type: "download_ollama_model"; model: string }
-	| { type: "start_servers" }
+	| { type: "start_ollama" }
 	| { type: "validate_setup" };
 
 type SetupStatus =
@@ -504,12 +502,10 @@ function InstallationProgressStep({
 		switch (step.type) {
 			case "system_check":
 				return "System Check";
-			case "install_whisper_cpp":
-				return "Installing whisper.cpp";
 			case "install_ollama":
 				return "Installing Ollama";
-			case "start_servers":
-				return "Starting servers";
+			case "start_ollama":
+				return "Starting Ollama";
 			case "validate_setup":
 				return "Validating setup";
 			case "download_whisper_model":
@@ -523,11 +519,9 @@ function InstallationProgressStep({
 		switch (step.type) {
 			case "system_check":
 				return <Cpu className="w-4 h-4" />;
-			case "install_whisper_cpp":
-				return <Mic className="w-4 h-4" />;
 			case "install_ollama":
 				return <Brain className="w-4 h-4" />;
-			case "start_servers":
+			case "start_ollama":
 				return <Server className="w-4 h-4" />;
 			case "validate_setup":
 				return <Check className="w-4 h-4" />;
@@ -692,16 +686,14 @@ function getEducationalTooltip(step: SetupStep): string {
 	switch (step.type) {
 		case "system_check":
 			return "We're checking your Mac meets the requirements for running AI models locally.";
-		case "install_whisper_cpp":
-			return "whisper.cpp converts your speech to text using your Mac's Neural Engine. Your voice never leaves your computer.";
 		case "install_ollama":
 			return "Ollama runs AI models locally to clean up your dictation text (fix grammar, remove filler words).";
-		case "start_servers":
-			return "Starting the local servers that will handle your voice dictation and text cleanup.";
+		case "start_ollama":
+			return "Starting the Ollama daemon that will handle text cleanup.";
 		case "validate_setup":
-			return "Running quick tests to make sure everything is working correctly.";
+			return "Running a quick test to make sure cleanup is working.";
 		case "download_whisper_model":
-			return "The speech recognition model is what converts your voice into text. Larger models are more accurate but use more memory.";
+			return "The speech recognition model converts your voice into text using your Mac's Neural Engine — your audio never leaves your computer.";
 		case "download_ollama_model":
 			return "The AI model cleans up your text (fixes grammar, punctuation, removes 'um' and 'uh'). It runs entirely on your Mac.";
 	}
