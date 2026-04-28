@@ -10,6 +10,7 @@ use tokio::sync::RwLock;
 
 /// Current state of a setup operation
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
 pub enum SetupStatus {
     Pending,
     InProgress { message: String, progress: f32 },
@@ -39,7 +40,7 @@ pub struct ManualStep {
 
 /// Setup step identifiers
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(rename_all = "snake_case")]
+#[serde(tag = "type", rename_all = "snake_case")]
 pub enum SetupStep {
     SystemCheck,
     InstallWhisperCpp,
@@ -449,7 +450,11 @@ where
     Ok(())
 }
 
-/// Download Ollama model with progress
+/// Download Ollama model with progress via the HTTP streaming API.
+///
+/// The `ollama pull` CLI does not support `--json`, and its TTY progress uses
+/// `\r` updates that don't surface as line-buffered reads. Hitting the daemon
+/// API directly gives us reliable NDJSON progress events.
 pub async fn download_ollama_model<F>(model: &str, progress_callback: F) -> Result<()>
 where
     F: Fn(String, f32) + Send + 'static,
@@ -460,66 +465,142 @@ where
         progress_callback(format!("Model {} already exists", model), 100.0);
         return Ok(());
     }
-    
-    progress_callback(format!("Downloading {} model...", model), 10.0);
-    
-    let mut child = Command::new("ollama")
-        .args(["pull", model, "--json"])
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()
-        .context("Failed to start ollama pull")?;
-    
-    let stdout = child.stdout.take().unwrap();
-    let reader = BufReader::new(stdout);
-    let mut lines = reader.lines();
-    
-    let mut progress: f32 = 10.0;
-    while let Ok(Some(line)) = lines.next_line().await {
-        if line.trim().is_empty() {
-            continue;
+
+    let client = reqwest::Client::builder()
+        .connect_timeout(Duration::from_secs(5))
+        .build()
+        .unwrap_or_else(|_| reqwest::Client::new());
+    let daemon_url = "http://127.0.0.1:11434";
+
+    // Ensure the Ollama daemon is reachable; if not, spawn it and wait briefly.
+    let mut spawned_daemon: Option<tokio::process::Child> = None;
+    let probe = client
+        .get(format!("{daemon_url}/api/tags"))
+        .timeout(Duration::from_secs(2))
+        .send()
+        .await;
+    if probe.is_err() {
+        progress_callback("Starting Ollama daemon...".to_string(), 1.0);
+        let child = Command::new("ollama")
+            .arg("serve")
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .context("Failed to start the Ollama daemon")?;
+        spawned_daemon = Some(child);
+
+        let mut ready = false;
+        for _ in 0..30 {
+            tokio::time::sleep(Duration::from_millis(500)).await;
+            if client
+                .get(format!("{daemon_url}/api/tags"))
+                .timeout(Duration::from_secs(2))
+                .send()
+                .await
+                .is_ok()
+            {
+                ready = true;
+                break;
+            }
         }
+        if !ready {
+            if let Some(mut child) = spawned_daemon.take() {
+                let _ = child.kill().await;
+            }
+            anyhow::bail!("Ollama daemon did not start in time");
+        }
+    }
 
-        let parsed: std::result::Result<serde_json::Value, _> = serde_json::from_str(&line);
-        if let Ok(value) = parsed {
-            let status = value
-                .get("status")
-                .and_then(|v| v.as_str())
-                .unwrap_or("Downloading model")
-                .to_string();
+    progress_callback(format!("Downloading {} model...", model), 1.0);
 
-            let completed = value.get("completed").and_then(|v| v.as_u64());
-            let total = value.get("total").and_then(|v| v.as_u64());
+    let mut response = match client
+        .post(format!("{daemon_url}/api/pull"))
+        .json(&serde_json::json!({ "name": model, "stream": true }))
+        .send()
+        .await
+    {
+        Ok(resp) => match resp.error_for_status() {
+            Ok(r) => r,
+            Err(e) => {
+                if let Some(mut child) = spawned_daemon.take() {
+                    let _ = child.kill().await;
+                }
+                return Err(anyhow::Error::from(e).context("Pull request rejected by Ollama"));
+            }
+        },
+        Err(e) => {
+            if let Some(mut child) = spawned_daemon.take() {
+                let _ = child.kill().await;
+            }
+            return Err(anyhow::Error::from(e).context("Failed to call Ollama pull API"));
+        }
+    };
 
-            if let (Some(done), Some(total)) = (completed, total) {
-                if total > 0 {
-                    let pct = (done as f32 / total as f32) * 100.0;
-                    progress = pct.clamp(progress, 99.0);
-                    progress_callback(status, progress);
-                    continue;
+    let mut buffer: Vec<u8> = Vec::new();
+    let mut last_progress: f32 = 1.0;
+
+    loop {
+        let chunk = match response.chunk().await {
+            Ok(Some(c)) => c,
+            Ok(None) => break,
+            Err(e) => {
+                if let Some(mut child) = spawned_daemon.take() {
+                    let _ = child.kill().await;
+                }
+                return Err(anyhow::Error::from(e).context("Pull stream interrupted"));
+            }
+        };
+        buffer.extend_from_slice(&chunk);
+
+        while let Some(idx) = buffer.iter().position(|b| *b == b'\n') {
+            let line_bytes: Vec<u8> = buffer.drain(..=idx).collect();
+            let line = String::from_utf8_lossy(&line_bytes);
+            let trimmed = line.trim();
+            if trimmed.is_empty() {
+                continue;
+            }
+
+            if let Ok(value) = serde_json::from_str::<serde_json::Value>(trimmed) {
+                if let Some(err) = value.get("error").and_then(|v| v.as_str()) {
+                    if let Some(mut child) = spawned_daemon.take() {
+                        let _ = child.kill().await;
+                    }
+                    anyhow::bail!("Ollama pull failed: {}", err);
+                }
+
+                let status = value
+                    .get("status")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("Downloading")
+                    .to_string();
+                let completed = value.get("completed").and_then(|v| v.as_u64());
+                let total = value.get("total").and_then(|v| v.as_u64());
+
+                if let (Some(done), Some(total)) = (completed, total) {
+                    if total > 0 {
+                        let pct = (done as f32 / total as f32) * 100.0;
+                        last_progress = pct.clamp(0.0, 99.0);
+                        progress_callback(status, last_progress);
+                        continue;
+                    }
+                }
+
+                if status.contains("success") {
+                    progress_callback("Finalizing model...".to_string(), 99.0);
+                } else {
+                    progress_callback(status, last_progress);
                 }
             }
-
-            if status.contains("success") {
-                progress_callback("Finalizing model...".to_string(), 99.0);
-            } else {
-                progress = (progress + 1.0f32).min(95.0f32);
-                progress_callback(status, progress);
-            }
-            continue;
         }
+    }
 
-        progress = (progress + 1.0f32).min(95.0f32);
-        progress_callback(line, progress);
-    }
-    
-    let status = child.wait().await?;
-    
-    if !status.success() {
-        anyhow::bail!("Failed to download Ollama model");
-    }
-    
     progress_callback(format!("Model {} ready", model), 100.0);
+
+    // Stop any daemon we spawned ad-hoc; the StartServers step will spawn its own.
+    if let Some(mut child) = spawned_daemon {
+        let _ = child.kill().await;
+    }
+
     Ok(())
 }
 
@@ -542,16 +623,22 @@ pub async fn find_available_port(start: u16, end: u16) -> Option<u16> {
     None
 }
 
-/// Start whisper.cpp server
+/// Start whisper.cpp server.
+///
+/// `whisper-server` takes several seconds to load its Metal/BLAS backends and
+/// the model before it begins listening, so we poll the HTTP endpoint until it
+/// responds (up to ~45s) instead of using a fixed sleep.
 pub async fn start_whisper_server(
     model_path: &str,
     preferred_port: u16,
 ) -> Result<(tokio::process::Child, u16)> {
+    use tokio::io::AsyncReadExt;
+
     let port = find_available_port(preferred_port, preferred_port + 10)
         .await
         .ok_or_else(|| anyhow::anyhow!("No available ports found"))?;
-    
-    let child = Command::new("whisper-server")
+
+    let mut child = Command::new("whisper-server")
         .args(&[
             "--model",
             model_path,
@@ -560,60 +647,108 @@ pub async fn start_whisper_server(
             "--port",
             &port.to_string(),
         ])
-        .stdout(Stdio::piped())
+        .stdout(Stdio::null())
         .stderr(Stdio::piped())
         .spawn()
         .context("Failed to start whisper server. Make sure whisper-cpp is installed via Homebrew (provides whisper-server).")?;
-    
-    // Wait a moment for server to start
-    tokio::time::sleep(Duration::from_secs(2)).await;
-    
-    // Verify server is responding
+
     let client = reqwest::Client::new();
-    match client
-        .get(&format!("http://127.0.0.1:{}/", port))
-        .timeout(Duration::from_secs(5))
-        .send()
-        .await
-    {
-        Ok(_) => Ok((child, port)),
-        Err(_) => {
-            anyhow::bail!("Whisper server failed to start");
+    let url = format!("http://127.0.0.1:{}/", port);
+
+    for _ in 0..90 {
+        // If the process died before binding, surface stderr instead of polling forever.
+        if let Ok(Some(status)) = child.try_wait() {
+            let mut err = String::new();
+            if let Some(mut stderr) = child.stderr.take() {
+                let _ = stderr.read_to_string(&mut err).await;
+            }
+            anyhow::bail!(
+                "whisper-server exited (code {:?}) before binding: {}",
+                status.code(),
+                err.trim()
+            );
         }
+
+        if client
+            .get(&url)
+            .timeout(Duration::from_secs(2))
+            .send()
+            .await
+            .is_ok()
+        {
+            return Ok((child, port));
+        }
+
+        tokio::time::sleep(Duration::from_millis(500)).await;
+    }
+
+    // Capture whatever stderr produced so the UI shows something useful.
+    let mut err = String::new();
+    if let Some(mut stderr) = child.stderr.take() {
+        let _ = tokio::time::timeout(
+            Duration::from_millis(200),
+            stderr.read_to_string(&mut err),
+        )
+        .await;
+    }
+    let _ = child.kill().await;
+    if err.trim().is_empty() {
+        anyhow::bail!("whisper-server did not start listening within 45 seconds");
+    } else {
+        anyhow::bail!(
+            "whisper-server did not start listening within 45 seconds: {}",
+            err.trim()
+        );
     }
 }
 
-/// Start Ollama server
+/// Start Ollama server, polling until the API responds.
 pub async fn start_ollama_server(preferred_port: u16) -> Result<(tokio::process::Child, u16)> {
+    use tokio::io::AsyncReadExt;
+
     let port = find_available_port(preferred_port, preferred_port + 10)
         .await
         .ok_or_else(|| anyhow::anyhow!("No available ports found"))?;
-    
-    // Set OLLAMA_HOST to use custom port
-    let child = Command::new("ollama")
+
+    let mut child = Command::new("ollama")
         .arg("serve")
         .env("OLLAMA_HOST", format!("127.0.0.1:{}", port))
-        .stdout(Stdio::piped())
+        .stdout(Stdio::null())
         .stderr(Stdio::piped())
         .spawn()
         .context("Failed to start Ollama server")?;
-    
-    // Wait for server to start
-    tokio::time::sleep(Duration::from_secs(3)).await;
-    
-    // Verify server is responding
+
     let client = reqwest::Client::new();
-    match client
-        .get(&format!("http://127.0.0.1:{}/api/tags", port))
-        .timeout(Duration::from_secs(5))
-        .send()
-        .await
-    {
-        Ok(_) => Ok((child, port)),
-        Err(_) => {
-            anyhow::bail!("Ollama server failed to start");
+    let url = format!("http://127.0.0.1:{}/api/tags", port);
+
+    for _ in 0..60 {
+        if let Ok(Some(status)) = child.try_wait() {
+            let mut err = String::new();
+            if let Some(mut stderr) = child.stderr.take() {
+                let _ = stderr.read_to_string(&mut err).await;
+            }
+            anyhow::bail!(
+                "ollama serve exited (code {:?}) before binding: {}",
+                status.code(),
+                err.trim()
+            );
         }
+
+        if client
+            .get(&url)
+            .timeout(Duration::from_secs(2))
+            .send()
+            .await
+            .is_ok()
+        {
+            return Ok((child, port));
+        }
+
+        tokio::time::sleep(Duration::from_millis(500)).await;
     }
+
+    let _ = child.kill().await;
+    anyhow::bail!("Ollama server did not start listening within 30 seconds");
 }
 
 /// Test transcription
