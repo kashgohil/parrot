@@ -6,6 +6,7 @@ import {
 	showAccessibilityPermissionToast,
 	showError,
 } from "@/lib/errors";
+import { useUpdater } from "@/lib/updater";
 import { SubscriptionProvider } from "@/lib/subscription";
 import {
 	createRootRoute,
@@ -17,9 +18,11 @@ import {
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import {
+	ArrowDownToLine,
 	BookA,
 	CircleCheck,
 	History,
+	Loader2,
 	LogOut,
 	Settings,
 	Sparkles,
@@ -245,6 +248,7 @@ function AuthenticatedLayout() {
 	const { user, logout } = useAuth();
 	const [status, setStatus] = useState<AppStatus>("idle");
 	const [result, setResult] = useState<DictationResult | null>(null);
+	const updater = useUpdater();
 
 	useEffect(() => {
 		const unsubs = [
@@ -315,6 +319,9 @@ function AuthenticatedLayout() {
 						<NavLink to="/profile" icon={User} label="Profile" />
 					</div>
 				</nav>
+
+				{/* Update available card — only renders when there's something to do. */}
+				<UpdateBanner updater={updater} />
 
 				{/* User section */}
 				<div className="relative z-10 p-4 lg:p-6">
@@ -534,6 +541,68 @@ function ResultOverlay({
 					)}
 				</div>
 			</div>
+		</div>
+	);
+}
+
+function UpdateBanner({
+	updater,
+}: {
+	updater: ReturnType<typeof useUpdater>;
+}) {
+	const { phase, availableVersion, error, apply, dismiss } = updater;
+
+	// Hidden while idle, checking, or silently downloading in the background.
+	// Only surfaces once the new build is on disk and ready to apply.
+	if (phase !== "ready" && phase !== "installing" && phase !== "error") {
+		return null;
+	}
+
+	const busy = phase === "installing";
+
+	return (
+		<div className="relative z-10 px-4 lg:px-6 pb-3">
+			<button
+				type="button"
+				onClick={busy ? undefined : apply}
+				disabled={busy}
+				className="group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 transition-all text-left disabled:cursor-default disabled:hover:bg-white/10"
+			>
+				<div className="w-7 h-7 shrink-0 rounded-md bg-white/15 flex items-center justify-center">
+					{busy ? (
+						<Loader2 className="w-3.5 h-3.5 text-white animate-spin" />
+					) : (
+						<ArrowDownToLine className="w-3.5 h-3.5 text-white" />
+					)}
+				</div>
+				<div className="flex-1 min-w-0">
+					<p className="text-xs font-medium text-white truncate">
+						{phase === "ready" && "Restart to update"}
+						{phase === "installing" && "Installing…"}
+						{phase === "error" && "Update failed"}
+					</p>
+					<p className="text-[11px] text-white/55 truncate">
+						{phase === "ready" && availableVersion
+							? `v${availableVersion} is ready`
+							: phase === "installing"
+								? "Relaunching shortly"
+								: error || "Tap to retry"}
+					</p>
+				</div>
+				{phase === "ready" && (
+					<span
+						role="button"
+						aria-label="Dismiss"
+						onClick={(e) => {
+							e.stopPropagation();
+							dismiss();
+						}}
+						className="text-white/40 hover:text-white/80 text-xs px-1"
+					>
+						×
+					</span>
+				)}
+			</button>
 		</div>
 	);
 }
