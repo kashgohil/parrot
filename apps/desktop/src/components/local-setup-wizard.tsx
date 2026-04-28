@@ -185,7 +185,7 @@ function SystemCheckStep({
 		reqs.macos_supported && reqs.free_space_gb >= 5 && reqs.has_homebrew;
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-6">
 			<div className="space-y-3">
 				<RequirementItem
 					icon={<Cpu className="w-4 h-4" />}
@@ -1067,8 +1067,12 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 	return (
 		<div className="space-y-6">
 			{/* Step content */}
-			<div className="relative overflow-hidden">
-				<AnimatePresence mode="wait" initial={false}>
+			<motion.div
+				layout
+				transition={stepTransition}
+				className="relative overflow-hidden"
+			>
+				<AnimatePresence mode="popLayout" initial={false}>
 					<motion.div
 						key={currentStep}
 						variants={stepVariants}
@@ -1114,7 +1118,7 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 						)}
 					</motion.div>
 				</AnimatePresence>
-			</div>
+			</motion.div>
 		</div>
 	);
 }
