@@ -2,6 +2,7 @@ mod audio;
 mod cleanup;
 mod cloud_api;
 mod db;
+mod hotkey;
 mod local_setup;
 mod migration;
 mod transcription;
@@ -331,6 +332,38 @@ fn open_system_settings(pane: String) -> Result<(), String> {
         .map_err(|e| format!("Failed to open System Settings: {}", e))?;
 
     Ok(())
+}
+
+/// Whether the OS has granted Parrot Accessibility permission.
+///
+/// On macOS, both the `osascript` paste step and the `fn` key tap require it.
+/// We probe via `AXIsProcessTrusted` (no prompt). On other OSes there's no
+/// equivalent gate, so this always returns true.
+#[tauri::command]
+fn check_accessibility_permission() -> bool {
+    #[cfg(target_os = "macos")]
+    {
+        #[link(name = "ApplicationServices", kind = "framework")]
+        extern "C" {
+            fn AXIsProcessTrusted() -> bool;
+        }
+        unsafe { AXIsProcessTrusted() }
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        true
+    }
+}
+
+/// Returns the platform's default dictation hotkey + the OS family, so the
+/// settings UI can render appropriate controls (e.g. only show the "fn key"
+/// option on macOS).
+#[tauri::command]
+fn get_default_dictation_hotkey() -> serde_json::Value {
+    serde_json::json!({
+        "default": hotkey::default_for_platform(),
+        "platform": std::env::consts::OS,
+    })
 }
 
 /// DictationEntry type used by both local and cloud modes in command responses
@@ -960,49 +993,10 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .plugin(
-            tauri_plugin_global_shortcut::Builder::new()
-                .with_shortcut("CmdOrCtrl+Shift+Space")
-                .expect("Failed to register default shortcut")
-                .with_handler(|app, _shortcut, event| {
-                    use tauri_plugin_global_shortcut::ShortcutState;
-                    let state = app.state::<RecorderState>();
-                    match event.state() {
-                        ShortcutState::Pressed => {
-                            let mut recorder = state.recorder.lock().unwrap();
-                            if !recorder.is_recording() {
-                                if let Err(e) = recorder.start() {
-                                    eprintln!("Failed to start recording: {}", e);
-                                    return;
-                                }
-                                *state.recording_start.lock().unwrap() = Some(Instant::now());
-                                let _ = app.emit("recording-started", ());
-                            }
-                        }
-                        ShortcutState::Released => {
-                            let mut recorder = state.recorder.lock().unwrap();
-                            if recorder.is_recording() {
-                                let duration_ms = state
-                                    .recording_start
-                                    .lock()
-                                    .unwrap()
-                                    .map(|s| s.elapsed().as_millis() as u64)
-                                    .unwrap_or(0);
-                                match recorder.stop() {
-                                    Ok(wav_data) => {
-                                        *state.last_duration_ms.lock().unwrap() = duration_ms;
-                                        *state.last_wav.lock().unwrap() = Some(wav_data);
-                                        let _ = app.emit("recording-stopped", duration_ms);
-                                    }
-                                    Err(e) => eprintln!("Failed to stop recording: {}", e),
-                                }
-                            }
-                        }
-                    }
-                })
-                .build(),
-        )
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .manage(db)
         .manage(recorder_state)
         .manage::<SharedServerProcesses>(Arc::new(RwLock::new(ServerProcesses::new())))
@@ -1033,6 +1027,8 @@ pub fn run() {
             stop_local_servers,
             validate_local_servers,
             open_system_settings,
+            get_default_dictation_hotkey,
+            check_accessibility_permission,
             migration::get_migration_status,
             migration::get_migration_checkout_url,
             migration::get_migration_snapshot,
@@ -1052,6 +1048,20 @@ pub fn run() {
                     let _ = w.hide();
                 }
             });
+
+            // Register the dictation hotkey from saved settings, falling back
+            // to the platform default. Hotkey changes apply on app restart.
+            {
+                let db = app.state::<Database>();
+                let saved = db.get_setting("hotkey").ok().flatten();
+                let binding = saved
+                    .as_deref()
+                    .filter(|s| !s.trim().is_empty())
+                    .unwrap_or_else(|| hotkey::default_for_platform());
+                if let Err(e) = hotkey::register(app.handle(), binding) {
+                    eprintln!("Failed to register dictation hotkey '{}': {}", binding, e);
+                }
+            }
 
             // Auto-start local services if in local mode.
             let db = app.state::<Database>();
