@@ -46,6 +46,11 @@ const KNOWN_PATTERNS: ErrorPattern[] = [
 		message: "Your Mac is out of disk space. Free some up and try again.",
 	},
 	{
+		match: /still warming up|model.*loading|loaded yet/i,
+		message:
+			"Parrot is still warming up the local model. Give it a second and try again.",
+	},
+	{
 		match: /model.*(download|not found|missing)/i,
 		message:
 			"The local model isn't ready yet. Open Settings → Local Setup to finish downloading it.",
