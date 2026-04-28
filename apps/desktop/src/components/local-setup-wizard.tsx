@@ -279,6 +279,137 @@ function RequirementItem({
 	);
 }
 
+function AccessibilityPermissionStep({
+	onContinue,
+}: {
+	onContinue: () => void;
+}) {
+	const [granted, setGranted] = useState<boolean | null>(null);
+	const [opening, setOpening] = useState(false);
+
+	useEffect(() => {
+		let cancelled = false;
+		const probe = async () => {
+			try {
+				const ok = await invoke<boolean>("check_accessibility_permission");
+				if (cancelled) return;
+				setGranted(ok);
+				if (ok) {
+					// Brief pause so the user sees the success state, then advance.
+					setTimeout(() => !cancelled && onContinue(), 600);
+				}
+			} catch (e) {
+				console.error("Failed to probe Accessibility permission:", e);
+				if (!cancelled) setGranted(false);
+			}
+		};
+		probe();
+		const interval = setInterval(probe, 1500);
+		return () => {
+			cancelled = true;
+			clearInterval(interval);
+		};
+	}, [onContinue]);
+
+	const openSettings = async () => {
+		setOpening(true);
+		try {
+			await invoke("open_system_settings", { pane: "accessibility" });
+		} catch (e) {
+			console.error("Failed to open System Settings:", e);
+		} finally {
+			setOpening(false);
+		}
+	};
+
+	if (granted === null) {
+		return (
+			<div className="flex flex-col items-center justify-center py-10 space-y-3">
+				<Loader2 className="w-7 h-7 animate-spin text-primary" />
+				<p className="text-sm text-muted-foreground">Checking permissions...</p>
+			</div>
+		);
+	}
+
+	if (granted) {
+		return (
+			<div className="flex flex-col items-center justify-center py-10 space-y-3">
+				<div className="w-14 h-14 rounded-full bg-pk-primary/15 flex items-center justify-center">
+					<Check className="w-7 h-7 text-pk-primary" />
+				</div>
+				<p className="font-medium">Accessibility permission granted</p>
+				<p className="text-sm text-muted-foreground">Continuing...</p>
+			</div>
+		);
+	}
+
+	return (
+		<div className="space-y-5">
+			<div className="flex items-start gap-4">
+				<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+					<Terminal className="w-5 h-5 text-primary" />
+				</div>
+				<div>
+					<h2 className="text-base font-semibold">Grant Accessibility access</h2>
+					<p className="text-sm text-muted-foreground mt-1">
+						Parrot needs Accessibility permission so it can listen for the
+						dictation hotkey and paste your transcribed text into other apps.
+						Your dictations and audio never leave your Mac.
+					</p>
+				</div>
+			</div>
+
+			<ol className="space-y-3 text-sm">
+				<li className="flex items-start gap-3 p-3 rounded-lg border bg-card">
+					<span className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-medium shrink-0">
+						1
+					</span>
+					<div className="flex-1">
+						<div className="font-medium">Open System Settings</div>
+						<div className="text-xs text-muted-foreground mt-0.5">
+							We'll jump straight to Privacy &amp; Security → Accessibility.
+						</div>
+					</div>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={openSettings}
+						disabled={opening}
+					>
+						{opening ? "Opening..." : "Open Settings"}
+					</Button>
+				</li>
+				<li className="flex items-start gap-3 p-3 rounded-lg border bg-card">
+					<span className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-medium shrink-0">
+						2
+					</span>
+					<div className="flex-1">
+						<div className="font-medium">Toggle Parrot on</div>
+						<div className="text-xs text-muted-foreground mt-0.5">
+							You may need to unlock the panel with Touch ID or your password.
+							This page will move on automatically once it's enabled.
+						</div>
+					</div>
+				</li>
+			</ol>
+
+			<div className="flex items-center justify-between pt-2 text-xs text-muted-foreground">
+				<div className="flex items-center gap-2">
+					<Loader2 className="w-3.5 h-3.5 animate-spin" />
+					Watching for permission...
+				</div>
+				<button
+					type="button"
+					onClick={onContinue}
+					className="hover:text-foreground hover:underline"
+				>
+					Skip for now
+				</button>
+			</div>
+		</div>
+	);
+}
+
 function ModelSelectionStep({
 	selectedWhisper,
 	selectedOllama,
@@ -915,6 +1046,7 @@ function CompletionStep({
 export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 	const [currentStep, setCurrentStep] = useState<
 		| "system-check"
+		| "permissions"
 		| "model-selection"
 		| "installation"
 		| "manual-intervention"
@@ -1084,6 +1216,15 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 						{currentStep === "system-check" && (
 							<SystemCheckStep
 								requirements={systemRequirements}
+								onContinue={() => {
+									const isMac = navigator.platform.toLowerCase().includes("mac");
+									setCurrentStep(isMac ? "permissions" : "model-selection");
+								}}
+							/>
+						)}
+
+						{currentStep === "permissions" && (
+							<AccessibilityPermissionStep
 								onContinue={() => setCurrentStep("model-selection")}
 							/>
 						)}
