@@ -1,12 +1,11 @@
 // import { CloudMigration } from "@/components/cloud-migration";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createFileRoute } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Keyboard, FileText, Save, Eye, EyeOff, Wand2, Database, Check } from "lucide-react";
+import { Keyboard, Save, Wand2, Database, Check } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
 	component: SettingsPage,
@@ -24,15 +23,10 @@ function SettingsPage() {
 	const [platform, setPlatform] = useState<string>("");
 	const [recording, setRecording] = useState(false);
 	const [hotkeyDirty, setHotkeyDirty] = useState(false);
-	const [apiKey, setApiKey] = useState("");
-	const [llmApiKey, setLlmApiKey] = useState("");
-	const [useOwnKeys, setUseOwnKeys] = useState(false);
 	const [saveAudio, setSaveAudio] = useState(false);
 	const [saved, setSaved] = useState(false);
 	const [contextPrompt, setContextPrompt] = useState("");
 	const [writingStyle, setWritingStyle] = useState("");
-	const [showApiKey, setShowApiKey] = useState(false);
-	const [showLlmKey, setShowLlmKey] = useState(false);
 
 	const keysRef = useRef<Set<string>>(new Set());
 	const recorderRef = useRef<HTMLDivElement>(null);
@@ -133,13 +127,6 @@ function SettingsPage() {
 			setPlatform(def.platform);
 			const hk = await invoke<string | null>("get_setting", { key: "hotkey" });
 			setHotkey(hk && hk.trim() ? hk : def.default);
-			const ak = await invoke<string | null>("get_setting", { key: "api_key" });
-			if (ak) setApiKey(ak);
-			const lk = await invoke<string | null>("get_setting", {
-				key: "llm_api_key",
-			});
-			if (lk) setLlmApiKey(lk);
-			if (ak || lk) setUseOwnKeys(true);
 			const sa = await invoke<string | null>("get_setting", {
 				key: "save_audio",
 			});
@@ -162,8 +149,6 @@ function SettingsPage() {
 	async function saveAll() {
 		try {
 			await invoke("set_setting", { key: "hotkey", value: hotkey });
-			await invoke("set_setting", { key: "api_key", value: apiKey });
-			await invoke("set_setting", { key: "llm_api_key", value: llmApiKey });
 			await invoke("set_setting", {
 				key: "save_audio",
 				value: saveAudio ? "true" : "false",
@@ -348,103 +333,6 @@ function SettingsPage() {
 						</p>
 					</div>
 				</div>
-			</section>
-
-			{/* API Keys Section */}
-			<section className="bg-card rounded-2xl border border-border p-5">
-				<div className="flex items-start gap-4 mb-5">
-					<div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
-						<FileText className="w-5 h-5 text-blue-500" />
-					</div>
-					<div className="flex-1">
-						<h2 className="text-base font-semibold text-foreground">API Keys</h2>
-						<p className="text-sm text-muted-foreground">
-							Use your own API keys for transcription and cleanup
-						</p>
-					</div>
-				</div>
-
-				<div className="flex items-center justify-between p-4 rounded-xl bg-muted/50 mb-5">
-					<div>
-						<p className="text-sm font-medium text-foreground">Use my own API keys</p>
-						<p className="text-xs text-muted-foreground mt-0.5">
-							Parrot handles everything by default. Enable this to use your own keys.
-						</p>
-					</div>
-					<button
-						type="button"
-						role="switch"
-						aria-checked={useOwnKeys}
-						onClick={() => setUseOwnKeys(!useOwnKeys)}
-						className={`
-							relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent
-							transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
-							${useOwnKeys ? "bg-primary" : "bg-muted-foreground/30"}
-						`}
-					>
-						<span
-							className={`
-								pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg ring-0
-								transition-transform duration-200 ease-in-out
-								${useOwnKeys ? "translate-x-5" : "translate-x-0"}
-							`}
-						/>
-					</button>
-				</div>
-
-				{useOwnKeys && (
-					<div className="space-y-5">
-						<div className="space-y-2">
-							<Label htmlFor="apiKey" className="text-sm font-medium">
-								Transcription API Key
-							</Label>
-							<div className="relative">
-								<Input
-									id="apiKey"
-									type={showApiKey ? "text" : "password"}
-									value={apiKey}
-									onChange={(e) => setApiKey(e.target.value)}
-									placeholder="Your transcription provider key"
-								/>
-								<button
-									type="button"
-									onClick={() => setShowApiKey(!showApiKey)}
-									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-								>
-									{showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-								</button>
-							</div>
-							<p className="text-xs text-muted-foreground">
-								Used to turn your voice into text (e.g. OpenAI Whisper, Deepgram, ElevenLabs)
-							</p>
-						</div>
-
-						<div className="space-y-2">
-							<Label htmlFor="llmApiKey" className="text-sm font-medium">
-								Cleanup API Key (OpenAI)
-							</Label>
-							<div className="relative">
-								<Input
-									id="llmApiKey"
-									type={showLlmKey ? "text" : "password"}
-									value={llmApiKey}
-									onChange={(e) => setLlmApiKey(e.target.value)}
-									placeholder="Your OpenAI key for text cleanup"
-								/>
-								<button
-									type="button"
-									onClick={() => setShowLlmKey(!showLlmKey)}
-									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-								>
-									{showLlmKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-								</button>
-							</div>
-							<p className="text-xs text-muted-foreground">
-								Optional — powers the AI that tidies up your transcriptions
-							</p>
-						</div>
-					</div>
-				)}
 			</section>
 
 			{/* Data Section */}
