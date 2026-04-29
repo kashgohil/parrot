@@ -20,7 +20,7 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-apple-darwin,x86_64-apple-darwin
+          targets: aarch64-apple-darwin
 
       - uses: Swatinem/rust-cache@v2
         with:
@@ -35,6 +35,10 @@ jobs:
           # Tauri updater signing (generate with: bun tauri signer generate)
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          # whisper.cpp/ggml needs i8mm + dotprod enabled on arm64 Macs,
+          # otherwise it emits intrinsics the compiler refuses to inline.
+          CFLAGS: "-march=armv8.6-a"
+          CXXFLAGS: "-march=armv8.6-a"
           # No Apple code-signing — builds will be unsigned/ad-hoc.
           # Users must right-click → Open or use the Privacy & Security pane on first launch.
         with:
@@ -45,4 +49,4 @@ jobs:
           releaseDraft: true
           prerelease: false
           includeUpdaterJson: true
-          args: --target universal-apple-darwin
+          args: --target aarch64-apple-darwin
