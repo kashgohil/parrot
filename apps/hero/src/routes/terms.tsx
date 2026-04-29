@@ -75,7 +75,7 @@ function TermsPage() {
 						<TermsSection
 							title="2. Description of service"
 							paragraphs={[
-								"Parrot is a voice dictation application for macOS that converts speech to text. The Software operates in two modes: local mode (all processing on-device) and cloud mode (using third-party transcription services).",
+								"Parrot is a voice dictation application for macOS that converts speech to text. The Software currently operates in local mode, with all processing performed on-device. A managed cloud mode is in development; additional terms will apply when it ships.",
 								"We do not guarantee uninterrupted or error-free operation. Transcription accuracy depends on audio quality, accent, background noise, and other factors.",
 							]}
 						/>
@@ -83,9 +83,8 @@ function TermsPage() {
 						<TermsSection
 							title="3. User responsibilities"
 							paragraphs={[
-								"You are responsible for all activity that occurs under your account and for maintaining the confidentiality of any API keys you configure in the Software.",
+								"You are responsible for all activity that occurs under any account you create.",
 								"You agree not to use Parrot for any unlawful purpose or in any way that could damage, disable, or impair the Software or interfere with any other party's use.",
-								"When using third-party transcription services (OpenAI, Deepgram, ElevenLabs), you are subject to their respective terms of service and are responsible for compliance.",
 							]}
 						/>
 
@@ -100,15 +99,15 @@ function TermsPage() {
 						<TermsSection
 							title="5. Privacy"
 							paragraphs={[
-								"Your privacy is important to us. Please review our Privacy Policy, which explains how we handle your data. In local mode, no data leaves your device. In cloud mode, audio is sent directly to your configured transcription provider.",
+								"Your privacy is important to us. Please review our Privacy Policy, which explains how we handle your data. In local mode, no data leaves your device.",
 							]}
 						/>
 
 						<TermsSection
-							title="6. Third-party services"
+							title="6. Third-party software"
 							paragraphs={[
-								"Parrot integrates with third-party services (OpenAI, Deepgram, ElevenLabs, Ollama) for transcription and AI features. Your use of these services is governed by their respective terms.",
-								"We are not responsible for the availability, accuracy, or policies of third-party services. Any issues with these services should be directed to the respective providers.",
+								"Parrot's local mode runs Whisper.cpp and Ollama on your Mac. These are open-source projects governed by their own licenses.",
+								"We are not responsible for the availability, accuracy, or policies of third-party software. Any issues with these projects should be directed to their maintainers.",
 							]}
 						/>
 

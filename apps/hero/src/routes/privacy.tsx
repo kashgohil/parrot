@@ -61,7 +61,7 @@ function PrivacyPage() {
 						<ul className="space-y-2">
 							{[
 								"Local mode: nothing leaves your Mac. Ever.",
-								"Cloud mode: audio goes directly to your chosen provider with your API key. We never see it.",
+								"Managed cloud mode is coming soon. Its privacy details will be added here before it ships.",
 								"We don't track what you dictate, store your audio, or sell any data.",
 								"History, settings, and vocabulary are stored locally on your device.",
 								"If you create an account, we store your email and hashed password. That's it.",
@@ -88,11 +88,9 @@ function PrivacyPage() {
 						/>
 
 						<PolicySection
-							title="Cloud mode"
+							title="Cloud mode (coming soon)"
 							paragraphs={[
-								"When you use cloud mode, your recorded audio is sent directly from Parrot to the transcription provider you selected (OpenAI, Deepgram, or ElevenLabs) using your own API key. Parrot acts as a thin client - we do not proxy, store, or log this audio.",
-								"If AI cleanup is enabled, the transcribed text (not the audio) is sent to your chosen LLM provider (e.g., OpenAI for GPT-4o-mini) for grammar and style correction. Again, this goes directly to the provider using your key.",
-								"Each provider has their own privacy policy governing how they handle your data. We recommend reviewing them.",
+								"Parrot does not currently offer cloud mode. A managed cloud option is in development. When it ships, this section will spell out exactly what is sent, where it's stored, and how long it's retained — before you opt in.",
 							]}
 						/>
 
@@ -100,7 +98,7 @@ function PrivacyPage() {
 							title="Accounts (optional)"
 							paragraphs={[
 								"Creating a Parrot account is optional. Local mode works without any account.",
-								"If you create an account, we store: your email address, a hashed password (Argon2id), and your session token (30-day expiry). We do not store your API keys on our servers - those are kept locally on your device.",
+								"If you create an account, we store: your email address, a hashed password (Argon2id), and your session token (30-day expiry).",
 								"Google OAuth: if you sign in with Google, we receive your email and name from Google's OAuth flow. We store only the email.",
 							]}
 						/>
@@ -124,7 +122,7 @@ function PrivacyPage() {
 						<PolicySection
 							title="Third-party services"
 							paragraphs={[
-								"The only third-party services Parrot communicates with are the transcription and AI providers you explicitly configure: OpenAI, Deepgram, ElevenLabs, or Ollama (local). No data is sent anywhere else.",
+								"In local mode, the only services Parrot uses are Whisper.cpp and Ollama, both running on your own Mac. No data is sent to any third party.",
 							]}
 						/>
 
