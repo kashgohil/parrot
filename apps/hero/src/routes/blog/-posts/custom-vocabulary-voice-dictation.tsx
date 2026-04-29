@@ -38,8 +38,8 @@ export default function CustomVocabularyVoiceDictation() {
 			</p>
 			<p>
 				In <Link to="/">Parrot</Link>, you add terms in your profile settings.
-				The list is stored locally in your SQLite database and is fed into
-				Whisper.cpp on every transcription. Managed cloud mode is coming
+				The list is stored locally in your SQLite database and is fed into the
+				dictation engine on every transcription. Managed cloud mode is coming
 				soon and will pick up the same vocabulary automatically.
 			</p>
 

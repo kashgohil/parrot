@@ -105,7 +105,7 @@ function AboutPage() {
 							},
 							{
 								label: "One engine, take it or leave it",
-								body: "Locked into whoever built the app. Parrot ships with local Whisper.cpp today, running entirely on your Mac. A managed cloud mode is on the way for higher accuracy when you want it.",
+								body: "Locked into whoever built the app. Parrot ships with local mode today, running entirely on your Mac. A managed cloud mode is on the way for higher accuracy when you want it.",
 							},
 							{
 								label: "Your audio, their servers",
@@ -141,7 +141,7 @@ function AboutPage() {
 							{
 								num: "02",
 								title: "Local today, cloud soon",
-								body: "Local mode runs Whisper.cpp entirely on-device — free, for life. A managed cloud mode is coming soon for higher accuracy and cross-device sync.",
+								body: "Local mode runs entirely on-device — free, for life. A managed cloud mode is coming soon for higher accuracy and cross-device sync.",
 							},
 							{
 								num: "03",
@@ -264,7 +264,7 @@ function AboutPage() {
 						{[
 							{
 								date: "Early 2025",
-								text: "Started as a personal script to transcribe voice memos. Glued together Whisper and a clipboard hack.",
+								text: "Started as a personal script to transcribe voice memos. Glued together a transcription engine and a clipboard hack.",
 							},
 							{
 								date: "Mid 2025",
@@ -272,11 +272,11 @@ function AboutPage() {
 							},
 							{
 								date: "Late 2025",
-								text: "Added cleanup engine with custom vocabulary and writing style. Introduced local mode with Whisper.cpp and Ollama.",
+								text: "Added cleanup engine with custom vocabulary and writing style. Introduced fully on-device local mode.",
 							},
 							{
 								date: "Early 2026",
-								text: "Launched publicly with local mode — Whisper.cpp transcription, Ollama cleanup, custom vocabulary, dictation history, and the onboarding wizard. Free, for life.",
+								text: "Launched publicly with local mode — on-device transcription and cleanup, custom vocabulary, dictation history, and the onboarding wizard. Free, for life.",
 							},
 							{
 								date: "Coming soon",

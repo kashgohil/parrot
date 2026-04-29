@@ -8,8 +8,8 @@ export default function VoiceDictationMedicalHipaa() {
 					Yes, voice dictation can be HIPAA-compliant if the audio never leaves
 					the device.
 				</strong>{" "}
-				Local-first tools like Parrot's on-device mode process everything using
-				Whisper.cpp on your Mac - no cloud, no third-party servers, no PHI
+				Local-first tools like Parrot's on-device mode process everything
+				on your Mac - no cloud, no third-party servers, no PHI
 				transmission. With clinicians spending an estimated 49% of their time on
 				documentation (Annals of Internal Medicine, 2017), private voice
 				dictation is a practical solution for reducing that burden.
@@ -41,9 +41,9 @@ export default function VoiceDictationMedicalHipaa() {
 				<Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>
 					local mode
 				</Link>{" "}
-				does exactly this. Whisper.cpp runs the transcription model on your Mac.
-				Ollama handles the AI cleanup locally. Your audio and text stay on your
-				laptop - no cloud, no network requests, no third parties.
+				does exactly this. Transcription and AI cleanup both run on your Mac.
+				Your audio and text stay on your laptop - no cloud, no network
+				requests, no third parties.
 			</p>
 			<p>
 				This doesn't mean you can ignore all HIPAA requirements. You still need

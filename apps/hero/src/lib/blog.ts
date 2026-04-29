@@ -105,7 +105,7 @@ export const posts: BlogPost[] = [
 			"mac dictation",
 			"offline dictation",
 			"privacy voice dictation",
-			"whisper local",
+			"on-device dictation",
 		],
 		component: lazy(
 			() => import("@/routes/blog/-posts/local-voice-dictation-mac"),

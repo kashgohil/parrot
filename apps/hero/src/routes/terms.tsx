@@ -106,7 +106,7 @@ function TermsPage() {
 						<TermsSection
 							title="6. Third-party software"
 							paragraphs={[
-								"Parrot's local mode runs Whisper.cpp and Ollama on your Mac. These are open-source projects governed by their own licenses.",
+								"Parrot's local mode runs entirely on your Mac and incorporates open-source components governed by their own licenses. Attribution and license details are bundled with the app.",
 								"We are not responsible for the availability, accuracy, or policies of third-party software. Any issues with these projects should be directed to their maintainers.",
 							]}
 						/>

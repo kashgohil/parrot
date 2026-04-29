@@ -145,9 +145,9 @@ export default function TranscriptionApisCompared() {
 
 			<h2>How Parrot uses transcription</h2>
 			<p>
-				Parrot ships with <strong>local mode</strong> today — Whisper.cpp
-				runs entirely on your Mac. No API keys, no internet, no data leaving
-				your machine. It's free, for life. See our{" "}
+				Parrot ships with <strong>local mode</strong> today — transcription
+				and cleanup both run entirely on your Mac. No API keys, no internet,
+				no data leaving your machine. It's free, for life. See our{" "}
 				<Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>
 					local setup guide
 				</Link>

@@ -82,7 +82,7 @@ function PrivacyPage() {
 						<PolicySection
 							title="Local mode"
 							paragraphs={[
-								"When you use local mode, all audio capture, transcription (Whisper.cpp), and AI cleanup (Ollama) happen entirely on your Mac. No network requests are made during the dictation process.",
+								"When you use local mode, all audio capture, transcription, and AI cleanup happen entirely on your Mac. No network requests are made during the dictation process.",
 								"Your dictation history, custom vocabulary, writing style settings, and all preferences are stored in a SQLite database at ~/Library/Application Support/com.kash.parrot/parrot.db. This file never leaves your device.",
 							]}
 						/>
@@ -122,7 +122,7 @@ function PrivacyPage() {
 						<PolicySection
 							title="Third-party services"
 							paragraphs={[
-								"In local mode, the only services Parrot uses are Whisper.cpp and Ollama, both running on your own Mac. No data is sent to any third party.",
+								"In local mode, all transcription and cleanup runs entirely on your Mac. No data is sent to any third party.",
 							]}
 						/>
 

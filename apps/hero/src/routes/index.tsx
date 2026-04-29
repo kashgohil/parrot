@@ -159,7 +159,7 @@ export const Route = createFileRoute("/")({
 							price: "0",
 							priceCurrency: "USD",
 							description:
-								"Free for life. Unlimited local transcription with Whisper.cpp, local AI cleanup via Ollama, custom vocabulary, and offline support. Cloud mode coming soon.",
+								"Free for life. Unlimited on-device transcription, local AI cleanup, custom vocabulary, and offline support. Cloud mode coming soon.",
 						},
 					],
 					featureList:
@@ -177,7 +177,7 @@ export const Route = createFileRoute("/")({
 							name: "What's local mode?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "In local mode, Whisper.cpp runs on your Mac for transcription and Ollama handles AI cleanup. Everything happens on-device - zero data leaves your computer. You download models once (~4GB), then no internet is needed. This is ideal for HIPAA-sensitive work, legal documents, or anyone who values privacy.",
+								text: "In local mode, Parrot runs transcription and AI cleanup entirely on your Mac. Everything happens on-device - zero data leaves your computer. You download models once (~4GB), then no internet is needed. This is ideal for HIPAA-sensitive work, legal documents, or anyone who values privacy.",
 							},
 						},
 						{
@@ -185,7 +185,7 @@ export const Route = createFileRoute("/")({
 							name: "Is cloud mode available?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Not yet. Parrot ships with local mode today — Whisper.cpp for transcription and Ollama for cleanup, all on-device. A managed cloud mode is coming soon. Join the waitlist to be notified when it launches.",
+								text: "Not yet. Parrot ships with local mode today — transcription and cleanup running fully on-device. A managed cloud mode is coming soon. Join the waitlist to be notified when it launches.",
 							},
 						},
 						{
@@ -201,7 +201,7 @@ export const Route = createFileRoute("/")({
 							name: "How does the cleanup work?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "After transcription, an AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. Cleanup is optional, can be toggled per-dictation, and runs locally via Ollama.",
+								text: "After transcription, an AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. Cleanup is optional, can be toggled per-dictation, and runs locally on your Mac.",
 							},
 						},
 						{
@@ -734,9 +734,9 @@ function DualModeSpotlight() {
 		},
 		{
 			icon: <Zap size={20} className="text-amber-500" />,
-			label: "Whisper.cpp",
+			label: "Transcribe",
 		},
-		{ icon: <Bot size={20} className="text-violet-500" />, label: "Ollama" },
+		{ icon: <Bot size={20} className="text-violet-500" />, label: "Cleanup" },
 		{
 			icon: <Clipboard size={20} className="text-foreground/70" />,
 			label: "Clipboard",
@@ -1272,7 +1272,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
 		a: (
 			<>
 				Not yet. Parrot ships with <strong>local mode</strong> today —
-				Whisper.cpp for transcription and Ollama for cleanup, all on-device.
+				transcription and cleanup running fully on-device.
 				<br />
 				Managed <strong>cloud mode</strong> is coming soon. Join the waitlist
 				to be notified when it launches.
