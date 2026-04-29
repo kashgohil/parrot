@@ -220,11 +220,11 @@ export default function LocalVoiceDictationMac() {
 				<strong>Open Anyway</strong>.
 			</p>
 
-			<h2>Step 2: Choose local mode during onboarding</h2>
+			<h2>Step 2: Onboarding</h2>
 			<p>
-				When you first open Parrot, the onboarding wizard asks whether you want
-				local or cloud mode. Pick <strong>Local</strong>. You can switch anytime
-				in settings, so this isn't a permanent decision.
+				When you first open Parrot, the onboarding wizard walks you through
+				local mode setup. (Managed cloud mode is coming soon — until then,
+				everything runs on your Mac.)
 			</p>
 			<p>
 				Parrot will verify that Whisper.cpp and Ollama are available on your
@@ -372,33 +372,25 @@ export default function LocalVoiceDictationMac() {
 				</li>
 			</ul>
 
-			<h2>When to consider cloud instead</h2>
+			<h2>What about cloud transcription?</h2>
 			<p>
-				If you need the absolute fastest transcription, or you're on an older
-				Intel Mac where local processing is slow, Parrot offers two cloud
-				options:
+				Local mode is what Parrot ships with today, and it's free for life.
+				A managed cloud mode is in development for users who want the
+				absolute fastest transcription or are on older Intel Macs where local
+				processing is slow. When it lands, you'll be able to switch between
+				local and cloud anytime in settings — your vocabulary, history, and
+				preferences carry over.
 			</p>
-			<ul>
-				<li>
-					<strong>BYOK (Bring Your Own Key)</strong> - use your own API keys for
-					OpenAI Whisper, Deepgram, or ElevenLabs. You control the provider
-					relationship. Check our{" "}
-					<Link
-						to="/blog/$slug"
-						params={{ slug: "transcription-apis-compared" }}
-					>
-						comparison of transcription APIs
-					</Link>{" "}
-					to pick one.
-				</li>
-				<li>
-					<strong>Managed mode</strong> - let Parrot handle everything. No API
-					keys to manage, we route your audio to the best available provider.
-				</li>
-			</ul>
 			<p>
-				You can switch between local, BYOK, and managed modes anytime in
-				Parrot's settings. Your vocabulary, history, and preferences carry over.
+				If you're curious about how the major transcription APIs compare,
+				see our{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "transcription-apis-compared" }}
+				>
+					comparison of transcription APIs
+				</Link>
+				.
 			</p>
 
 			<h2>Resources</h2>

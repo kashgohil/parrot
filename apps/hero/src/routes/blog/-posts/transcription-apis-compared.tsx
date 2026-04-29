@@ -143,32 +143,21 @@ export default function TranscriptionApisCompared() {
 				if it's not working for you.
 			</p>
 
-			<h2>Three ways to use Parrot</h2>
-			<p>Parrot offers flexibility in how you handle transcription:</p>
-			<ul>
-				<li>
-					<strong>Local mode</strong> - Whisper.cpp runs entirely on your Mac.
-					No API keys, no internet, no data leaving your machine. Best for
-					privacy-conscious users. See our{" "}
-					<Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>
-						local setup guide
-					</Link>
-					.
-				</li>
-				<li>
-					<strong>BYOK (Bring Your Own Key)</strong> - Use your own API keys for
-					Whisper, Deepgram, or ElevenLabs. You control the relationship with
-					the provider and pay them directly.
-				</li>
-				<li>
-					<strong>Managed</strong> - Let Parrot handle everything. No API keys
-					to manage, no setup hassle. We route your audio to the best available
-					provider.
-				</li>
-			</ul>
+			<h2>How Parrot uses transcription</h2>
 			<p>
-				Switch between modes anytime in settings. Your vocabulary, history, and
-				preferences carry over.
+				Parrot ships with <strong>local mode</strong> today — Whisper.cpp
+				runs entirely on your Mac. No API keys, no internet, no data leaving
+				your machine. It's free, for life. See our{" "}
+				<Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>
+					local setup guide
+				</Link>
+				.
+			</p>
+			<p>
+				A managed cloud mode is coming soon for users who want higher
+				accuracy or are on older Macs where local processing is slow. When it
+				lands, you'll be able to switch between local and cloud anytime in
+				settings — your vocabulary, history, and preferences carry over.
 			</p>
 		</>
 	);

@@ -132,12 +132,11 @@ export default function RsiDeveloperVoiceDictation() {
 
 			<h2>Getting started</h2>
 			<p>
-				<Link to="/waitlist">Join the waitlist</Link> to try Parrot when it
-				launches. You can use local mode (everything on-device, no API keys),
-				BYOK mode (bring your own API key for OpenAI, Deepgram, or ElevenLabs),
-				or managed mode (we handle everything). Set up the hotkey, add your
-				technical vocabulary, and start with just Slack messages. See if it
-				helps.
+				<Link to="/download">Download Parrot</Link> and try local mode for
+				free — everything runs on-device, no account or API keys needed. Set
+				up the hotkey, add your technical vocabulary, and start with just
+				Slack messages. See if it helps. Managed cloud mode is coming soon
+				for higher accuracy when you want it.
 			</p>
 		</>
 	);

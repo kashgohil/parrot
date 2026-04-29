@@ -94,17 +94,13 @@ export default function VoiceDictationMedicalHipaa() {
 				over an hour saved.
 			</p>
 
-			<h2>Cloud options with BYOK</h2>
+			<h2>What about cloud options?</h2>
 			<p>
-				If local mode doesn't fit your workflow (older Mac, limited disk space),
-				Parrot's BYOK (Bring Your Own Key) mode lets you use cloud providers
-				like OpenAI Whisper with your own API key. Some providers offer BAAs for
-				enterprise accounts. You control the relationship with the provider
-				directly.
-			</p>
-			<p>
-				The key difference: in BYOK mode, audio goes directly from your Mac to
-				your chosen provider. Parrot never sees or stores it.
+				Parrot ships with local mode today. A managed cloud mode is in
+				development for users who need higher accuracy or are on older Macs
+				where local processing is slow. When it lands, we'll publish exactly
+				what is sent, where it's stored, and how long it's retained — so you
+				can make an informed call before opting in.
 			</p>
 
 			<h2>What about Dragon Medical?</h2>
@@ -118,16 +114,16 @@ export default function VoiceDictationMedicalHipaa() {
 				Parrot isn't trying to replace Dragon in a hospital IT department. It's
 				for individual practitioners, small practices, and medical professionals
 				who want something that works on their Mac. Local mode keeps everything
-				on-device, BYOK mode gives you control over your cloud provider.
+				on-device.
 			</p>
 
 			<h2>Getting started</h2>
 			<p>
 				If you're a medical professional interested in trying voice dictation
-				with local processing, <Link to="/waitlist">join the waitlist</Link> to
-				get access when Parrot launches. Choose local mode during setup, and add
-				your medical terminology to the custom vocabulary. The whole process
-				takes a few minutes, and you can start dictating immediately.
+				with local processing, <Link to="/download">download Parrot</Link>{" "}
+				and try it free. Add your medical terminology to the custom
+				vocabulary during setup. The whole process takes a few minutes, and
+				you can start dictating immediately.
 			</p>
 		</>
 	);
