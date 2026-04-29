@@ -45,7 +45,7 @@
 	"plugins": {
 		"updater": {
 			"endpoints": [
-				"https://github.com/OWNER/REPO/releases/latest/download/latest.json"
+				"https://github.com/kashgohil/parrot/releases/latest/download/latest.json"
 			],
 			"pubkey": "",
 			"windows": {
