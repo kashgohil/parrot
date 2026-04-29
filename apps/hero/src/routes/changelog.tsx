@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import { WaitlistCTA } from "@/components/WaitlistCTA";
+import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/changelog")({
@@ -68,7 +68,7 @@ const RELEASES = [
 			{
 				type: "added",
 				items: [
-					"Marketing site with blog and waitlist sign-up",
+					"Marketing site with blog and email updates",
 					"Free local mode for life — no account required",
 				],
 			},
@@ -261,9 +261,9 @@ function ChangelogPage() {
 			</section>
 
 			{/* ── CTA ── */}
-			<WaitlistCTA
+			<SubscribeCTA
 				heading="Always improving"
-				subheading="Join the waitlist and be first to get updates."
+				subheading="Subscribe for product updates and changelog notes."
 				source="changelog"
 			/>
 

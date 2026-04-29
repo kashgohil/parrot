@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import { WaitlistCTA } from "@/components/WaitlistCTA";
+import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
@@ -168,9 +168,9 @@ function ContactPage() {
 			</section>
 
 			{/* CTA */}
-			<WaitlistCTA
-				heading="Ready to try Parrot?"
-				subheading="Join the waitlist and be the first to know when we launch."
+			<SubscribeCTA
+				heading="Stay in the loop."
+				subheading="Subscribe for product updates and changelog notes."
 				source="contact"
 			/>
 

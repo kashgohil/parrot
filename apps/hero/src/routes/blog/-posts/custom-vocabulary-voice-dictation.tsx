@@ -125,8 +125,7 @@ export default function CustomVocabularyVoiceDictation() {
 				</Link>{" "}
 				or legal documents, your vocabulary list will be longer and more
 				specialized. That's fine - the more specific your list, the better the
-				results. <Link to="/waitlist">Join the waitlist</Link> to try it when
-				Parrot launches.
+				results. <Link to="/download">Download Parrot</Link> to try it today.
 			</p>
 		</>
 	);

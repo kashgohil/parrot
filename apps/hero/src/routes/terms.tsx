@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
-import { WaitlistCTA } from "@/components/WaitlistCTA";
+import { SubscribeCTA } from "@/components/SubscribeCTA";
 
 export const Route = createFileRoute("/terms")({
 	component: TermsPage,
@@ -193,9 +193,9 @@ function TermsPage() {
 			</section>
 
 			{/* CTA */}
-			<WaitlistCTA
-				heading="Ready to try Parrot?"
-				subheading="Join the waitlist and be the first to know when we launch."
+			<SubscribeCTA
+				heading="Stay in the loop."
+				subheading="Subscribe for product updates and changelog notes."
 				source="terms"
 			/>
 

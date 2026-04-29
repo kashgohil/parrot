@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import { WaitlistCTA } from "@/components/WaitlistCTA";
+import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/about")({
@@ -188,7 +188,7 @@ function AboutPage() {
 							</p>
 						</Link>
 						<Link
-							to="/waitlist"
+							to="/changelog"
 							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
 						>
 							<p className="text-2xl font-black text-foreground mb-1">Soon</p>
@@ -300,9 +300,9 @@ function AboutPage() {
 			</section>
 
 			{/* ── CTA ── */}
-			<WaitlistCTA
-				heading="Try it free, today"
-				subheading="Local mode is available now — free, for life. Drop your email to get notified when managed cloud mode lands."
+			<SubscribeCTA
+				heading="Stay in the loop."
+				subheading="Local mode is available today — download free, for life. Subscribe to get notified when managed cloud mode lands."
 				source="about"
 			/>
 

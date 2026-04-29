@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
@@ -22,11 +21,6 @@ import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 
-const WaitlistRoute = WaitlistRouteImport.update({
-  id: '/waitlist',
-  path: '/waitlist',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -92,7 +86,6 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/waitlist': typeof WaitlistRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/blog/': typeof BlogIndexRoute
@@ -106,7 +99,6 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/waitlist': typeof WaitlistRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/blog': typeof BlogIndexRoute
@@ -121,7 +113,6 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/waitlist': typeof WaitlistRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/blog/': typeof BlogIndexRoute
@@ -137,7 +128,6 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/terms'
-    | '/waitlist'
     | '/blog/$slug'
     | '/checkout/success'
     | '/blog/'
@@ -151,7 +141,6 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/terms'
-    | '/waitlist'
     | '/blog/$slug'
     | '/checkout/success'
     | '/blog'
@@ -165,7 +154,6 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/terms'
-    | '/waitlist'
     | '/blog/$slug'
     | '/checkout/success'
     | '/blog/'
@@ -180,7 +168,6 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
-  WaitlistRoute: typeof WaitlistRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -188,13 +175,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/waitlist': {
-      id: '/waitlist'
-      path: '/waitlist'
-      fullPath: '/waitlist'
-      preLoaderRoute: typeof WaitlistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -284,7 +264,6 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
-  WaitlistRoute: WaitlistRoute,
   BlogSlugRoute: BlogSlugRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   BlogIndexRoute: BlogIndexRoute,

@@ -46,10 +46,10 @@ export default function Header() {
 
 					<div className="hidden md:block">
 						<Link
-							to="/waitlist"
+							to="/download"
 							className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-foreground text-background text-[13px] font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
 						>
-							Join waitlist
+							Download
 							<ArrowRight size={13} strokeWidth={2.5} />
 						</Link>
 					</div>
@@ -114,11 +114,11 @@ export default function Header() {
 
 				<div className="p-4 border-t border-border">
 					<Link
-						to="/waitlist"
+						to="/download"
 						onClick={() => setIsOpen(false)}
 						className="flex items-center justify-center gap-2 w-full py-2.5 bg-foreground text-background text-sm font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
 					>
-						Join waitlist
+						Download
 						<ArrowRight size={14} />
 					</Link>
 				</div>

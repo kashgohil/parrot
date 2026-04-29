@@ -39,9 +39,9 @@ export default function LocalVoiceDictationMac() {
 
 			<h2>Step 1: Install Parrot</h2>
 			<p>
-				<Link to="/waitlist">Join the waitlist</Link> to get access when Parrot
-				launches. On first launch, it'll ask for microphone permission — that's
-				the only system permission it needs.
+				<Link to="/download">Download Parrot</Link> for Mac to get started. On
+				first launch, it'll ask for microphone permission — that's the only
+				system permission it needs.
 			</p>
 			<p>
 				If macOS shows a "cannot be opened because the developer cannot be

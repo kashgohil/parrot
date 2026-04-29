@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import { WaitlistCTA } from "@/components/WaitlistCTA";
+import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { posts } from "@/lib/blog";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
@@ -121,9 +121,9 @@ function BlogIndex() {
 			</section>
 
 			{/* ── CTA ── */}
-			<WaitlistCTA
+			<SubscribeCTA
 				heading="Try Parrot"
-				subheading="Join the waitlist and be first to know when we launch."
+				subheading="Subscribe for product updates and changelog notes."
 				source="blog"
 			/>
 

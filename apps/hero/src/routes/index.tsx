@@ -37,8 +37,8 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { WaitlistCTA } from "@/components/WaitlistCTA";
-import { createFileRoute } from "@tanstack/react-router";
+import { SubscribeCTA } from "@/components/SubscribeCTA";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
 	ArrowRight,
 	Bot,
@@ -46,6 +46,7 @@ import {
 	Clipboard,
 	Code,
 	Command,
+	Download,
 	Laptop,
 	Lock,
 	Mail,
@@ -185,7 +186,7 @@ export const Route = createFileRoute("/")({
 							name: "Is cloud mode available?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Not yet. Parrot ships with local mode today — transcription and cleanup running fully on-device. A managed cloud mode is coming soon. Join the waitlist to be notified when it launches.",
+								text: "Not yet. Parrot ships with local mode today — transcription and cleanup running fully on-device. A managed cloud mode is coming soon. Subscribe for updates to be notified when it launches.",
 							},
 						},
 						{
@@ -1274,8 +1275,8 @@ const FAQ: { q: string; a: ReactNode }[] = [
 				Not yet. Parrot ships with <strong>local mode</strong> today —
 				transcription and cleanup running fully on-device.
 				<br />
-				Managed <strong>cloud mode</strong> is coming soon. Join the waitlist
-				to be notified when it launches.
+				Managed <strong>cloud mode</strong> is coming soon. Subscribe for
+				updates to be notified when it launches.
 			</>
 		),
 	},
@@ -1363,11 +1364,21 @@ function HomePage() {
 						</p>
 
 						<div
-							className={`w-full max-w-md ${anim(
+							className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 ${anim(
 								"animate-fade-in-up-delay-3",
 							)}`}
 						>
-							<WaitlistCTA variant="inline" source="homepage-hero" />
+							<Link
+								to="/download"
+								className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline shadow-[0_4px_20px_rgba(0,0,0,0.08)]"
+							>
+								<Download size={18} strokeWidth={2.5} />
+								Download for Mac
+								<ArrowRight size={16} strokeWidth={2.5} />
+							</Link>
+							<span className="text-xs text-muted-foreground">
+								Free for life &middot; Apple Silicon
+							</span>
 						</div>
 
 						{/* Hotkey hint */}
@@ -1837,32 +1848,6 @@ function HomePage() {
 }
 
 function FinalCTA() {
-	const [email, setEmail] = useState("");
-	const [status, setStatus] = useState<
-		"idle" | "loading" | "success" | "error"
-	>("idle");
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!email) return;
-
-		setStatus("loading");
-		try {
-			const apiUrl =
-				import.meta.env.VITE_API_URL || "https://api.tryparrot.app";
-			const response = await fetch(`${apiUrl}/api/waitlist`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, source: "homepage-cta" }),
-			});
-
-			if (!response.ok) throw new Error("Failed");
-			setStatus("success");
-		} catch {
-			setStatus("error");
-		}
-	};
-
 	return (
 		<section className="py-20 md:py-28 px-6 bg-foreground">
 			<div className="max-w-2xl mx-auto text-center">
@@ -1870,52 +1855,26 @@ function FinalCTA() {
 					Start dictating. Stop typing.
 				</h2>
 				<p className="text-background/50 mb-8 text-[15px]">
-					Local mode is available now &mdash; free, for life. Drop your email
-					to get notified when cloud mode lands.
+					Local mode is available today &mdash; free, for life. Download for Mac and start dictating in minutes.
 				</p>
 
-				{status === "success" ? (
-					<div className="inline-flex items-center gap-2 px-6 py-3 bg-primary/20 rounded-xl">
-						<Check className="w-5 h-5 text-primary" />
-						<span className="text-primary font-semibold">
-							You're on the list!
-						</span>
-					</div>
-				) : (
-					<form
-						onSubmit={handleSubmit}
-						className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+				<div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+					<Link
+						to="/download"
+						className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors no-underline shadow-[0_4px_20px_rgba(124,179,66,0.3)]"
 					>
-						<input
-							type="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							placeholder="Enter your email"
-							required
-							className="flex-1 px-4 py-3 rounded-xl border-0 bg-background/10 text-background placeholder:text-background/40 focus:outline-none focus:ring-2 focus:ring-primary/50"
-						/>
-						<button
-							type="submit"
-							disabled={status === "loading"}
-							className="px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(124,179,66,0.3)]"
-						>
-							{status === "loading" ? (
-								"Joining..."
-							) : (
-								<>
-									Join waitlist
-									<ArrowRight size={16} strokeWidth={2.5} />
-								</>
-							)}
-						</button>
-					</form>
-				)}
+						<Download size={18} strokeWidth={2.5} />
+						Download for Mac
+						<ArrowRight size={16} strokeWidth={2.5} />
+					</Link>
+				</div>
 
-				{status === "error" && (
-					<p className="text-red-400 text-sm mt-3">
-						Something went wrong. Try again.
-					</p>
-				)}
+				<p className="text-background/40 text-xs mt-8 mb-3">
+					Or subscribe to get notified when cloud mode lands.
+				</p>
+				<div className="max-w-md mx-auto">
+					<SubscribeCTA variant="inline" source="homepage-cta" heading="" subheading="" />
+				</div>
 			</div>
 		</section>
 	);
