@@ -105,11 +105,11 @@ function AboutPage() {
 							},
 							{
 								label: "One engine, take it or leave it",
-								body: "Locked into whoever built the app. Parrot ships with local Whisper.cpp today, with OpenAI Whisper, Deepgram, and ElevenLabs available via your own API keys. Managed cloud mode is on the way.",
+								body: "Locked into whoever built the app. Parrot ships with local Whisper.cpp today, running entirely on your Mac. A managed cloud mode is on the way for higher accuracy when you want it.",
 							},
 							{
 								label: "Your audio, their servers",
-								body: "Most tools upload your audio to process it. Parrot runs fully on-device — nothing leaves your Mac. If you bring your own API key, audio goes straight to your provider; we never see it.",
+								body: "Most tools upload your audio to process it. Parrot runs fully on-device — nothing leaves your Mac, ever.",
 							},
 						].map((item, i) => (
 							<div key={i}>
@@ -140,8 +140,8 @@ function AboutPage() {
 							},
 							{
 								num: "02",
-								title: "You choose the engine",
-								body: "Local mode runs Whisper.cpp entirely on-device. Bring your own API key for OpenAI Whisper, Deepgram, or ElevenLabs. A managed cloud option is coming soon.",
+								title: "Local today, cloud soon",
+								body: "Local mode runs Whisper.cpp entirely on-device — free, for life. A managed cloud mode is coming soon for higher accuracy and cross-device sync.",
 							},
 							{
 								num: "03",
@@ -177,23 +177,23 @@ function AboutPage() {
 				<div className="max-w-3xl mx-auto">
 					<div className="grid sm:grid-cols-3 gap-6 text-center">
 						<Link
-							to="/waitlist"
+							to="/download"
 							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
 						>
-							<p className="text-2xl font-black text-foreground mb-1">Local</p>
+							<p className="text-2xl font-black text-foreground mb-1">
+								Free for life
+							</p>
 							<p className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
-								Runs entirely on your Mac &rarr;
+								Local mode, no account &rarr;
 							</p>
 						</Link>
 						<Link
 							to="/waitlist"
 							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
 						>
-							<p className="text-2xl font-black text-foreground mb-1">
-								&lt;1 min
-							</p>
+							<p className="text-2xl font-black text-foreground mb-1">Soon</p>
 							<p className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
-								Setup when you get access &rarr;
+								Managed cloud mode &rarr;
 							</p>
 						</Link>
 						<Link
@@ -222,11 +222,11 @@ function AboutPage() {
 						{[
 							{
 								title: "Your data is yours",
-								body: "We don't want your audio or transcripts. Local mode keeps everything on your Mac. When you bring your own API key, audio goes straight to your provider — we never see it.",
+								body: "We don't want your audio or transcripts. Local mode keeps everything on your Mac — nothing is ever sent to our servers.",
 							},
 							{
 								title: "Choice over lock-in",
-								body: "Run everything locally for free, or bring your own API keys for cloud providers. Managed cloud is coming soon. Switch between them whenever you want — no vendor lock-in, no data migration headaches.",
+								body: "Local mode is free for life. When managed cloud lands, you'll be able to flip between them anytime in settings — no vendor lock-in, no data migration headaches.",
 							},
 							{
 								title: "Simple beats clever",
@@ -276,11 +276,11 @@ function AboutPage() {
 							},
 							{
 								date: "Early 2026",
-								text: "Launched publicly. Dictation history, search, and the onboarding wizard. BYOK cloud transcription with OpenAI, Deepgram, and ElevenLabs.",
+								text: "Launched publicly with local mode — Whisper.cpp transcription, Ollama cleanup, custom vocabulary, dictation history, and the onboarding wizard. Free, for life.",
 							},
 							{
 								date: "Coming soon",
-								text: "Managed cloud mode — higher accuracy, AI cleanup, and cross-device sync without bringing your own API key.",
+								text: "Managed cloud mode — higher accuracy, AI cleanup, and cross-device sync.",
 							},
 						].map((item, i) => (
 							<div key={i} className="relative flex gap-5 mb-8 last:mb-0">
