@@ -44,7 +44,6 @@ import {
 	Bot,
 	Check,
 	Clipboard,
-	Cloud,
 	Code,
 	Command,
 	Laptop,
@@ -55,7 +54,6 @@ import {
 	Minus,
 	Monitor,
 	Quote,
-	Shield,
 	Stethoscope,
 	X as XIcon,
 	Zap,
@@ -184,10 +182,10 @@ export const Route = createFileRoute("/")({
 						},
 						{
 							"@type": "Question",
-							name: "Which providers work in BYOK mode?",
+							name: "Is cloud mode available?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Cloud providers: OpenAI Whisper, Deepgram, and ElevenLabs. Local: Whisper.cpp. For cleanup: OpenAI or Anthropic models (cloud) or Ollama (local). You can switch providers anytime in settings.",
+								text: "Not yet. Parrot ships with local mode today — Whisper.cpp for transcription and Ollama for cleanup, all on-device. A managed cloud mode is coming soon. Join the waitlist to be notified when it launches.",
 							},
 						},
 						{
@@ -195,7 +193,7 @@ export const Route = createFileRoute("/")({
 							name: "Does it work offline?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Local mode: Yes - fully offline once models are downloaded. Cloud mode: Needs internet. You can switch between local and cloud anytime.",
+								text: "Yes. Local mode runs fully offline once models are downloaded. No internet, no account, no API keys.",
 							},
 						},
 						{
@@ -203,7 +201,7 @@ export const Route = createFileRoute("/")({
 							name: "How does the cleanup work?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "After transcription, an AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. Cleanup is optional and can be toggled per-dictation. It uses GPT-4o-mini (cloud) or Ollama (local).",
+								text: "After transcription, an AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. Cleanup is optional, can be toggled per-dictation, and runs locally via Ollama.",
 							},
 						},
 						{
@@ -211,7 +209,7 @@ export const Route = createFileRoute("/")({
 							name: "What about my privacy?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Local mode: nothing leaves your Mac. Cloud mode: we store your transcription and audio to show you your history. If you don't want that, you can turn it off in settings.",
+								text: "Local mode keeps everything on your Mac — audio, transcripts, history, vocabulary. Nothing is sent to our servers.",
 							},
 						},
 					],
@@ -728,9 +726,7 @@ function VoiceDemoPlayground() {
 // 5. Dual Mode Spotlight (major section)
 // ---------------------------------------------------------------------------
 function DualModeSpotlight() {
-	const [mode, setMode] = useState<"local" | "cloud">("local");
-
-	const localSteps: { icon: ReactNode; label: string }[] = [
+	const steps: { icon: ReactNode; label: string }[] = [
 		{ icon: <Mic size={20} className="text-primary" />, label: "Mic" },
 		{
 			icon: <Laptop size={20} className="text-foreground/70" />,
@@ -746,107 +742,47 @@ function DualModeSpotlight() {
 			label: "Clipboard",
 		},
 	];
-	const cloudSteps: { icon: ReactNode; label: string }[] = [
-		{ icon: <Mic size={20} className="text-primary" />, label: "Mic" },
-		{ icon: <Lock size={20} className="text-sky-500" />, label: "Encrypted" },
-		{ icon: <Cloud size={20} className="text-sky-500" />, label: "Cloud API" },
-		{
-			icon: <Laptop size={20} className="text-foreground/70" />,
-			label: "Your Mac",
-		},
-		{
-			icon: <Clipboard size={20} className="text-foreground/70" />,
-			label: "Clipboard",
-		},
-	];
 
-	const steps = mode === "local" ? localSteps : cloudSteps;
-
-	const localStats = [
+	const stats = [
 		{ value: "0 bytes", label: "data sent" },
 		{ value: "100%", label: "offline" },
-		{ value: "4GB", label: "model size" },
+		{ value: "Free", label: "for life" },
 	];
-	const cloudStats = [
-		{ value: "E2E", label: "encrypted" },
-		{ value: "<500ms", label: "latency" },
-		{ value: "BYOK", label: "your API key" },
-	];
-	const stats = mode === "local" ? localStats : cloudStats;
 
 	const features = [
-		{ label: "Audio never leaves device", local: true, cloud: false },
-		{ label: "No API keys needed", local: true, cloud: false },
-		{ label: "Works offline", local: true, cloud: false },
-		{ label: "Fastest transcription speed", local: false, cloud: true },
-		{ label: "No model downloads", local: false, cloud: true },
-		{ label: "Custom vocabulary", local: true, cloud: true },
-		{ label: "Cleanup", local: true, cloud: true },
-		{ label: "Dictation history", local: true, cloud: true },
+		"Audio never leaves your device",
+		"No account, no sign-in",
+		"Works fully offline",
+		"Custom vocabulary",
+		"Cleanup",
+		"Dictation history",
 	];
 
 	return (
 		<div className="max-w-4xl mx-auto">
-			{/* Toggle */}
-			<div className="flex items-center justify-center gap-4 mb-10">
-				<button
-					type="button"
-					onClick={() => setMode("local")}
-					className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-						mode === "local"
-							? "bg-foreground text-background shadow-md"
-							: "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
-					}`}
-				>
+			{/* Mode label */}
+			<div className="flex items-center justify-center gap-3 mb-10">
+				<div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-foreground text-background shadow-md">
 					<Monitor size={16} />
-					Local
-				</button>
-				<div className="w-px h-6 bg-border" />
-				<button
-					type="button"
-					onClick={() => setMode("cloud")}
-					className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-						mode === "cloud"
-							? "bg-foreground text-background shadow-md"
-							: "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
-					}`}
-				>
-					<Cloud size={16} />
-					Cloud
-					<span className="ml-1 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-primary/15 text-primary">
-						Soon
-					</span>
-				</button>
+					Local mode
+				</div>
+				<span className="text-sm text-muted-foreground">
+					Cloud mode coming soon
+				</span>
 			</div>
 
 			{/* Data flow diagram */}
-			<div
-				className={`relative rounded-2xl border-2 p-6 md:p-8 mb-8 transition-colors duration-300 ${
-					mode === "local"
-						? "border-primary/30 bg-primary/3"
-						: "border-sky-300/30 bg-sky-50/30"
-				}`}
-			>
-				{mode === "local" && (
-					<div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 rounded-full">
-						<Lock size={11} className="text-primary" />
-						<span className="text-[10px] font-bold text-primary uppercase tracking-wider">
-							On device
-						</span>
-					</div>
-				)}
-				{mode === "cloud" && (
-					<div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-sky-100 rounded-full">
-						<Shield size={11} className="text-sky-600" />
-						<span className="text-[10px] font-bold text-sky-600 uppercase tracking-wider">
-							Encrypted
-						</span>
-					</div>
-				)}
+			<div className="relative rounded-2xl border-2 border-primary/30 bg-primary/3 p-6 md:p-8 mb-8">
+				<div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 rounded-full">
+					<Lock size={11} className="text-primary" />
+					<span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+						On device
+					</span>
+				</div>
 
 				<div className="flex items-center justify-between gap-2 overflow-x-auto py-4">
 					{steps.map((step, i) => (
-						<div key={`${mode}-${i}`} className="contents">
+						<div key={`local-${i}`} className="contents">
 							<div className="flex flex-col items-center gap-1.5 shrink-0">
 								<div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center shadow-sm">
 									{step.icon}
@@ -867,15 +803,12 @@ function DualModeSpotlight() {
 										y1="6"
 										x2="24"
 										y2="6"
-										stroke={mode === "local" ? "#7cb342" : "#38bdf8"}
+										stroke="#7cb342"
 										strokeWidth="2"
 										strokeDasharray="4 3"
 										className="animate-flow-line"
 									/>
-									<polygon
-										points="24,2 32,6 24,10"
-										fill={mode === "local" ? "#7cb342" : "#38bdf8"}
-									/>
+									<polygon points="24,2 32,6 24,10" fill="#7cb342" />
 								</svg>
 							)}
 						</div>
@@ -887,7 +820,7 @@ function DualModeSpotlight() {
 			<div className="grid grid-cols-3 gap-4 mb-8">
 				{stats.map((s, i) => (
 					<div
-						key={`${mode}-${i}`}
+						key={`local-stat-${i}`}
 						className="text-center bg-card rounded-xl border border-border p-4"
 					>
 						<p className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
@@ -898,26 +831,19 @@ function DualModeSpotlight() {
 				))}
 			</div>
 
-			{/* Feature comparison */}
+			{/* Feature list */}
 			<div className="bg-card rounded-2xl border border-border overflow-hidden">
-				{features.map((f, i) => {
-					const active = mode === "local" ? f.local : f.cloud;
-					return (
-						<div
-							key={i}
-							className={`flex items-center justify-between px-5 py-3 transition-colors ${
-								i > 0 ? "border-t border-border" : ""
-							} ${active ? "" : "opacity-40"}`}
-						>
-							<span className="text-sm text-foreground">{f.label}</span>
-							{active ? (
-								<Check size={16} className="text-primary" />
-							) : (
-								<Minus size={16} className="text-muted-foreground" />
-							)}
-						</div>
-					);
-				})}
+				{features.map((label, i) => (
+					<div
+						key={label}
+						className={`flex items-center justify-between px-5 py-3 ${
+							i > 0 ? "border-t border-border" : ""
+						}`}
+					>
+						<span className="text-sm text-foreground">{label}</span>
+						<Check size={16} className="text-primary" />
+					</div>
+				))}
 			</div>
 
 			{/* Badge */}
@@ -925,7 +851,7 @@ function DualModeSpotlight() {
 				<div className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary/10 border border-primary/20 rounded-full animate-glow-badge">
 					<Zap size={14} className="text-primary" />
 					<span className="text-sm font-bold text-primary">
-						Only Parrot offers both local and cloud
+						Free, for life &middot; Cloud mode coming soon
 					</span>
 				</div>
 			</div>
@@ -1253,29 +1179,41 @@ const TESTIMONIALS = [
 // 12. Competitor Comparison Table
 // ---------------------------------------------------------------------------
 function ComparisonTable() {
-	const rows = [
+	const rows: {
+		feature: string;
+		parrot: boolean | "partial" | "soon";
+		wispr: boolean | "partial" | "soon";
+		macos: boolean | "partial" | "soon";
+	}[] = [
 		{ feature: "Local mode", parrot: true, wispr: false, macos: false },
-		{ feature: "Cloud mode", parrot: true, wispr: true, macos: false },
+		{ feature: "Cloud mode", parrot: "soon", wispr: true, macos: false },
 		{ feature: "Custom vocabulary", parrot: true, wispr: true, macos: false },
 		{ feature: "Cleanup", parrot: true, wispr: true, macos: false },
 		{
 			feature: "Privacy (no data sent)",
 			parrot: true,
 			wispr: false,
-			macos: "partial" as const,
+			macos: "partial",
 		},
 		{ feature: "Offline support", parrot: true, wispr: false, macos: true },
 		{ feature: "Open source", parrot: true, wispr: false, macos: false },
+		{ feature: "Free, for life", parrot: true, wispr: false, macos: true },
 	];
 
-	const renderCell = (val: boolean | string) => {
+	const renderCell = (val: boolean | "partial" | "soon") => {
 		if (val === true)
 			return <Check size={16} className="text-primary mx-auto" />;
 		if (val === false)
 			return <XIcon size={16} className="text-red-400/60 mx-auto" />;
 		if (val === "partial")
 			return <Minus size={16} className="text-amber-400 mx-auto" />;
-		return <span className="text-sm font-medium text-foreground">{val}</span>;
+		if (val === "soon")
+			return (
+				<span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-primary/15 text-primary">
+					Soon
+				</span>
+			);
+		return null;
 	};
 
 	return (
@@ -1330,17 +1268,14 @@ const FAQ: { q: string; a: ReactNode }[] = [
 		),
 	},
 	{
-		q: "Which providers work in BYOK mode?",
+		q: "Is cloud mode available?",
 		a: (
 			<>
-				<strong>Cloud:</strong> OpenAI Whisper, Deepgram, ElevenLabs
+				Not yet. Parrot ships with <strong>local mode</strong> today —
+				Whisper.cpp for transcription and Ollama for cleanup, all on-device.
 				<br />
-				<strong>Local:</strong> Whisper.cpp
-				<br />
-				<strong>Cleanup:</strong> OpenAI/Anthropic models (cloud) or Ollama
-				(local)
-				<br />
-				Switch anytime in settings.
+				Managed <strong>cloud mode</strong> is coming soon. Join the waitlist
+				to be notified when it launches.
 			</>
 		),
 	},
@@ -1348,10 +1283,8 @@ const FAQ: { q: string; a: ReactNode }[] = [
 		q: "Does it work offline?",
 		a: (
 			<>
-				<strong>Local mode:</strong> Yes - fully offline once models are
-				downloaded.
-				<br />
-				<strong>Cloud mode:</strong> Needs internet.
+				Yes. Local mode runs fully offline once models are downloaded. No
+				internet, no account, no API keys.
 			</>
 		),
 	},
@@ -1377,11 +1310,8 @@ const FAQ: { q: string; a: ReactNode }[] = [
 		q: "What about my privacy?",
 		a: (
 			<>
-				<strong>Local mode:</strong> Nothing leaves your Mac.
-				<br />
-				<strong>Cloud mode:</strong> We store your transcription and audio to
-				show you your history. If you don't want that, turn it off in settings.
-				Simple as that.
+				Local mode keeps everything on your Mac — audio, transcripts, history,
+				vocabulary. Nothing is sent to our servers.
 			</>
 		),
 	},
@@ -1775,8 +1705,8 @@ function HomePage() {
 								desc: "Transcription goes to clipboard and is pasted at your cursor automatically.",
 							},
 							{
-								title: "Multiple providers",
-								desc: "Whisper, Deepgram, ElevenLabs. Switch without re-configuring.",
+								title: "Free, for life",
+								desc: "Local mode is free forever. Managed cloud is coming soon.",
 							},
 							{
 								title: "Offline capable",
@@ -1788,7 +1718,7 @@ function HomePage() {
 							},
 							{
 								title: "No account needed",
-								desc: "Local mode works out of the box. Cloud mode just needs an API key.",
+								desc: "Local mode works out of the box — no sign-in, no API keys, no setup.",
 							},
 						].map((f, i) => (
 							<div key={i} className="border-l-2 border-primary/25 pl-4">
@@ -1813,8 +1743,8 @@ function HomePage() {
 						Parrot vs the alternatives
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px] mb-12">
-						The only voice dictation tool with both local and cloud modes, and
-						full privacy.
+						Free for life with full local-mode privacy today. Managed cloud
+						mode is coming soon.
 					</p>
 					<ComparisonTable />
 				</div>
