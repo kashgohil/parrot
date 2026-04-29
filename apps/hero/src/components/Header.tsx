@@ -26,7 +26,6 @@ export default function Header() {
 								[
 									{ to: "/", label: "Home" },
 									{ to: "/about", label: "About" },
-									{ to: "/pricing", label: "Pricing" },
 									{ to: "/blog", label: "Blog" },
 								] as const
 							).map((link) => (
@@ -95,7 +94,6 @@ export default function Header() {
 						[
 							{ to: "/", label: "Home" },
 							{ to: "/about", label: "About" },
-							{ to: "/pricing", label: "Pricing" },
 							{ to: "/blog", label: "Blog" },
 						] as const
 					).map((link) => (
