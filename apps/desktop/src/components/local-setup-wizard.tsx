@@ -87,25 +87,25 @@ interface SetupProgress {
 	overall_progress: number;
 }
 
-// Model options
+// Tuning tiers — backend ids are kept, but users see Parrot-branded labels.
 const WHISPER_MODELS = [
 	{
 		id: "tiny.en",
-		name: "Tiny",
+		name: "Lite",
 		size: "75 MB",
-		description: "Fast, basic accuracy",
+		description: "Fastest, basic accuracy",
 		recommended: false,
 	},
 	{
 		id: "base.en",
-		name: "Base",
+		name: "Standard",
 		size: "150 MB",
 		description: "Balanced speed and accuracy",
 		recommended: true,
 	},
 	{
 		id: "small.en",
-		name: "Small",
+		name: "Precise",
 		size: "500 MB",
 		description: "Slower, best accuracy",
 		recommended: false,
@@ -115,21 +115,21 @@ const WHISPER_MODELS = [
 const OLLAMA_MODELS = [
 	{
 		id: "llama3.2",
-		name: "Llama 3.2",
+		name: "Standard",
 		size: "2 GB",
 		description: "Great for general text cleanup",
 		recommended: true,
 	},
 	{
 		id: "phi4",
-		name: "Phi-4",
+		name: "Technical",
 		size: "2.5 GB",
-		description: "Optimized for technical writing",
+		description: "Tuned for technical writing",
 		recommended: false,
 	},
 	{
 		id: "qwen2.5-coder:1.5b",
-		name: "Qwen 2.5 Coder",
+		name: "Code",
 		size: "1 GB",
 		description: "Better for code and documentation",
 		recommended: false,
@@ -500,7 +500,7 @@ function ModelSelectionStep({
 			<div>
 				<div className="flex items-center gap-2 mb-3">
 					<Mic className="w-5 h-5 text-primary" />
-					<h3 className="font-medium">Speech-to-Text Model</h3>
+					<h3 className="font-medium">Dictation Quality</h3>
 				</div>
 				<div className="grid gap-3">
 					{WHISPER_MODELS.map((model) => (
@@ -519,7 +519,7 @@ function ModelSelectionStep({
 			<div>
 				<div className="flex items-center gap-2 mb-3">
 					<Brain className="w-5 h-5 text-primary" />
-					<h3 className="font-medium">Text Cleanup Model</h3>
+					<h3 className="font-medium">Text Cleanup Quality</h3>
 				</div>
 				<div className="grid gap-3">
 					{OLLAMA_MODELS.map((model) => (
@@ -634,15 +634,15 @@ function InstallationProgressStep({
 			case "system_check":
 				return "System Check";
 			case "install_ollama":
-				return "Installing Ollama";
+				return "Installing cleanup engine";
 			case "start_ollama":
-				return "Starting Ollama";
+				return "Starting cleanup engine";
 			case "validate_setup":
 				return "Validating setup";
 			case "download_whisper_model":
-				return `Downloading ${step.model} model`;
+				return "Downloading dictation engine";
 			case "download_ollama_model":
-				return `Downloading ${step.model} model`;
+				return "Downloading cleanup engine";
 		}
 	};
 
@@ -816,17 +816,17 @@ function DownloadIcon({ className }: { className?: string }) {
 function getEducationalTooltip(step: SetupStep): string {
 	switch (step.type) {
 		case "system_check":
-			return "We're checking your Mac meets the requirements for running AI models locally.";
+			return "We're checking your Mac meets the requirements for running Parrot locally.";
 		case "install_ollama":
-			return "Ollama runs AI models locally to clean up your dictation text (fix grammar, remove filler words).";
+			return "Setting up the on-device engine that cleans up your dictation text (fix grammar, remove filler words).";
 		case "start_ollama":
-			return "Starting the Ollama daemon that will handle text cleanup.";
+			return "Starting the local cleanup engine.";
 		case "validate_setup":
 			return "Running a quick test to make sure cleanup is working.";
 		case "download_whisper_model":
-			return "The speech recognition model converts your voice into text using your Mac's Neural Engine — your audio never leaves your computer.";
+			return "The dictation engine converts your voice into text using your Mac's Neural Engine — your audio never leaves your computer.";
 		case "download_ollama_model":
-			return "The AI model cleans up your text (fixes grammar, punctuation, removes 'um' and 'uh'). It runs entirely on your Mac.";
+			return "The cleanup engine fixes grammar, punctuation, and filler words like 'um' and 'uh'. It runs entirely on your Mac.";
 	}
 }
 
@@ -968,8 +968,8 @@ function CompletionStep({
 				</div>
 				<h2 className="text-xl font-bold mb-2">Setup Complete!</h2>
 				<p className="text-muted-foreground">
-					Your local AI is ready to use. Both servers will start automatically
-					when you open Parrot.
+					Parrot is tuned and ready to use. Everything starts automatically
+					when you open the app.
 				</p>
 			</div>
 
@@ -988,7 +988,7 @@ function CompletionStep({
 						<X className="w-5 h-5 text-red-600" />
 					)}
 					<div>
-						<div className="font-medium">Transcription Server</div>
+						<div className="font-medium">Dictation</div>
 						<div className="text-sm text-muted-foreground">
 							{testResults?.transcription
 								? "Responding correctly"
@@ -1010,7 +1010,7 @@ function CompletionStep({
 						<X className="w-5 h-5 text-red-600" />
 					)}
 					<div>
-						<div className="font-medium">Text Cleanup Server</div>
+						<div className="font-medium">Text Cleanup</div>
 						<div className="text-sm text-muted-foreground">
 							{testResults?.cleanup
 								? "Responding correctly"
