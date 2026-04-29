@@ -29,7 +29,7 @@ export default function BestVoiceDictationAppsMac2026() {
 							<strong>Parrot</strong>
 						</td>
 						<td>Power users, privacy-conscious</td>
-						<td>Free / $8/mo</td>
+						<td>Free for life</td>
 						<td>Yes</td>
 					</tr>
 					<tr>
