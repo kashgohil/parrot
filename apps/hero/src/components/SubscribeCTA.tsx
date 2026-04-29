@@ -1,23 +1,19 @@
 import { ArrowRight, Check } from "lucide-react";
 import { useState } from "react";
 
-interface WaitlistCTAProps {
-	/** Heading text */
+interface SubscribeCTAProps {
 	heading?: string;
-	/** Subheading text */
 	subheading?: string;
-	/** Source for analytics tracking */
 	source?: string;
-	/** Visual variant */
 	variant?: "dark" | "light" | "inline";
 }
 
-export function WaitlistCTA({
-	heading = "Start talking. Stop typing.",
-	subheading = "Join the waitlist and be the first to know when we launch.",
+export function SubscribeCTA({
+	heading = "Stay in the loop.",
+	subheading = "Subscribe for product updates and changelog notes.",
 	source = "website",
 	variant = "dark",
-}: WaitlistCTAProps) {
+}: SubscribeCTAProps) {
 	const [email, setEmail] = useState("");
 	const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
@@ -28,7 +24,7 @@ export function WaitlistCTA({
 		setStatus("loading");
 		try {
 			const apiUrl = import.meta.env.VITE_API_URL || "https://api.tryparrot.app";
-			const response = await fetch(`${apiUrl}/api/waitlist`, {
+			const response = await fetch(`${apiUrl}/api/subscribe`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ email, source }),
@@ -41,14 +37,13 @@ export function WaitlistCTA({
 		}
 	};
 
-	// Inline variant - just the form, no wrapper
 	if (variant === "inline") {
 		return (
 			<div>
 				{status === "success" ? (
 					<div className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary/10 border border-primary/20 rounded-xl">
 						<Check className="w-4 h-4 text-primary" />
-						<span className="text-primary font-semibold text-sm">You're on the list!</span>
+						<span className="text-primary font-semibold text-sm">Subscribed!</span>
 					</div>
 				) : (
 					<form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
@@ -66,10 +61,10 @@ export function WaitlistCTA({
 							className="px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
 						>
 							{status === "loading" ? (
-								"Joining..."
+								"Subscribing..."
 							) : (
 								<>
-									Join waitlist
+									Subscribe
 									<ArrowRight size={16} strokeWidth={2.5} />
 								</>
 							)}
@@ -83,7 +78,6 @@ export function WaitlistCTA({
 		);
 	}
 
-	// Dark variant - full section with dark background
 	if (variant === "dark") {
 		return (
 			<section className="px-6 py-20 md:py-28 bg-foreground">
@@ -96,7 +90,7 @@ export function WaitlistCTA({
 					{status === "success" ? (
 						<div className="inline-flex items-center gap-2 px-6 py-3 bg-primary/20 rounded-xl">
 							<Check className="w-5 h-5 text-primary" />
-							<span className="text-primary font-semibold">You're on the list!</span>
+							<span className="text-primary font-semibold">Subscribed!</span>
 						</div>
 					) : (
 						<form
@@ -117,10 +111,10 @@ export function WaitlistCTA({
 								className="px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(124,179,66,0.3)]"
 							>
 								{status === "loading" ? (
-									"Joining..."
+									"Subscribing..."
 								) : (
 									<>
-										Join waitlist
+										Subscribe
 										<ArrowRight size={16} strokeWidth={2.5} />
 									</>
 								)}
@@ -136,7 +130,6 @@ export function WaitlistCTA({
 		);
 	}
 
-	// Light variant - full section with light/muted background
 	return (
 		<section className="px-6 py-20 md:py-28">
 			<div className="max-w-2xl mx-auto text-center">
@@ -148,7 +141,7 @@ export function WaitlistCTA({
 				{status === "success" ? (
 					<div className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 border border-primary/20 rounded-xl">
 						<Check className="w-5 h-5 text-primary" />
-						<span className="text-primary font-semibold">You're on the list!</span>
+						<span className="text-primary font-semibold">Subscribed!</span>
 					</div>
 				) : (
 					<form
@@ -169,10 +162,10 @@ export function WaitlistCTA({
 							className="px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
 						>
 							{status === "loading" ? (
-								"Joining..."
+								"Subscribing..."
 							) : (
 								<>
-									Join waitlist
+									Subscribe
 									<ArrowRight size={16} strokeWidth={2.5} />
 								</>
 							)}
