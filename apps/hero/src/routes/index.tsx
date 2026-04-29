@@ -161,21 +161,7 @@ export const Route = createFileRoute("/")({
 							price: "0",
 							priceCurrency: "USD",
 							description:
-								"Unlimited local transcription with Whisper.cpp, local AI cleanup via Ollama, custom vocabulary, and offline support.",
-						},
-						{
-							"@type": "Offer",
-							name: "Pro",
-							price: "8",
-							priceCurrency: "USD",
-							priceSpecification: {
-								"@type": "UnitPriceSpecification",
-								price: "8",
-								priceCurrency: "USD",
-								billingDuration: "P1M",
-							},
-							description:
-								"120 min/month cloud transcription, unlimited AI cleanup with GPT-4o-mini, cloud history and sync.",
+								"Free for life. Unlimited local transcription with Whisper.cpp, local AI cleanup via Ollama, custom vocabulary, and offline support. Cloud mode coming soon.",
 						},
 					],
 					featureList:
@@ -827,6 +813,9 @@ function DualModeSpotlight() {
 				>
 					<Cloud size={16} />
 					Cloud
+					<span className="ml-1 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-primary/15 text-primary">
+						Soon
+					</span>
 				</button>
 			</div>
 
@@ -1418,7 +1407,7 @@ function HomePage() {
 						>
 							<div className="w-1.5 h-1.5 rounded-full bg-primary" />
 							<span className="text-xs font-semibold text-primary tracking-wide">
-								macOS &middot; Local or Cloud
+								macOS &middot; Free for life &middot; Cloud coming soon
 							</span>
 						</div>
 
@@ -1438,8 +1427,9 @@ function HomePage() {
 							)}`}
 						>
 							Parrot transcribes what you say and pastes it where your cursor
-							is. Custom vocabulary, AI cleanup, and full history. Runs on your
-							Mac locally or with cloud APIs.
+							is. Custom vocabulary, AI cleanup, and full history. Runs fully
+							local on your Mac &mdash; download today and use it free, for life.
+							Cloud mode is coming soon.
 						</p>
 
 						<div
@@ -1548,14 +1538,14 @@ function HomePage() {
 						Your setup
 					</p>
 					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
-						Local or cloud transcription.
+						Local transcription today.
 						<br />
-						Your choice.
+						Cloud coming soon.
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px]">
-						Switch between local and cloud anytime in settings. No data
-						migration, no lock-in. Parrot is the only voice tool that gives you
-						both.
+						Parrot runs fully on your Mac &mdash; free, for life. Cloud mode is
+						on the way for higher accuracy and cross-device sync; you'll be
+						able to flip between them anytime in settings.
 					</p>
 				</div>
 				<DualModeSpotlight />
@@ -1950,7 +1940,8 @@ function FinalCTA() {
 					Start dictating. Stop typing.
 				</h2>
 				<p className="text-background/50 mb-8 text-[15px]">
-					Coming soon. Join the waitlist to be first in line.
+					Local mode is available now &mdash; free, for life. Drop your email
+					to get notified when cloud mode lands.
 				</p>
 
 				{status === "success" ? (
