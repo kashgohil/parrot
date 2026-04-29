@@ -73,7 +73,7 @@ export const polarEvents = pgTable("polar_events", {
 	payload: text("payload").notNull(),
 });
 
-export const waitlist = pgTable("waitlist", {
+export const subscribers = pgTable("subscribers", {
 	id: text("id").primaryKey(),
 	email: text("email").unique().notNull(),
 	source: text("source").default("website"),
@@ -87,4 +87,4 @@ export type Profile = typeof profiles.$inferSelect;
 export type DictationEntry = typeof dictationHistory.$inferSelect;
 export type UsageTracking = typeof usageTracking.$inferSelect;
 export type PolarEvent = typeof polarEvents.$inferSelect;
-export type WaitlistEntry = typeof waitlist.$inferSelect;
+export type Subscriber = typeof subscribers.$inferSelect;
