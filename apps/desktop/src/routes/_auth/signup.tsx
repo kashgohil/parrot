@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { User, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_auth/signup")({
@@ -18,13 +18,11 @@ function SignupPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
-	const [isWaitlistMode, setIsWaitlistMode] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError("");
-		setIsWaitlistMode(false);
 
 		if (password.length < 8) {
 			setError("Password must be at least 8 characters");
@@ -35,10 +33,7 @@ function SignupPage() {
 
 		try {
 			await signup(email, password, name || undefined);
-		} catch (err: any) {
-			if (err?.waitlistMode) {
-				setIsWaitlistMode(true);
-			}
+		} catch (err) {
 			setError(err instanceof Error ? err.message : "Signup failed");
 		} finally {
 			setIsSubmitting(false);
@@ -56,17 +51,8 @@ function SignupPage() {
 
 			<form onSubmit={handleSubmit} className="space-y-5">
 				{error && (
-					<div className={`p-3.5 rounded-xl border text-sm ${isWaitlistMode ? "bg-amber-50 border-amber-200 text-amber-700" : "bg-red-50 border-red-200 text-red-600"}`}>
+					<div className="p-3.5 rounded-xl border text-sm bg-red-50 border-red-200 text-red-600">
 						{error}
-						{isWaitlistMode && (
-							<button
-								type="button"
-								onClick={() => openUrl("https://tryparrot.app/waitlist")}
-								className="block mt-2 text-primary font-semibold hover:underline"
-							>
-								Join the waitlist →
-							</button>
-						)}
 					</div>
 				)}
 

@@ -57,13 +57,7 @@ class ApiClient {
 			const error = await response
 				.json()
 				.catch(() => ({ error: "Request failed" }));
-			const err = new Error(error.error || "Request failed") as Error & {
-				waitlistMode?: boolean;
-			};
-			if (error.waitlistMode) {
-				err.waitlistMode = true;
-			}
-			throw err;
+			throw new Error(error.error || "Request failed");
 		}
 
 		return response.json();
