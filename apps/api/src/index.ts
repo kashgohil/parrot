@@ -21,7 +21,7 @@ import { profile } from "./routes/profile";
 import { subscription } from "./routes/subscription";
 import { sync } from "./routes/sync";
 import { transcribe } from "./routes/transcribe";
-import { waitlistRoute } from "./routes/waitlist";
+import { subscribeRoute } from "./routes/subscribe";
 import { webhooks } from "./routes/webhooks";
 
 const app = new Hono();
@@ -46,7 +46,7 @@ app.route("/api/audio", audio);
 app.route("/api/sync", sync);
 app.route("/api/webhooks", webhooks);
 app.route("/api/subscription", subscription);
-app.route("/api/waitlist", waitlistRoute);
+app.route("/api/subscribe", subscribeRoute);
 
 export default {
 	port: 3001,

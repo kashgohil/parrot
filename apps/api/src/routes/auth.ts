@@ -6,13 +6,11 @@ import {
 	deleteSession,
 	getUserByEmail,
 	getUserByGoogleId,
-	getWaitlistEntry,
 	updateUserOnboarding,
 	updateUserSubscription,
 	verifyPassword,
 } from "../db/index";
 import { authMiddleware } from "../middleware/auth";
-import { isWaitlistMode } from "./waitlist";
 
 export const auth = new Hono();
 
@@ -41,21 +39,6 @@ auth.post("/signup", async (c) => {
 
 		if (password.length < 8) {
 			return c.json({ error: "Password must be at least 8 characters" }, 400);
-		}
-
-		// In waitlist mode, only allow signups from waitlisted emails
-		if (isWaitlistMode()) {
-			const waitlistEntry = await getWaitlistEntry(email.toLowerCase().trim());
-			if (!waitlistEntry) {
-				return c.json(
-					{
-						error:
-							"Parrot is currently in private beta. Join the waitlist to get early access.",
-						waitlistMode: true,
-					},
-					403,
-				);
-			}
 		}
 
 		const existingUser = await getUserByEmail(email);
@@ -205,17 +188,6 @@ auth.get("/google/callback", async (c) => {
 		let user = await getUserByGoogleId(payload.sub);
 		let isNewUser = false;
 		if (!user) {
-			// In waitlist mode, only allow signups from waitlisted emails
-			if (isWaitlistMode()) {
-				const waitlistEntry = await getWaitlistEntry(
-					payload.email.toLowerCase().trim(),
-				);
-				if (!waitlistEntry) {
-					return c.html(
-						`<html><body style="font-family:system-ui;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><div style="text-align:center"><h2>Private Beta</h2><p>Parrot is currently in private beta.</p><p>Join the waitlist at tryparrot.app/waitlist to get early access.</p></div></body></html>`,
-					);
-				}
-			}
 			const existing = await getUserByEmail(payload.email);
 			isNewUser = !existing;
 			user = await createOAuthUser(payload.email, payload.sub, payload.name);
@@ -291,22 +263,6 @@ auth.post("/google", async (c) => {
 		let user = await getUserByGoogleId(payload.sub);
 
 		if (!user) {
-			// In waitlist mode, only allow signups from waitlisted emails
-			if (isWaitlistMode()) {
-				const waitlistEntry = await getWaitlistEntry(
-					payload.email.toLowerCase().trim(),
-				);
-				if (!waitlistEntry) {
-					return c.json(
-						{
-							error:
-								"Parrot is currently in private beta. Join the waitlist to get early access.",
-							waitlistMode: true,
-						},
-						403,
-					);
-				}
-			}
 			const existing = await getUserByEmail(payload.email);
 			const isNewUser = !existing;
 			user = await createOAuthUser(payload.email, payload.sub, payload.name);
@@ -365,14 +321,6 @@ auth.post("/logout", authMiddleware, async (c) => {
 	const sessionId = c.get("sessionId");
 	await deleteSession(sessionId);
 	return c.json({ success: true });
-});
-
-// Check signup availability (waitlist mode)
-auth.get("/status", (c) => {
-	return c.json({
-		signupEnabled: !isWaitlistMode(),
-		waitlistMode: isWaitlistMode(),
-	});
 });
 
 // Helper to decode Google ID token (simplified - in production use a proper library)
