@@ -29,6 +29,14 @@ CREATE TABLE "sessions" (
 	"expires_at" text NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "subscribers" (
+	"id" text PRIMARY KEY NOT NULL,
+	"email" text NOT NULL,
+	"source" text DEFAULT 'website',
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "subscribers_email_unique" UNIQUE("email")
+);
+--> statement-breakpoint
 CREATE TABLE "usage_tracking" (
 	"id" text PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
@@ -52,17 +60,11 @@ CREATE TABLE "users" (
 	"subscription_status" text,
 	"subscription_expires_at" text,
 	"trial_ends_at" text,
+	"migration_paid_at" text,
+	"migration_completed_at" text,
 	"created_at" timestamp DEFAULT now(),
 	CONSTRAINT "users_email_unique" UNIQUE("email"),
 	CONSTRAINT "users_google_id_unique" UNIQUE("google_id")
-);
---> statement-breakpoint
-CREATE TABLE "waitlist" (
-	"id" text PRIMARY KEY NOT NULL,
-	"email" text NOT NULL,
-	"source" text DEFAULT 'website',
-	"created_at" timestamp DEFAULT now(),
-	CONSTRAINT "waitlist_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 ALTER TABLE "dictation_history" ADD CONSTRAINT "dictation_history_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
