@@ -145,7 +145,7 @@ function RootLayout() {
 
 		// Cloud mode: require auth
 		if (setupMode === "cloud") {
-			const cloudOnboardingPaths = ["/setup-mode", "/cloud-setup", "/tour"];
+			const cloudOnboardingPaths = ["/setup-mode", "/tour"];
 			const isCloudOnboardingRoute = cloudOnboardingPaths.some((p) =>
 				location.pathname.startsWith(p),
 			);

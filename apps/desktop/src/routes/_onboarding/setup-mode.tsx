@@ -30,7 +30,6 @@ const PRO_TIER = {
 		"Unlimited AI cleanup requests",
 		"Cloud sync for history & settings",
 		"Cross-device vocabulary sync",
-		"Bring your own API keys for unlimited usage",
 		"Email support",
 	],
 	requiresSubscription: true,
@@ -64,7 +63,7 @@ function SetupModePage() {
 			});
 			await updateOnboarding(false, "cloud");
 
-			navigate({ to: "/cloud-setup" });
+			navigate({ to: "/tour" });
 		} catch (err) {
 			console.error("Failed to save setup mode:", err);
 		} finally {

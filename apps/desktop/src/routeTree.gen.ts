@@ -20,7 +20,6 @@ import { Route as OnboardingTourRouteImport } from './routes/_onboarding/tour'
 import { Route as OnboardingSetupModeRouteImport } from './routes/_onboarding/setup-mode'
 import { Route as OnboardingLocalSetupRouteImport } from './routes/_onboarding/local-setup'
 import { Route as OnboardingLocalProfileRouteImport } from './routes/_onboarding/local-profile'
-import { Route as OnboardingCloudSetupRouteImport } from './routes/_onboarding/cloud-setup'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 
@@ -77,11 +76,6 @@ const OnboardingLocalProfileRoute = OnboardingLocalProfileRouteImport.update({
   path: '/local-profile',
   getParentRoute: () => OnboardingRoute,
 } as any)
-const OnboardingCloudSetupRoute = OnboardingCloudSetupRouteImport.update({
-  id: '/cloud-setup',
-  path: '/cloud-setup',
-  getParentRoute: () => OnboardingRoute,
-} as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -101,7 +95,6 @@ export interface FileRoutesByFullPath {
   '/vocabulary': typeof VocabularyRoute
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
-  '/cloud-setup': typeof OnboardingCloudSetupRoute
   '/local-profile': typeof OnboardingLocalProfileRoute
   '/local-setup': typeof OnboardingLocalSetupRoute
   '/setup-mode': typeof OnboardingSetupModeRoute
@@ -115,7 +108,6 @@ export interface FileRoutesByTo {
   '/vocabulary': typeof VocabularyRoute
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
-  '/cloud-setup': typeof OnboardingCloudSetupRoute
   '/local-profile': typeof OnboardingLocalProfileRoute
   '/local-setup': typeof OnboardingLocalSetupRoute
   '/setup-mode': typeof OnboardingSetupModeRoute
@@ -132,7 +124,6 @@ export interface FileRoutesById {
   '/vocabulary': typeof VocabularyRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
-  '/_onboarding/cloud-setup': typeof OnboardingCloudSetupRoute
   '/_onboarding/local-profile': typeof OnboardingLocalProfileRoute
   '/_onboarding/local-setup': typeof OnboardingLocalSetupRoute
   '/_onboarding/setup-mode': typeof OnboardingSetupModeRoute
@@ -148,7 +139,6 @@ export interface FileRouteTypes {
     | '/vocabulary'
     | '/login'
     | '/signup'
-    | '/cloud-setup'
     | '/local-profile'
     | '/local-setup'
     | '/setup-mode'
@@ -162,7 +152,6 @@ export interface FileRouteTypes {
     | '/vocabulary'
     | '/login'
     | '/signup'
-    | '/cloud-setup'
     | '/local-profile'
     | '/local-setup'
     | '/setup-mode'
@@ -178,7 +167,6 @@ export interface FileRouteTypes {
     | '/vocabulary'
     | '/_auth/login'
     | '/_auth/signup'
-    | '/_onboarding/cloud-setup'
     | '/_onboarding/local-profile'
     | '/_onboarding/local-setup'
     | '/_onboarding/setup-mode'
@@ -274,13 +262,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingLocalProfileRouteImport
       parentRoute: typeof OnboardingRoute
     }
-    '/_onboarding/cloud-setup': {
-      id: '/_onboarding/cloud-setup'
-      path: '/cloud-setup'
-      fullPath: '/cloud-setup'
-      preLoaderRoute: typeof OnboardingCloudSetupRouteImport
-      parentRoute: typeof OnboardingRoute
-    }
     '/_auth/signup': {
       id: '/_auth/signup'
       path: '/signup'
@@ -311,7 +292,6 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface OnboardingRouteChildren {
-  OnboardingCloudSetupRoute: typeof OnboardingCloudSetupRoute
   OnboardingLocalProfileRoute: typeof OnboardingLocalProfileRoute
   OnboardingLocalSetupRoute: typeof OnboardingLocalSetupRoute
   OnboardingSetupModeRoute: typeof OnboardingSetupModeRoute
@@ -319,7 +299,6 @@ interface OnboardingRouteChildren {
 }
 
 const OnboardingRouteChildren: OnboardingRouteChildren = {
-  OnboardingCloudSetupRoute: OnboardingCloudSetupRoute,
   OnboardingLocalProfileRoute: OnboardingLocalProfileRoute,
   OnboardingLocalSetupRoute: OnboardingLocalSetupRoute,
   OnboardingSetupModeRoute: OnboardingSetupModeRoute,

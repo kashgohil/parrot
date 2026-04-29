@@ -21,9 +21,9 @@ function LocalSetupPage() {
 				<div className="w-16 h-16 bg-pk-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
 					<Cpu className="w-8 h-8 text-pk-primary" />
 				</div>
-				<h2 className="text-2xl font-bold text-foreground">Configure AI Models</h2>
+				<h2 className="text-2xl font-bold text-foreground">Tune Parrot</h2>
 				<p className="text-muted-foreground">
-					Set up Whisper and Ollama for voice dictation
+					Pick the dictation and cleanup quality that fits your Mac
 				</p>
 			</div>
 

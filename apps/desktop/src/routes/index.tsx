@@ -26,7 +26,6 @@ const tips = [
 	"Add custom vocabulary in the Vocabulary tab so Parrot nails tricky names and jargon.",
 	"Set your writing style in Settings to get cleaner, more consistent transcriptions.",
 	"Your transcriptions are automatically copied to your clipboard after processing.",
-	"Use your own API keys in Settings if you want full control over providers.",
 	"Parrot cleans up your dictations with AI — grammar, punctuation, and style, all handled.",
 ];
 
