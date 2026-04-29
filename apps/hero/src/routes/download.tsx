@@ -8,7 +8,7 @@ export const Route = createFileRoute("/download")({
 
 const REPO = "kashgohil/parrot";
 const LATEST_BASE = `https://github.com/${REPO}/releases/latest/download`;
-const DMG_HREF = `${LATEST_BASE}/Parrot_universal.dmg`;
+const DMG_HREF = `${LATEST_BASE}/Parrot_aarch64.dmg`;
 
 function isMac(): boolean {
 	if (typeof navigator === "undefined") return true;
@@ -35,7 +35,7 @@ function DownloadPage() {
 						<span className="flex flex-col items-start">
 							<span>Download for macOS</span>
 							<span className="text-xs opacity-80">
-								Universal (Apple Silicon + Intel) · .dmg
+								Apple Silicon (M1 or later) · .dmg
 							</span>
 						</span>
 					</a>
@@ -50,7 +50,8 @@ function DownloadPage() {
 			</div>
 
 			<p className="mt-12 text-xs text-muted-foreground">
-				Requires macOS 10.15 or later. Looking for a specific version? See all{" "}
+				Requires an Apple Silicon Mac (M1 or later) running macOS 11 or
+				later. Looking for a specific version? See all{" "}
 				<a
 					href={`https://github.com/${REPO}/releases`}
 					className="underline hover:text-foreground"
