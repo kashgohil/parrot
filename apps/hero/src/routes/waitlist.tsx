@@ -80,15 +80,15 @@ function WaitlistPage() {
 			<section className="px-6 pt-16 pb-20 md:pt-24 md:pb-28">
 				<div className="max-w-3xl mx-auto">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3 animate-fade-in-up">
-						Coming soon
+						Cloud mode coming soon
 					</p>
 					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5 animate-fade-in-up-delay-1">
-						Join the Parrot Waitlist
+						Get notified when cloud mode lands
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl mb-10 animate-fade-in-up-delay-2">
-						Voice dictation for Mac. 3x faster than typing, with cleanup that
-						removes filler words and fixes grammar. Runs locally or in the
-						cloud.
+						Local mode is available today &mdash; free, for life. Drop your
+						email and we'll let you know when managed cloud mode is ready for
+						higher accuracy and cross-device sync.
 					</p>
 
 					{status === "success" ? (
@@ -102,7 +102,8 @@ function WaitlistPage() {
 								</p>
 							</div>
 							<p className="text-sm text-muted-foreground">
-								We'll email you when Parrot is ready. Thanks for your interest.
+								We'll email you the moment cloud mode is ready. In the
+								meantime, local mode is free to download today.
 							</p>
 						</div>
 					) : (
@@ -140,7 +141,7 @@ function WaitlistPage() {
 					)}
 
 					<p className="text-xs text-muted-foreground mt-6 animate-fade-in-up-delay-3">
-						No spam. We'll only email you when Parrot launches.
+						No spam. We'll only email you when managed cloud mode launches.
 					</p>
 				</div>
 			</section>
@@ -170,8 +171,8 @@ function WaitlistPage() {
 								desc: "Add names, acronyms, and jargon so they're transcribed correctly every time.",
 							},
 							{
-								title: "Local or cloud - your choice",
-								desc: "Run everything on-device for privacy, or use cloud APIs for speed. Switch anytime.",
+								title: "Local today, cloud soon",
+								desc: "Run everything on-device for privacy today. Managed cloud mode is on the way for higher accuracy and sync.",
 							},
 							{
 								title: "Works in any app",

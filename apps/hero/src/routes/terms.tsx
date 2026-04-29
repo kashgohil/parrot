@@ -131,8 +131,8 @@ function TermsPage() {
 						<TermsSection
 							title="9. Subscription and payments"
 							paragraphs={[
-								"Certain features of Parrot may require a paid subscription. Payment terms, pricing, and billing cycles will be presented at the time of purchase.",
-								"Subscriptions automatically renew unless cancelled before the renewal date. Refunds are handled on a case-by-case basis.",
+								"Parrot is currently free to use in local mode. If we offer paid features in the future (such as managed cloud transcription), payment terms, pricing, and billing cycles will be presented at the time of purchase.",
+								"Any future subscriptions will renew automatically unless cancelled before the renewal date. Refunds, if applicable, will be handled on a case-by-case basis.",
 							]}
 						/>
 

@@ -69,7 +69,7 @@ const RELEASES = [
 				type: "added",
 				items: [
 					"Marketing site with blog and waitlist sign-up",
-					"Subscription and pricing plans",
+					"Free local mode for life — no account required",
 				],
 			},
 			{

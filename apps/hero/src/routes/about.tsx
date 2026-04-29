@@ -105,11 +105,11 @@ function AboutPage() {
 							},
 							{
 								label: "One engine, take it or leave it",
-								body: "Locked into whoever built the app. Parrot lets you pick: OpenAI Whisper, Deepgram, ElevenLabs, or local Whisper.cpp. Switch anytime. Or allow us to handle it for you.",
+								body: "Locked into whoever built the app. Parrot ships with local Whisper.cpp today, with OpenAI Whisper, Deepgram, and ElevenLabs available via your own API keys. Managed cloud mode is on the way.",
 							},
 							{
 								label: "Your audio, their servers",
-								body: "Most tools upload your audio to process it. Parrot's local mode means nothing ever leaves your Mac. In cloud mode, you have choice. Use your own API key or use no key at all.",
+								body: "Most tools upload your audio to process it. Parrot runs fully on-device — nothing leaves your Mac. If you bring your own API key, audio goes straight to your provider; we never see it.",
 							},
 						].map((item, i) => (
 							<div key={i}>
@@ -141,7 +141,7 @@ function AboutPage() {
 							{
 								num: "02",
 								title: "You choose the engine",
-								body: "Local users get Whisper.cpp running entirely on-device. BYOK users pick from Whisper, Deepgram, or ElevenLabs. Managed users allow us to handle all that hassle and they just talk.",
+								body: "Local mode runs Whisper.cpp entirely on-device. Bring your own API key for OpenAI Whisper, Deepgram, or ElevenLabs. A managed cloud option is coming soon.",
 							},
 							{
 								num: "03",
@@ -222,11 +222,11 @@ function AboutPage() {
 						{[
 							{
 								title: "Your data is yours",
-								body: "We don't want your audio or transcripts. Local mode keeps everything on your Mac. Cloud mode gives you control over what's stored - and you can delete it anytime.",
+								body: "We don't want your audio or transcripts. Local mode keeps everything on your Mac. When you bring your own API key, audio goes straight to your provider — we never see it.",
 							},
 							{
 								title: "Choice over lock-in",
-								body: "Use our managed service, bring your own API keys, or run everything locally. Switch between them whenever you want. No vendor lock-in, no data migration headaches.",
+								body: "Run everything locally for free, or bring your own API keys for cloud providers. Managed cloud is coming soon. Switch between them whenever you want — no vendor lock-in, no data migration headaches.",
 							},
 							{
 								title: "Simple beats clever",
@@ -276,7 +276,11 @@ function AboutPage() {
 							},
 							{
 								date: "Early 2026",
-								text: "will be launched publicly. Dictation history, search, and the onboarding wizard. Cloud mode with OpenAI, Deepgram, and ElevenLabs.",
+								text: "Launched publicly. Dictation history, search, and the onboarding wizard. BYOK cloud transcription with OpenAI, Deepgram, and ElevenLabs.",
+							},
+							{
+								date: "Coming soon",
+								text: "Managed cloud mode — higher accuracy, AI cleanup, and cross-device sync without bringing your own API key.",
 							},
 						].map((item, i) => (
 							<div key={i} className="relative flex gap-5 mb-8 last:mb-0">
@@ -297,8 +301,8 @@ function AboutPage() {
 
 			{/* ── CTA ── */}
 			<WaitlistCTA
-				heading="Be the first to try it"
-				subheading="Join the waitlist. We'll email you when Parrot launches."
+				heading="Try it free, today"
+				subheading="Local mode is available now — free, for life. Drop your email to get notified when managed cloud mode lands."
 				source="about"
 			/>
 
