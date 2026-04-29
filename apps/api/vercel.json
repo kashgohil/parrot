@@ -3,6 +3,7 @@
 	"framework": "hono",
 	"bunVersion": "1.x",
 	"installCommand": "bun install",
+	"fluid": true,
 	"git": {
 		"deploymentEnabled": false
 	}
