@@ -7,8 +7,8 @@ export const Route = createFileRoute("/download")({
 });
 
 const REPO = "kashgohil/parrot";
-const LATEST_BASE = `https://github.com/${REPO}/releases/latest/download`;
-const DMG_HREF = `${LATEST_BASE}/Parrot_aarch64.dmg`;
+const RELEASES_PAGE = `https://github.com/${REPO}/releases`;
+const LATEST_API = `https://api.github.com/repos/${REPO}/releases/latest`;
 
 function isMac(): boolean {
 	if (typeof navigator === "undefined") return true;
@@ -17,9 +17,31 @@ function isMac(): boolean {
 	return platform.includes("mac") || ua.includes("mac os");
 }
 
+type GHAsset = { name: string; browser_download_url: string };
+type GHRelease = { tag_name: string; assets: GHAsset[] };
+
 function DownloadPage() {
 	const [mac, setMac] = useState(true);
+	const [dmg, setDmg] = useState<{ url: string; version: string } | null>(null);
+	const [error, setError] = useState(false);
+
 	useEffect(() => setMac(isMac()), []);
+
+	useEffect(() => {
+		fetch(LATEST_API)
+			.then((r) => (r.ok ? (r.json() as Promise<GHRelease>) : Promise.reject()))
+			.then((release) => {
+				const asset = release.assets.find(
+					(a) => a.name.endsWith(".dmg") && a.name.includes("aarch64"),
+				);
+				if (asset) {
+					setDmg({ url: asset.browser_download_url, version: release.tag_name });
+				} else {
+					setError(true);
+				}
+			})
+			.catch(() => setError(true));
+	}, []);
 
 	return (
 		<div className="mx-auto max-w-2xl px-6 py-24">
@@ -30,18 +52,45 @@ function DownloadPage() {
 			</p>
 
 			<div className="mt-10">
-				<Button asChild size="lg" className="w-full justify-start">
-					<a href={DMG_HREF}>
+				<Button
+					asChild={!!dmg}
+					size="lg"
+					className="w-full justify-start"
+					disabled={!dmg}
+				>
+					{dmg ? (
+						<a href={dmg.url}>
+							<span className="flex flex-col items-start">
+								<span>Download for macOS · {dmg.version}</span>
+								<span className="text-xs opacity-80">
+									Apple Silicon (M1 or later) · .dmg
+								</span>
+							</span>
+						</a>
+					) : (
 						<span className="flex flex-col items-start">
-							<span>Download for macOS</span>
+							<span>{error ? "Download unavailable" : "Loading…"}</span>
 							<span className="text-xs opacity-80">
 								Apple Silicon (M1 or later) · .dmg
 							</span>
 						</span>
-					</a>
+					)}
 				</Button>
 
-				{!mac && (
+				{error && (
+					<p className="mt-4 text-sm text-muted-foreground">
+						Couldn't reach GitHub. Grab the latest .dmg directly from{" "}
+						<a
+							href={RELEASES_PAGE}
+							className="underline hover:text-foreground"
+						>
+							the releases page
+						</a>
+						.
+					</p>
+				)}
+
+				{!mac && !error && (
 					<p className="mt-4 text-sm text-muted-foreground">
 						Parrot is currently macOS-only. Windows and Linux support is
 						not planned at this time.
@@ -52,10 +101,7 @@ function DownloadPage() {
 			<p className="mt-12 text-xs text-muted-foreground">
 				Requires an Apple Silicon Mac (M1 or later) running macOS 11 or
 				later. Looking for a specific version? See all{" "}
-				<a
-					href={`https://github.com/${REPO}/releases`}
-					className="underline hover:text-foreground"
-				>
+				<a href={RELEASES_PAGE} className="underline hover:text-foreground">
 					releases on GitHub
 				</a>
 				.
