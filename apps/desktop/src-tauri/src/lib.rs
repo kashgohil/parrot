@@ -243,13 +243,13 @@ async fn transcribe_last(
 }
 
 /// Copy text to the clipboard via Tauri's clipboard plugin and paste it into
-/// whatever app currently holds key focus by shelling out to `osascript`.
+/// whatever app currently holds key focus.
 ///
-/// We deliberately avoid arboard/enigo here: on macOS those libs go through
-/// AppKit/CoreGraphics in ways that can `abort()` (not panic) under certain
-/// thread/entitlement conditions, and an Objective-C abort cannot be caught
-/// by `std::panic::catch_unwind`. Pushing the keystroke synthesis into a
-/// child process means even a worst-case failure can't take down Parrot.
+/// On macOS we synthesize Cmd+V via `CGEventPost` rather than driving
+/// `osascript` → System Events. The osascript path required the user to grant
+/// *Automation → System Events* on top of Accessibility, and reported error
+/// 1002 ("not allowed to send keystrokes") in confusing ways even when
+/// Accessibility was granted. CGEvent only needs Accessibility.
 async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
     use tauri_plugin_clipboard_manager::ClipboardExt;
 
@@ -262,48 +262,81 @@ async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
     // we synthesize Cmd+V into whatever app currently holds focus.
     tokio::time::sleep(std::time::Duration::from_millis(80)).await;
 
-    let paste_result = tauri::async_runtime::spawn_blocking(|| {
-        std::process::Command::new("osascript")
-            .args([
-                "-e",
-                "tell application \"System Events\" to keystroke \"v\" using command down",
-            ])
-            .output()
-    })
-    .await;
-
-    match paste_result {
-        Ok(Ok(output)) if output.status.success() => true,
-        Ok(Ok(output)) => {
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            let trimmed = stderr.trim();
-            eprintln!(
-                "osascript paste failed (status {:?}): {}",
-                output.status.code(),
-                trimmed
+    #[cfg(target_os = "macos")]
+    {
+        if !is_accessibility_trusted() {
+            let _ = app.emit(
+                "paste-permission-needed",
+                serde_json::json!({
+                    "details": "Accessibility permission required to paste",
+                }),
             );
-            // macOS error 1002 = "not allowed to send keystrokes" → Accessibility
-            // permission missing. Surface a structured event so the UI can offer
-            // a one-click "Open Settings" path.
-            if trimmed.contains("1002")
-                || trimmed.contains("not allowed to send keystrokes")
-            {
-                let _ = app.emit(
-                    "paste-permission-needed",
-                    serde_json::json!({ "details": trimmed }),
-                );
+            return false;
+        }
+
+        let result =
+            tauri::async_runtime::spawn_blocking(|| std::panic::catch_unwind(post_cmd_v_macos))
+                .await;
+
+        match result {
+            Ok(Ok(true)) => true,
+            Ok(Ok(false)) => {
+                eprintln!("CGEvent paste: failed to construct keystroke");
+                false
             }
-            false
-        }
-        Ok(Err(e)) => {
-            eprintln!("Failed to invoke osascript: {}", e);
-            false
-        }
-        Err(e) => {
-            eprintln!("osascript task join error: {}", e);
-            false
+            Ok(Err(_)) => {
+                eprintln!("CGEvent paste panicked");
+                false
+            }
+            Err(e) => {
+                eprintln!("CGEvent paste task join error: {}", e);
+                false
+            }
         }
     }
+
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = app;
+        false
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn post_cmd_v_macos() -> bool {
+    use core_graphics::event::{CGEvent, CGEventFlags, CGEventTapLocation, CGKeyCode};
+    use core_graphics::event_source::{CGEventSource, CGEventSourceStateID};
+
+    // V on the ANSI keyboard layout. Cmd+V dispatches by virtual keycode,
+    // independent of the user's input layout.
+    const KEY_V: CGKeyCode = 9;
+
+    let Ok(source) = CGEventSource::new(CGEventSourceStateID::HIDSystemState) else {
+        return false;
+    };
+
+    let Ok(down) = CGEvent::new_keyboard_event(source.clone(), KEY_V, true) else {
+        return false;
+    };
+    down.set_flags(CGEventFlags::CGEventFlagCommand);
+    down.post(CGEventTapLocation::HID);
+
+    let Ok(up) = CGEvent::new_keyboard_event(source, KEY_V, false) else {
+        return false;
+    };
+    up.set_flags(CGEventFlags::CGEventFlagCommand);
+    up.post(CGEventTapLocation::HID);
+
+    true
+}
+
+#[cfg(target_os = "macos")]
+fn is_accessibility_trusted() -> bool {
+    #[link(name = "ApplicationServices", kind = "framework")]
+    extern "C" {
+        fn AXIsProcessTrusted() -> bool;
+    }
+    unsafe { AXIsProcessTrusted() }
 }
 
 /// Open a specific pane in macOS System Settings.
@@ -343,11 +376,7 @@ fn open_system_settings(pane: String) -> Result<(), String> {
 fn check_accessibility_permission() -> bool {
     #[cfg(target_os = "macos")]
     {
-        #[link(name = "ApplicationServices", kind = "framework")]
-        extern "C" {
-            fn AXIsProcessTrusted() -> bool;
-        }
-        unsafe { AXIsProcessTrusted() }
+        is_accessibility_trusted()
     }
     #[cfg(not(target_os = "macos"))]
     {
