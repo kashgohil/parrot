@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Parrot · OG Image Templates</title>
+		<style>
+			@font-face {
+				font-family: "Fira Sans";
+				src: url("../fonts/FiraSans-Regular.woff") format("woff");
+				font-weight: 400;
+				font-display: block;
+			}
+			@font-face {
+				font-family: "Fira Sans";
+				src: url("../fonts/FiraSans-Medium.woff") format("woff");
+				font-weight: 500;
+				font-display: block;
+			}
+			@font-face {
+				font-family: "Fira Sans";
+				src: url("../fonts/FiraSans-SemiBold.woff") format("woff");
+				font-weight: 600;
+				font-display: block;
+			}
+			@font-face {
+				font-family: "Fira Sans";
+				src: url("../fonts/FiraSans-Bold.woff") format("woff");
+				font-weight: 800;
+				font-display: block;
+			}
+
+			/* Parakeet brand palette — mirrors src/styles.css */
+			:root {
+				--pk-primary: #7cb342;
+				--pk-primary-light: #8bc34a;
+				--pk-primary-dark: #689f38;
+				--pk-bg: #fafdf6;
+				--pk-bg-secondary: #f1f8e9;
+				--pk-card: #ffffff;
+				--pk-text: #1b2e1b;
+				--pk-text-muted: #5f7a5f;
+				--pk-accent: #ff7043;
+				--pk-border: #d5e4c3;
+				--pk-badge-green: #4ade80;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				background: var(--pk-bg-secondary);
+				font-family:
+					"Fira Sans",
+					-apple-system,
+					system-ui,
+					sans-serif;
+				color: var(--pk-text);
+			}
+
+			.page {
+				max-width: 1320px;
+				margin: 0 auto;
+				padding: 40px 24px 80px;
+			}
+
+			.page-title {
+				font-size: 28px;
+				font-weight: 800;
+				margin: 0 0 6px;
+				color: var(--pk-text);
+			}
+			.page-sub {
+				color: var(--pk-text-muted);
+				margin: 0 0 32px;
+				font-size: 15px;
+			}
+			.bulk-actions {
+				display: flex;
+				gap: 8px;
+				margin-bottom: 24px;
+				flex-wrap: wrap;
+			}
+			.btn {
+				background: var(--pk-text);
+				color: #fff;
+				border: none;
+				padding: 10px 16px;
+				border-radius: 10px;
+				font-family: inherit;
+				font-weight: 600;
+				font-size: 13px;
+				cursor: pointer;
+				transition: opacity 0.15s;
+			}
+			.btn:hover {
+				opacity: 0.85;
+			}
+			.btn-secondary {
+				background: #fff;
+				color: var(--pk-text);
+				border: 1px solid var(--pk-border);
+			}
+
+			.template-card {
+				background: #fff;
+				border-radius: 14px;
+				padding: 16px;
+				margin-bottom: 28px;
+				box-shadow: 0 1px 3px rgba(27, 46, 27, 0.06);
+				border: 1px solid var(--pk-border);
+			}
+			.template-meta {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 12px;
+				gap: 16px;
+				flex-wrap: wrap;
+			}
+			.filename {
+				font-family:
+					ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+				font-size: 13px;
+				color: var(--pk-text-muted);
+			}
+			.filename strong {
+				color: var(--pk-text);
+			}
+
+			.template-shrink {
+				width: 600px;
+				height: 315px;
+				overflow: hidden;
+				border: 1px solid var(--pk-border);
+				border-radius: 8px;
+				position: relative;
+			}
+			.template-shrink .template-frame {
+				transform: scale(0.5);
+				transform-origin: top left;
+			}
+			.template-frame {
+				width: 1200px;
+				height: 630px;
+				position: relative;
+			}
+
+			/* ============================================================
+       OG IMAGE — base canvas
+       ============================================================ */
+
+			.og {
+				width: 1200px;
+				height: 630px;
+				position: relative;
+				overflow: hidden;
+				font-family: "Fira Sans", system-ui, sans-serif;
+				color: var(--pk-text);
+				background:
+					radial-gradient(
+						ellipse at top right,
+						rgba(124, 179, 66, 0.08),
+						transparent 55%
+					),
+					radial-gradient(
+						ellipse at bottom left,
+						rgba(255, 112, 67, 0.05),
+						transparent 60%
+					),
+					linear-gradient(180deg, var(--pk-bg) 0%, var(--pk-bg-secondary) 100%);
+			}
+
+			/* Soft dot grid texture */
+			.og::before {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background-image: radial-gradient(
+					circle,
+					rgba(27, 46, 27, 0.05) 1px,
+					transparent 1px
+				);
+				background-size: 28px 28px;
+				background-position: 0 0;
+				pointer-events: none;
+			}
+
+
+			/* Decorative waveform — abstract sound visual on right */
+			.og-wave {
+				position: absolute;
+				right: 56px;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 360px;
+				height: 360px;
+				z-index: 1;
+				pointer-events: none;
+				opacity: 0.55;
+			}
+
+			.og-corner-frame {
+				position: absolute;
+				inset: 24px;
+				border: 1px solid rgba(213, 228, 195, 0.7);
+				border-radius: 18px;
+				pointer-events: none;
+				z-index: 1;
+			}
+
+			.og-header {
+				position: absolute;
+				top: 56px;
+				left: 64px;
+				right: 64px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				z-index: 3;
+			}
+
+			.brand {
+				display: flex;
+				align-items: center;
+				gap: 14px;
+			}
+
+			.brand-mark {
+				width: 60px;
+				height: 60px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: #c3de36;
+				border-radius: 14px;
+				box-shadow:
+					0 2px 6px rgba(170, 195, 40, 0.32),
+					inset 0 1px 0 rgba(255, 255, 255, 0.25);
+			}
+			.brand-mark img {
+				width: 42px;
+				height: 42px;
+				object-fit: contain;
+				display: block;
+				border-radius: 9px;
+			}
+
+			.brand-text {
+				display: flex;
+				flex-direction: column;
+				line-height: 1.05;
+			}
+			.brand-name {
+				font-weight: 800;
+				font-size: 28px;
+				letter-spacing: -0.015em;
+				color: var(--pk-text);
+			}
+			.brand-tag {
+				font-weight: 600;
+				font-size: 13px;
+				color: var(--pk-text-muted);
+				letter-spacing: 0.02em;
+				margin-top: 2px;
+			}
+
+			.url {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				padding: 8px 14px;
+				border-radius: 999px;
+				background: rgba(255, 255, 255, 0.7);
+				border: 1px solid var(--pk-border);
+				font-size: 14px;
+				font-weight: 600;
+				color: var(--pk-text-muted);
+				letter-spacing: 0.01em;
+			}
+			.url::before {
+				content: "";
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: var(--pk-primary);
+				box-shadow: 0 0 0 3px rgba(124, 179, 66, 0.18);
+			}
+
+			.og-body {
+				position: absolute;
+				left: 64px;
+				right: 460px; /* leave room for waveform */
+				top: 168px;
+				bottom: 130px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				z-index: 3;
+			}
+
+			.eyebrow {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				font-size: 13px;
+				font-weight: 700;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--pk-primary-dark);
+				margin-bottom: 20px;
+			}
+			.eyebrow-dot {
+				width: 6px;
+				height: 6px;
+				border-radius: 50%;
+				background: var(--pk-accent);
+			}
+
+			.og-title {
+				font-size: 70px;
+				font-weight: 800;
+				line-height: 1.04;
+				letter-spacing: -0.025em;
+				margin: 0 0 20px;
+				color: var(--pk-text);
+				max-width: 100%;
+			}
+			.og-title.size-md {
+				font-size: 56px;
+			}
+			.og-title.size-sm {
+				font-size: 46px;
+				line-height: 1.08;
+			}
+			.og-title em {
+				font-style: normal;
+				color: var(--pk-primary-dark);
+				background: linear-gradient(
+					180deg,
+					transparent 60%,
+					rgba(124, 179, 66, 0.22) 60%
+				);
+				padding: 0 4px;
+			}
+
+			.og-tagline {
+				font-size: 24px;
+				font-weight: 500;
+				color: var(--pk-text-muted);
+				line-height: 1.4;
+				margin: 0;
+				max-width: 720px;
+			}
+
+			.og-footer {
+				position: absolute;
+				left: 64px;
+				right: 64px;
+				bottom: 56px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				z-index: 3;
+				font-size: 15px;
+				color: var(--pk-text-muted);
+				font-weight: 500;
+			}
+			.og-footer .left {
+				display: inline-flex;
+				align-items: center;
+				gap: 12px;
+			}
+			.og-footer strong {
+				color: var(--pk-text);
+				font-weight: 700;
+			}
+			.divider-dot {
+				width: 4px;
+				height: 4px;
+				border-radius: 50%;
+				background: var(--pk-border);
+			}
+
+			/* Category badges — parakeet-aware tints */
+			.badge {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				padding: 9px 18px;
+				border-radius: 999px;
+				font-size: 13px;
+				font-weight: 700;
+				text-transform: uppercase;
+				letter-spacing: 0.12em;
+				background: rgba(124, 179, 66, 0.14);
+				color: var(--pk-primary-dark);
+				border: 1px solid rgba(124, 179, 66, 0.28);
+			}
+			.badge::before {
+				content: "";
+				width: 6px;
+				height: 6px;
+				border-radius: 50%;
+				background: var(--pk-primary);
+			}
+			.badge.cat-comparison {
+				background: rgba(59, 130, 246, 0.1);
+				color: #1d4ed8;
+				border-color: rgba(59, 130, 246, 0.28);
+			}
+			.badge.cat-comparison::before {
+				background: #3b82f6;
+			}
+			.badge.cat-tutorial {
+				background: rgba(139, 92, 246, 0.1);
+				color: #6d28d9;
+				border-color: rgba(139, 92, 246, 0.28);
+			}
+			.badge.cat-tutorial::before {
+				background: #8b5cf6;
+			}
+			.badge.cat-guide {
+				background: rgba(124, 179, 66, 0.14);
+				color: var(--pk-primary-dark);
+				border-color: rgba(124, 179, 66, 0.32);
+			}
+			.badge.cat-guide::before {
+				background: var(--pk-primary);
+			}
+			.badge.cat-industry {
+				background: rgba(255, 112, 67, 0.12);
+				color: #c2410c;
+				border-color: rgba(255, 112, 67, 0.32);
+			}
+			.badge.cat-industry::before {
+				background: var(--pk-accent);
+			}
+			.badge.cat-story {
+				background: rgba(236, 72, 153, 0.1);
+				color: #be185d;
+				border-color: rgba(236, 72, 153, 0.28);
+			}
+			.badge.cat-story::before {
+				background: #ec4899;
+			}
+			.badge.cat-technical {
+				background: rgba(100, 116, 139, 0.1);
+				color: #334155;
+				border-color: rgba(100, 116, 139, 0.28);
+			}
+			.badge.cat-technical::before {
+				background: #64748b;
+			}
+
+			/* Default-template hero variant — adds soft accent stamp behind body */
+			.og.default .stamp {
+				position: absolute;
+				right: -40px;
+				bottom: -40px;
+				width: 320px;
+				height: 320px;
+				border-radius: 50%;
+				background: radial-gradient(
+					circle,
+					rgba(255, 112, 67, 0.07) 0%,
+					transparent 70%
+				);
+				z-index: 1;
+				pointer-events: none;
+			}
+
+			.kicker {
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+				font-size: 12px;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				padding: 5px 12px;
+				border-radius: 6px;
+				background: var(--pk-primary);
+				color: #fff;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<h1 class="page-title">Parrot · OG Image Templates</h1>
+			<p class="page-sub">
+				1200×630, parakeet-themed. Click "Download PNG" or "Download all". Save
+				into <code>apps/hero/public/og/</code> using the suggested filename.
+			</p>
+
+			<div class="bulk-actions">
+				<button class="btn" onclick="downloadAll()">Download all</button>
+			</div>
+
+			<div id="templates"></div>
+		</div>
+
+		<script type="module">
+			import { toPng } from "https://esm.sh/html-to-image@1.11.13";
+			import JSZip from "https://esm.sh/jszip@3.10.1";
+
+			// Pre-load the parrot icon as a data URL so html-to-image never has to
+			// fetch it (avoids CORS / inline-fetch issues during capture).
+			const ICON_URL = "../parrot.png";
+			let ICON_DATA_URL = "";
+
+			async function preloadIcon() {
+				try {
+					const res = await fetch(ICON_URL);
+					if (!res.ok) {
+						throw new Error(`HTTP ${res.status} fetching ${ICON_URL}`);
+					}
+					const blob = await res.blob();
+					ICON_DATA_URL = await new Promise((resolve, reject) => {
+						const reader = new FileReader();
+						reader.onload = () => resolve(String(reader.result));
+						reader.onerror = reject;
+						reader.readAsDataURL(blob);
+					});
+					console.log(
+						`[og-templates] icon preloaded as data URL (${ICON_DATA_URL.length} bytes)`,
+					);
+				} catch (err) {
+					console.error(
+						"[og-templates] preloadIcon failed — will fall back to direct path",
+						err,
+					);
+				}
+			}
+
+			const STATIC_PAGES = [
+				{
+					filename: "home",
+					eyebrow: "macOS · Free for life",
+					title: "Voice dictation, *built local-first.*",
+					tagline:
+						"3x faster than typing. On-device AI cleanup, custom vocabulary, full offline support.",
+					footerLeft: "tryparrot.app",
+				},
+				{
+					filename: "download",
+					eyebrow: "Download · Apple Silicon",
+					title: "Get Parrot. *Free, for life.*",
+					tagline:
+						"Local-only voice dictation for Mac. No account, no subscription, no servers.",
+					footerLeft: "tryparrot.app/download",
+				},
+				{
+					filename: "about",
+					eyebrow: "About",
+					title: "Voice dictation, *rebuilt.*",
+					tagline:
+						"Native, local-first, and fast. The dictation app we wanted to use every day.",
+					footerLeft: "Built by Kash Gohil",
+				},
+				{
+					filename: "blog",
+					eyebrow: "The Parrot Blog",
+					title: "Voice dictation, *in depth.*",
+					tagline:
+						"Guides, comparisons, and tutorials on dictation, Whisper, and local-first software.",
+					footerLeft: "tryparrot.app/blog",
+				},
+				{
+					filename: "contact",
+					eyebrow: "Contact",
+					title: "Get in *touch.*",
+					tagline:
+						"Questions, feedback, or partnership ideas — we'd love to hear from you.",
+					footerLeft: "hello@tryparrot.app",
+				},
+				{
+					filename: "compare",
+					eyebrow: "Comparisons",
+					title: "Parrot vs *the rest.*",
+					tagline:
+						"Honest side-by-side comparisons of Parrot against the apps people actually shop for.",
+					footerLeft: "tryparrot.app/compare",
+				},
+			];
+
+			const BLOG_POSTS = [
+				{
+					slug: "wispr-flow-alternatives",
+					title:
+						"Wispr Flow Alternatives: 5 Voice Dictation Apps Worth Trying in 2026",
+					category: "Comparison",
+					readingTime: "7 min read",
+				},
+				{
+					slug: "offline-voice-dictation-setup",
+					title: "How to Use Voice Dictation Offline: A Complete Setup Guide",
+					category: "Tutorial",
+					readingTime: "8 min read",
+				},
+				{
+					slug: "free-voice-dictation-apps-2026",
+					title:
+						"Free Voice Dictation Apps: What's Actually Free in 2026 (and What's Not)",
+					category: "Guide",
+					readingTime: "7 min read",
+				},
+				{
+					slug: "local-first-voice-dictation-explained",
+					title:
+						"Local-First Voice Dictation Explained: Why Your Audio Should Never Leave Your Mac",
+					category: "Industry",
+					readingTime: "8 min read",
+				},
+				{
+					slug: "best-voice-dictation-apps-mac-2026",
+					title: "Best Voice Dictation Apps for Mac in 2026",
+					category: "Comparison",
+					readingTime: "8 min read",
+				},
+				{
+					slug: "speech-to-text-complete-guide",
+					title: "Speech to Text: The Complete Guide",
+					category: "Guide",
+					readingTime: "10 min read",
+				},
+				{
+					slug: "voice-apps-boost-productivity",
+					title: "10 Ways Voice Apps Boost Productivity",
+					category: "Guide",
+					readingTime: "7 min read",
+				},
+				{
+					slug: "voice-dictation-vs-typing",
+					title: "Voice Dictation vs. Typing: Which Is Actually Faster?",
+					category: "Comparison",
+					readingTime: "6 min read",
+				},
+				{
+					slug: "local-voice-dictation-mac",
+					title: "How to Set Up Local Voice Dictation on Mac",
+					category: "Tutorial",
+					readingTime: "5 min read",
+				},
+				{
+					slug: "transcription-apis-compared",
+					title:
+						"Whisper vs. Deepgram vs. ElevenLabs: Transcription APIs Compared",
+					category: "Comparison",
+					readingTime: "7 min read",
+				},
+				{
+					slug: "voice-dictation-medical-hipaa",
+					title: "Voice Dictation for Medical Professionals: Privacy and HIPAA",
+					category: "Industry",
+					readingTime: "6 min read",
+				},
+				{
+					slug: "rsi-developer-voice-dictation",
+					title: "Managing RSI as a Developer with Voice Dictation",
+					category: "Story",
+					readingTime: "5 min read",
+				},
+				{
+					slug: "why-tauri-not-electron",
+					title: "Why We Built Parrot with Tauri Instead of Electron",
+					category: "Technical",
+					readingTime: "6 min read",
+				},
+				{
+					slug: "custom-vocabulary-voice-dictation",
+					title: "Custom Vocabulary: Stop Correcting Your Own Name",
+					category: "Guide",
+					readingTime: "5 min read",
+				},
+			];
+
+			// ------------------------------------------------------------
+			// Decorative waveform SVG — abstract sound bars in parakeet greens
+			// ------------------------------------------------------------
+			function waveformSVG() {
+				const bars = [];
+				const config = [
+					[0, 90],
+					[1, 140],
+					[2, 70],
+					[3, 200],
+					[4, 110],
+					[5, 250],
+					[6, 80],
+					[7, 170],
+					[8, 130],
+					[9, 220],
+					[10, 60],
+					[11, 180],
+					[12, 100],
+					[13, 240],
+					[14, 90],
+				];
+				for (const [i, h] of config) {
+					const x = i * 24 + 8;
+					const y = (360 - h) / 2;
+					const opacity = 0.6 + (i % 3) * 0.13;
+					const fill = i % 4 === 0 ? "#689f38" : "#7cb342";
+					bars.push(
+						`<rect x="${x}" y="${y}" width="14" height="${h}" rx="7" fill="${fill}" opacity="${opacity}" />`,
+					);
+				}
+				return `
+					<svg class="og-wave" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
+						<defs>
+							<linearGradient id="wave-fade" x1="0" y1="0" x2="1" y2="0">
+								<stop offset="0%" stop-color="white" stop-opacity="0" />
+								<stop offset="20%" stop-color="white" stop-opacity="1" />
+								<stop offset="80%" stop-color="white" stop-opacity="1" />
+								<stop offset="100%" stop-color="white" stop-opacity="0" />
+							</linearGradient>
+							<mask id="wave-mask">
+								<rect width="360" height="360" fill="url(#wave-fade)" />
+							</mask>
+						</defs>
+						<g mask="url(#wave-mask)">${bars.join("")}</g>
+					</svg>
+				`;
+			}
+
+			function titleSizeClass(text) {
+				const len = text.replace(/\*/g, "").length;
+				if (len > 80) return "size-sm";
+				if (len > 50) return "size-md";
+				return "";
+			}
+
+			// Convert *highlighted* segments to <em> tags for the brushstroke effect.
+			function renderTitle(text) {
+				const escaped = escapeHtml(text);
+				return escaped.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+			}
+
+			function brand() {
+				const iconSrc = ICON_DATA_URL || ICON_URL;
+				return `
+					<div class="brand">
+						<div class="brand-mark">
+							<img src="${iconSrc}" alt="Parrot" />
+						</div>
+						<div class="brand-text">
+							<div class="brand-name">Parrot</div>
+							<div class="brand-tag">Voice dictation for Mac</div>
+						</div>
+					</div>
+				`;
+			}
+
+			function defaultTemplate(data) {
+				const sizeClass = titleSizeClass(data.title);
+				return `
+					<div class="og default">
+						<div class="og-corner-frame"></div>
+						<div class="stamp"></div>
+						${waveformSVG()}
+						<div class="og-header">
+							${brand()}
+							
+						</div>
+						<div class="og-body">
+							${data.eyebrow ? `<div class="eyebrow">${escapeHtml(data.eyebrow)}</div>` : ""}
+							<h2 class="og-title ${sizeClass}">${renderTitle(data.title)}</h2>
+							<p class="og-tagline">${escapeHtml(data.tagline)}</p>
+						</div>
+						<div class="og-footer">
+							<span class="left">
+								<strong>${escapeHtml(data.footerLeft || "Parrot")}</strong>
+							</span>
+							<span>Local-first · macOS</span>
+						</div>
+					</div>
+				`;
+			}
+
+			function blogTemplate(post) {
+				const sizeClass = titleSizeClass(post.title);
+				return `
+					<div class="og">
+						<div class="og-corner-frame"></div>
+						${waveformSVG()}
+						<div class="og-header">
+							${brand()}
+						</div>
+						<div class="og-body">
+							<div class="eyebrow"><span class="eyebrow-dot"></span>The Parrot Blog</div>
+							<h2 class="og-title ${sizeClass}">${escapeHtml(post.title)}</h2>
+						</div>
+						<div class="og-footer">
+							<span class="left">
+								<strong>Kash Gohil</strong>
+								<span class="divider-dot"></span>
+								<span>${escapeHtml(post.readingTime)}</span>
+							</span>
+							<span>tryparrot.app/blog</span>
+						</div>
+					</div>
+				`;
+			}
+
+			function escapeHtml(s) {
+				return String(s)
+					.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/"/g, "&quot;");
+			}
+
+			let all = [];
+
+			async function init() {
+				await preloadIcon();
+				all = [
+					...STATIC_PAGES.map((p) => ({
+						filename: p.filename,
+						html: defaultTemplate(p),
+					})),
+					...BLOG_POSTS.map((p) => ({
+						filename: p.slug,
+						html: blogTemplate(p),
+					})),
+				];
+
+				const container = document.getElementById("templates");
+				for (const item of all) {
+					const card = document.createElement("div");
+					card.className = "template-card";
+					card.innerHTML = `
+						<div class="template-meta">
+							<div class="filename">
+								<strong>/og/${item.filename}.png</strong> · 1200×630
+							</div>
+							<button class="btn" data-filename="${item.filename}">Download PNG</button>
+						</div>
+						<div class="template-shrink">
+							<div class="template-frame" id="frame-${item.filename}">${item.html}</div>
+						</div>
+					`;
+					container.appendChild(card);
+				}
+			}
+
+			init();
+
+			function waitForImage(img, timeoutMs = 3000) {
+				if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+				return new Promise((resolve) => {
+					const done = () => {
+						img.onload = null;
+						img.onerror = null;
+						clearTimeout(timer);
+						resolve();
+					};
+					const timer = setTimeout(done, timeoutMs);
+					img.onload = done;
+					img.onerror = done;
+				});
+			}
+
+			async function renderFrameToBlob(filename) {
+				const node = document.getElementById(`frame-${filename}`);
+				if (!node) return null;
+				await document.fonts.ready;
+
+				const imgs = node.querySelectorAll("img");
+				await Promise.all([...imgs].map((img) => waitForImage(img)));
+
+				// Temporarily clear any CSS transforms (the preview shrink scales
+				// the frame to 50%; html-to-image would capture that scaled state).
+				const prevTransform = node.style.transform;
+				const prevOrigin = node.style.transformOrigin;
+				node.style.transform = "none";
+				node.style.transformOrigin = "top left";
+				node.getBoundingClientRect();
+
+				try {
+					const dataUrl = await toPng(node, {
+						width: 1200,
+						height: 630,
+						pixelRatio: 2, // 2400×1260 — sharp on retina, still ≤1MB
+						cacheBust: false,
+						skipFonts: false,
+					});
+					const res = await fetch(dataUrl);
+					return await res.blob();
+				} finally {
+					node.style.transform = prevTransform;
+					node.style.transformOrigin = prevOrigin;
+				}
+			}
+
+			function triggerDownload(blob, filename) {
+				const url = URL.createObjectURL(blob);
+				const link = document.createElement("a");
+				link.download = filename;
+				link.href = url;
+				document.body.appendChild(link);
+				link.click();
+				link.remove();
+				setTimeout(() => URL.revokeObjectURL(url), 1000);
+			}
+
+			document.addEventListener("click", async (e) => {
+				const target = e.target;
+				if (
+					target instanceof HTMLElement &&
+					target.dataset &&
+					target.dataset.filename
+				) {
+					target.disabled = true;
+					target.textContent = "Capturing…";
+					const t0 = performance.now();
+					try {
+						const blob = await renderFrameToBlob(target.dataset.filename);
+						if (blob) {
+							triggerDownload(blob, `${target.dataset.filename}.png`);
+						}
+						const ms = Math.round(performance.now() - t0);
+						console.log(
+							`[og-templates] ${target.dataset.filename} captured in ${ms}ms`,
+						);
+						target.textContent = "Downloaded";
+						setTimeout(() => {
+							target.textContent = "Download PNG";
+							target.disabled = false;
+						}, 1500);
+					} catch (err) {
+						console.error(err);
+						target.textContent = "Failed — see console";
+						target.disabled = false;
+					}
+				}
+			});
+
+			window.downloadAll = async () => {
+				const btn = document.querySelector(".bulk-actions .btn");
+				const restoreBtn = btn ? btn.textContent : null;
+				if (btn) {
+					btn.disabled = true;
+				}
+				const t0 = performance.now();
+				const zip = new JSZip();
+				for (let i = 0; i < all.length; i++) {
+					const item = all[i];
+					if (btn) {
+						btn.textContent = `Capturing ${i + 1}/${all.length}…`;
+					}
+					const ti = performance.now();
+					const blob = await renderFrameToBlob(item.filename);
+					if (blob) {
+						zip.file(`${item.filename}.png`, blob);
+					}
+					console.log(
+						`[og-templates] (${i + 1}/${all.length}) ${item.filename} — ${Math.round(performance.now() - ti)}ms`,
+					);
+				}
+				if (btn) {
+					btn.textContent = "Zipping…";
+				}
+				const zipBlob = await zip.generateAsync({ type: "blob" });
+				triggerDownload(zipBlob, "parrot-og-images.zip");
+				console.log(
+					`[og-templates] all done in ${Math.round((performance.now() - t0) / 1000)}s`,
+				);
+				if (btn) {
+					btn.disabled = false;
+					btn.textContent = restoreBtn || "Download all";
+				}
+			};
+		</script>
+	</body>
+</html>
