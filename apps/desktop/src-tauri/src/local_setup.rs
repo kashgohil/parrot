@@ -109,12 +109,70 @@ pub type SharedServerProcesses = Arc<RwLock<ServerProcesses>>;
 
 /// Check if a command exists in PATH
 pub async fn command_exists(name: &str) -> bool {
-    Command::new("which")
-        .arg(name)
+    find_command_path(name).await.is_some()
+}
+
+/// Known absolute paths to check for binaries that are commonly missing from
+/// the GUI app's inherited PATH on macOS (Tauri/Finder-launched apps don't
+/// run a login shell, so /opt/homebrew/bin and /usr/local/bin are absent).
+fn known_paths_for(name: &str) -> Vec<String> {
+    match name {
+        "brew" => vec![
+            "/opt/homebrew/bin/brew".to_string(),
+            "/usr/local/bin/brew".to_string(),
+        ],
+        _ => {
+            let mut paths = Vec::new();
+            for prefix in ["/opt/homebrew/bin", "/usr/local/bin", "/opt/local/bin"] {
+                paths.push(format!("{prefix}/{name}"));
+            }
+            paths
+        }
+    }
+}
+
+/// Resolve the absolute path to a command, falling back to common Homebrew
+/// locations when the binary is installed but not on the inherited PATH.
+pub async fn find_command_path(name: &str) -> Option<String> {
+    if let Ok(output) = Command::new("which").arg(name).output().await {
+        if output.status.success() {
+            let path = String::from_utf8_lossy(&output.stdout).trim().to_string();
+            if !path.is_empty() {
+                return Some(path);
+            }
+        }
+    }
+
+    // Ask a login shell — picks up Homebrew shellenv from the user's profile.
+    if let Ok(output) = Command::new("/bin/bash")
+        .args(["-lc", &format!("command -v {name}")])
         .output()
         .await
-        .map(|output| output.status.success())
-        .unwrap_or(false)
+    {
+        if output.status.success() {
+            let path = String::from_utf8_lossy(&output.stdout).trim().to_string();
+            if !path.is_empty() && std::path::Path::new(&path).exists() {
+                return Some(path);
+            }
+        }
+    }
+
+    for candidate in known_paths_for(name) {
+        if tokio::fs::metadata(&candidate).await.is_ok() {
+            return Some(candidate);
+        }
+    }
+
+    None
+}
+
+/// Build a `tokio::process::Command` for `name`, resolving its absolute path
+/// when possible so it works inside Tauri's stripped-down GUI PATH.
+pub async fn resolved_command(name: &str) -> Command {
+    match find_command_path(name).await {
+        Some(path) => Command::new(path),
+        None => Command::new(name),
+    }
 }
 
 /// Get macOS version
@@ -183,25 +241,8 @@ pub async fn get_free_space_gb() -> Result<f64> {
 pub async fn check_system_requirements() -> Result<SystemRequirements> {
     let version = get_macos_version().await?;
     let free_space = get_free_space_gb().await?;
-    let has_homebrew = command_exists("brew").await;
-    
-    // Get Homebrew path if exists
-    let homebrew_path = if has_homebrew {
-        Command::new("which")
-            .arg("brew")
-            .output()
-            .await
-            .ok()
-            .and_then(|output| {
-                if output.status.success() {
-                    Some(String::from_utf8_lossy(&output.stdout).trim().to_string())
-                } else {
-                    None
-                }
-            })
-    } else {
-        None
-    };
+    let homebrew_path = find_command_path("brew").await;
+    let has_homebrew = homebrew_path.is_some();
     
     // Get architecture
     let arch_output = Command::new("uname")
@@ -255,7 +296,8 @@ pub async fn list_ollama_models() -> Result<Vec<String>> {
         return Ok(vec![]);
     }
 
-    let output = Command::new("ollama")
+    let output = resolved_command("ollama")
+        .await
         .args(["list"])
         .output()
         .await
@@ -433,7 +475,8 @@ where
         .await;
     if probe.is_err() {
         progress_callback("Starting Ollama daemon...".to_string(), 1.0);
-        let child = Command::new("ollama")
+        let child = resolved_command("ollama")
+            .await
             .arg("serve")
             .stdout(Stdio::null())
             .stderr(Stdio::null())
@@ -585,7 +628,8 @@ pub async fn start_ollama_server(preferred_port: u16) -> Result<(tokio::process:
         .await
         .ok_or_else(|| anyhow::anyhow!("No available ports found"))?;
 
-    let mut child = Command::new("ollama")
+    let mut child = resolved_command("ollama")
+        .await
         .arg("serve")
         .env("OLLAMA_HOST", format!("127.0.0.1:{}", port))
         .stdout(Stdio::null())

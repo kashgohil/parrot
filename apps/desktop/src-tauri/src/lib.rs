@@ -629,35 +629,30 @@ async fn get_audio_url(
 }
 
 #[tauri::command]
-fn check_command_exists(name: String) -> bool {
-    use std::process::Command;
-    Command::new("which")
-        .arg(&name)
-        .output()
-        .map(|output| output.status.success())
-        .unwrap_or(false)
+async fn check_command_exists(name: String) -> bool {
+    local_setup::command_exists(&name).await
 }
 
 #[tauri::command]
 async fn install_tool(name: String) -> Result<String, String> {
-    use std::process::Command;
-
     let script = match name.as_str() {
         "whisper-cpp" => {
-            // Install whisper.cpp via Homebrew
-            "brew install whisper-cpp"
+            let brew = local_setup::find_command_path("brew")
+                .await
+                .ok_or_else(|| "Homebrew not found. Install it from https://brew.sh".to_string())?;
+            format!("{brew} install whisper-cpp")
         }
-        "ollama" => {
-            // Install Ollama via the official installer
-            "curl -fsSL https://ollama.ai/install.sh | sh"
-        }
+        "ollama" => "curl -fsSL https://ollama.ai/install.sh | sh".to_string(),
         _ => return Err(format!("Unknown tool: {}", name)),
     };
 
-    let output = Command::new("sh")
-        .arg("-c")
-        .arg(script)
+    // Use a login shell so PATH from the user's profile is available to any
+    // child processes the install script spawns.
+    let output = tokio::process::Command::new("/bin/bash")
+        .arg("-lc")
+        .arg(&script)
         .output()
+        .await
         .map_err(|e| format!("Failed to run install command: {}", e))?;
 
     if output.status.success() {
