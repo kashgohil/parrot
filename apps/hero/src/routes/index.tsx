@@ -1,3 +1,26 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+	ArrowRight,
+	Bot,
+	Check,
+	Clipboard,
+	Code,
+	Command,
+	Download,
+	Laptop,
+	Lock,
+	Mail,
+	MessageSquare,
+	Mic,
+	Minus,
+	Monitor,
+	Quote,
+	Stethoscope,
+	X as XIcon,
+	Zap,
+} from "lucide-react";
+import type { ReactNode } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import {
 	AppleMessagesIcon,
 	AppleNotesIcon,
@@ -31,36 +54,13 @@ import {
 	VSCodeIcon,
 } from "@/components/app-icons";
 import Footer from "@/components/Footer";
+import { SubscribeCTA } from "@/components/SubscribeCTA";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
-import { Link, createFileRoute } from "@tanstack/react-router";
-import {
-	ArrowRight,
-	Bot,
-	Check,
-	Clipboard,
-	Code,
-	Command,
-	Download,
-	Laptop,
-	Lock,
-	Mail,
-	MessageSquare,
-	Mic,
-	Minus,
-	Monitor,
-	Quote,
-	Stethoscope,
-	X as XIcon,
-	Zap,
-} from "lucide-react";
-import type { ReactNode } from "react";
-import { useEffect, useState, useSyncExternalStore } from "react";
 
 const emptySubscribe = () => () => {};
 function useHydrated() {
@@ -75,30 +75,30 @@ export const Route = createFileRoute("/")({
 	component: HomePage,
 	head: () => ({
 		meta: [
-			{ title: "Parrot - Voice dictation that just works" },
+			{ title: "Parrot - Local-first Voice Dictation for Mac (Free)" },
 			{
 				name: "description",
 				content:
-					"Voice dictation for Mac. 3x faster than typing, with cleanup, custom vocabulary, and local-first privacy.",
+					"Free, local-first voice dictation for Mac. 3x faster than typing, with on-device AI cleanup, custom vocabulary, and full offline support. No subscription, no cloud, no API keys.",
 			},
 			{
 				property: "og:title",
-				content: "Parrot - Voice dictation that just works",
+				content: "Parrot - Local-first Voice Dictation for Mac (Free)",
 			},
 			{
 				property: "og:description",
 				content:
-					"Voice dictation for Mac. 3x faster than typing, with cleanup, custom vocabulary, and local-first privacy.",
+					"Free, local-first voice dictation for Mac. 3x faster than typing, with on-device AI cleanup, custom vocabulary, and full offline support. No subscription, no cloud, no API keys.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/" },
 			{
 				name: "twitter:title",
-				content: "Parrot - Voice dictation that just works",
+				content: "Parrot - Local-first Voice Dictation for Mac (Free)",
 			},
 			{
 				name: "twitter:description",
 				content:
-					"Voice dictation for Mac. 3x faster than typing, with cleanup, custom vocabulary, and local-first privacy.",
+					"Free, local-first voice dictation for Mac. 3x faster than typing, with on-device AI cleanup, custom vocabulary, and full offline support. No subscription, no cloud, no API keys.",
 			},
 			{
 				name: "keywords",
@@ -139,8 +139,8 @@ export const Route = createFileRoute("/")({
 					applicationCategory: "UtilitiesApplication",
 					description:
 						"Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.",
-					image: "https://tryparrot.app/og-image.png",
-					screenshot: "https://tryparrot.app/og-image.png",
+					image: "https://tryparrot.app/og/home.png",
+					screenshot: "https://tryparrot.app/og/home.png",
 					downloadUrl: "https://tryparrot.app/download",
 					softwareVersion: "1.0.0",
 					author: {
@@ -1347,9 +1347,9 @@ function HomePage() {
 								"animate-fade-in-up-delay-1",
 							)}`}
 						>
-							Voice dictation
+							Voice dictation for Mac.
 							<br />
-							for Mac.
+							<span className="text-primary">Local-first. Free.</span>
 						</h1>
 
 						<p
@@ -1359,8 +1359,8 @@ function HomePage() {
 						>
 							Parrot transcribes what you say and pastes it where your cursor
 							is. Custom vocabulary, AI cleanup, and full history. Runs fully
-							local on your Mac &mdash; download today and use it free, for life.
-							Cloud mode is coming soon.
+							local on your Mac &mdash; download today and use it free, for
+							life. Cloud mode is coming soon.
 						</p>
 
 						<div
@@ -1485,8 +1485,8 @@ function HomePage() {
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px]">
 						Parrot runs fully on your Mac &mdash; free, for life. Cloud mode is
-						on the way for higher accuracy and cross-device sync; you'll be
-						able to flip between them anytime in settings.
+						on the way for higher accuracy and cross-device sync; you'll be able
+						to flip between them anytime in settings.
 					</p>
 				</div>
 				<DualModeSpotlight />
@@ -1754,8 +1754,8 @@ function HomePage() {
 						Parrot vs the alternatives
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px] mb-12">
-						Free for life with full local-mode privacy today. Managed cloud
-						mode is coming soon.
+						Free for life with full local-mode privacy today. Managed cloud mode
+						is coming soon.
 					</p>
 					<ComparisonTable />
 				</div>
@@ -1855,7 +1855,8 @@ function FinalCTA() {
 					Start dictating. Stop typing.
 				</h2>
 				<p className="text-background/50 mb-8 text-[15px]">
-					Local mode is available today &mdash; free, for life. Download for Mac and start dictating in minutes.
+					Local mode is available today &mdash; free, for life. Download for Mac
+					and start dictating in minutes.
 				</p>
 
 				<div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
@@ -1873,7 +1874,12 @@ function FinalCTA() {
 					Or subscribe to get notified when cloud mode lands.
 				</p>
 				<div className="max-w-md mx-auto">
-					<SubscribeCTA variant="inline" source="homepage-cta" heading="" subheading="" />
+					<SubscribeCTA
+						variant="inline"
+						source="homepage-cta"
+						heading=""
+						subheading=""
+					/>
 				</div>
 			</div>
 		</section>
