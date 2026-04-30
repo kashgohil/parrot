@@ -5,8 +5,40 @@
     <link>https://tryparrot.app/blog</link>
     <description>Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 14 Feb 2026 17:53:46 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 30 Apr 2026 09:08:33 GMT</lastBuildDate>
     <atom:link href="https://tryparrot.app/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title><![CDATA[Wispr Flow Alternatives: 5 Voice Dictation Apps Worth Trying in 2026]]></title>
+      <link>https://tryparrot.app/blog/wispr-flow-alternatives</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/wispr-flow-alternatives</guid>
+      <description><![CDATA[Looking for a Wispr Flow alternative? We compare the 5 best voice dictation apps on price, privacy, accuracy, and offline support so you can pick the right one.]]></description>
+      <pubDate>Wed, 29 Apr 2026 00:00:00 GMT</pubDate>
+      <category>wispr flow alternative, wispr flow vs, voice dictation app, superwhisper alternative, macwhisper alternative, best voice dictation</category>
+    </item>
+    <item>
+      <title><![CDATA[How to Use Voice Dictation Offline: A Complete Setup Guide]]></title>
+      <link>https://tryparrot.app/blog/offline-voice-dictation-setup</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/offline-voice-dictation-setup</guid>
+      <description><![CDATA[Step-by-step guide to setting up fully offline voice dictation on Mac in under 10 minutes - no internet, no API keys, no cloud services required.]]></description>
+      <pubDate>Mon, 27 Apr 2026 00:00:00 GMT</pubDate>
+      <category>offline voice dictation, voice dictation no internet, local dictation setup, offline speech to text, on-device dictation mac, private voice dictation</category>
+    </item>
+    <item>
+      <title><![CDATA[Free Voice Dictation Apps: What's Actually Free in 2026 (and What's Not)]]></title>
+      <link>https://tryparrot.app/blog/free-voice-dictation-apps-2026</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/free-voice-dictation-apps-2026</guid>
+      <description><![CDATA[An honest look at free voice dictation apps in 2026 - which ones are truly free forever, which have hidden caps, and which charge you through API fees.]]></description>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <category>free voice dictation, free dictation app, free speech to text mac, free voice typing, free dictation software, voice dictation no subscription</category>
+    </item>
+    <item>
+      <title><![CDATA[Local-First Voice Dictation Explained: Why Your Audio Should Never Leave Your Mac]]></title>
+      <link>https://tryparrot.app/blog/local-first-voice-dictation-explained</link>
+      <guid isPermaLink="true">https://tryparrot.app/blog/local-first-voice-dictation-explained</guid>
+      <description><![CDATA[What local-first voice dictation actually means, why it matters for privacy and reliability, and how to verify an app is genuinely local-first.]]></description>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <category>local-first voice dictation, on-device dictation, private voice dictation, local speech to text, offline dictation privacy, local-first software</category>
+    </item>
     <item>
       <title><![CDATA[Best Voice Dictation Apps for Mac in 2026]]></title>
       <link>https://tryparrot.app/blog/best-voice-dictation-apps-mac-2026</link>
@@ -45,7 +77,7 @@
       <guid isPermaLink="true">https://tryparrot.app/blog/local-voice-dictation-mac</guid>
       <description><![CDATA[Step-by-step guide to running voice dictation entirely on your Mac with no cloud services, no API keys, and no internet required.]]></description>
       <pubDate>Sat, 24 Jan 2026 00:00:00 GMT</pubDate>
-      <category>local voice dictation, mac dictation, offline dictation, privacy voice dictation, whisper local</category>
+      <category>local voice dictation, mac dictation, offline dictation, privacy voice dictation, on-device dictation</category>
     </item>
     <item>
       <title><![CDATA[Whisper vs. Deepgram vs. ElevenLabs: Transcription APIs Compared]]></title>
