@@ -1,5 +1,17 @@
 import { lazy } from "react";
 
+export interface HowToStep {
+	name: string;
+	text: string;
+}
+
+export interface HowToData {
+	name: string;
+	description: string;
+	totalTime?: string;
+	steps: HowToStep[];
+}
+
 export interface BlogPost {
 	slug: string;
 	title: string;
@@ -9,10 +21,123 @@ export interface BlogPost {
 	readingTime: string;
 	category: string;
 	keywords: string[];
+	howTo?: HowToData;
 	component: React.LazyExoticComponent<React.ComponentType>;
 }
 
 export const posts: BlogPost[] = [
+	{
+		slug: "wispr-flow-alternatives",
+		title:
+			"Wispr Flow Alternatives: 5 Voice Dictation Apps Worth Trying in 2026",
+		description:
+			"Looking for a Wispr Flow alternative? We compare the 5 best voice dictation apps on price, privacy, accuracy, and offline support so you can pick the right one.",
+		date: "2026-04-29",
+		readingTime: "7 min read",
+		category: "Comparison",
+		keywords: [
+			"wispr flow alternative",
+			"wispr flow vs",
+			"voice dictation app",
+			"superwhisper alternative",
+			"macwhisper alternative",
+			"best voice dictation",
+		],
+		component: lazy(
+			() => import("@/routes/blog/-posts/wispr-flow-alternatives"),
+		),
+	},
+	{
+		slug: "offline-voice-dictation-setup",
+		title: "How to Use Voice Dictation Offline: A Complete Setup Guide",
+		description:
+			"Step-by-step guide to setting up fully offline voice dictation on Mac in under 10 minutes - no internet, no API keys, no cloud services required.",
+		date: "2026-04-27",
+		readingTime: "8 min read",
+		category: "Tutorial",
+		keywords: [
+			"offline voice dictation",
+			"voice dictation no internet",
+			"local dictation setup",
+			"offline speech to text",
+			"on-device dictation mac",
+			"private voice dictation",
+		],
+		howTo: {
+			name: "Set up offline voice dictation on Mac",
+			description:
+				"Install and configure fully offline, on-device voice dictation on macOS in under 10 minutes.",
+			totalTime: "PT10M",
+			steps: [
+				{
+					name: "Download Parrot",
+					text: "Download Parrot from tryparrot.app/download and drag it to your Applications folder.",
+				},
+				{
+					name: "Grant permissions",
+					text: "Open Parrot and grant Microphone and Accessibility permissions when prompted.",
+				},
+				{
+					name: "Choose Local mode",
+					text: "In the setup wizard, choose Local. Parrot downloads the on-device Whisper model on first use.",
+				},
+				{
+					name: "Set a hotkey",
+					text: "Pick a global hotkey for dictation. The default is Cmd+Shift+Space.",
+				},
+				{
+					name: "Verify offline operation",
+					text: "Disconnect from Wi-Fi and dictate. Text should still appear, confirming transcription is happening locally.",
+				},
+			],
+		},
+		component: lazy(
+			() => import("@/routes/blog/-posts/offline-voice-dictation-setup"),
+		),
+	},
+	{
+		slug: "free-voice-dictation-apps-2026",
+		title:
+			"Free Voice Dictation Apps: What's Actually Free in 2026 (and What's Not)",
+		description:
+			"An honest look at free voice dictation apps in 2026 - which ones are truly free forever, which have hidden caps, and which charge you through API fees.",
+		date: "2026-04-26",
+		readingTime: "7 min read",
+		category: "Guide",
+		keywords: [
+			"free voice dictation",
+			"free dictation app",
+			"free speech to text mac",
+			"free voice typing",
+			"free dictation software",
+			"voice dictation no subscription",
+		],
+		component: lazy(
+			() => import("@/routes/blog/-posts/free-voice-dictation-apps-2026"),
+		),
+	},
+	{
+		slug: "local-first-voice-dictation-explained",
+		title:
+			"Local-First Voice Dictation Explained: Why Your Audio Should Never Leave Your Mac",
+		description:
+			"What local-first voice dictation actually means, why it matters for privacy and reliability, and how to verify an app is genuinely local-first.",
+		date: "2026-04-25",
+		readingTime: "8 min read",
+		category: "Industry",
+		keywords: [
+			"local-first voice dictation",
+			"on-device dictation",
+			"private voice dictation",
+			"local speech to text",
+			"offline dictation privacy",
+			"local-first software",
+		],
+		component: lazy(
+			() =>
+				import("@/routes/blog/-posts/local-first-voice-dictation-explained"),
+		),
+	},
 	{
 		slug: "best-voice-dictation-apps-mac-2026",
 		title: "Best Voice Dictation Apps for Mac in 2026",
@@ -107,6 +232,34 @@ export const posts: BlogPost[] = [
 			"privacy voice dictation",
 			"on-device dictation",
 		],
+		howTo: {
+			name: "Set up local voice dictation on Mac",
+			description:
+				"Run voice dictation entirely on your Mac with no internet, no API keys, and no data leaving your device.",
+			totalTime: "PT5M",
+			steps: [
+				{
+					name: "Install Parrot",
+					text: "Download Parrot from tryparrot.app/download and grant microphone permission on first launch.",
+				},
+				{
+					name: "Run the setup wizard",
+					text: "The wizard checks your system, requests macOS permissions, and downloads the dictation and cleanup engines automatically.",
+				},
+				{
+					name: "Pick a quality tier",
+					text: "Choose Lite, Standard, or Precise for dictation. Standard is recommended for most Macs.",
+				},
+				{
+					name: "Start dictating",
+					text: "Press Cmd+Shift+Space to record, press again to stop. Transcription appears at the cursor.",
+				},
+				{
+					name: "Customize",
+					text: "Add custom vocabulary, set writing context, and tune the hotkey from Parrot's settings.",
+				},
+			],
+		},
 		component: lazy(
 			() => import("@/routes/blog/-posts/local-voice-dictation-mac"),
 		),
