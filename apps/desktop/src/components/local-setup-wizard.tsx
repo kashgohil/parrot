@@ -22,15 +22,7 @@ import {
 	Terminal,
 	X,
 } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-
-const stepVariants = {
-	initial: { opacity: 0, x: 24 },
-	animate: { opacity: 1, x: 0 },
-	exit: { opacity: 0, x: -24 },
-};
-const stepTransition = { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
 
 // Types matching the Rust backend
 interface SystemRequirements {
@@ -1198,68 +1190,50 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 
 	return (
 		<div className="space-y-6">
-			{/* Step content */}
-			<motion.div
-				layout
-				transition={stepTransition}
-				className="relative overflow-hidden"
-			>
-				<AnimatePresence mode="popLayout" initial={false}>
-					<motion.div
-						key={currentStep}
-						variants={stepVariants}
-						initial="initial"
-						animate="animate"
-						exit="exit"
-						transition={stepTransition}
-					>
-						{currentStep === "system-check" && (
-							<SystemCheckStep
-								requirements={systemRequirements}
-								onContinue={() => {
-									const isMac = navigator.platform.toLowerCase().includes("mac");
-									setCurrentStep(isMac ? "permissions" : "model-selection");
-								}}
-							/>
-						)}
+			{currentStep === "system-check" && (
+				<SystemCheckStep
+					requirements={systemRequirements}
+					onContinue={() => {
+						const isMac = navigator.platform.toLowerCase().includes("mac");
+						setCurrentStep(isMac ? "permissions" : "model-selection");
+					}}
+				/>
+			)}
 
-						{currentStep === "permissions" && (
-							<AccessibilityPermissionStep
-								onContinue={() => setCurrentStep("model-selection")}
-							/>
-						)}
+			{currentStep === "permissions" && (
+				<AccessibilityPermissionStep
+					onContinue={() => setCurrentStep("model-selection")}
+				/>
+			)}
 
-						{currentStep === "model-selection" && (
-							<ModelSelectionStep
-								selectedWhisper={selectedWhisperModel}
-								selectedOllama={selectedOllamaModel}
-								onSelectWhisper={setSelectedWhisperModel}
-								onSelectOllama={setSelectedOllamaModel}
-								onContinue={startInstallation}
-							/>
-						)}
+			{currentStep === "model-selection" && (
+				<ModelSelectionStep
+					selectedWhisper={selectedWhisperModel}
+					selectedOllama={selectedOllamaModel}
+					onSelectWhisper={setSelectedWhisperModel}
+					onSelectOllama={setSelectedOllamaModel}
+					onContinue={startInstallation}
+				/>
+			)}
 
-						{currentStep === "installation" && (
-							<InstallationProgressStep
-								progress={setupProgress}
-								logMessages={logMessages}
-								onRetry={startInstallation}
-							/>
-						)}
+			{currentStep === "installation" && (
+				<InstallationProgressStep
+					progress={setupProgress}
+					logMessages={logMessages}
+					onRetry={startInstallation}
+				/>
+			)}
 
-						{currentStep === "manual-intervention" && manualInstructions && (
-							<ManualInterventionStep
-								instructions={manualInstructions}
-								onContinue={continueAfterManualIntervention}
-							/>
-						)}
+			{currentStep === "manual-intervention" && manualInstructions && (
+				<ManualInterventionStep
+					instructions={manualInstructions}
+					onContinue={continueAfterManualIntervention}
+				/>
+			)}
 
-						{currentStep === "completion" && (
-							<CompletionStep onFinish={onComplete} testResults={testResults} />
-						)}
-					</motion.div>
-				</AnimatePresence>
-			</motion.div>
+			{currentStep === "completion" && (
+				<CompletionStep onFinish={onComplete} testResults={testResults} />
+			)}
 		</div>
 	);
 }
