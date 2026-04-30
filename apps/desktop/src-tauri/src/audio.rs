@@ -25,6 +25,14 @@ impl AudioRecorder {
     }
 
     pub fn start(&mut self) -> Result<()> {
+        // Drop the previous session's audio up-front, before any fallible cpal
+        // call. If `default_input_config` or `build_input_stream` errors out
+        // (e.g. Microphone permission missing), a later `stop()` would
+        // otherwise re-encode whatever was left from the prior recording —
+        // surfacing as "it transcribed my last dictation again."
+        self.samples.lock().unwrap().clear();
+        *self.is_recording.lock().unwrap() = false;
+
         let host = cpal::default_host();
         let device = host
             .default_input_device()
@@ -37,8 +45,6 @@ impl AudioRecorder {
         let samples = self.samples.clone();
         let is_recording = self.is_recording.clone();
 
-        // Clear previous samples
-        samples.lock().unwrap().clear();
         *is_recording.lock().unwrap() = true;
 
         let channels = self.channels as usize;
@@ -72,8 +78,9 @@ impl AudioRecorder {
         *self.is_recording.lock().unwrap() = false;
         self.stream = None;
 
-        let samples = self.samples.lock().unwrap();
+        let mut samples = self.samples.lock().unwrap();
         let wav_data = encode_wav(&samples, self.sample_rate)?;
+        samples.clear();
         Ok(wav_data)
     }
 
