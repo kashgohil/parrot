@@ -60,11 +60,15 @@ const staticPages: {
 }[] = [
 	{ path: "/", changefreq: "weekly", priority: 1.0 },
 	{ path: "/about", changefreq: "monthly", priority: 0.7 },
-	{ path: "/pricing", changefreq: "monthly", priority: 0.8 },
+	{ path: "/download", changefreq: "weekly", priority: 0.9 },
 	{ path: "/changelog", changefreq: "weekly", priority: 0.6 },
 	{ path: "/contact", changefreq: "monthly", priority: 0.5 },
-	{ path: "/waitlist", changefreq: "monthly", priority: 0.7 },
 	{ path: "/blog", changefreq: "weekly", priority: 0.8 },
+	{ path: "/compare", changefreq: "monthly", priority: 0.8 },
+	{ path: "/compare/wispr-flow", changefreq: "monthly", priority: 0.8 },
+	{ path: "/compare/superwhisper", changefreq: "monthly", priority: 0.7 },
+	{ path: "/compare/macwhisper", changefreq: "monthly", priority: 0.7 },
+	{ path: "/compare/dragon-professional", changefreq: "monthly", priority: 0.7 },
 	{ path: "/privacy", changefreq: "yearly", priority: 0.3 },
 	{ path: "/terms", changefreq: "yearly", priority: 0.3 },
 ];
