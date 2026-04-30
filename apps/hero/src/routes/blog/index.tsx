@@ -1,7 +1,7 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
 import Footer from "@/components/Footer";
 import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { posts } from "@/lib/blog";
-import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/blog/")({
 	component: BlogIndex,
@@ -34,6 +34,24 @@ export const Route = createFileRoute("/blog/")({
 					"Articles about voice dictation, transcription APIs, productivity, and building native Mac apps.",
 			},
 			{
+				property: "og:image",
+				content: "https://tryparrot.app/og/blog.png",
+			},
+			{ property: "og:image:width", content: "1200" },
+			{ property: "og:image:height", content: "630" },
+			{
+				property: "og:image:alt",
+				content: "Voice Dictation Blog — Parrot",
+			},
+			{
+				name: "twitter:image",
+				content: "https://tryparrot.app/og/blog.png",
+			},
+			{
+				name: "twitter:image:alt",
+				content: "Voice Dictation Blog — Parrot",
+			},
+			{
 				name: "keywords",
 				content:
 					"voice dictation blog, speech to text articles, transcription guides, dictation tips, voice typing productivity",
@@ -59,6 +77,27 @@ export const Route = createFileRoute("/blog/")({
 							url: "https://tryparrot.app/parrot-transparent.png",
 						},
 					},
+				}),
+			},
+			{
+				type: "application/ld+json",
+				children: JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "BreadcrumbList",
+					itemListElement: [
+						{
+							"@type": "ListItem",
+							position: 1,
+							name: "Home",
+							item: "https://tryparrot.app/",
+						},
+						{
+							"@type": "ListItem",
+							position: 2,
+							name: "Blog",
+							item: "https://tryparrot.app/blog",
+						},
+					],
 				}),
 			},
 		],

@@ -1,7 +1,7 @@
-import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import Footer from "@/components/Footer";
+import { SubscribeCTA } from "@/components/SubscribeCTA";
 
 export const Route = createFileRoute("/contact")({
 	component: ContactPage,
@@ -31,6 +31,24 @@ export const Route = createFileRoute("/contact")({
 				name: "twitter:description",
 				content:
 					"Get in touch with the Parrot team. We're here to help with questions, feedback, and support.",
+			},
+			{
+				property: "og:image",
+				content: "https://tryparrot.app/og/contact.png",
+			},
+			{ property: "og:image:width", content: "1200" },
+			{ property: "og:image:height", content: "630" },
+			{
+				property: "og:image:alt",
+				content: "Contact Parrot — Voice dictation support",
+			},
+			{
+				name: "twitter:image",
+				content: "https://tryparrot.app/og/contact.png",
+			},
+			{
+				name: "twitter:image:alt",
+				content: "Contact Parrot — Voice dictation support",
 			},
 			{
 				name: "keywords",

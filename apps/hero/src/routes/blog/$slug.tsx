@@ -1,6 +1,6 @@
+import { createFileRoute } from "@tanstack/react-router";
 import BlogPostLayout from "@/components/BlogPost";
 import { getPostBySlug } from "@/lib/blog";
-import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/blog/$slug")({
 	loader: ({ params }) => {
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/blog/$slug")({
 			readingTime: post.readingTime,
 			category: post.category,
 			keywords: post.keywords,
+			howTo: post.howTo,
 		};
 	},
 	component: BlogPostPage,
@@ -34,7 +35,27 @@ export const Route = createFileRoute("/blog/$slug")({
 				{ property: "og:type", content: "article" },
 				{
 					property: "og:image",
-					content: "https://tryparrot.app/og-image.png",
+					content: `https://tryparrot.app/og/${post.slug}.png`,
+				},
+				{
+					property: "og:image:width",
+					content: "1200",
+				},
+				{
+					property: "og:image:height",
+					content: "630",
+				},
+				{
+					property: "og:image:alt",
+					content: `${post.title} — Parrot Blog`,
+				},
+				{
+					name: "twitter:image",
+					content: `https://tryparrot.app/og/${post.slug}.png`,
+				},
+				{
+					name: "twitter:image:alt",
+					content: `${post.title} — Parrot Blog`,
 				},
 				{
 					property: "article:published_time",
@@ -90,12 +111,68 @@ export const Route = createFileRoute("/blog/$slug")({
 								url: "https://tryparrot.app/parrot-transparent.png",
 							},
 						},
-						image: "https://tryparrot.app/og-image.png",
+						image: `https://tryparrot.app/og/${post.slug}.png`,
 						mainEntityOfPage: `https://tryparrot.app/blog/${post.slug}`,
 						keywords: post.keywords.join(", "),
+						articleSection: post.category,
+						wordCount:
+							Number.parseInt(post.readingTime, 10) > 0
+								? Number.parseInt(post.readingTime, 10) * 200
+								: undefined,
 						inLanguage: "en-US",
+						speakable: {
+							"@type": "SpeakableSpecification",
+							cssSelector: ["h1", "h2", "article p:first-of-type"],
+						},
 					}),
 				},
+				{
+					type: "application/ld+json",
+					children: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "BreadcrumbList",
+						itemListElement: [
+							{
+								"@type": "ListItem",
+								position: 1,
+								name: "Home",
+								item: "https://tryparrot.app/",
+							},
+							{
+								"@type": "ListItem",
+								position: 2,
+								name: "Blog",
+								item: "https://tryparrot.app/blog",
+							},
+							{
+								"@type": "ListItem",
+								position: 3,
+								name: post.title,
+								item: `https://tryparrot.app/blog/${post.slug}`,
+							},
+						],
+					}),
+				},
+				...(post.howTo
+					? [
+							{
+								type: "application/ld+json",
+								children: JSON.stringify({
+									"@context": "https://schema.org",
+									"@type": "HowTo",
+									name: post.howTo.name,
+									description: post.howTo.description,
+									totalTime: post.howTo.totalTime,
+									step: post.howTo.steps.map((s, i) => ({
+										"@type": "HowToStep",
+										position: i + 1,
+										name: s.name,
+										text: s.text,
+									})),
+								}),
+							},
+						]
+					: []),
 			],
 		};
 	},

@@ -1,10 +1,9 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-
+import { DoodleBackground } from "../components/doodle-background";
 import Header from "../components/Header";
 import { Telemetry } from "../components/Telemetry";
-import { DoodleBackground } from "../components/doodle-background";
 
 import appCss from "../styles.css?url";
 
@@ -19,12 +18,12 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "Parrot - Voice dictation that just works",
+				title: "Parrot - Local-first Voice Dictation for Mac (Free)",
 			},
 			{
 				name: "description",
 				content:
-					"Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.",
+					"Free, local-first voice dictation for Mac. 3x faster than typing, with on-device AI cleanup, custom vocabulary, and full offline support.",
 			},
 			{
 				name: "theme-color",
@@ -36,7 +35,7 @@ export const Route = createRootRoute({
 			},
 			{
 				property: "og:image",
-				content: "https://tryparrot.app/og-image.png",
+				content: "https://tryparrot.app/og/home.png",
 			},
 			{
 				property: "og:type",
@@ -48,7 +47,11 @@ export const Route = createRootRoute({
 			},
 			{
 				name: "twitter:image",
-				content: "https://tryparrot.app/og-image.png",
+				content: "https://tryparrot.app/og/home.png",
+			},
+			{
+				name: "twitter:image:alt",
+				content: "Parrot - Local-first voice dictation for Mac",
 			},
 			{
 				property: "og:image:width",
@@ -60,7 +63,7 @@ export const Route = createRootRoute({
 			},
 			{
 				property: "og:image:alt",
-				content: "Parrot - Voice dictation for Mac",
+				content: "Parrot - Local-first voice dictation for Mac",
 			},
 			{
 				name: "robots",

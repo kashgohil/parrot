@@ -1,6 +1,6 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
 import Footer from "@/components/Footer";
 import { SubscribeCTA } from "@/components/SubscribeCTA";
-import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/about")({
 	component: AboutPage,
@@ -30,6 +30,24 @@ export const Route = createFileRoute("/about")({
 				name: "twitter:description",
 				content:
 					"Learn how Parrot delivers fast, private voice dictation using native audio capture and AI-powered text cleanup.",
+			},
+			{
+				property: "og:image",
+				content: "https://tryparrot.app/og/about.png",
+			},
+			{ property: "og:image:width", content: "1200" },
+			{ property: "og:image:height", content: "630" },
+			{
+				property: "og:image:alt",
+				content: "About Parrot — Native Mac voice dictation",
+			},
+			{
+				name: "twitter:image",
+				content: "https://tryparrot.app/og/about.png",
+			},
+			{
+				name: "twitter:image:alt",
+				content: "About Parrot — Native Mac voice dictation",
 			},
 			{
 				name: "keywords",
@@ -64,6 +82,35 @@ export const Route = createFileRoute("/about")({
 						email: "hello@tryparrot.app",
 						contactType: "customer support",
 					},
+				}),
+			},
+			{
+				type: "application/ld+json",
+				children: JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "Person",
+					name: "Kash Gohil",
+					url: "https://tryparrot.app/about",
+					jobTitle: "Founder & Engineer",
+					description:
+						"Software engineer building Parrot, a native, local-first voice dictation app for Mac.",
+					image: "https://tryparrot.app/parrot-transparent.png",
+					worksFor: {
+						"@type": "Organization",
+						name: "Parrot",
+						url: "https://tryparrot.app",
+					},
+					knowsAbout: [
+						"Voice dictation",
+						"Speech recognition",
+						"Whisper",
+						"Local-first software",
+						"Native macOS apps",
+						"Tauri",
+						"Rust",
+						"On-device AI",
+					],
+					sameAs: ["https://x.com/kashhh", "https://github.com/kashgohil"],
 				}),
 			},
 		],
@@ -246,6 +293,54 @@ function AboutPage() {
 								</p>
 							</div>
 						))}
+					</div>
+				</div>
+			</section>
+
+			{/* ── Built by ── */}
+			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+				<div className="max-w-3xl mx-auto">
+					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
+						Built by
+					</p>
+					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-6">
+						Kash Gohil
+					</h2>
+					<p className="text-base text-muted-foreground leading-relaxed mb-4 max-w-2xl">
+						Software engineer focused on native macOS apps, on-device AI, and
+						local-first software. Built Parrot after years of fighting with
+						cloud dictation tools that were slow, leaky, or paywalled. Parrot is
+						the dictation app I wanted to use every day — fast, private, and
+						free.
+					</p>
+					<p className="text-base text-muted-foreground leading-relaxed mb-6 max-w-2xl">
+						I write Parrot in Rust (Tauri) and TypeScript, and I publish guides
+						on voice dictation, Whisper, and local-first software on the{" "}
+						<Link to="/blog">blog</Link>.
+					</p>
+					<div className="flex flex-wrap gap-3 text-sm">
+						<a
+							href="https://x.com/kashhh"
+							className="px-4 py-2 rounded-lg border border-border hover:border-primary/30 transition-colors no-underline"
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							X / Twitter
+						</a>
+						<a
+							href="https://github.com/kashgohil"
+							className="px-4 py-2 rounded-lg border border-border hover:border-primary/30 transition-colors no-underline"
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							GitHub
+						</a>
+						<Link
+							to="/contact"
+							className="px-4 py-2 rounded-lg border border-border hover:border-primary/30 transition-colors no-underline"
+						>
+							Contact
+						</Link>
 					</div>
 				</div>
 			</section>
