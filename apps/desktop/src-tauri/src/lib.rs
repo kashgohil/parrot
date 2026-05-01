@@ -196,6 +196,7 @@ async fn transcribe_last(
                 None,
                 None,
                 llm_model.as_deref(),
+                &profile.custom_words,
                 &profile.context_prompt,
                 &profile.writing_style,
             )
@@ -222,6 +223,7 @@ async fn transcribe_last(
                 Some(token),
                 llm_api_key.as_deref(),
                 None,
+                "",
                 "",
                 "",
             )

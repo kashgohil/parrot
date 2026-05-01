@@ -45,6 +45,7 @@ pub async fn cleanup_text(
     session_token: Option<&str>,
     api_key: Option<&str>,
     model: Option<&str>,
+    custom_words: &str,
     context_prompt: &str,
     writing_style: &str,
 ) -> Result<String> {
@@ -53,21 +54,23 @@ pub async fn cleanup_text(
     }
 
     match mode {
-        "local" => cleanup_with_ollama(raw_text, model, context_prompt, writing_style).await,
+        "local" => {
+            cleanup_with_ollama(raw_text, model, custom_words, context_prompt, writing_style).await
+        }
         "cloud" => cleanup_with_backend(raw_text, session_token, api_key).await,
         _ => anyhow::bail!("Unknown cleanup mode: {}", mode),
     }
 }
 
 /// Use Ollama's local server for text cleanup
-/// Note: custom_words not supported in local mode
 async fn cleanup_with_ollama(
     raw_text: &str,
     model: Option<&str>,
+    custom_words: &str,
     context_prompt: &str,
     writing_style: &str,
 ) -> Result<String> {
-    let system_prompt = build_system_prompt(context_prompt, writing_style);
+    let system_prompt = build_system_prompt(custom_words, context_prompt, writing_style);
     let model_name = model.unwrap_or("llama3.2");
 
     let user_message = format!(
@@ -155,7 +158,7 @@ async fn cleanup_with_backend(
     Ok(cleanup_resp.text)
 }
 
-fn build_system_prompt(context_prompt: &str, writing_style: &str) -> String {
+fn build_system_prompt(custom_words: &str, context_prompt: &str, writing_style: &str) -> String {
     let mut prompt = String::from(
         "You are a transcript cleanup tool for voice dictation. Your ONLY job is to clean up \
          the user's dictated text. You are NOT a chat assistant.\n\n\
@@ -170,6 +173,12 @@ fn build_system_prompt(context_prompt: &str, writing_style: &str) -> String {
          - Output ONLY the cleaned transcript and nothing else.",
     );
 
+    if !custom_words.is_empty() && custom_words != "[]" {
+        prompt.push_str(&format!(
+            "\n\nCustom vocabulary (use these exact spellings when relevant): {}",
+            custom_words
+        ));
+    }
     if !context_prompt.is_empty() {
         prompt.push_str(&format!("\n\nContext: {}", context_prompt));
     }
