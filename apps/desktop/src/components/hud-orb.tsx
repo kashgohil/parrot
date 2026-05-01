@@ -20,9 +20,11 @@ const SIZES: Record<"idle" | "active", { w: number; h: number }> = {
 };
 
 const MARGIN = 24;
+const DRAG_THRESHOLD = 4;
 
 export function HudOrb() {
 	const [status, setStatus] = useState<HudStatus>("idle");
+	const placed = useRef(false);
 
 	useEffect(() => {
 		const unsubs = [
@@ -39,31 +41,71 @@ export function HudOrb() {
 	const shape: "idle" | "active" = status === "idle" ? "idle" : "active";
 
 	useEffect(() => {
-		void resizeForShape(shape);
+		if (!placed.current) {
+			placed.current = true;
+			void initialPlacement(shape);
+		} else {
+			void resizeAnchored(shape);
+		}
 	}, [shape]);
 
-	const handleClick = () => {
-		// Only meaningful while idle (start) or recording (stop). During
-		// processing it's a no-op so a misclick doesn't kick off a new take.
-		if (status === "idle" || status === "recording") {
-			void invoke("toggle_recording");
-		}
+	const handlePointerDown = (e: React.PointerEvent) => {
+		// Mouse-only drag. Start tracking on press; if the cursor moves past a
+		// small threshold before release, hand off to the OS via startDragging.
+		// Otherwise treat as a click and toggle recording.
+		if (e.button !== 0) return;
+		const startX = e.clientX;
+		const startY = e.clientY;
+		let dragging = false;
+
+		const onMove = (ev: PointerEvent) => {
+			if (dragging) return;
+			if (
+				Math.abs(ev.clientX - startX) > DRAG_THRESHOLD ||
+				Math.abs(ev.clientY - startY) > DRAG_THRESHOLD
+			) {
+				dragging = true;
+				cleanup();
+				void getCurrentWindow().startDragging();
+			}
+		};
+
+		const onUp = () => {
+			cleanup();
+			if (!dragging && (status === "idle" || status === "recording")) {
+				void invoke("toggle_recording");
+			}
+		};
+
+		const cleanup = () => {
+			window.removeEventListener("pointermove", onMove);
+			window.removeEventListener("pointerup", onUp);
+			window.removeEventListener("pointercancel", cleanup);
+		};
+
+		window.addEventListener("pointermove", onMove);
+		window.addEventListener("pointerup", onUp);
+		window.addEventListener("pointercancel", cleanup);
 	};
 
 	return (
 		<div className="w-screen h-screen overflow-hidden bg-transparent flex items-end justify-start">
 			<AnimatePresence mode="wait" initial={false}>
 				{shape === "idle" ? (
-					<IdleOrb key="idle" onClick={handleClick} />
+					<IdleOrb key="idle" onPointerDown={handlePointerDown} />
 				) : (
-					<ActiveChip key="active" status={status} onClick={handleClick} />
+					<ActiveChip
+						key="active"
+						status={status}
+						onPointerDown={handlePointerDown}
+					/>
 				)}
 			</AnimatePresence>
 		</div>
 	);
 }
 
-async function resizeForShape(shape: "idle" | "active") {
+async function initialPlacement(shape: "idle" | "active") {
 	const { w, h } = SIZES[shape];
 	const win = getCurrentWindow();
 	try {
@@ -78,22 +120,45 @@ async function resizeForShape(shape: "idle" | "active") {
 		const y = monLogicalY + monLogicalH - h - MARGIN;
 		await win.setPosition(new LogicalPosition(x, y));
 	} catch (e) {
+		console.error("HUD placement failed", e);
+	}
+}
+
+// Keep the HUD anchored to its current bottom-left corner across resizes so
+// the user's chosen position is preserved when the shape swaps.
+async function resizeAnchored(shape: "idle" | "active") {
+	const { w, h } = SIZES[shape];
+	const win = getCurrentWindow();
+	try {
+		const monitor = await currentMonitor();
+		const scale = monitor?.scaleFactor ?? 1;
+		const pos = await win.outerPosition();
+		const size = await win.outerSize();
+		const curX = pos.x / scale;
+		const curBottom = (pos.y + size.height) / scale;
+		await win.setSize(new LogicalSize(w, h));
+		await win.setPosition(new LogicalPosition(curX, curBottom - h));
+	} catch (e) {
 		console.error("HUD resize failed", e);
 	}
 }
 
-function IdleOrb({ onClick }: { onClick: () => void }) {
+function IdleOrb({
+	onPointerDown,
+}: {
+	onPointerDown: (e: React.PointerEvent) => void;
+}) {
 	return (
 		<motion.button
 			type="button"
-			onClick={onClick}
+			onPointerDown={onPointerDown}
 			initial={{ opacity: 0, scale: 0.8 }}
 			animate={{ opacity: 0.45, scale: 1 }}
 			exit={{ opacity: 0, scale: 0.8 }}
 			whileHover={{ opacity: 1, scale: 1.1 }}
 			whileTap={{ scale: 0.95 }}
 			transition={{ duration: 0.18 }}
-			className="w-7 h-7 flex items-center justify-center cursor-pointer bg-transparent border-0 p-0"
+			className="w-7 h-7 flex items-center justify-center cursor-grab active:cursor-grabbing bg-transparent border-0 p-0"
 			aria-label="Start dictation"
 		>
 			<img
@@ -107,21 +172,21 @@ function IdleOrb({ onClick }: { onClick: () => void }) {
 
 function ActiveChip({
 	status,
-	onClick,
+	onPointerDown,
 }: {
 	status: HudStatus;
-	onClick: () => void;
+	onPointerDown: (e: React.PointerEvent) => void;
 }) {
 	const clickable = status === "recording";
 	return (
 		<motion.button
 			type="button"
-			onClick={onClick}
+			onPointerDown={onPointerDown}
 			initial={{ opacity: 0, y: 6 }}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: 6 }}
 			transition={{ duration: 0.18 }}
-			className={`flex items-center justify-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold text-white bg-pk-primary border-0 ${clickable ? "cursor-pointer" : "cursor-default"}`}
+			className={`flex items-center justify-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold text-white bg-pk-primary border-0 cursor-grab active:cursor-grabbing ${!clickable ? "pointer-events-auto" : ""}`}
 			aria-label={clickable ? "Stop dictation" : status}
 		>
 			<AnimatePresence mode="wait" initial={false}>
