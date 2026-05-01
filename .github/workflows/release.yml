@@ -29,18 +29,49 @@ jobs:
       - name: Install frontend dependencies
         run: bun install
 
-      - uses: tauri-apps/tauri-action@v0
+      - name: Import Apple Developer ID certificate
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          # Materialize the .p12 from the base64 secret.
+          CERT_PATH="$RUNNER_TEMP/parrot-signing.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/parrot-signing.keychain-db"
+          echo -n "$APPLE_CERTIFICATE" | base64 --decode -o "$CERT_PATH"
+
+          # Create an ephemeral keychain so the cert never lingers on the runner.
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import the cert + private key, then allow codesign to use it
+          # without an interactive prompt.
+          security import "$CERT_PATH" -P "$APPLE_CERTIFICATE_PASSWORD" \
+            -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+
+          # Sanity-check: the Developer ID identity must be visible to codesign.
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH"
+
+      - id: tauri
+        uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Tauri updater signing (generate with: bun tauri signer generate)
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          # Apple notarization. Tauri's bundler picks these up automatically
+          # and runs `notarytool submit --wait` after codesigning.
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           # whisper.cpp/ggml needs i8mm + dotprod enabled on arm64 Macs,
           # otherwise it emits intrinsics the compiler refuses to inline.
           CFLAGS: "-march=armv8.6-a"
           CXXFLAGS: "-march=armv8.6-a"
-          # No Apple code-signing — builds will be unsigned/ad-hoc.
-          # Users must right-click → Open or use the Privacy & Security pane on first launch.
         with:
           projectPath: apps/desktop
           tagName: ${{ github.ref_name }}
@@ -50,3 +81,29 @@ jobs:
           prerelease: false
           includeUpdaterJson: true
           args: --target aarch64-apple-darwin
+
+      - name: Notarize and staple DMG
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: bash scripts/notarize-dmg.sh
+
+      - name: Upload stapled DMG to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # tauri-action already created a draft release at ${{ steps.tauri.outputs.releaseId }}
+          # but the DMG it uploaded is pre-staple. Replace it with the stapled copy
+          # so end users get a Gatekeeper-clean download.
+          DMG_PATH=$(ls apps/desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg | head -n1)
+          DMG_NAME=$(basename "$DMG_PATH")
+          REPO="${{ github.repository }}"
+          RELEASE_ID="${{ steps.tauri.outputs.releaseId }}"
+
+          # Find and delete the old asset, then upload the stapled one.
+          ASSET_ID=$(gh api "repos/$REPO/releases/$RELEASE_ID/assets" --jq ".[] | select(.name==\"$DMG_NAME\") | .id")
+          if [ -n "$ASSET_ID" ]; then
+            gh api -X DELETE "repos/$REPO/releases/assets/$ASSET_ID"
+          fi
+          gh release upload "${{ github.ref_name }}" "$DMG_PATH" --clobber
