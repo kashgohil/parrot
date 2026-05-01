@@ -621,8 +621,29 @@ pub async fn find_available_port(start: u16, end: u16) -> Option<u16> {
 /// Start whisper.cpp server.
 ///
 /// Start Ollama server, polling until the API responds.
-pub async fn start_ollama_server(preferred_port: u16) -> Result<(tokio::process::Child, u16)> {
+/// Start (or adopt) the Ollama daemon.
+///
+/// First probes the preferred port — if something is already serving the
+/// `/api/tags` endpoint (e.g. Ollama.app, a daemon left running from a prior
+/// session, or a user-launched `ollama serve`), we adopt it instead of
+/// spawning a new one. This avoids the zombie-process pile that builds up
+/// across failed setup attempts.
+///
+/// Returns the (optional) child handle alongside the port. `None` means we're
+/// reusing a daemon we don't own — `stop_all` won't try to kill it on exit,
+/// which is the right behavior.
+pub async fn start_ollama_server(
+    preferred_port: u16,
+) -> Result<(Option<tokio::process::Child>, u16)> {
     use tokio::io::AsyncReadExt;
+
+    let client = reqwest::Client::new();
+
+    // Probe the preferred port first — if anyone is already serving Ollama's
+    // API there, reuse it rather than fighting for the port.
+    if probe_ollama(&client, preferred_port).await {
+        return Ok((None, preferred_port));
+    }
 
     let port = find_available_port(preferred_port, preferred_port + 10)
         .await
@@ -637,7 +658,6 @@ pub async fn start_ollama_server(preferred_port: u16) -> Result<(tokio::process:
         .spawn()
         .context("Failed to start Ollama server")?;
 
-    let client = reqwest::Client::new();
     let url = format!("http://127.0.0.1:{}/api/tags", port);
 
     for _ in 0..60 {
@@ -660,7 +680,7 @@ pub async fn start_ollama_server(preferred_port: u16) -> Result<(tokio::process:
             .await
             .is_ok()
         {
-            return Ok((child, port));
+            return Ok((Some(child), port));
         }
 
         tokio::time::sleep(Duration::from_millis(500)).await;
@@ -668,6 +688,59 @@ pub async fn start_ollama_server(preferred_port: u16) -> Result<(tokio::process:
 
     let _ = child.kill().await;
     anyhow::bail!("Ollama server did not start listening within 30 seconds");
+}
+
+/// Cheap GET against `/api/tags`. Treated as "Ollama is here" if the server
+/// answers with any 2xx within a couple of seconds.
+async fn probe_ollama(client: &reqwest::Client, port: u16) -> bool {
+    let url = format!("http://127.0.0.1:{}/api/tags", port);
+    match client
+        .get(&url)
+        .timeout(Duration::from_secs(2))
+        .send()
+        .await
+    {
+        Ok(resp) => resp.status().is_success(),
+        Err(_) => false,
+    }
+}
+
+/// Pre-warm the Ollama LLM by asking it to load the model into RAM with a
+/// long `keep_alive` window. Without this the first dictation pays a 3-10s
+/// cold-load tax inside the cleanup step. Errors are swallowed — this is
+/// best-effort and the user's first cleanup will still work, just slowly.
+pub async fn warm_up_ollama(port: u16, model: &str) {
+    let client = reqwest::Client::new();
+    let url = format!("http://127.0.0.1:{}/api/generate", port);
+    // Empty prompt + `keep_alive: "30m"` tells Ollama to load weights and
+    // hold them in memory for half an hour after this call returns. That
+    // window resets on every subsequent request, so an active user keeps the
+    // model warm indefinitely.
+    let body = serde_json::json!({
+        "model": model,
+        "prompt": "",
+        "keep_alive": "30m",
+        "stream": false,
+    });
+    let result = client
+        .post(&url)
+        .json(&body)
+        .timeout(Duration::from_secs(180))
+        .send()
+        .await;
+    match result {
+        Ok(resp) if resp.status().is_success() => {
+            println!("Ollama model '{}' warmed up", model);
+        }
+        Ok(resp) => {
+            let status = resp.status();
+            let body = resp.text().await.unwrap_or_default();
+            eprintln!("Ollama warmup non-success ({}): {}", status, body);
+        }
+        Err(e) => {
+            eprintln!("Ollama warmup request failed: {}", e);
+        }
+    }
 }
 
 /// Test text cleanup
@@ -982,7 +1055,7 @@ where
 
     {
         let mut guard = servers.write().await;
-        guard.ollama = Some(ollama_child);
+        guard.ollama = ollama_child;
         guard.ollama_port = Some(ollama_port);
     }
 

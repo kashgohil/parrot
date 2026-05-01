@@ -867,16 +867,16 @@ async fn start_local_servers(
         load_whisper_provider(whisper.inner().clone(), config.whisper_model_path.clone());
     }
 
-    // If the Ollama daemon is already running, reuse it.
+    // If we've already established a port for Ollama (either by spawning it
+    // or by adopting an existing daemon), short-circuit. The presence of a
+    // port — not a child — is the source of truth.
     {
         let guard = servers.read().await;
         if let Some(op) = guard.ollama_port {
-            if guard.ollama.is_some() {
-                return Ok(serde_json::json!({
-                    "ollama_port": op,
-                    "status": "running",
-                }));
-            }
+            return Ok(serde_json::json!({
+                "ollama_port": op,
+                "status": "running",
+            }));
         }
     }
 
@@ -887,7 +887,7 @@ async fn start_local_servers(
 
     {
         let mut guard = servers.write().await;
-        guard.ollama = Some(ollama_child);
+        guard.ollama = ollama_child;
         guard.ollama_port = Some(ollama_port);
     }
 
@@ -1101,8 +1101,13 @@ pub fn run() {
                             config.whisper_model_path.clone(),
                         );
 
-                        // 2. Make sure the Ollama daemon is running.
+                        // 2. Make sure the Ollama daemon is running, then
+                        //    pre-warm the configured LLM in the background so
+                        //    the first dictation doesn't pay the cold-load
+                        //    tax. Both run in a detached task so the UI is
+                        //    interactive immediately.
                         let app_handle = app.handle().clone();
+                        let ollama_model = config.ollama_model.clone();
                         tauri::async_runtime::spawn(async move {
                             match start_local_servers(
                                 app_handle.state::<Database>(),
@@ -1111,7 +1116,21 @@ pub fn run() {
                             )
                             .await
                             {
-                                Ok(_) => println!("Local services started"),
+                                Ok(_) => {
+                                    println!("Local services started");
+                                    let port = {
+                                        let servers =
+                                            app_handle.state::<SharedServerProcesses>();
+                                        let guard = servers.read().await;
+                                        guard.ollama_port
+                                    };
+                                    if let Some(port) = port {
+                                        if !ollama_model.is_empty() {
+                                            local_setup::warm_up_ollama(port, &ollama_model)
+                                                .await;
+                                        }
+                                    }
+                                }
                                 Err(e) => eprintln!("Failed to auto-start local services: {}", e),
                             }
                         });
@@ -1121,8 +1140,21 @@ pub fn run() {
 
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while running tauri application")
+        .run(|app, event| {
+            // Reap spawned child processes (Ollama daemon, etc.) before the
+            // process tears down. Without this, repeated dev launches and
+            // crashes leave a pile of zombie `ollama serve` processes that
+            // hold the preferred port and break the next session.
+            if let tauri::RunEvent::ExitRequested { .. } | tauri::RunEvent::Exit = event {
+                let servers = app.state::<SharedServerProcesses>().inner().clone();
+                tauri::async_runtime::block_on(async move {
+                    let mut guard = servers.write().await;
+                    guard.stop_all().await;
+                });
+            }
+        });
 }
 
 fn setup_tray(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
