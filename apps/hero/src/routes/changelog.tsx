@@ -61,60 +61,121 @@ export const Route = createFileRoute("/changelog")({
 
 const RELEASES = [
 	{
-		version: "Pre-launch",
-		date: "February 2026",
-		tag: "Current",
+		version: "v0.1.3",
+		date: "May 2, 2026",
+		tag: "Latest",
 		changes: [
 			{
 				type: "added",
 				items: [
-					"Marketing site with blog and email updates",
-					"Free local mode for life — no account required",
+					"Floating HUD orb shows dictation status and can be dragged anywhere on screen",
+					"History table with grouping by date, one-click copy, and delete with confirmation",
+					"Delete a dictation removes it from local storage and the cloud (including S3 audio)",
 				],
 			},
 			{
 				type: "improved",
 				items: [
-					"Fresh app icons and menu bar design",
-					"Polished UI across the desktop app",
+					"Local Ollama cleanup now respects your custom vocabulary",
+					"Reuses an existing Ollama instance, warms up the model, and cleans up child processes on exit",
+					"Tuned history group header contrast for readability",
+				],
+			},
+			{
+				type: "fixed",
+				items: [
+					"Paste now uses CGEvent for Cmd+V instead of osascript (more reliable)",
+					"Audio buffer is cleared before each recording to prevent stale data",
+					"Microphone permission prompt now appears correctly on macOS",
 				],
 			},
 		],
 	},
 	{
-		version: "Beta",
-		date: "Late January 2026",
+		version: "v0.1.2",
+		date: "April 30, 2026",
 		changes: [
 			{
 				type: "added",
 				items: [
-					"Audio recordings saved to cloud for playback",
-					"Vocabulary page to manage custom words",
-					"Step-by-step onboarding for new users",
-					"Sign in with Google",
+					"Competitor comparison pages and Compare link in the marketing site nav",
+					"Four new blog posts",
+					"Open Graph images and SEO metadata across marketing pages",
+					"Enhanced download page with FAQ",
 				],
 			},
 			{
 				type: "improved",
 				items: [
-					"Cleaner layout with refreshed visuals",
-					"Simpler profile and settings screens",
+					"Subscribe flow replaces the old waitlist (new /subscribe route and component)",
+					"API consolidated to PostgreSQL (SQLite support removed)",
+				],
+			},
+			{
+				type: "fixed",
+				items: [
+					"PATH resolution for GUI-launched apps on macOS",
+				],
+			},
+			{
+				type: "removed",
+				items: [
+					"Framer Motion animations from the setup wizard",
 				],
 			},
 		],
 	},
 	{
-		version: "Alpha",
-		date: "January 2026",
+		version: "v0.1.1",
+		date: "April 29, 2026",
 		changes: [
 			{
 				type: "added",
 				items: [
-					"Native Mac app that lives in your menu bar",
-					"Press a hotkey, speak, and your words appear at your cursor",
-					"AI cleanup that removes filler words and fixes grammar",
-					"Local and cloud transcription options",
-					"Searchable dictation history",
+					"Download page dynamically fetches the latest release from GitHub",
+				],
+			},
+			{
+				type: "improved",
+				items: [
+					"CI now ships Apple Silicon-only builds; download page updated to match",
+				],
+			},
+		],
+	},
+	{
+		version: "v0.1.0",
+		date: "April 29, 2026",
+		tag: "Initial release",
+		changes: [
+			{
+				type: "added",
+				items: [
+					"Native macOS menu bar app — press a hotkey, speak, and text appears at your cursor",
+					"In-process Whisper transcription with Metal acceleration (whisper-rs)",
+					"Customizable dictation hotkey with fn-key support",
+					"Silent background auto-updater with sidebar banner",
+					"Accessibility permission step in onboarding",
+					"Centralized error handling with Sonner toast notifications",
+					"GitHub Releases CI workflow for Tauri builds",
+					"Marketing site, blog, and download page",
+				],
+			},
+			{
+				type: "improved",
+				items: [
+					"Local-first launch — free local mode for life, no account required",
+					"Simplified onboarding with local-first default",
+					"Friendlier model names in the setup wizard",
+					"Safer copy-paste that handles missing accessibility permission",
+					"Cleanup prompts hardened against instruction-following",
+				],
+			},
+			{
+				type: "removed",
+				items: [
+					"BYOK API keys section, cloud-setup route, and pricing page (cloud mode coming later)",
+					"Standalone whisper.cpp server (replaced by in-process transcription)",
 				],
 			},
 		],
