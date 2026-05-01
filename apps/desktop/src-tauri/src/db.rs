@@ -250,6 +250,17 @@ impl Database {
         Ok(profile)
     }
 
+    pub fn delete_dictation(&self, id: &str) -> Result<Option<String>> {
+        let conn = self.conn.lock().unwrap();
+        let audio_path = conn
+            .prepare("SELECT audio_path FROM dictation_history WHERE id = ?1")?
+            .query_row([id], |row| row.get::<_, Option<String>>(0))
+            .ok()
+            .flatten();
+        conn.execute("DELETE FROM dictation_history WHERE id = ?1", [id])?;
+        Ok(audio_path)
+    }
+
     pub fn update_dictation_cleaned(&self, id: &str, cleaned_text: &str) -> Result<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute(

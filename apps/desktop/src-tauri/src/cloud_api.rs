@@ -84,6 +84,23 @@ pub async fn update_dictation_cleaned(
     Ok(())
 }
 
+pub async fn delete_dictation(session_token: &str, id: &str) -> Result<()> {
+    let client = reqwest::Client::new();
+    let resp = client
+        .delete(format!("{}/api/history/{}", BACKEND_URL, id))
+        .header("Authorization", format!("Bearer {}", session_token))
+        .send()
+        .await?;
+
+    if !resp.status().is_success() {
+        let status = resp.status();
+        let body = resp.text().await.unwrap_or_default();
+        anyhow::bail!("Backend history delete error {}: {}", status, body);
+    }
+
+    Ok(())
+}
+
 pub async fn get_history(session_token: &str) -> Result<Vec<DictationEntry>> {
     let client = reqwest::Client::new();
     let resp = client

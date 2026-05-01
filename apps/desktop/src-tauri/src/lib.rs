@@ -525,6 +525,38 @@ async fn search_history(
 }
 
 #[tauri::command]
+async fn delete_dictation(
+    id: String,
+    db: tauri::State<'_, Database>,
+) -> Result<(), String> {
+    let setup_mode = db
+        .get_setting("setup_mode")
+        .map_err(|e| e.to_string())?
+        .unwrap_or_else(|| "local".to_string());
+
+    match setup_mode.as_str() {
+        "local" => {
+            let audio_path = db.delete_dictation(&id).map_err(|e| e.to_string())?;
+            if let Some(path) = audio_path {
+                let _ = std::fs::remove_file(&path);
+            }
+            Ok(())
+        }
+        "cloud" => {
+            let session_token = db
+                .get_setting("session_token")
+                .map_err(|e| e.to_string())?
+                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
+            cloud_api::delete_dictation(&session_token, &id)
+                .await
+                .map_err(|e| e.to_string())?;
+            Ok(())
+        }
+        _ => Err(format!("Unknown setup mode: {}", setup_mode)),
+    }
+}
+
+#[tauri::command]
 fn get_setting(key: &str, state: tauri::State<'_, Database>) -> Result<Option<String>, String> {
     state.get_setting(key).map_err(|e| e.to_string())
 }
@@ -1050,6 +1082,7 @@ pub fn run() {
             transcribe_last,
             get_history,
             search_history,
+            delete_dictation,
             get_setting,
             set_setting,
             get_profile,
