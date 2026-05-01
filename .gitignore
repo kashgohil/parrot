@@ -36,6 +36,7 @@ gen
 .cursor*
 
 .env
+.env.release
 .vercel
 .env*.local
 .output
