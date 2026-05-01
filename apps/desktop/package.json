@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
+    "desktop": "bun --env-file=.env run tauri",
     "db:clean": "rm -f ~/Library/Application\\ Support/com.kash.parrot/parrot.db && echo 'Database cleaned. Start the app to create a fresh database.'"
   },
   "dependencies": {

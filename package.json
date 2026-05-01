@@ -9,9 +9,7 @@
   "scripts": {
     "dev": "bun run scripts/dev.ts",
     "dev:api": "bun run --filter @parrot/api dev",
-    "dev:desktop": "bun run --filter @parrot/desktop tauri dev",
     "dev:hero": "bun run --filter hero dev",
-    "build:desktop": "bun run --filter @parrot/desktop tauri build",
     "build:hero": "bun run --filter hero build",
     "generate-seo": "bun run --filter hero generate-seo",
     "db:generate": "bun run --filter @parrot/api db:generate",

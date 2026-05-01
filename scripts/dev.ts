@@ -1,6 +1,9 @@
 #!/usr/bin/env bun
 /**
- * Development script that runs API and desktop in parallel
+ * Development script that runs the API server.
+ * Desktop dev is intentionally not orchestrated from the repo root —
+ * run `bun run tauri dev` from `apps/desktop/` so the workspace's `.env`
+ * (signing key, etc.) is loaded correctly.
  * Handles SIGTERM/SIGINT to gracefully kill child processes and their descendants
  */
 /// <reference types="bun" />
@@ -147,8 +150,6 @@ process.on("unhandledRejection", (reason) => {
 	shutdown();
 });
 
-// Start processes
 spawnProcess("API", ["bun", "run", "dev:api"]);
-spawnProcess("Desktop", ["bun", "run", "dev:desktop"]);
 
-console.log("[dev] Both services starting... Press Ctrl+C to stop\n");
+console.log("[dev] API starting... Press Ctrl+C to stop\n");
