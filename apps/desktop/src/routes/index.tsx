@@ -5,8 +5,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
-import { Search, Copy, Check, Clock, Mic, Sparkles, AlertTriangle, Lightbulb } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+	AlertTriangle,
+	Check,
+	Copy,
+	Lightbulb,
+	Mic,
+	Search,
+	Sparkles,
+	Trash2,
+} from "lucide-react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
 interface DictationEntry {
 	id: string;
@@ -39,6 +48,8 @@ function HomePage() {
 	const [search, setSearch] = useState("");
 	const [copiedId, setCopiedId] = useState<string | null>(null);
 	const [expandedId, setExpandedId] = useState<string | null>(null);
+	const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+	const [deletingId, setDeletingId] = useState<string | null>(null);
 
 	const tip = useMemo(() => getTipOfTheDay(), []);
 	const { subscription, isApproachingLimit } = useSubscription();
@@ -81,6 +92,20 @@ function HomePage() {
 		}
 	}
 
+	async function deleteEntry(id: string) {
+		setDeletingId(id);
+		try {
+			await invoke("delete_dictation", { id });
+			setEntries((prev) => prev.filter((e) => e.id !== id));
+			if (expandedId === id) setExpandedId(null);
+		} catch (e) {
+			console.error("Failed to delete:", e);
+		} finally {
+			setDeletingId(null);
+			setPendingDeleteId(null);
+		}
+	}
+
 	function formatDuration(ms: number): string {
 		const secs = Math.round(ms / 1000);
 		if (secs < 60) return `${secs}s`;
@@ -89,12 +114,10 @@ function HomePage() {
 
 	function formatTime(iso: string): string {
 		const d = new Date(iso + "Z");
-		const now = new Date();
-		const diff = now.getTime() - d.getTime();
-		if (diff < 60000) return "just now";
-		if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-		if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-		return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+		return d.toLocaleTimeString(undefined, {
+			hour: "numeric",
+			minute: "2-digit",
+		});
 	}
 
 	function dateLabel(iso: string): string {
@@ -112,7 +135,6 @@ function HomePage() {
 		});
 	}
 
-	// Group entries by date
 	const grouped = useMemo(() => {
 		const groups: { label: string; entries: DictationEntry[] }[] = [];
 		let currentLabel = "";
@@ -130,7 +152,6 @@ function HomePage() {
 
 	return (
 		<div className="space-y-6">
-			{/* Page header */}
 			<div className="flex items-start justify-between gap-4">
 				<div>
 					<h1 className="text-2xl font-bold text-foreground tracking-tight">
@@ -148,7 +169,6 @@ function HomePage() {
 				)}
 			</div>
 
-			{/* Usage warning */}
 			{isApproachingLimit() && subscription && (
 				<div className="rounded-xl border border-amber-500/30 bg-amber-50/50 px-4 py-3.5 flex items-start gap-3">
 					<AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
@@ -158,13 +178,13 @@ function HomePage() {
 						</p>
 						<p className="text-sm text-amber-600 mt-0.5">
 							You've used {subscription.usage.transcriptionMinutes} of{" "}
-							{subscription.limits.transcriptionMinutes} transcription minutes this month.
+							{subscription.limits.transcriptionMinutes} transcription minutes
+							this month.
 						</p>
 					</div>
 				</div>
 			)}
 
-			{/* Tip card */}
 			<div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3.5 flex items-start gap-3">
 				<Lightbulb className="w-5 h-5 text-primary shrink-0 mt-0.5" />
 				<div>
@@ -175,7 +195,6 @@ function HomePage() {
 				</div>
 			</div>
 
-			{/* Search */}
 			<div className="relative">
 				<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 				<Input
@@ -187,7 +206,6 @@ function HomePage() {
 				/>
 			</div>
 
-			{/* Timeline */}
 			{entries.length === 0 ? (
 				<div className="text-center py-16 px-4">
 					<div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
@@ -203,106 +221,140 @@ function HomePage() {
 					</p>
 				</div>
 			) : (
-				<div className="space-y-8">
-					{grouped.map((group) => (
-						<div key={group.label}>
-							<h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-primary/40" />
-								{group.label}
-							</h3>
-							<div className="space-y-3">
-								{group.entries.map((entry) => {
-									const display = entry.cleaned_text || entry.raw_text;
-									const isExpanded = expandedId === entry.id;
-									const hasCleaned =
-										entry.cleaned_text && entry.cleaned_text !== entry.raw_text;
-									const isCopied = copiedId === entry.id;
-
-									return (
-										<div
-											key={entry.id}
-											className={`
-												group bg-card rounded-2xl border transition-all duration-200 overflow-hidden
-												${isExpanded ? "border-primary/50 shadow-lg shadow-primary/5" : "border-border hover:border-primary/30 hover:shadow-md"}
-											`}
+				<div className="rounded-xl border border-border overflow-hidden bg-card">
+					<table className="w-full text-sm">
+						<thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
+							<tr>
+								<th className="text-left font-semibold px-4 py-2.5">Text</th>
+								<th className="text-left font-semibold px-4 py-2.5 w-32">
+									Duration
+								</th>
+								<th className="text-right font-semibold px-4 py-2.5 w-32">
+									Actions
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{grouped.map((group) => (
+								<Fragment key={group.label}>
+									<tr className="bg-muted/20">
+										<td
+											colSpan={3}
+											className="px-4 py-1.5 text-[11px] font-bold text-muted-foreground uppercase tracking-wider"
 										>
-											{/* Card header */}
-											<div className="px-4 py-3 border-b border-border/50 flex items-center justify-between gap-3">
-												<div className="flex items-center gap-3 text-xs text-muted-foreground">
-													<span className="flex items-center gap-1">
-														<Clock className="w-3 h-3" />
-														{formatTime(entry.created_at)}
-													</span>
-													<span className="capitalize px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium">
-														{entry.provider}
-													</span>
-													<span className="flex items-center gap-1">
-														<Mic className="w-3 h-3" />
-														{formatDuration(entry.duration_ms)}
-													</span>
-													{hasCleaned && (
-														<span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium">
-															<Sparkles className="w-3 h-3" />
-															Cleaned
-														</span>
-													)}
-												</div>
-												<Button
-													variant="ghost"
-													size="sm"
-													onClick={(e) => {
-														e.stopPropagation();
-														copyEntry(entry);
-													}}
-													className={`
-														h-8 px-3 text-xs font-medium transition-all
-														${isCopied ? "bg-green-500/10 text-green-600 hover:bg-green-500/20 hover:text-green-700" : "hover:bg-primary/10 hover:text-primary"}
-													`}
-												>
-													{isCopied ? (
-														<>
-															<Check className="w-3.5 h-3.5 mr-1" />
-															Copied
-														</>
-													) : (
-														<>
-															<Copy className="w-3.5 h-3.5 mr-1" />
-															Copy
-														</>
-													)}
-												</Button>
-											</div>
+											{group.label}
+										</td>
+									</tr>
+									{group.entries.map((entry) => {
+										const display = entry.cleaned_text || entry.raw_text;
+										const isExpanded = expandedId === entry.id;
+										const hasCleaned =
+											entry.cleaned_text &&
+											entry.cleaned_text !== entry.raw_text;
+										const isCopied = copiedId === entry.id;
+										const isPendingDelete = pendingDeleteId === entry.id;
+										const isDeleting = deletingId === entry.id;
 
-											{/* Card content */}
-											<div 
-												className="p-4 cursor-pointer"
-												onClick={() => setExpandedId(isExpanded ? null : entry.id)}
+										return (
+											<tr
+												key={entry.id}
+												className="border-t border-border/60 hover:bg-muted/20 transition-colors align-middle"
 											>
-												<p className={`text-[15px] leading-relaxed text-foreground ${isExpanded ? "" : "line-clamp-3"}`}>
-													{display}
-												</p>
-											</div>
-
-											{/* Expanded raw view */}
-											{isExpanded && hasCleaned && (
-												<div className="px-4 pb-4">
-													<div className="pt-3 border-t border-border/50">
-														<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1">
-															<span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-															Raw transcription
-														</p>
-														<p className="text-sm text-muted-foreground italic leading-relaxed">
-															"{entry.raw_text}"
-														</p>
+												<td
+													className="px-4 py-3 cursor-pointer"
+													onClick={() =>
+														setExpandedId(isExpanded ? null : entry.id)
+													}
+												>
+													<div className="flex items-start gap-2">
+														<div className="flex-1 min-w-0">
+															<p
+																className={`text-[14px] leading-relaxed text-foreground ${isExpanded ? "" : "line-clamp-2"}`}
+															>
+																{display}
+															</p>
+															{isExpanded && hasCleaned && (
+																<div className="mt-3 pt-3 border-t border-border/50">
+																	<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5 flex items-center gap-1">
+																		<span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+																		Raw transcription
+																	</p>
+																	<p className="text-sm text-muted-foreground italic leading-relaxed">
+																		"{entry.raw_text}"
+																	</p>
+																</div>
+															)}
+														</div>
+														{hasCleaned && (
+															<Sparkles
+																className="w-3.5 h-3.5 text-primary shrink-0 mt-1"
+																aria-label="Cleaned"
+															/>
+														)}
 													</div>
-												</div>
-											)}
-										</div>
-									);
-								})}
-							</div>
-						</div>
-					))}
+												</td>
+												<td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
+													<div className="flex flex-col leading-tight">
+														<span>{formatTime(entry.created_at)}</span>
+														<span className="text-[11px] text-muted-foreground/70">
+															{formatDuration(entry.duration_ms)}
+														</span>
+													</div>
+												</td>
+												<td className="px-4 py-3 text-right whitespace-nowrap">
+													{isPendingDelete ? (
+														<div className="inline-flex items-center gap-1">
+															<Button
+																variant="ghost"
+																size="sm"
+																disabled={isDeleting}
+																onClick={() => setPendingDeleteId(null)}
+																className="h-8 px-2 text-xs"
+															>
+																Cancel
+															</Button>
+															<Button
+																variant="ghost"
+																size="sm"
+																disabled={isDeleting}
+																onClick={() => deleteEntry(entry.id)}
+																className="h-8 px-2 text-xs bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive"
+															>
+																{isDeleting ? "Deleting…" : "Confirm"}
+															</Button>
+														</div>
+													) : (
+														<div className="inline-flex items-center gap-1">
+															<Button
+																variant="ghost"
+																size="sm"
+																onClick={() => copyEntry(entry)}
+																className={`h-8 px-2 text-xs ${isCopied ? "text-green-600" : "hover:text-primary"}`}
+															>
+																{isCopied ? (
+																	<Check className="w-3.5 h-3.5" />
+																) : (
+																	<Copy className="w-3.5 h-3.5" />
+																)}
+															</Button>
+															<Button
+																variant="ghost"
+																size="sm"
+																onClick={() => setPendingDeleteId(entry.id)}
+																className="h-8 px-2 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+															>
+																<Trash2 className="w-3.5 h-3.5" />
+															</Button>
+														</div>
+													)}
+												</td>
+											</tr>
+										);
+									})}
+								</Fragment>
+							))}
+						</tbody>
+					</table>
 				</div>
 			)}
 		</div>
