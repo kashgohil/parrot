@@ -237,10 +237,10 @@ function HomePage() {
 						<tbody>
 							{grouped.map((group) => (
 								<Fragment key={group.label}>
-									<tr className="bg-muted/20">
+									<tr className="bg-secondary border-t border-border">
 										<td
 											colSpan={3}
-											className="px-4 py-1.5 text-[11px] font-bold text-muted-foreground uppercase tracking-wider"
+											className="px-4 py-2 text-[11px] font-bold text-foreground uppercase tracking-wider"
 										>
 											{group.label}
 										</td>
