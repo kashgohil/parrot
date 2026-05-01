@@ -70,6 +70,21 @@ fn is_recording(state: tauri::State<'_, RecorderState>) -> bool {
     state.recorder.lock().unwrap().is_recording()
 }
 
+/// Toggle recording from the floating HUD orb. Mirrors the hotkey
+/// press/release contract by routing through the same begin/end helpers, so
+/// downstream behavior (events, transcribe_last, paste) is identical.
+#[tauri::command]
+fn toggle_recording(app: tauri::AppHandle) {
+    let state = app.state::<RecorderState>();
+    let is_rec = state.recorder.lock().unwrap().is_recording();
+    drop(state);
+    if is_rec {
+        hotkey::end_recording(&app);
+    } else {
+        hotkey::begin_recording(&app);
+    }
+}
+
 #[derive(serde::Serialize, Clone)]
 struct DictationResult {
     raw_text: String,
@@ -1029,6 +1044,7 @@ pub fn run() {
             start_recording,
             stop_recording,
             is_recording,
+            toggle_recording,
             transcribe_last,
             get_history,
             search_history,
@@ -1062,6 +1078,7 @@ pub fn run() {
         ])
         .setup(|app| {
             setup_tray(app.handle())?;
+            setup_hud_window(app.handle())?;
 
             // Hide window on close instead of quitting
             let window = app.get_webview_window("main").unwrap();
@@ -1226,5 +1243,61 @@ fn setup_tray(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> 
         })
         .build(app)?;
 
+    Ok(())
+}
+
+/// Create the floating status orb window: always-on-top, transparent,
+/// frameless, non-focus-stealing. The React side at `/hud` resizes and
+/// repositions the window when the dictation status changes; here we just
+/// create it at idle size in the bottom-left of the primary monitor.
+fn setup_hud_window(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
+    use tauri::{LogicalSize, WebviewUrl, WebviewWindowBuilder};
+
+    // Idle orb size; the React side will resize when status changes.
+    const IDLE_SIZE: f64 = 56.0;
+    const MARGIN: f64 = 24.0;
+
+    // Same entry HTML as the main window — main.tsx branches on
+    // `getCurrentWindow().label === "hud"` and renders the orb instead of the
+    // router. Keeps prod loading robust without extra SPA-fallback config.
+    let hud = WebviewWindowBuilder::new(app, "hud", WebviewUrl::App("index.html".into()))
+        .title("Parrot")
+        .inner_size(IDLE_SIZE, IDLE_SIZE)
+        .resizable(false)
+        .decorations(false)
+        .transparent(true)
+        .always_on_top(true)
+        .skip_taskbar(true)
+        .focused(false)
+        .visible(false)
+        .shadow(false)
+        .accept_first_mouse(true)
+        .build()?;
+
+    // Anchor to bottom-left of the primary monitor. The React side will keep
+    // this anchor when it resizes the window.
+    if let Ok(Some(monitor)) = hud.primary_monitor() {
+        let scale = monitor.scale_factor();
+        let mpos = monitor.position();
+        let msize = monitor.size();
+        // Convert margin + idle size from logical to physical to position the
+        // physical window correctly on hi-dpi displays.
+        let m_px = (MARGIN * scale).round() as i32;
+        let s_px = (IDLE_SIZE * scale).round() as i32;
+        let x = mpos.x + m_px;
+        let y = mpos.y + (msize.height as i32) - s_px - m_px;
+        let _ = hud.set_position(tauri::PhysicalPosition::new(x, y));
+    }
+
+    // Belt and braces: ensure the logical size matches what we asked for after
+    // any platform fudging during build().
+    let _ = hud.set_size(LogicalSize::new(IDLE_SIZE, IDLE_SIZE));
+
+    #[cfg(target_os = "macos")]
+    {
+        let _ = hud.set_visible_on_all_workspaces(true);
+    }
+
+    let _ = hud.show();
     Ok(())
 }

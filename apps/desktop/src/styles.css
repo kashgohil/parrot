@@ -407,6 +407,16 @@ body {
 	height: 100vh;
 }
 
+/* HUD orb window: every layer up to the NSWindow must be transparent for the
+   `transparent: true` flag to actually show the desktop behind. Scoped to
+   .hud-window (set in main.tsx) so the main app's cream background is
+   untouched. */
+html.hud-window,
+html.hud-window body,
+html.hud-window #root {
+	background: transparent !important;
+}
+
 @layer base {
 	* {
 		@apply border-border outline-ring/50;
