@@ -58,6 +58,7 @@ interface DbOperations {
 		durationMs: number,
 	): Promise<void>;
 	updateDictationCleaned(id: string, cleanedText: string): Promise<void>;
+	deleteDictation(id: string, userId: string): Promise<string | null>;
 	getHistory(userId: string): Promise<DictationEntry[]>;
 	updateDictationAudioUrl(id: string, audioUrl: string): Promise<void>;
 	updateUserSubscription(
@@ -254,6 +255,15 @@ const dbOps: DbOperations = {
 			.set({ cleanedText })
 			.where(eq(dictationHistory.id, id));
 	},
+	async deleteDictation(id, userId) {
+		const [row] = await db
+			.delete(dictationHistory)
+			.where(
+				and(eq(dictationHistory.id, id), eq(dictationHistory.userId, userId)),
+			)
+			.returning({ audioUrl: dictationHistory.audioUrl });
+		return row?.audioUrl ?? null;
+	},
 	async getHistory(userId) {
 		const results = await db
 			.select()
@@ -414,6 +424,7 @@ export const getProfile = dbOps.getProfile.bind(dbOps);
 export const upsertProfile = dbOps.upsertProfile.bind(dbOps);
 export const insertDictation = dbOps.insertDictation.bind(dbOps);
 export const updateDictationCleaned = dbOps.updateDictationCleaned.bind(dbOps);
+export const deleteDictation = dbOps.deleteDictation.bind(dbOps);
 export const getHistory = dbOps.getHistory.bind(dbOps);
 export const updateDictationAudioUrl =
 	dbOps.updateDictationAudioUrl.bind(dbOps);
