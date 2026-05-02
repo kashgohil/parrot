@@ -108,13 +108,13 @@ function CompareIndexPage() {
 			{/* ── Hero ── */}
 			<section className="px-6 pt-16 pb-20 md:pt-24 md:pb-28">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3 animate-fade-in-up">
+					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
 						Comparisons
 					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5 animate-fade-in-up-delay-1">
+					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
 						Parrot vs the rest
 					</h1>
-					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl animate-fade-in-up-delay-2">
+					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
 						Honest, side-by-side comparisons of Parrot against the apps people
 						actually consider when shopping for voice dictation on Mac.
 					</p>
