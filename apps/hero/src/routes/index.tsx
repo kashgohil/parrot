@@ -1,26 +1,3 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-	ArrowRight,
-	Bot,
-	Check,
-	Clipboard,
-	Code,
-	Command,
-	Download,
-	Laptop,
-	Lock,
-	Mail,
-	MessageSquare,
-	Mic,
-	Minus,
-	Monitor,
-	Quote,
-	Stethoscope,
-	X as XIcon,
-	Zap,
-} from "lucide-react";
-import type { ReactNode } from "react";
-import { useEffect, useState, useSyncExternalStore } from "react";
 import {
 	AppleMessagesIcon,
 	AppleNotesIcon,
@@ -61,15 +38,27 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-
-const emptySubscribe = () => () => {};
-function useHydrated() {
-	return useSyncExternalStore(
-		emptySubscribe,
-		() => true,
-		() => false,
-	);
-}
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+	ArrowRight,
+	Bot,
+	Check,
+	Clipboard,
+	Code,
+	Download,
+	Laptop,
+	Lock,
+	Mail,
+	MessageSquare,
+	Mic,
+	Minus,
+	Monitor,
+	Stethoscope,
+	X as XIcon,
+	Zap,
+} from "lucide-react";
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/")({
 	component: HomePage,
@@ -403,25 +392,7 @@ function DictationDemo() {
 								: "bg-white/8 text-white/30 border border-white/10"
 						}`}
 					>
-						<Command size={8} className="inline -mt-px" />
-					</kbd>
-					<kbd
-						className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-all duration-150 ${
-							isHotkeyPressed
-								? "bg-primary/30 text-primary border border-primary/40 shadow-[0_0_8px_rgba(124,179,66,0.3)] translate-y-px"
-								: "bg-white/8 text-white/30 border border-white/10"
-						}`}
-					>
-						Shift
-					</kbd>
-					<kbd
-						className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-all duration-150 ${
-							isHotkeyPressed
-								? "bg-primary/30 text-primary border border-primary/40 shadow-[0_0_8px_rgba(124,179,66,0.3)] translate-y-px"
-								: "bg-white/8 text-white/30 border border-white/10"
-						}`}
-					>
-						Space
+						fn
 					</kbd>
 				</div>
 
@@ -456,7 +427,7 @@ function DictationDemo() {
 						</span>
 					)}
 					{showClipboard && (
-						<span className="text-[10px] text-primary font-semibold flex items-center gap-1 animate-fade-in-up">
+						<span className="text-[10px] text-primary font-semibold flex items-center gap-1">
 							<Clipboard size={10} />
 							Copied to clipboard
 						</span>
@@ -846,16 +817,6 @@ function DualModeSpotlight() {
 					</div>
 				))}
 			</div>
-
-			{/* Badge */}
-			<div className="flex justify-center mt-8">
-				<div className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary/10 border border-primary/20 rounded-full animate-glow-badge">
-					<Zap size={14} className="text-primary" />
-					<span className="text-sm font-bold text-primary">
-						Free, for life &middot; Cloud mode coming soon
-					</span>
-				</div>
-			</div>
 		</div>
 	);
 }
@@ -1143,40 +1104,6 @@ function UseCaseTabs() {
 }
 
 // ---------------------------------------------------------------------------
-// Testimonials (kept as-is)
-// ---------------------------------------------------------------------------
-const TESTIMONIALS = [
-	{
-		quote:
-			"I write 2,000 words a day for my blog. Parrot cut my drafting time in half - I just talk through my ideas and edit from there.",
-		name: "Megan R.",
-		role: "Content writer",
-		accent: "bg-amber-50 border-amber-200/60",
-	},
-	{
-		quote:
-			"Custom vocabulary is a lifesaver. All my medical terms come through correctly now. I stopped correcting 'hypertension' from 'high per tension'.",
-		name: "Dr. James K.",
-		role: "Cardiologist",
-		accent: "bg-sky-50 border-sky-200/60",
-	},
-	{
-		quote:
-			"The local mode sold me. Patient data never leaves my laptop. I dictate case notes between appointments and they're ready by end of day.",
-		name: "Priya S.",
-		role: "Immigration lawyer",
-		accent: "bg-emerald-50 border-emerald-200/60",
-	},
-	{
-		quote:
-			"I have RSI and can't type for long stretches. Parrot lets me keep coding - I dictate comments, docs, and even Slack messages.",
-		name: "Tom L.",
-		role: "Software engineer",
-		accent: "bg-violet-50 border-violet-200/60",
-	},
-];
-
-// ---------------------------------------------------------------------------
 // 12. Competitor Comparison Table
 // ---------------------------------------------------------------------------
 function ComparisonTable() {
@@ -1322,9 +1249,6 @@ const FAQ: { q: string; a: ReactNode }[] = [
 // Page
 // ---------------------------------------------------------------------------
 function HomePage() {
-	const hydrated = useHydrated();
-	const anim = (cls: string) => (hydrated ? cls : "");
-
 	return (
 		<div className="min-h-screen">
 			<section className="relative px-6 pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
@@ -1332,9 +1256,7 @@ function HomePage() {
 					{/* Left - copy */}
 					<div>
 						<div
-							className={`inline-flex items-center gap-2 px-3 py-1 bg-primary/8 border border-primary/15 rounded-full mb-6 ${anim(
-								"animate-fade-in-up",
-							)}`}
+							className="inline-flex items-center gap-2 px-3 py-1 bg-primary/8 border border-primary/15 rounded-full mb-6"
 						>
 							<div className="w-1.5 h-1.5 rounded-full bg-primary" />
 							<span className="text-xs font-semibold text-primary tracking-wide">
@@ -1343,9 +1265,7 @@ function HomePage() {
 						</div>
 
 						<h1
-							className={`text-[2.75rem] md:text-[3.5rem] lg:text-[4rem] font-black text-foreground tracking-tight leading-[1.08] mb-5 ${anim(
-								"animate-fade-in-up-delay-1",
-							)}`}
+							className="text-[2.75rem] md:text-[3.5rem] lg:text-[4rem] font-black text-foreground tracking-tight leading-[1.08] mb-5"
 						>
 							Voice dictation for Mac.
 							<br />
@@ -1353,9 +1273,7 @@ function HomePage() {
 						</h1>
 
 						<p
-							className={`text-lg text-muted-foreground leading-relaxed max-w-md mb-8 ${anim(
-								"animate-fade-in-up-delay-2",
-							)}`}
+							className="text-lg text-muted-foreground leading-relaxed max-w-md mb-8"
 						>
 							Parrot transcribes what you say and pastes it where your cursor
 							is. Custom vocabulary, AI cleanup, and full history. Runs fully
@@ -1364,9 +1282,7 @@ function HomePage() {
 						</p>
 
 						<div
-							className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 ${anim(
-								"animate-fade-in-up-delay-3",
-							)}`}
+							className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
 						>
 							<Link
 								to="/download"
@@ -1383,19 +1299,11 @@ function HomePage() {
 
 						{/* Hotkey hint */}
 						<div
-							className={`mt-8 flex items-center gap-3 ${anim(
-								"animate-fade-in-up-delay-3",
-							)}`}
+							className="mt-8 flex items-center gap-3"
 						>
 							<div className="flex items-center gap-1">
 								<kbd className="px-2 py-1 bg-muted border border-border rounded-md text-[11px] font-bold text-foreground/70 shadow-[0_1px_0_0] shadow-border/50">
-									<Command size={10} className="inline -mt-px" />
-								</kbd>
-								<kbd className="px-2 py-1 bg-muted border border-border rounded-md text-[11px] font-bold text-foreground/70 shadow-[0_1px_0_0] shadow-border/50">
-									Shift
-								</kbd>
-								<kbd className="px-2 py-1 bg-muted border border-border rounded-md text-[11px] font-bold text-foreground/70 shadow-[0_1px_0_0] shadow-border/50">
-									Space
+									fn
 								</kbd>
 							</div>
 							<span className="text-xs text-muted-foreground">
@@ -1405,11 +1313,7 @@ function HomePage() {
 					</div>
 
 					{/* Right - typing race */}
-					<div
-						className={`${anim(
-							"animate-fade-in-up-delay-2",
-						)} max-w-md md:max-w-none mx-auto w-full`}
-					>
+					<div className="max-w-md md:max-w-none mx-auto w-full">
 						<DictationDemo />
 					</div>
 				</div>
@@ -1668,48 +1572,13 @@ function HomePage() {
 				</div>
 			</section>
 
-			<section className="py-20 md:py-28 px-6 border-y border-border">
-				<div className="max-w-5xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						People using Parrot
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-14">
-						What users say about Parrot
-					</h2>
-
-					<div className="grid md:grid-cols-2 gap-5">
-						{TESTIMONIALS.map((t, i) => (
-							<div
-								key={i}
-								className={`rounded-2xl border p-6 md:p-7 ${t.accent}`}
-							>
-								<Quote
-									size={20}
-									className="text-foreground/15 mb-3"
-									fill="currentColor"
-								/>
-								<p className="text-[15px] text-foreground leading-relaxed mb-5">
-									{t.quote}
-								</p>
-								<div>
-									<p className="text-sm font-semibold text-foreground">
-										{t.name}
-									</p>
-									<p className="text-xs text-muted-foreground">{t.role}</p>
-								</div>
-							</div>
-						))}
-					</div>
-				</div>
-			</section>
-
 			<section className="py-20 md:py-24 bg-muted/30 px-6">
 				<div className="max-w-4xl mx-auto">
 					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-8">
 						{[
 							{
 								title: "Global hotkey",
-								desc: "Cmd+Shift+Space from anywhere. Customizable in settings.",
+								desc: "Press fn from anywhere. Customizable in settings.",
 							},
 							{
 								title: "Auto-paste",
