@@ -29,8 +29,6 @@ interface SystemRequirements {
 	macos_version: string;
 	macos_supported: boolean;
 	free_space_gb: number;
-	has_homebrew: boolean;
-	homebrew_path?: string;
 	architecture: string;
 }
 
@@ -173,8 +171,7 @@ function SystemCheckStep({
 	// We know requirements is not null here because of the early return above
 	const reqs = requirements!;
 
-	const allGood =
-		reqs.macos_supported && reqs.free_space_gb >= 5 && reqs.has_homebrew;
+	const allGood = reqs.macos_supported && reqs.free_space_gb >= 5;
 
 	return (
 		<div className="space-y-6">
@@ -194,13 +191,6 @@ function SystemCheckStep({
 					value={`${reqs.free_space_gb.toFixed(1)} GB`}
 					status={reqs.free_space_gb >= 5 ? "success" : "error"}
 					detail={reqs.free_space_gb < 5 ? "At least 5 GB required" : undefined}
-				/>
-				<RequirementItem
-					icon={<Terminal className="w-4 h-4" />}
-					label="Homebrew"
-					value={reqs.has_homebrew ? "Installed" : "Not installed"}
-					status={reqs.has_homebrew ? "success" : "warning"}
-					detail={!reqs.has_homebrew ? "Will install during setup" : undefined}
 				/>
 			</div>
 

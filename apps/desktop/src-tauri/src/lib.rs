@@ -714,12 +714,6 @@ async fn check_command_exists(name: String) -> bool {
 #[tauri::command]
 async fn install_tool(name: String) -> Result<String, String> {
     let script = match name.as_str() {
-        "whisper-cpp" => {
-            let brew = local_setup::find_command_path("brew")
-                .await
-                .ok_or_else(|| "Homebrew not found. Install it from https://brew.sh".to_string())?;
-            format!("{brew} install whisper-cpp")
-        }
         "ollama" => "curl -fsSL https://ollama.ai/install.sh | sh".to_string(),
         _ => return Err(format!("Unknown tool: {}", name)),
     };

@@ -64,8 +64,6 @@ pub struct SystemRequirements {
     pub macos_version: String,
     pub macos_supported: bool,
     pub free_space_gb: f64,
-    pub has_homebrew: bool,
-    pub homebrew_path: Option<String>,
     pub architecture: String,
 }
 
@@ -241,22 +239,17 @@ pub async fn get_free_space_gb() -> Result<f64> {
 pub async fn check_system_requirements() -> Result<SystemRequirements> {
     let version = get_macos_version().await?;
     let free_space = get_free_space_gb().await?;
-    let homebrew_path = find_command_path("brew").await;
-    let has_homebrew = homebrew_path.is_some();
-    
-    // Get architecture
+
     let arch_output = Command::new("uname")
         .arg("-m")
         .output()
         .await?;
     let architecture = String::from_utf8_lossy(&arch_output.stdout).trim().to_string();
-    
+
     Ok(SystemRequirements {
         macos_version: version.clone(),
         macos_supported: is_macos_supported(&version),
         free_space_gb: free_space,
-        has_homebrew,
-        homebrew_path,
         architecture,
     })
 }
@@ -882,39 +875,6 @@ where
             overall_progress: current_step / total_steps,
         });
         anyhow::bail!("Insufficient disk space");
-    }
-    
-    if !requirements.has_homebrew {
-        progress_emitter(SetupProgress {
-            step: SetupStep::SystemCheck,
-            status: SetupStatus::ManualInterventionRequired {
-                instructions: ManualInstructions {
-                    title: "Install Homebrew".to_string(),
-                    description: "Homebrew is required to install the necessary tools.".to_string(),
-                    steps: vec![
-                        ManualStep {
-                            label: "Open Terminal".to_string(),
-                            command: None,
-                            explanation: "Press Cmd+Space, type 'Terminal', press Enter".to_string(),
-                            skippable: false,
-                            skip_condition: None,
-                        },
-                        ManualStep {
-                            label: "Install Homebrew".to_string(),
-                            command: Some("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"".to_string()),
-                            explanation: "Homebrew is a package manager for macOS".to_string(),
-                            skippable: false,
-                            skip_condition: None,
-                        },
-                    ],
-                    verification_command: Some("which brew".to_string()),
-                    verification_success: Some("Should return path to brew".to_string()),
-                },
-            },
-            overall_progress: current_step / total_steps,
-        });
-        // Wait for manual intervention - this is handled by the caller
-        return Err(anyhow::anyhow!("Manual intervention required: Homebrew installation"));
     }
     
     current_step += 1.0;

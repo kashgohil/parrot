@@ -55,11 +55,6 @@ const KNOWN_PATTERNS: ErrorPattern[] = [
 		message:
 			"The local model isn't ready yet. Open Settings → Local Setup to finish downloading it.",
 	},
-	{
-		match: /homebrew/i,
-		message:
-			"Homebrew is required for local setup. Install it from brew.sh, then retry.",
-	},
 ];
 
 const GENERIC_MESSAGE = "Something went wrong.";
