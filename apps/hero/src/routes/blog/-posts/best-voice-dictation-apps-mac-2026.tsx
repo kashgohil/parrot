@@ -71,7 +71,7 @@ export default function BestVoiceDictationAppsMac2026() {
 			<p>
 				<Link to="/">Parrot</Link> is a native Mac app built specifically for
 				fast, accurate voice dictation. It sits in your menu bar and activates
-				with a global hotkey (Cmd+Shift+Space by default). Speak, and the
+				with a global hotkey (fn by default). Speak, and the
 				transcribed text appears wherever your cursor is.
 			</p>
 			<p>

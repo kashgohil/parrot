@@ -65,7 +65,7 @@ export default function LocalVoiceDictationMac() {
 
 			<h2>Step 3: Start dictating</h2>
 			<p>
-				Press <strong>Cmd+Shift+Space</strong> (or your custom hotkey) to start
+				Press <strong>fn</strong> (or your custom hotkey) to start
 				recording. Press it again to stop. Your transcription appears where
 				your cursor is — no copy-paste needed.
 			</p>
@@ -97,7 +97,7 @@ export default function LocalVoiceDictationMac() {
 					so it formats output appropriately.
 				</li>
 				<li>
-					<strong>Hotkey</strong> — change the default Cmd+Shift+Space to any
+					<strong>Hotkey</strong> — change the default fn key to any
 					key combination that fits your workflow.
 				</li>
 			</ul>

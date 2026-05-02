@@ -79,7 +79,7 @@ export default function RsiDeveloperVoiceDictation() {
 					.
 				</li>
 				<li>
-					<strong>Use the global hotkey</strong>. Cmd+Shift+Space starts
+					<strong>Use the global hotkey</strong>. Press fn to start
 					recording from any app. You don't have to switch to a separate
 					dictation window.
 				</li>

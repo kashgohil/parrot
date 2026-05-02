@@ -90,7 +90,7 @@ export default function OfflineVoiceDictationSetup() {
 					In the setup wizard, choose <em>Local</em>. Parrot downloads the
 					Whisper model the first time you use it.
 				</li>
-				<li>Pick a hotkey (default is Cmd+Shift+Space).</li>
+				<li>Pick a hotkey (default is fn).</li>
 				<li>
 					Press the hotkey, speak, release. Your transcript pastes wherever your
 					cursor is.

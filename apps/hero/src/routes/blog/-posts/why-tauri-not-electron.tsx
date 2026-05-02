@@ -50,7 +50,7 @@ export default function WhyTauriNotElectron() {
 					Audio on macOS.
 				</li>
 				<li>
-					<strong>Global hotkey</strong> - registering Cmd+Shift+Space
+					<strong>Global hotkey</strong> - registering the fn key
 					system-wide requires native APIs. Tauri's Rust backend handles this
 					directly.
 				</li>

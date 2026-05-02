@@ -83,7 +83,7 @@ export const posts: BlogPost[] = [
 				},
 				{
 					name: "Set a hotkey",
-					text: "Pick a global hotkey for dictation. The default is Cmd+Shift+Space.",
+					text: "Pick a global hotkey for dictation. The default is the fn key.",
 				},
 				{
 					name: "Verify offline operation",
@@ -252,7 +252,7 @@ export const posts: BlogPost[] = [
 				},
 				{
 					name: "Start dictating",
-					text: "Press Cmd+Shift+Space to record, press again to stop. Transcription appears at the cursor.",
+					text: "Press fn to record, press again to stop. Transcription appears at the cursor.",
 				},
 				{
 					name: "Customize",
