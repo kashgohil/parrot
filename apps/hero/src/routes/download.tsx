@@ -187,20 +187,20 @@ function DownloadPage() {
 			{/* ── Hero ── */}
 			<section className="px-6 pt-16 pb-16 md:pt-24 md:pb-20">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3 animate-fade-in-up">
+					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
 						Download
 					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5 animate-fade-in-up-delay-1">
+					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
 						Get Parrot for Mac.
 						<br />
 						Free, for life.
 					</h1>
-					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl animate-fade-in-up-delay-2">
+					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
 						Local-only voice dictation that runs entirely on your device. No
 						account, no subscription, no servers.
 					</p>
 
-					<div className="mt-10 animate-fade-in-up-delay-3">
+					<div className="mt-10">
 						{release.status === "ready" ? (
 							<a
 								href={release.url}
@@ -272,7 +272,7 @@ function DownloadPage() {
 						{[
 							{
 								label: "Global hotkey",
-								body: "Cmd+Shift+Space starts recording from any app. Release the hotkey and your words paste at the cursor.",
+								body: "Press fn to start recording from any app. Release the hotkey and your words paste at the cursor.",
 							},
 							{
 								label: "On-device transcription",
@@ -341,7 +341,7 @@ function DownloadPage() {
 							},
 							{
 								num: "05",
-								title: "Press Cmd+Shift+Space and talk",
+								title: "Press fn and talk",
 								body: "Anywhere, in any app. Release the hotkey and your transcription pastes at the cursor.",
 							},
 						].map((item) => (
