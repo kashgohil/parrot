@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
 import Footer from "@/components/Footer";
 import { SubscribeCTA } from "@/components/SubscribeCTA";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/about")({
 	component: AboutPage,
@@ -308,10 +308,9 @@ function AboutPage() {
 					</h2>
 					<p className="text-base text-muted-foreground leading-relaxed mb-4 max-w-2xl">
 						Software engineer focused on native macOS apps, on-device AI, and
-						local-first software. Built Parrot after years of fighting with
-						cloud dictation tools that were slow, leaky, or paywalled. Parrot is
-						the dictation app I wanted to use every day — fast, private, and
-						free.
+						local-first software. Built Parrot after fighting with cloud
+						dictation tools that were slow, leaky, or paywalled. Parrot is the
+						dictation app I wanted to use every day - fast, private, and free.
 					</p>
 					<p className="text-base text-muted-foreground leading-relaxed mb-6 max-w-2xl">
 						I write Parrot in Rust (Tauri) and TypeScript, and I publish guides
@@ -374,8 +373,20 @@ function AboutPage() {
 								text: "Launched publicly with local mode — on-device transcription and cleanup, custom vocabulary, dictation history, and the onboarding wizard. Free, for life.",
 							},
 							{
-								date: "Coming soon",
-								text: "Managed cloud mode — higher accuracy, AI cleanup, and cross-device sync.",
+								date: "Spring 2026",
+								text: "Shipped a draggable HUD orb, dictation history with grouping and quick-copy, and steady polish across the app based on early-user feedback.",
+							},
+							{
+								date: "Next",
+								text: "Cloud mode — higher accuracy, AI cleanup, and cross-device sync.",
+							},
+							{
+								date: "Later in 2026",
+								text: "Windows support via Tauri's cross-platform build, plus mobile apps for iOS and Android.",
+							},
+							{
+								date: "On the roadmap",
+								text: "Multi-lingual transcription with automatic language detection.",
 							},
 						].map((item, i) => (
 							<div key={i} className="relative flex gap-5 mb-8 last:mb-0">
