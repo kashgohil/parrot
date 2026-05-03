@@ -401,6 +401,84 @@ fn check_accessibility_permission() -> bool {
     }
 }
 
+/// Microphone permission status. On macOS we query AVCaptureDevice via objc
+/// (no prompt). Returns one of `granted`, `denied`, `restricted`,
+/// `notDetermined`. Non-macOS platforms always report `granted`.
+#[tauri::command]
+fn check_microphone_permission() -> String {
+    #[cfg(target_os = "macos")]
+    {
+        macos_mic_authorization_status().to_string()
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        "granted".to_string()
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn macos_mic_authorization_status() -> &'static str {
+    use std::ffi::c_void;
+    use std::os::raw::c_char;
+
+    type Id = *mut c_void;
+    type Class = *mut c_void;
+    type Sel = *mut c_void;
+
+    #[link(name = "objc")]
+    extern "C" {
+        fn objc_getClass(name: *const c_char) -> Class;
+        fn sel_registerName(name: *const c_char) -> Sel;
+    }
+
+    // Force-link AVFoundation so AVCaptureDevice is registered with the objc runtime.
+    #[link(name = "AVFoundation", kind = "framework")]
+    extern "C" {}
+
+    // objc_msgSend has a variadic ABI; we cast to a typed function pointer per call.
+    extern "C" {
+        fn objc_msgSend();
+    }
+
+    unsafe {
+        let ns_string_cls = objc_getClass(b"NSString\0".as_ptr() as *const c_char);
+        if ns_string_cls.is_null() {
+            return "unknown";
+        }
+        let av_capture_cls = objc_getClass(b"AVCaptureDevice\0".as_ptr() as *const c_char);
+        if av_capture_cls.is_null() {
+            return "unknown";
+        }
+
+        // [NSString stringWithUTF8String:"soun"] — AVMediaTypeAudio is the FourCC "soun".
+        let sel_with_utf8 =
+            sel_registerName(b"stringWithUTF8String:\0".as_ptr() as *const c_char);
+        let msg_string_with_utf8: extern "C" fn(Class, Sel, *const c_char) -> Id =
+            std::mem::transmute(objc_msgSend as *const ());
+        let media_type =
+            msg_string_with_utf8(ns_string_cls, sel_with_utf8, b"soun\0".as_ptr() as *const c_char);
+        if media_type.is_null() {
+            return "unknown";
+        }
+
+        // [AVCaptureDevice authorizationStatusForMediaType:media_type]
+        let sel_auth = sel_registerName(
+            b"authorizationStatusForMediaType:\0".as_ptr() as *const c_char,
+        );
+        let msg_auth: extern "C" fn(Class, Sel, Id) -> i64 =
+            std::mem::transmute(objc_msgSend as *const ());
+        let status = msg_auth(av_capture_cls, sel_auth, media_type);
+
+        match status {
+            0 => "notDetermined",
+            1 => "restricted",
+            2 => "denied",
+            3 => "granted",
+            _ => "unknown",
+        }
+    }
+}
+
 /// Returns the platform's default dictation hotkey + the OS family, so the
 /// settings UI can render appropriate controls (e.g. only show the "fn key"
 /// option on macOS).
@@ -1089,6 +1167,7 @@ pub fn run() {
             open_system_settings,
             get_default_dictation_hotkey,
             check_accessibility_permission,
+            check_microphone_permission,
             migration::get_migration_status,
             migration::get_migration_checkout_url,
             migration::get_migration_snapshot,
