@@ -61,9 +61,30 @@ export const Route = createFileRoute("/changelog")({
 
 const RELEASES = [
 	{
+		version: "v0.1.4",
+		date: "May 3, 2026",
+		tag: "Latest",
+		changes: [
+			{
+				type: "fixed",
+				items: [
+					"Local setup no longer hangs on “Installing Ollama…” — installer now elevates through a native macOS password prompt instead of a stuck sudo call",
+					"Setup correctly detects an existing Ollama install — including users on Ollama.app who never ran “Install command line”",
+				],
+			},
+			{
+				type: "improved",
+				items: [
+					"Local mode no longer requires Homebrew — CMake (a build-from-source dependency) is the only prerequisite, and the official cmake.org installer works fine",
+					"Default dictation hotkey shown as fn across the marketing site and download page",
+					"Blog posts now render markdown tables properly",
+				],
+			},
+		],
+	},
+	{
 		version: "v0.1.3",
 		date: "May 2, 2026",
-		tag: "Latest",
 		changes: [
 			{
 				type: "added",
