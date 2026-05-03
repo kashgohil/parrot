@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/lib/auth";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { ArrowRight, User, Mail } from "lucide-react";
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/_onboarding/local-profile")({
 
 function LocalProfilePage() {
 	const navigate = useNavigate();
+	const { refreshUser } = useAuth();
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,11 +29,19 @@ function LocalProfilePage() {
 		setError(null);
 
 		try {
+			// Persist setup_mode first — refreshUser keys off this to load the
+			// local user; without it auth context would clear `user` to null.
+			await invoke("set_setting", { key: "setup_mode", value: "local" });
+
 			// Save local user profile
 			await invoke("set_local_user", {
 				name: name.trim(),
 				email: email.trim() || `${name.trim().toLowerCase().replace(/\s+/g, '.')}@local.user`,
 			});
+
+			// Pull the freshly-created local user into auth context so
+			// subsequent steps (local-setup, tour) see user.isLocal=true.
+			await refreshUser();
 
 			// Navigate to local setup (installation)
 			navigate({ to: "/local-setup" });
