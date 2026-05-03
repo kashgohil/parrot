@@ -151,7 +151,17 @@ export default function OfflineVoiceDictationSetup() {
 			</p>
 			<ol>
 				<li>
-					Install via Homebrew: <code>brew install whisper-cpp</code>.
+					Install whisper.cpp — grab a release from the{" "}
+					<a
+						className="underline"
+						href="https://github.com/ggerganov/whisper.cpp/releases"
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						whisper.cpp GitHub releases
+					</a>{" "}
+					or build from source. If you already have a package manager,{" "}
+					<code>brew install whisper-cpp</code> works too.
 				</li>
 				<li>
 					Download a model (small, medium, or large). Larger = more accurate,
