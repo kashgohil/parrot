@@ -12,8 +12,6 @@ import { ArrowLeft, Check, User, Settings, BookOpen } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-const pageTransition = { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
-
 const SMOOTH = [0.22, 1, 0.36, 1] as const;
 const INTRO_HOLD_MS = 1900;
 const HIDE_MS = 280;
@@ -215,7 +213,7 @@ function OnboardingLayout() {
 									<div className="flex-1 min-w-0">
 										<span
 											className={`
-												text-sm font-medium transition-colors block
+												text-sm font-medium block
 												${
 													isActive
 														? "text-white"
@@ -227,11 +225,13 @@ function OnboardingLayout() {
 										>
 											{step.label}
 										</span>
-										{isActive && (
-											<span className="text-xs text-white/60 mt-0.5 block">
-												{step.description}
-											</span>
-										)}
+										<span
+											className={`text-xs mt-0.5 block ${
+												isActive ? "text-white/60" : "text-transparent"
+											}`}
+										>
+											{step.description}
+										</span>
 									</div>
 								</div>
 							);
@@ -270,23 +270,7 @@ function OnboardingLayout() {
 					className="min-h-full flex items-center justify-center p-6 lg:p-10"
 				>
 					<div className="w-full max-w-md relative z-10 py-8">
-						{/* No mode="wait": both children render simultaneously, so the
-						    new mount paints over the old immediately and there's no
-						    "exiting child showing new content" flash. Both children
-						    are absolutely positioned and overlap during the swap. */}
-						<AnimatePresence initial={false}>
-							<motion.div
-								key={currentPath}
-								initial={{ opacity: 0, x: 24 }}
-								animate={{ opacity: 1, x: 0 }}
-								exit={{ opacity: 0, x: -24 }}
-								transition={pageTransition}
-								style={{ willChange: "transform, opacity" }}
-								className="w-full"
-							>
-								<Outlet />
-							</motion.div>
-						</AnimatePresence>
+						<Outlet />
 					</div>
 				</motion.div>
 			</div>
