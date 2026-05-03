@@ -110,6 +110,81 @@ pub async fn command_exists(name: &str) -> bool {
     find_command_path(name).await.is_some()
 }
 
+/// Verify that the resolved `ollama` binary is actually runnable. On corporate
+/// Macs we've seen `command_exists("ollama")` return true for a binary that
+/// can't execute — quarantined Ollama.app from a prior install, MDM-blocked
+/// signatures, missing Rosetta, etc. A successful `--version` invocation is
+/// cheap and proves the binary actually launches.
+pub async fn ollama_binary_works() -> bool {
+    let Some(path) = find_command_path("ollama").await else {
+        return false;
+    };
+    match tokio::time::timeout(
+        Duration::from_secs(5),
+        Command::new(&path)
+            .arg("--version")
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status(),
+    )
+    .await
+    {
+        Ok(Ok(status)) => status.success(),
+        _ => false,
+    }
+}
+
+/// True when we have a working Ollama on this machine — either a runnable CLI
+/// or a daemon already answering on the standard port.
+pub async fn ollama_available() -> bool {
+    if ollama_binary_works().await {
+        return true;
+    }
+    let client = reqwest::Client::new();
+    probe_ollama(&client, 11434).await
+}
+
+/// Locate an installed `Ollama.app` bundle, if any. The DMG installer drops
+/// the app here even when the CLI shim never makes it onto PATH (common on
+/// corp laptops — DMG drag-install doesn't touch `/usr/local/bin`).
+fn find_ollama_app() -> Option<PathBuf> {
+    let mut candidates = vec![PathBuf::from("/Applications/Ollama.app")];
+    if let Some(home) = dirs::home_dir() {
+        candidates.push(home.join("Applications/Ollama.app"));
+    }
+    candidates.into_iter().find(|p| p.exists())
+}
+
+/// If `Ollama.app` is installed but its daemon isn't running, launch the app
+/// and wait briefly for the API to come up. Returns true if the daemon ends
+/// up reachable. This lets us recover a broken-CLI install without bothering
+/// the user with a reinstall flow.
+pub async fn try_launch_ollama_app() -> bool {
+    let Some(app_path) = find_ollama_app() else {
+        return false;
+    };
+
+    // `open -a` returns immediately; the app then spawns its daemon. Errors
+    // here are non-fatal — we'll fall through and let the caller decide what
+    // to do based on the post-launch probe.
+    let _ = Command::new("/usr/bin/open")
+        .arg("-a")
+        .arg(app_path)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .await;
+
+    let client = reqwest::Client::new();
+    for _ in 0..20 {
+        if probe_ollama(&client, 11434).await {
+            return true;
+        }
+        tokio::time::sleep(Duration::from_millis(500)).await;
+    }
+    false
+}
+
 /// Known absolute paths to check for binaries that are commonly missing from
 /// the GUI app's inherited PATH on macOS. Tauri/Finder-launched apps don't
 /// run a login shell, so the standard CLI install dirs aren't on PATH and
@@ -414,10 +489,27 @@ where
 {
     progress_callback("Checking for Ollama...".to_string(), 0.0);
 
-    let probe_client = reqwest::Client::new();
-    if probe_ollama(&probe_client, 11434).await || command_exists("ollama").await {
+    // Note: we deliberately do NOT short-circuit on `command_exists` alone —
+    // a quarantined or MDM-blocked Ollama binary at one of the known paths
+    // would make existence checks lie, and we'd skip install for a binary
+    // that can't actually run. `ollama_available` runs `--version` to prove
+    // the binary launches before trusting it.
+    if ollama_available().await {
         progress_callback("Ollama already installed".to_string(), 100.0);
         return Ok(());
+    }
+
+    // If Ollama.app is installed but the daemon isn't running and the CLI
+    // shim never landed on PATH (common when the user installed via the DMG
+    // and never opened the app), launch the app for them. Once the daemon
+    // is up on 11434, the rest of setup can use the HTTP API and we don't
+    // need a CLI at all.
+    if find_ollama_app().is_some() {
+        progress_callback("Starting installed Ollama app...".to_string(), 50.0);
+        if try_launch_ollama_app().await {
+            progress_callback("Ollama is running".to_string(), 100.0);
+            return Ok(());
+        }
     }
 
     progress_callback(
@@ -783,30 +875,69 @@ pub async fn test_cleanup(port: u16, model: &str) -> Result<()> {
     }
 }
 
-/// Generate manual instructions for Ollama installation
+/// Generate manual instructions for Ollama installation.
+///
+/// We lead with the `.dmg` download because it works on locked-down corporate
+/// Macs where the user doesn't have local admin and `curl | sh` (which uses
+/// sudo) gets blocked. The shell installer is included as a fallback for
+/// users who prefer it.
 pub fn get_ollama_manual_instructions(error: &str) -> ManualInstructions {
     ManualInstructions {
         title: "Install Ollama manually".to_string(),
         description: format!("We couldn't install Ollama automatically. Error: {}", error),
         steps: vec![
             ManualStep {
-                label: "Open Terminal".to_string(),
-                command: None,
-                explanation: "Press Cmd+Space, type 'Terminal', press Enter".to_string(),
+                label: "Download the Ollama app".to_string(),
+                command: Some("https://ollama.com/download/mac".to_string()),
+                explanation: "Open this link in your browser, then drag Ollama into your Applications folder. This works without admin access — useful on managed/work laptops.".to_string(),
                 skippable: false,
                 skip_condition: None,
             },
             ManualStep {
-                label: "Install Ollama".to_string(),
-                command: Some("curl -fsSL https://ollama.com/install.sh | sh".to_string()),
-                explanation: "This installs Ollama, which runs AI models locally on your Mac".to_string(),
+                label: "Launch Ollama once".to_string(),
+                command: None,
+                explanation: "Open Ollama from Applications so it can finish setup and start its background service.".to_string(),
                 skippable: false,
                 skip_condition: None,
             },
+            ManualStep {
+                label: "Or install via Terminal (needs admin)".to_string(),
+                command: Some("curl -fsSL https://ollama.com/install.sh | sh".to_string()),
+                explanation: "Alternative if you have admin access — paste this in Terminal (Cmd+Space → 'Terminal').".to_string(),
+                skippable: true,
+                skip_condition: Some("you used the .dmg above".to_string()),
+            },
         ],
         verification_command: Some("which ollama".to_string()),
-        verification_success: Some("Should return path like /usr/local/bin/ollama".to_string()),
+        verification_success: Some("Should return a path like /usr/local/bin/ollama or /Applications/Ollama.app/Contents/Resources/ollama".to_string()),
     }
+}
+
+/// Same as `get_ollama_manual_instructions` but also tells the user to pull
+/// the cleanup model afterwards. Used when the auto-install path didn't leave
+/// us with a working Ollama, so the user needs both steps in one place — we
+/// can't surface a "pull MODEL" instruction in isolation when `ollama` itself
+/// is missing.
+pub fn get_ollama_manual_instructions_with_model(
+    error: &str,
+    model: &str,
+) -> ManualInstructions {
+    let mut instructions = get_ollama_manual_instructions(error);
+    instructions.description = format!(
+        "We couldn't finish setting up Ollama automatically. Run the steps below to install it and download the {} model. Error: {}",
+        model, error
+    );
+    instructions.steps.push(ManualStep {
+        label: format!("Download {} model", model),
+        command: Some(format!("ollama pull {}", model)),
+        explanation: format!(
+            "After Ollama is installed, this downloads the {} model used for cleanup.",
+            model
+        ),
+        skippable: false,
+        skip_condition: None,
+    });
+    instructions
 }
 
 /// Generate manual instructions for model download
@@ -960,13 +1091,37 @@ where
         progress_emitter(SetupProgress {
             step: SetupStep::InstallOllama,
             status: SetupStatus::ManualInterventionRequired {
-                instructions: get_ollama_manual_instructions(&e.to_string()),
+                instructions: get_ollama_manual_instructions_with_model(
+                    &e.to_string(),
+                    &ollama_model,
+                ),
             },
             overall_progress: current_step / total_steps,
         });
         return Err(anyhow::anyhow!("Manual intervention required: Ollama installation"));
     }
-    
+
+    // Belt-and-suspenders: osascript can return success while leaving us
+    // without a usable Ollama (MDM-blocked installer, network blip after the
+    // password prompt, stale Ollama.app resources making `command_exists`
+    // lie). If we can't actually find or talk to Ollama after the install
+    // call, route to manual instructions now — otherwise the next step
+    // would fail with a generic "ollama pull" error and the user would see
+    // a pull command they can't actually run.
+    if !ollama_available().await {
+        progress_emitter(SetupProgress {
+            step: SetupStep::InstallOllama,
+            status: SetupStatus::ManualInterventionRequired {
+                instructions: get_ollama_manual_instructions_with_model(
+                    "Ollama wasn't runnable after installation",
+                    &ollama_model,
+                ),
+            },
+            overall_progress: current_step / total_steps,
+        });
+        return Err(anyhow::anyhow!("Manual intervention required: Ollama installation"));
+    }
+
     current_step += 1.0;
     progress_emitter(SetupProgress {
         step: SetupStep::InstallOllama,
@@ -992,12 +1147,18 @@ where
         });
     }).await;
     
-    if let Err(_e) = ollama_model_result {
+    if let Err(e) = ollama_model_result {
+        // If Ollama itself isn't reachable here, the user can't run
+        // `ollama pull` either. Show the install steps with the pull
+        // appended so they get one self-contained recovery flow.
+        let instructions = if ollama_available().await {
+            get_model_manual_instructions("ollama", &ollama_model)
+        } else {
+            get_ollama_manual_instructions_with_model(&e.to_string(), &ollama_model)
+        };
         progress_emitter(SetupProgress {
             step: SetupStep::DownloadOllamaModel { model: ollama_model.clone() },
-            status: SetupStatus::ManualInterventionRequired {
-                instructions: get_model_manual_instructions("ollama", &ollama_model),
-            },
+            status: SetupStatus::ManualInterventionRequired { instructions },
             overall_progress: current_step / total_steps,
         });
         return Err(anyhow::anyhow!("Manual intervention required: Ollama model download"));
