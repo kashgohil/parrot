@@ -7,6 +7,12 @@ import {
 	showError,
 } from "@/lib/errors";
 import { useUpdater } from "@/lib/updater";
+import {
+	isMissing,
+	openPermissionSettings,
+	usePermissions,
+	type PermissionState,
+} from "@/lib/permissions";
 import { SubscriptionProvider } from "@/lib/subscription";
 import {
 	createRootRoute,
@@ -18,9 +24,11 @@ import {
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import {
+	AlertTriangle,
 	ArrowDownToLine,
 	BookA,
 	CircleCheck,
+	ExternalLink,
 	History,
 	Loader2,
 	LogOut,
@@ -380,6 +388,9 @@ function AuthenticatedLayout() {
 					<MobileNavLink to="/profile" icon={User} label="Profile" />
 				</div>
 
+				{/* Permissions banner */}
+				<PermissionsBanner />
+
 				{/* Page content */}
 				<main className="flex-1 overflow-y-auto relative z-10">
 					<div className="max-w-3xl mx-auto w-full px-5 py-6 lg:py-8">
@@ -603,6 +614,81 @@ function UpdateBanner({
 					</span>
 				)}
 			</button>
+		</div>
+	);
+}
+
+interface MissingPermission {
+	key: "accessibility" | "microphone";
+	label: string;
+	state: PermissionState;
+}
+
+function PermissionsBanner() {
+	const status = usePermissions();
+	const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+
+	const missing: MissingPermission[] = [];
+	if (isMissing(status.microphone)) {
+		missing.push({ key: "microphone", label: "Microphone", state: status.microphone });
+	}
+	if (isMissing(status.accessibility)) {
+		missing.push({
+			key: "accessibility",
+			label: "Accessibility",
+			state: status.accessibility,
+		});
+	}
+
+	const visible = missing.filter((p) => !dismissed.has(p.key));
+	if (visible.length === 0) return null;
+
+	const first = visible[0];
+	const extraCount = visible.length - 1;
+	const headline =
+		extraCount > 0
+			? `Parrot needs ${first.label} permission (+${extraCount} more)`
+			: `Parrot needs ${first.label} permission`;
+	const detail =
+		first.key === "microphone"
+			? "Without it, dictation can't capture audio."
+			: "Without it, Parrot can't paste your dictation into other apps.";
+
+	return (
+		<div className="shrink-0 relative z-10 border-b border-amber-200 bg-amber-50 text-amber-900 px-4 py-2.5">
+			<div className="max-w-3xl mx-auto flex items-center gap-3">
+				<AlertTriangle className="w-4 h-4 shrink-0" />
+				<div className="flex-1 min-w-0">
+					<p className="text-sm font-medium leading-tight">{headline}</p>
+					<p className="text-xs text-amber-800/80 leading-tight mt-0.5">{detail}</p>
+				</div>
+				<button
+					type="button"
+					onClick={() => {
+						openPermissionSettings(first.key).catch((e) =>
+							showError(e, { context: "opening System Settings" }),
+						);
+					}}
+					className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md bg-amber-900 text-amber-50 hover:bg-amber-950 transition-colors"
+				>
+					Open Settings
+					<ExternalLink className="w-3 h-3" />
+				</button>
+				<button
+					type="button"
+					aria-label="Dismiss"
+					onClick={() =>
+						setDismissed((prev) => {
+							const next = new Set(prev);
+							next.add(first.key);
+							return next;
+						})
+					}
+					className="text-amber-900/60 hover:text-amber-900 text-base px-1"
+				>
+					×
+				</button>
+			</div>
 		</div>
 	);
 }

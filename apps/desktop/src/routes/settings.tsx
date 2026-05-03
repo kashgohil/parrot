@@ -5,7 +5,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { createFileRoute } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Keyboard, Save, Wand2, Database, Check } from "lucide-react";
+import {
+	Keyboard,
+	Save,
+	Wand2,
+	Database,
+	Check,
+	ShieldCheck,
+	Mic,
+	Accessibility,
+	ExternalLink,
+} from "lucide-react";
+import {
+	isMissing,
+	openPermissionSettings,
+	usePermissions,
+	type PermissionState,
+} from "@/lib/permissions";
 
 export const Route = createFileRoute("/settings")({
 	component: SettingsPage,
@@ -284,6 +300,9 @@ function SettingsPage() {
 				</div>
 			</section>
 
+			{/* Permissions Section */}
+			<PermissionsSection />
+
 			{/* Writing Preferences Section */}
 			<section className="bg-card rounded-2xl border border-border p-5">
 				<div className="flex items-start gap-4 mb-5">
@@ -401,6 +420,109 @@ function SettingsPage() {
 					)}
 				</Button>
 			</div>
+		</div>
+	);
+}
+
+function PermissionsSection() {
+	const status = usePermissions();
+
+	return (
+		<section className="bg-card rounded-2xl border border-border p-5">
+			<div className="flex items-start gap-4 mb-4">
+				<div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+					<ShieldCheck className="w-5 h-5 text-emerald-600" />
+				</div>
+				<div className="flex-1">
+					<h2 className="text-base font-semibold text-foreground">Permissions</h2>
+					<p className="text-sm text-muted-foreground">
+						Parrot needs these macOS permissions to record and paste your dictation.
+					</p>
+				</div>
+			</div>
+
+			<div className="space-y-2">
+				<PermissionRow
+					icon={Mic}
+					label="Microphone"
+					description="Required to capture your voice for transcription."
+					state={status.microphone}
+					pane="microphone"
+				/>
+				<PermissionRow
+					icon={Accessibility}
+					label="Accessibility"
+					description="Required to paste dictated text into other apps and use the fn key."
+					state={status.accessibility}
+					pane="accessibility"
+				/>
+			</div>
+		</section>
+	);
+}
+
+function PermissionRow({
+	icon: Icon,
+	label,
+	description,
+	state,
+	pane,
+}: {
+	icon: React.ComponentType<{ className?: string }>;
+	label: string;
+	description: string;
+	state: PermissionState;
+	pane: "accessibility" | "microphone";
+}) {
+	const granted = state === "granted";
+	const statusLabel =
+		state === "granted"
+			? "Granted"
+			: state === "denied"
+				? "Denied"
+				: state === "restricted"
+					? "Restricted"
+					: state === "notDetermined"
+						? "Not requested"
+						: "Unknown";
+
+	return (
+		<div className="flex items-center justify-between gap-3 p-4 rounded-xl bg-muted/50">
+			<div className="flex items-start gap-3 min-w-0">
+				<div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center shrink-0">
+					<Icon className="w-4 h-4 text-foreground" />
+				</div>
+				<div className="min-w-0">
+					<div className="flex items-center gap-2">
+						<p className="text-sm font-medium text-foreground">{label}</p>
+						<span
+							className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+								granted
+									? "bg-emerald-500/10 text-emerald-700"
+									: "bg-amber-500/15 text-amber-800"
+							}`}
+						>
+							{statusLabel}
+						</span>
+					</div>
+					<p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+				</div>
+			</div>
+			{isMissing(state) && (
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => {
+						openPermissionSettings(pane).catch((e) =>
+							console.error("Failed to open System Settings:", e),
+						);
+					}}
+					className="shrink-0"
+				>
+					Open Settings
+					<ExternalLink className="w-3 h-3 ml-1.5" />
+				</Button>
+			)}
 		</div>
 	);
 }
