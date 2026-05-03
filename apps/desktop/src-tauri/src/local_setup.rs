@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use std::process::Stdio;
 use std::sync::Arc;
 use std::time::Duration;
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::io::AsyncWriteExt;
 use tokio::process::Command;
 use tokio::sync::RwLock;
 
@@ -111,26 +111,30 @@ pub async fn command_exists(name: &str) -> bool {
 }
 
 /// Known absolute paths to check for binaries that are commonly missing from
-/// the GUI app's inherited PATH on macOS (Tauri/Finder-launched apps don't
-/// run a login shell, so /opt/homebrew/bin and /usr/local/bin are absent).
+/// the GUI app's inherited PATH on macOS. Tauri/Finder-launched apps don't
+/// run a login shell, so the standard CLI install dirs aren't on PATH and
+/// have to be probed directly.
 fn known_paths_for(name: &str) -> Vec<String> {
-    match name {
-        "brew" => vec![
-            "/opt/homebrew/bin/brew".to_string(),
-            "/usr/local/bin/brew".to_string(),
-        ],
-        _ => {
-            let mut paths = Vec::new();
-            for prefix in ["/opt/homebrew/bin", "/usr/local/bin", "/opt/local/bin"] {
-                paths.push(format!("{prefix}/{name}"));
-            }
-            paths
+    let mut paths = Vec::new();
+    for prefix in ["/opt/homebrew/bin", "/usr/local/bin", "/opt/local/bin"] {
+        paths.push(format!("{prefix}/{name}"));
+    }
+    if name == "ollama" {
+        paths.push("/Applications/Ollama.app/Contents/Resources/ollama".to_string());
+        if let Some(home) = dirs::home_dir() {
+            paths.push(
+                home.join("Applications/Ollama.app/Contents/Resources/ollama")
+                    .to_string_lossy()
+                    .into_owned(),
+            );
         }
     }
+    paths
 }
 
-/// Resolve the absolute path to a command, falling back to common Homebrew
-/// locations when the binary is installed but not on the inherited PATH.
+/// Resolve the absolute path to a command, falling back to common CLI
+/// install locations when the binary is on disk but not on the inherited
+/// PATH.
 pub async fn find_command_path(name: &str) -> Option<String> {
     if let Ok(output) = Command::new("which").arg(name).output().await {
         if output.status.success() {
@@ -141,7 +145,7 @@ pub async fn find_command_path(name: &str) -> Option<String> {
         }
     }
 
-    // Ask a login shell — picks up Homebrew shellenv from the user's profile.
+    // Ask a login shell — picks up any PATH additions from the user's profile.
     if let Ok(output) = Command::new("/bin/bash")
         .args(["-lc", &format!("command -v {name}")])
         .output()
@@ -393,46 +397,59 @@ where
     Ok(model_path)
 }
 
-/// Install Ollama
+/// Install Ollama via the official `install.sh`.
+///
+/// The installer needs `sudo` to write into `/usr/local/bin`. Spawning it
+/// from `sh -c` gives sudo no TTY, so the password prompt blocks forever
+/// and the UI hangs on "Installing Ollama…". We elevate via `osascript`'s
+/// `with administrator privileges` instead — macOS shows a native password
+/// dialog, the user authenticates once, and sudo inside the installer
+/// inherits the elevated context.
+///
+/// Detection is daemon-first so users who already run Ollama.app (which
+/// rarely puts a CLI on PATH) are recognized without a reinstall.
 pub async fn install_ollama<F>(progress_callback: F) -> Result<()>
 where
     F: Fn(String, f32) + Send + 'static,
 {
     progress_callback("Checking for Ollama...".to_string(), 0.0);
-    
-    if command_exists("ollama").await {
+
+    let probe_client = reqwest::Client::new();
+    if probe_ollama(&probe_client, 11434).await || command_exists("ollama").await {
         progress_callback("Ollama already installed".to_string(), 100.0);
         return Ok(());
     }
-    
-    progress_callback("Installing Ollama...".to_string(), 10.0);
-    
-    let install_script = r#"curl -fsSL https://ollama.com/install.sh | sh"#;
-    
-    let mut child = Command::new("sh")
-        .arg("-c")
-        .arg(install_script)
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .context("Failed to start Ollama installation")?;
-    
-    let stdout = child.stdout.take().unwrap();
-    let reader = BufReader::new(stdout);
-    let mut lines = reader.lines();
-    
-    let mut progress: f32 = 10.0;
-    while let Ok(Some(line)) = lines.next_line().await {
-        progress = (progress + 3.0f32).min(90.0f32);
-        progress_callback(line, progress);
+
+    progress_callback(
+        "Requesting permission to install Ollama…".to_string(),
+        10.0,
+    );
+
+    // `do shell script` runs through /bin/sh; the inner double quotes are
+    // what AppleScript needs around the command string. No user-controlled
+    // input is interpolated, so this string is safe as a literal.
+    let applescript = r#"do shell script "curl -fsSL https://ollama.com/install.sh | sh" with administrator privileges"#;
+
+    let output = Command::new("/usr/bin/osascript")
+        .args(["-e", applescript])
+        .output()
+        .await
+        .context("Failed to run osascript for Ollama install")?;
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        // osascript exit code 1 with "User canceled" means the user dismissed
+        // the password dialog — surface that distinctly so the caller can
+        // route to manual instructions instead of treating it as a hard fail.
+        if stderr.contains("User canceled") || stderr.contains("(-128)") {
+            anyhow::bail!("Ollama install cancelled at the password prompt");
+        }
+        anyhow::bail!(
+            "Ollama installation failed: {}",
+            stderr.trim().lines().last().unwrap_or("unknown error")
+        );
     }
-    
-    let status = child.wait().await?;
-    
-    if !status.success() {
-        anyhow::bail!("Ollama installation failed");
-    }
-    
+
     progress_callback("Ollama installed successfully".to_string(), 100.0);
     Ok(())
 }

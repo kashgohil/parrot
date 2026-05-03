@@ -713,25 +713,16 @@ async fn check_command_exists(name: String) -> bool {
 
 #[tauri::command]
 async fn install_tool(name: String) -> Result<String, String> {
-    let script = match name.as_str() {
-        "ollama" => "curl -fsSL https://ollama.ai/install.sh | sh".to_string(),
-        _ => return Err(format!("Unknown tool: {}", name)),
-    };
-
-    // Use a login shell so PATH from the user's profile is available to any
-    // child processes the install script spawns.
-    let output = tokio::process::Command::new("/bin/bash")
-        .arg("-lc")
-        .arg(&script)
-        .output()
-        .await
-        .map_err(|e| format!("Failed to run install command: {}", e))?;
-
-    if output.status.success() {
-        Ok(format!("{} installed successfully", name))
-    } else {
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        Err(format!("Installation failed: {}", stderr))
+    match name.as_str() {
+        "ollama" => {
+            // Delegate to local_setup so both the onboarding wizard and any
+            // ad-hoc install path use the same osascript-elevated installer.
+            local_setup::install_ollama(|_msg, _pct| {})
+                .await
+                .map(|_| "ollama installed successfully".to_string())
+                .map_err(|e| format!("Installation failed: {}", e))
+        }
+        _ => Err(format!("Unknown tool: {}", name)),
     }
 }
 
