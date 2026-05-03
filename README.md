@@ -104,8 +104,6 @@ When releases are out:
 | Linux (Fedora/RHEL) | `parrot-<version>.x86_64.rpm` | `sudo rpm -i parrot-*.rpm` |
 | Linux (any) | `parrot_<version>_amd64.AppImage` | `chmod +x parrot-*.AppImage && ./parrot-*.AppImage` |
 
-Homebrew Cask formula will follow — `brew install --cask parrot`.
-
 ---
 
 ## Build from source
@@ -133,8 +131,9 @@ Whisper runs in-process via `whisper-rs`, which compiles `whisper.cpp` from sour
 
 ```bash
 xcode-select --install              # Xcode Command Line Tools
-brew install cmake                  # whisper-rs build dependency
 ```
+
+Then install **CMake** (whisper-rs build dependency). Either grab the official installer from [cmake.org/download](https://cmake.org/download/), or use whatever package manager you already have (`brew install cmake`, `port install cmake`, etc.).
 
 Minimum: macOS 12 (Monterey).
 
