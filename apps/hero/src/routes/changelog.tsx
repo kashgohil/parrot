@@ -61,9 +61,33 @@ export const Route = createFileRoute("/changelog")({
 
 const RELEASES = [
 	{
-		version: "v0.1.4",
+		version: "v0.1.5",
 		date: "May 3, 2026",
 		tag: "Latest",
+		changes: [
+			{
+				type: "added",
+				items: [
+					"Manual Ollama setup fallback — if the automatic install fails, the wizard now walks you through installing Ollama yourself and resumes from where it left off",
+				],
+			},
+			{
+				type: "fixed",
+				items: [
+					"Onboarding now persists setup mode before saving your profile, so local-setup and tour steps no longer lose track of the local user",
+				],
+			},
+			{
+				type: "improved",
+				items: [
+					"Cleaner onboarding transitions — dropped the route cross-fade in favor of stable layout heights and instant step changes",
+				],
+			},
+		],
+	},
+	{
+		version: "v0.1.4",
+		date: "May 3, 2026",
 		changes: [
 			{
 				type: "fixed",
