@@ -42,6 +42,15 @@ impl LocalWhisperProvider {
 }
 
 fn run_whisper(ctx: &WhisperContext, pcm: &[f32]) -> Result<String> {
+    // whisper.cpp needs at least ~1s of audio internally (it pads to 30s frames
+    // from there). Calling `state.full()` with a near-empty buffer surfaces as
+    // "Whisper inference failed" — treat sub-threshold input as empty
+    // transcription instead so accidental hotkey taps don't show an error.
+    const MIN_SAMPLES_16K: usize = 16_000 / 4; // 0.25s
+    if pcm.len() < MIN_SAMPLES_16K {
+        return Ok(String::new());
+    }
+
     let mut state = ctx
         .create_state()
         .context("Failed to create whisper state")?;
