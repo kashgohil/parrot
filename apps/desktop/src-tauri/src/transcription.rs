@@ -66,6 +66,14 @@ fn run_whisper(ctx: &WhisperContext, pcm: &[f32]) -> Result<String> {
 
     state
         .full(params, pcm)
+        .map_err(|e| {
+            eprintln!(
+                "whisper.full failed: {e:?} (pcm_len={}, ~{:.2}s @16kHz)",
+                pcm.len(),
+                pcm.len() as f32 / 16_000.0
+            );
+            e
+        })
         .context("Whisper inference failed")?;
 
     let num_segments = state
