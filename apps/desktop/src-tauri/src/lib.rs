@@ -131,6 +131,18 @@ async fn transcribe_last(
     .await
     .map_err(|e| e.to_string())?;
 
+    // Skip empty transcriptions (e.g. silence / accidental hotkey tap) — don't
+    // save, clean up, or paste.
+    if raw_text.trim().is_empty() {
+        let result = DictationResult {
+            raw_text: String::new(),
+            cleaned_text: String::new(),
+            pasted: false,
+        };
+        let _ = app.emit("dictation-complete", result.clone());
+        return Ok(result);
+    }
+
     // Save initial entry
     let id = uuid::Uuid::new_v4().to_string();
     match setup_mode.as_str() {
