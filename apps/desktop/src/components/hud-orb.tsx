@@ -124,8 +124,8 @@ async function initialPlacement(shape: "idle" | "active") {
 	}
 }
 
-// Keep the HUD anchored to its current bottom-left corner across resizes so
-// the user's chosen position is preserved when the shape swaps.
+// Keep the HUD anchored to its current center across resizes so the chip
+// expands outward from the icon's position rather than growing from a corner.
 async function resizeAnchored(shape: "idle" | "active") {
 	const { w, h } = SIZES[shape];
 	const win = getCurrentWindow();
@@ -134,10 +134,12 @@ async function resizeAnchored(shape: "idle" | "active") {
 		const scale = monitor?.scaleFactor ?? 1;
 		const pos = await win.outerPosition();
 		const size = await win.outerSize();
-		const curX = pos.x / scale;
-		const curBottom = (pos.y + size.height) / scale;
+		const curCenterX = (pos.x + size.width / 2) / scale;
+		const curCenterY = (pos.y + size.height / 2) / scale;
 		await win.setSize(new LogicalSize(w, h));
-		await win.setPosition(new LogicalPosition(curX, curBottom - h));
+		await win.setPosition(
+			new LogicalPosition(curCenterX - w / 2, curCenterY - h / 2),
+		);
 	} catch (e) {
 		console.error("HUD resize failed", e);
 	}
