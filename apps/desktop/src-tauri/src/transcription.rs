@@ -31,17 +31,21 @@ impl LocalWhisperProvider {
         Ok(Self { ctx: Arc::new(ctx) })
     }
 
-    pub async fn transcribe(&self, wav_data: &[u8]) -> Result<String> {
+    pub async fn transcribe(
+        &self,
+        wav_data: &[u8],
+        initial_prompt: Option<String>,
+    ) -> Result<String> {
         let pcm = decode_wav_to_mono_f32(wav_data, WHISPER_TARGET_SAMPLE_RATE)?;
         let ctx = self.ctx.clone();
 
-        tokio::task::spawn_blocking(move || run_whisper(&ctx, &pcm))
+        tokio::task::spawn_blocking(move || run_whisper(&ctx, &pcm, initial_prompt.as_deref()))
             .await
             .context("Whisper task panicked")?
     }
 }
 
-fn run_whisper(ctx: &WhisperContext, pcm: &[f32]) -> Result<String> {
+fn run_whisper(ctx: &WhisperContext, pcm: &[f32], initial_prompt: Option<&str>) -> Result<String> {
     // whisper.cpp needs at least ~1s of audio internally (it pads to 30s frames
     // from there). Calling `state.full()` with a near-empty buffer surfaces as
     // "Whisper inference failed" — treat sub-threshold input as empty
@@ -63,6 +67,9 @@ fn run_whisper(ctx: &WhisperContext, pcm: &[f32]) -> Result<String> {
     params.set_print_progress(false);
     params.set_print_realtime(false);
     params.set_print_timestamps(false);
+    if let Some(prompt) = initial_prompt.filter(|p| !p.is_empty()) {
+        params.set_initial_prompt(prompt);
+    }
 
     state
         .full(params, pcm)
@@ -170,6 +177,7 @@ pub async fn transcribe_audio(
     local: Option<&LocalWhisperProvider>,
     session_token: Option<&str>,
     api_key: Option<&str>,
+    initial_prompt: Option<String>,
 ) -> Result<String> {
     match mode {
         "local" => {
@@ -178,9 +186,12 @@ pub async fn transcribe_audio(
                     "Parrot is still warming up the local model. Try again in a moment."
                 )
             })?;
-            provider.transcribe(wav_data).await
+            provider.transcribe(wav_data, initial_prompt).await
         }
-        "cloud" => transcribe_with_backend(wav_data, session_token, api_key).await,
+        "cloud" => {
+            transcribe_with_backend(wav_data, session_token, api_key, initial_prompt.as_deref())
+                .await
+        }
         _ => anyhow::bail!("Unknown transcription mode: {}", mode),
     }
 }
@@ -190,6 +201,7 @@ async fn transcribe_with_backend(
     wav_data: &[u8],
     session_token: Option<&str>,
     api_key: Option<&str>,
+    initial_prompt: Option<&str>,
 ) -> Result<String> {
     let session_token = session_token
         .ok_or_else(|| anyhow::anyhow!("Session token required for cloud mode"))?;
@@ -197,7 +209,10 @@ async fn transcribe_with_backend(
     let part = multipart::Part::bytes(wav_data.to_vec())
         .file_name("audio.wav")
         .mime_str("audio/wav")?;
-    let form = multipart::Form::new().part("file", part);
+    let mut form = multipart::Form::new().part("file", part);
+    if let Some(prompt) = initial_prompt.filter(|p| !p.is_empty()) {
+        form = form.text("prompt", prompt.to_string());
+    }
 
     let client = reqwest::Client::new();
     let mut req_builder = client

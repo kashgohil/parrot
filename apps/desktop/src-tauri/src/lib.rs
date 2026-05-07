@@ -6,6 +6,7 @@ mod hotkey;
 mod local_setup;
 mod migration;
 mod transcription;
+mod vocab;
 
 use audio::AudioRecorder;
 use db::Database;
@@ -121,12 +122,29 @@ async fn transcribe_last(
     } else {
         None
     };
+
+    // Bias the transcriber toward the user's unconditional vocabulary.
+    // Local mode uses the on-device profile; cloud mode lets the server-side
+    // route inject the profile-derived prompt against the upstream provider.
+    let initial_prompt = if setup_mode == "local" {
+        match db.get_profile() {
+            Ok(profile) => {
+                let entries = vocab::parse(&profile.custom_words);
+                vocab::whisper_initial_prompt(&entries)
+            }
+            Err(_) => None,
+        }
+    } else {
+        None
+    };
+
     let raw_text = transcription::transcribe_audio(
         &wav_data,
         &setup_mode,
         local_provider.as_deref(),
         session_token.as_deref(),
         api_key.as_deref(),
+        initial_prompt,
     )
     .await
     .map_err(|e| e.to_string())?;
