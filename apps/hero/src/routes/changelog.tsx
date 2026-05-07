@@ -61,9 +61,38 @@ export const Route = createFileRoute("/changelog")({
 
 const RELEASES = [
 	{
+		version: "v0.1.6",
+		date: "May 7, 2026",
+		tag: "Latest",
+		changes: [
+			{
+				type: "added",
+				items: [
+					"Custom vocabulary now biases the transcriber itself — Whisper, Deepgram, and ElevenLabs get hinted with your saved terms so words like “Tauri” or “Gujarati” come through correctly the first time",
+					"Optional “Use when” context per vocabulary word — Parrot can spell “Tauri” in software contexts and leave “tory” alone in political ones",
+					"Periodic update checks so you’re prompted when a new version ships",
+					"macOS microphone permission status now surfaces in onboarding and settings, with a banner when access is missing",
+				],
+			},
+			{
+				type: "improved",
+				items: [
+					"The HUD chip now expands from the center of the orb, not from a corner, so it stays visually anchored to where the icon was",
+				],
+			},
+			{
+				type: "fixed",
+				items: [
+					"Empty dictations (silence, accidental hotkey taps) no longer create history entries or paste blanks",
+					"Very short local-whisper inputs return an empty transcript instead of surfacing an error",
+					"Hero site favicon now resolves (migrated from .ico to .png)",
+				],
+			},
+		],
+	},
+	{
 		version: "v0.1.5",
 		date: "May 3, 2026",
-		tag: "Latest",
 		changes: [
 			{
 				type: "added",
