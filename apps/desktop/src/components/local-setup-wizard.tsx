@@ -51,6 +51,7 @@ interface ManualStep {
 interface ManualInstructions {
 	title: string;
 	description: string;
+	error_detail?: string;
 	steps: ManualStep[];
 	verification_command?: string;
 	verification_success?: string;
@@ -829,14 +830,25 @@ function ManualInterventionStep({
 		<div className="space-y-6">
 			<div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
 				<div className="flex items-start gap-3">
-					<AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
-					<div>
+					<AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" />
+					<div className="flex-1 min-w-0">
 						<h3 className="font-medium text-yellow-900">
 							{instructions.title}
 						</h3>
 						<p className="text-sm text-yellow-700 mt-1">
 							{instructions.description}
 						</p>
+						{instructions.error_detail && (
+							<details className="mt-3 group">
+								<summary className="text-xs text-yellow-700/80 hover:text-yellow-900 cursor-pointer select-none list-none flex items-center gap-1">
+									<ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90" />
+									Technical details
+								</summary>
+								<pre className="mt-2 p-2 bg-yellow-100/60 border border-yellow-200 rounded text-[11px] text-yellow-900 font-mono whitespace-pre-wrap break-words max-h-32 overflow-y-auto">
+									{instructions.error_detail}
+								</pre>
+							</details>
+						)}
 					</div>
 				</div>
 			</div>
