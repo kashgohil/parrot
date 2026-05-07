@@ -24,6 +24,11 @@ pub enum SetupStatus {
 pub struct ManualInstructions {
     pub title: String,
     pub description: String,
+    /// Raw underlying error from the failed automation, kept separate from
+    /// `description` so the UI can render it as a collapsed technical detail
+    /// instead of inline noise that pushes the recovery steps below the fold.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error_detail: Option<String>,
     pub steps: Vec<ManualStep>,
     pub verification_command: Option<String>,
     pub verification_success: Option<String>,
@@ -538,12 +543,72 @@ where
         }
         anyhow::bail!(
             "Ollama installation failed: {}",
-            stderr.trim().lines().last().unwrap_or("unknown error")
+            extract_install_error(&stderr)
         );
     }
 
     progress_callback("Ollama installed successfully".to_string(), 100.0);
     Ok(())
+}
+
+/// Pull a human-friendly error message out of osascript+install-script stderr.
+///
+/// The Ollama install script prints a `\r`-updated progress bar and `>>>`
+/// status lines that get captured into stderr when run non-interactively.
+/// AppleScript then wraps any failure in `0:NN: execution error: <msg>
+/// (<code>)`. Both produce noise that drowns out the actual cause, so we
+/// strip the AppleScript frame, drop progress noise, and surface the last
+/// meaningful line.
+fn extract_install_error(stderr: &str) -> String {
+    // \r is what makes the progress bar collapse into one giant line — split
+    // on it so each progress update becomes its own line and gets filtered.
+    let normalized = stderr.replace('\r', "\n");
+
+    // Strip the AppleScript wrapper if present, leaving just the inner
+    // message and trailing exit code.
+    let inner = if let Some(idx) = normalized.find("execution error:") {
+        normalized[idx + "execution error:".len()..].trim()
+    } else {
+        normalized.trim()
+    };
+
+    let last = inner
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .filter(|line| !line.starts_with(">>>"))
+        .filter(|line| !is_progress_noise(line))
+        .last()
+        .unwrap_or("unknown error");
+
+    let cleaned = last.trim_end_matches(|c: char| c == ',' || c == '.').trim();
+    let cleaned = cleaned.trim_start_matches('"').trim_end_matches('"');
+    if cleaned.len() > 200 {
+        format!("{}…", &cleaned[..200])
+    } else {
+        cleaned.to_string()
+    }
+}
+
+// A line is "progress noise" if it's mostly the characters the Ollama install
+// script uses for its progress bar (digits, %, #, =, dots, whitespace). Real
+// error messages contain alphabetic content, so we keep anything with a few
+// letters in it.
+fn is_progress_noise(line: &str) -> bool {
+    let alpha = line.chars().filter(|c| c.is_alphabetic()).count();
+    alpha < 4
+}
+
+// Trim and reject errors that aren't useful to surface (empty, trivially short,
+// or generic placeholders we substituted upstream). The UI uses None to hide
+// the technical-details disclosure entirely.
+fn optional_error(error: &str) -> Option<String> {
+    let trimmed = error.trim();
+    if trimmed.is_empty() || trimmed == "unknown error" {
+        None
+    } else {
+        Some(trimmed.to_string())
+    }
 }
 
 /// Download Ollama model with progress via the HTTP streaming API.
@@ -884,7 +949,10 @@ pub async fn test_cleanup(port: u16, model: &str) -> Result<()> {
 pub fn get_ollama_manual_instructions(error: &str) -> ManualInstructions {
     ManualInstructions {
         title: "Install Ollama manually".to_string(),
-        description: format!("We couldn't install Ollama automatically. Error: {}", error),
+        description:
+            "We couldn't install Ollama automatically. Run the steps below to finish setup."
+                .to_string(),
+        error_detail: optional_error(error),
         steps: vec![
             ManualStep {
                 label: "Download the Ollama app".to_string(),
@@ -924,8 +992,8 @@ pub fn get_ollama_manual_instructions_with_model(
 ) -> ManualInstructions {
     let mut instructions = get_ollama_manual_instructions(error);
     instructions.description = format!(
-        "We couldn't finish setting up Ollama automatically. Run the steps below to install it and download the {} model. Error: {}",
-        model, error
+        "We couldn't finish setting up Ollama automatically. Run the steps below to install it and download the {} model.",
+        model
     );
     instructions.steps.push(ManualStep {
         label: format!("Download {} model", model),
@@ -957,6 +1025,7 @@ pub fn get_model_manual_instructions(model_type: &str, model_name: &str) -> Manu
     ManualInstructions {
         title: format!("Download {} model manually", model_type),
         description: format!("We couldn't download the {} model automatically.", model_name),
+        error_detail: None,
         steps: vec![
             ManualStep {
                 label: "Open Terminal".to_string(),
