@@ -173,11 +173,9 @@ fn build_system_prompt(custom_words: &str, context_prompt: &str, writing_style: 
          - Output ONLY the cleaned transcript and nothing else.",
     );
 
-    if !custom_words.is_empty() && custom_words != "[]" {
-        prompt.push_str(&format!(
-            "\n\nCustom vocabulary (use these exact spellings when relevant): {}",
-            custom_words
-        ));
+    let entries = crate::vocab::parse(custom_words);
+    if let Some(section) = crate::vocab::cleanup_vocabulary_section(&entries) {
+        prompt.push_str(&section);
     }
     if !context_prompt.is_empty() {
         prompt.push_str(&format!("\n\nContext: {}", context_prompt));

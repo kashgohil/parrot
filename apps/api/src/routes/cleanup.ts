@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { getProfile, incrementUsage } from "../db";
 import type { Profile } from "../db/schema";
+import { cleanupVocabularySection, parseVocab } from "../lib/vocab";
 import { authMiddleware } from "../middleware/auth";
 import { checkUsageLimits } from "../middleware/feature-gate";
 
@@ -51,8 +52,9 @@ async function cleanupText(
 		"Preserve the speaker's meaning and tone. Return ONLY the cleaned text, nothing else.";
 
 	if (profile) {
-		if (profile.customWords && profile.customWords !== "[]") {
-			systemPrompt += `\n\nCustom vocabulary (use these exact spellings when relevant): ${profile.customWords}`;
+		const vocabSection = cleanupVocabularySection(parseVocab(profile.customWords));
+		if (vocabSection) {
+			systemPrompt += vocabSection;
 		}
 		if (profile.contextPrompt) {
 			systemPrompt += `\n\nContext: ${profile.contextPrompt}`;
