@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useSubscription } from "@/lib/subscription";
 import { createFileRoute } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import {
-	AlertTriangle,
 	Check,
 	Copy,
 	Lightbulb,
@@ -52,7 +50,6 @@ function HomePage() {
 	const [deletingId, setDeletingId] = useState<string | null>(null);
 
 	const tip = useMemo(() => getTipOfTheDay(), []);
-	const { subscription, isApproachingLimit } = useSubscription();
 
 	const loadHistory = useCallback(async () => {
 		try {
@@ -168,22 +165,6 @@ function HomePage() {
 					</div>
 				)}
 			</div>
-
-			{isApproachingLimit() && subscription && (
-				<div className="rounded-xl border border-amber-500/30 bg-amber-50/50 px-4 py-3.5 flex items-start gap-3">
-					<AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-					<div>
-						<p className="text-sm font-semibold text-amber-700">
-							Approaching usage limit
-						</p>
-						<p className="text-sm text-amber-600 mt-0.5">
-							You've used {subscription.usage.transcriptionMinutes} of{" "}
-							{subscription.limits.transcriptionMinutes} transcription minutes
-							this month.
-						</p>
-					</div>
-				</div>
-			)}
 
 			<div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3.5 flex items-start gap-3">
 				<Lightbulb className="w-5 h-5 text-primary shrink-0 mt-0.5" />
