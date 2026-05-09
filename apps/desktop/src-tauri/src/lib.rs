@@ -446,6 +446,36 @@ fn check_microphone_permission() -> String {
     }
 }
 
+/// Trigger the macOS Microphone permission prompt by attempting to open a
+/// brief CoreAudio input stream. cpal's `build_input_stream` calls into
+/// AudioUnitInitialize, which is what TCC gates — so the prompt appears the
+/// first time we hit it. Returns the post-attempt permission state.
+#[tauri::command]
+fn request_microphone_permission() -> String {
+    #[cfg(target_os = "macos")]
+    {
+        use cpal::traits::{DeviceTrait, HostTrait};
+        let host = cpal::default_host();
+        if let Some(device) = host.default_input_device() {
+            if let Ok(config) = device.default_input_config() {
+                // Build and immediately drop — the act of building triggers
+                // the macOS TCC prompt the first time around.
+                let _ = device.build_input_stream(
+                    &config.into(),
+                    move |_data: &[f32], _: &cpal::InputCallbackInfo| {},
+                    move |_err| {},
+                    None,
+                );
+            }
+        }
+        macos_mic_authorization_status().to_string()
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        "granted".to_string()
+    }
+}
+
 #[cfg(target_os = "macos")]
 fn macos_mic_authorization_status() -> &'static str {
     use std::ffi::c_void;
@@ -1198,6 +1228,7 @@ pub fn run() {
             get_default_dictation_hotkey,
             check_accessibility_permission,
             check_microphone_permission,
+            request_microphone_permission,
             migration::get_migration_status,
             migration::get_migration_checkout_url,
             migration::get_migration_snapshot,
