@@ -13,7 +13,6 @@ import {
 	usePermissions,
 	type PermissionState,
 } from "@/lib/permissions";
-import { SubscriptionProvider } from "@/lib/subscription";
 import {
 	createRootRoute,
 	Link,
@@ -105,74 +104,34 @@ function RootLayout() {
 		const isLocalOnboardingRoute = localOnboardingPaths.some((p) =>
 			location.pathname.startsWith(p),
 		);
-		const isModeSelection = location.pathname === "/mode-selection";
+		// Local-only app — everyone goes through the same onboarding flow.
+		if (isLocalOnboardingRoute) {
+			return; // Allow access
+		}
 
-		// Default to local mode for new users - skip mode selection
-		// Only redirect to mode selection if explicitly requested (for settings)
-
-		// Local mode: no API auth required (default mode)
-		if (setupMode === "local" || !setupMode) {
-			// Allow access to local onboarding routes
-			if (isLocalOnboardingRoute) {
-				return; // Allow access
-			}
-
-			// Skip mode selection - go straight to local onboarding for new users
-			if (!setupMode && !isModeSelection && !isAuthRoute) {
-				// Set local as default mode silently
-				invoke("set_setting", { key: "setup_mode", value: "local" })
-					.then(() => {
-						// Check if user needs onboarding
-						if (!user?.onboarding_completed) {
-							if (!user?.name) {
-								navigate({ to: "/local-profile" });
-							} else {
-								navigate({ to: "/local-setup" });
-							}
+		// Persist setup_mode=local on first launch so backend stays consistent.
+		if (!setupMode && !isAuthRoute) {
+			invoke("set_setting", { key: "setup_mode", value: "local" })
+				.then(() => {
+					if (!user?.onboarding_completed) {
+						if (!user?.name) {
+							navigate({ to: "/local-profile" });
+						} else {
+							navigate({ to: "/local-setup" });
 						}
-					})
-					.catch((e) => showError(e, { context: "saving your mode preference" }));
-				return;
-			}
-
-			// Check if local user has completed onboarding
-			if (!user?.onboarding_completed) {
-				// Redirect to appropriate onboarding step
-				if (!user?.name) {
-					navigate({ to: "/local-profile" });
-				} else {
-					navigate({ to: "/local-setup" });
-				}
-				return;
-			}
-
-			// Local mode users with completed onboarding can access main app
-			// No API authentication needed
+					}
+				})
+				.catch((e) => showError(e, { context: "saving your mode preference" }));
 			return;
 		}
 
-		// Cloud mode: require auth
-		if (setupMode === "cloud") {
-			const cloudOnboardingPaths = ["/setup-mode", "/tour"];
-			const isCloudOnboardingRoute = cloudOnboardingPaths.some((p) =>
-				location.pathname.startsWith(p),
-			);
-
-			if (!isAuthenticated && !isAuthRoute && !isModeSelection) {
-				navigate({ to: "/login" });
-			} else if (
-				isAuthenticated &&
-				!user?.onboarding_completed &&
-				!isCloudOnboardingRoute
-			) {
-				navigate({ to: "/setup-mode" });
-			} else if (
-				isAuthenticated &&
-				user?.onboarding_completed &&
-				(isCloudOnboardingRoute || isAuthRoute)
-			) {
-				navigate({ to: "/" });
+		if (!user?.onboarding_completed) {
+			if (!user?.name) {
+				navigate({ to: "/local-profile" });
+			} else {
+				navigate({ to: "/local-setup" });
 			}
+			return;
 		}
 	}, [
 		isAuthenticated,
@@ -206,11 +165,7 @@ function RootLayout() {
 	} else if (!isAuthenticated) {
 		content = null;
 	} else {
-		content = (
-			<SubscriptionProvider>
-				<AuthenticatedLayout />
-			</SubscriptionProvider>
-		);
+		content = <AuthenticatedLayout />;
 	}
 
 	return (
@@ -312,7 +267,7 @@ function AuthenticatedLayout() {
 								Parrot
 							</h1>
 							<p className="text-white/60 text-xs font-medium">
-								Voice dictation that just works
+								Private. On-device. Always.
 							</p>
 						</div>
 					</div>
