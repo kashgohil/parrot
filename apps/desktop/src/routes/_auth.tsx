@@ -70,12 +70,12 @@ function AuthLayout() {
 				<FeatureItem
 					icon={<Zap className="w-5 h-5" />}
 					title="3x faster than typing"
-					description="Works in any app — emails, docs, chat, code editors. Local or cloud, your choice."
+					description="Works in any app — emails, docs, chat, code editors. Everything runs on your Mac."
 				/>
 				<FeatureItem
 					icon={<Shield className="w-5 h-5" />}
 					title="Local-first privacy"
-					description="Your audio never leaves your device in local mode. Full privacy, no compromise."
+					description="Your audio never leaves your device. Full privacy, no compromise."
 				/>
 				</div>
 

@@ -347,7 +347,7 @@ function OnboardingLayout() {
 									transition={{ duration: 0.6, ease: SMOOTH, delay: 0.7 }}
 									className="text-white/70 text-base font-medium mt-3 tracking-wide whitespace-nowrap"
 								>
-									Voice dictation that just works
+									Private voice dictation. Runs entirely on your Mac.
 								</motion.p>
 							</motion.div>
 						)}

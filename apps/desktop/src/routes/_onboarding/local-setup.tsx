@@ -23,7 +23,8 @@ function LocalSetupPage() {
 				</div>
 				<h2 className="text-2xl font-bold text-foreground">Tune Parrot</h2>
 				<p className="text-muted-foreground">
-					Pick the dictation and cleanup quality that fits your Mac
+					Pick the dictation quality that fits your Mac. Everything runs
+					on-device.
 				</p>
 			</div>
 
