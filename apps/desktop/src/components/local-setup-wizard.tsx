@@ -262,28 +262,33 @@ function RequirementItem({
 	);
 }
 
-function AccessibilityPermissionStep({
-	onContinue,
-}: {
-	onContinue: () => void;
-}) {
-	const [granted, setGranted] = useState<boolean | null>(null);
-	const [opening, setOpening] = useState(false);
+type MicState = "granted" | "denied" | "restricted" | "notDetermined" | "unknown";
+
+function PermissionsStep({ onContinue }: { onContinue: () => void }) {
+	const [accessibility, setAccessibility] = useState<boolean | null>(null);
+	const [microphone, setMicrophone] = useState<MicState | null>(null);
+	const [opening, setOpening] = useState<"accessibility" | "microphone" | null>(
+		null,
+	);
+	const [requestingMic, setRequestingMic] = useState(false);
 
 	useEffect(() => {
 		let cancelled = false;
 		const probe = async () => {
 			try {
-				const ok = await invoke<boolean>("check_accessibility_permission");
+				const [ax, mic] = await Promise.all([
+					invoke<boolean>("check_accessibility_permission"),
+					invoke<string>("check_microphone_permission"),
+				]);
 				if (cancelled) return;
-				setGranted(ok);
-				if (ok) {
-					// Brief pause so the user sees the success state, then advance.
-					setTimeout(() => !cancelled && onContinue(), 600);
-				}
+				setAccessibility(ax);
+				setMicrophone(mic as MicState);
 			} catch (e) {
-				console.error("Failed to probe Accessibility permission:", e);
-				if (!cancelled) setGranted(false);
+				console.error("Failed to probe permissions:", e);
+				if (!cancelled) {
+					setAccessibility(false);
+					setMicrophone("unknown");
+				}
 			}
 		};
 		probe();
@@ -292,20 +297,42 @@ function AccessibilityPermissionStep({
 			cancelled = true;
 			clearInterval(interval);
 		};
-	}, [onContinue]);
+	}, []);
 
-	const openSettings = async () => {
-		setOpening(true);
+	const micGranted = microphone === "granted";
+	const bothGranted = accessibility === true && micGranted;
+
+	useEffect(() => {
+		if (bothGranted) {
+			const t = setTimeout(onContinue, 600);
+			return () => clearTimeout(t);
+		}
+	}, [bothGranted, onContinue]);
+
+	const openSettings = async (pane: "accessibility" | "microphone") => {
+		setOpening(pane);
 		try {
-			await invoke("open_system_settings", { pane: "accessibility" });
+			await invoke("open_system_settings", { pane });
 		} catch (e) {
 			console.error("Failed to open System Settings:", e);
 		} finally {
-			setOpening(false);
+			setOpening(null);
 		}
 	};
 
-	if (granted === null) {
+	const requestMicrophone = async () => {
+		setRequestingMic(true);
+		try {
+			const result = await invoke<string>("request_microphone_permission");
+			setMicrophone(result as MicState);
+		} catch (e) {
+			console.error("Failed to request Microphone permission:", e);
+		} finally {
+			setRequestingMic(false);
+		}
+	};
+
+	if (accessibility === null || microphone === null) {
 		return (
 			<div className="flex flex-col items-center justify-center py-10 space-y-3">
 				<Loader2 className="w-7 h-7 animate-spin text-primary" />
@@ -314,13 +341,13 @@ function AccessibilityPermissionStep({
 		);
 	}
 
-	if (granted) {
+	if (bothGranted) {
 		return (
 			<div className="flex flex-col items-center justify-center py-10 space-y-3">
 				<div className="w-14 h-14 rounded-full bg-pk-primary/15 flex items-center justify-center">
 					<Check className="w-7 h-7 text-pk-primary" />
 				</div>
-				<p className="font-medium">Accessibility permission granted</p>
+				<p className="font-medium">Permissions granted</p>
 				<p className="text-sm text-muted-foreground">Continuing...</p>
 			</div>
 		);
@@ -333,53 +360,63 @@ function AccessibilityPermissionStep({
 					<Terminal className="w-5 h-5 text-primary" />
 				</div>
 				<div>
-					<h2 className="text-base font-semibold">Grant Accessibility access</h2>
+					<h2 className="text-base font-semibold">Grant macOS permissions</h2>
 					<p className="text-sm text-muted-foreground mt-1">
-						Parrot needs Accessibility permission so it can listen for the
-						dictation hotkey and paste your transcribed text into other apps.
-						Your dictations and audio never leave your Mac.
+						Parrot needs Microphone access to capture your voice and
+						Accessibility access to listen for the dictation hotkey and paste
+						transcribed text. Your audio never leaves your Mac.
 					</p>
 				</div>
 			</div>
 
-			<ol className="space-y-3 text-sm">
-				<li className="flex items-start gap-3 p-3 rounded-lg border bg-card">
-					<span className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-medium shrink-0">
-						1
-					</span>
-					<div className="flex-1">
-						<div className="font-medium">Open System Settings</div>
-						<div className="text-xs text-muted-foreground mt-0.5">
-							We'll jump straight to Privacy &amp; Security → Accessibility.
-						</div>
-					</div>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={openSettings}
-						disabled={opening}
-					>
-						{opening ? "Opening..." : "Open Settings"}
-					</Button>
-				</li>
-				<li className="flex items-start gap-3 p-3 rounded-lg border bg-card">
-					<span className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-medium shrink-0">
-						2
-					</span>
-					<div className="flex-1">
-						<div className="font-medium">Toggle Parrot on</div>
-						<div className="text-xs text-muted-foreground mt-0.5">
-							You may need to unlock the panel with Touch ID or your password.
-							This page will move on automatically once it's enabled.
-						</div>
-					</div>
-				</li>
-			</ol>
+			<div className="space-y-3 text-sm">
+				<PermissionRow
+					label="Microphone"
+					description="Capture audio for on-device transcription."
+					granted={micGranted}
+					action={
+						microphone === "notDetermined" || microphone === "unknown" ? (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={requestMicrophone}
+								disabled={requestingMic}
+							>
+								{requestingMic ? "Requesting..." : "Grant access"}
+							</Button>
+						) : (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => openSettings("microphone")}
+								disabled={opening === "microphone"}
+							>
+								{opening === "microphone" ? "Opening..." : "Open Settings"}
+							</Button>
+						)
+					}
+				/>
+				<PermissionRow
+					label="Accessibility"
+					description="Detect the dictation hotkey and paste into other apps."
+					granted={accessibility === true}
+					action={
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => openSettings("accessibility")}
+							disabled={opening === "accessibility"}
+						>
+							{opening === "accessibility" ? "Opening..." : "Open Settings"}
+						</Button>
+					}
+				/>
+			</div>
 
 			<div className="flex items-center justify-between pt-2 text-xs text-muted-foreground">
 				<div className="flex items-center gap-2">
 					<Loader2 className="w-3.5 h-3.5 animate-spin" />
-					Watching for permission...
+					Watching for permissions...
 				</div>
 				<button
 					type="button"
@@ -393,17 +430,50 @@ function AccessibilityPermissionStep({
 	);
 }
 
+function PermissionRow({
+	label,
+	description,
+	granted,
+	action,
+}: {
+	label: string;
+	description: string;
+	granted: boolean;
+	action: React.ReactNode;
+}) {
+	return (
+		<div
+			className={`flex items-center gap-3 p-3 rounded-lg border ${
+				granted ? "bg-pk-primary/10 border-pk-primary/30" : "bg-card"
+			}`}
+		>
+			<div
+				className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+					granted
+						? "bg-pk-primary text-white"
+						: "bg-muted text-muted-foreground"
+				}`}
+			>
+				{granted ? <Check className="w-4 h-4" /> : null}
+			</div>
+			<div className="flex-1 min-w-0">
+				<div className="font-medium">{label}</div>
+				<div className="text-xs text-muted-foreground mt-0.5">{description}</div>
+			</div>
+			{!granted && action}
+		</div>
+	);
+}
+
 function ModelSelectionStep({
 	selectedWhisper,
 	selectedOllama,
 	onSelectWhisper,
-	onSelectOllama,
 	onContinue,
 }: {
 	selectedWhisper: string;
 	selectedOllama: string;
 	onSelectWhisper: (id: string) => void;
-	onSelectOllama: (id: string) => void;
 	onContinue: () => void;
 }) {
 	const whisperModel = WHISPER_MODELS.find((m) => m.id === selectedWhisper);
@@ -493,25 +563,6 @@ function ModelSelectionStep({
 							selected={selectedWhisper === model.id}
 							isDownloaded={downloadedModels.whisper.includes(model.id)}
 							onSelect={() => onSelectWhisper(model.id)}
-						/>
-					))}
-				</div>
-			</div>
-
-			{/* Ollama Models */}
-			<div>
-				<div className="flex items-center gap-2 mb-3">
-					<Brain className="w-5 h-5 text-primary" />
-					<h3 className="font-medium">Text Cleanup Quality</h3>
-				</div>
-				<div className="grid gap-3">
-					{OLLAMA_MODELS.map((model) => (
-						<ModelCard
-							key={model.id}
-							model={model}
-							selected={selectedOllama === model.id}
-							isDownloaded={downloadedModels.ollama.includes(model.id)}
-							onSelect={() => onSelectOllama(model.id)}
 						/>
 					))}
 				</div>
@@ -1050,7 +1101,8 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 	const [systemRequirements, setSystemRequirements] =
 		useState<SystemRequirements | null>(null);
 	const [selectedWhisperModel, setSelectedWhisperModel] = useState("base.en");
-	const [selectedOllamaModel, setSelectedOllamaModel] = useState("llama3.2");
+	// Cleanup engine is fixed to llama3.2 — selection UI is hidden in onboarding.
+	const [selectedOllamaModel] = useState("llama3.2");
 	const [setupProgress, setSetupProgress] = useState<SetupProgress | null>(
 		null,
 	);
@@ -1203,7 +1255,7 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 			)}
 
 			{currentStep === "permissions" && (
-				<AccessibilityPermissionStep
+				<PermissionsStep
 					onContinue={() => setCurrentStep("model-selection")}
 				/>
 			)}
@@ -1213,7 +1265,6 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 					selectedWhisper={selectedWhisperModel}
 					selectedOllama={selectedOllamaModel}
 					onSelectWhisper={setSelectedWhisperModel}
-					onSelectOllama={setSelectedOllamaModel}
 					onContinue={startInstallation}
 				/>
 			)}
