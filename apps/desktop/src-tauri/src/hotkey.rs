@@ -100,9 +100,9 @@ pub fn end_recording(app: &AppHandle) {
         .map(|s: Instant| s.elapsed().as_millis() as u64)
         .unwrap_or(0);
     match recorder.stop() {
-        Ok(wav_data) => {
+        Ok(audio) => {
             *state.last_duration_ms.lock().unwrap() = duration_ms;
-            *state.last_wav.lock().unwrap() = Some(wav_data);
+            *state.last_audio.lock().unwrap() = Some(audio);
             let _ = app.emit("recording-stopped", duration_ms);
         }
         Err(e) => eprintln!("Failed to stop recording: {}", e),

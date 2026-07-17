@@ -31,6 +31,23 @@ impl LocalWhisperProvider {
         Ok(Self { ctx: Arc::new(ctx) })
     }
 
+    /// Transcribe mono `f32` samples at `sample_rate`. Resamples to 16 kHz
+    /// when needed. Prefer this over the WAV path — avoids an f32→i16→f32
+    /// round trip when the recorder already has floats.
+    pub async fn transcribe_samples(
+        &self,
+        samples: &[f32],
+        sample_rate: u32,
+        initial_prompt: Option<String>,
+    ) -> Result<String> {
+        let pcm = prepare_pcm(samples, sample_rate, WHISPER_TARGET_SAMPLE_RATE);
+        let ctx = self.ctx.clone();
+
+        tokio::task::spawn_blocking(move || run_whisper(&ctx, &pcm, initial_prompt.as_deref()))
+            .await
+            .context("Whisper task panicked")?
+    }
+
     pub async fn transcribe(
         &self,
         wav_data: &[u8],
@@ -42,6 +59,15 @@ impl LocalWhisperProvider {
         tokio::task::spawn_blocking(move || run_whisper(&ctx, &pcm, initial_prompt.as_deref()))
             .await
             .context("Whisper task panicked")?
+    }
+}
+
+/// Resample mono f32 to the whisper target rate when the device rate differs.
+fn prepare_pcm(samples: &[f32], sample_rate: u32, target_rate: u32) -> Vec<f32> {
+    if sample_rate == target_rate {
+        samples.to_vec()
+    } else {
+        resample_linear(samples, sample_rate, target_rate)
     }
 }
 
@@ -67,6 +93,18 @@ fn run_whisper(ctx: &WhisperContext, pcm: &[f32], initial_prompt: Option<&str>) 
     params.set_print_progress(false);
     params.set_print_realtime(false);
     params.set_print_timestamps(false);
+    // Dictation is one continuous utterance — force a single segment so
+    // whisper doesn't re-chunk short clips into multi-segment overhead.
+    params.set_single_segment(true);
+    // Drop non-speech tokens ([BLANK_AUDIO], [MUSIC], etc.) that show up on
+    // silence edges and mic noise.
+    params.set_suppress_nst(true);
+    // Scale the encoder context to clip length so a 3s utterance doesn't
+    // pay the full 30s-window cost. Mel hop is 10ms → 100 frames/s; pad ~1s
+    // and clamp to the model's default range.
+    let audio_secs = pcm.len() as f32 / WHISPER_TARGET_SAMPLE_RATE as f32;
+    let audio_ctx = ((audio_secs * 100.0).ceil() as i32 + 100).clamp(150, 1500);
+    params.set_audio_ctx(audio_ctx);
     if let Some(prompt) = initial_prompt.filter(|p| !p.is_empty()) {
         params.set_initial_prompt(prompt);
     }
@@ -168,11 +206,13 @@ fn resample_linear(input: &[f32], from_rate: u32, to_rate: u32) -> Vec<f32> {
 
 /// Top-level dispatcher used by the Tauri command layer.
 ///
-/// Local mode requires a preloaded `LocalWhisperProvider` to be passed in
-/// (initialized once at app startup). Cloud mode goes through the existing
-/// HTTP backend and ignores `local`.
+/// Local mode requires a preloaded `LocalWhisperProvider` and feeds it the
+/// raw f32 samples from the recorder. Cloud mode needs WAV bytes for the
+/// multipart upload (`wav_data`).
 pub async fn transcribe_audio(
-    wav_data: &[u8],
+    samples: &[f32],
+    sample_rate: u32,
+    wav_data: Option<&[u8]>,
     mode: &str,
     local: Option<&LocalWhisperProvider>,
     session_token: Option<&str>,
@@ -186,11 +226,15 @@ pub async fn transcribe_audio(
                     "Parrot is still warming up the local model. Try again in a moment."
                 )
             })?;
-            provider.transcribe(wav_data, initial_prompt).await
+            provider
+                .transcribe_samples(samples, sample_rate, initial_prompt)
+                .await
         }
         "cloud" => {
-            transcribe_with_backend(wav_data, session_token, api_key, initial_prompt.as_deref())
-                .await
+            let wav = wav_data.ok_or_else(|| {
+                anyhow::anyhow!("WAV data required for cloud transcription")
+            })?;
+            transcribe_with_backend(wav, session_token, api_key, initial_prompt.as_deref()).await
         }
         _ => anyhow::bail!("Unknown transcription mode: {}", mode),
     }

@@ -74,14 +74,20 @@ impl AudioRecorder {
         Ok(())
     }
 
-    pub fn stop(&mut self) -> Result<Vec<u8>> {
+    /// Stop recording and return raw mono `f32` samples plus the device
+    /// sample rate. Callers that need WAV (cloud upload, save-audio) should
+    /// encode via [`encode_wav`]; local whisper takes the floats directly so
+    /// we avoid an f32 → i16 → f32 round trip on the hot path.
+    pub fn stop(&mut self) -> Result<RecordedSamples> {
         *self.is_recording.lock().unwrap() = false;
         self.stream = None;
 
         let mut samples = self.samples.lock().unwrap();
-        let wav_data = encode_wav(&samples, self.sample_rate)?;
-        samples.clear();
-        Ok(wav_data)
+        let out = RecordedSamples {
+            samples: std::mem::take(&mut *samples),
+            sample_rate: self.sample_rate,
+        };
+        Ok(out)
     }
 
     pub fn is_recording(&self) -> bool {
@@ -89,7 +95,20 @@ impl AudioRecorder {
     }
 }
 
-fn encode_wav(samples: &[f32], sample_rate: u32) -> Result<Vec<u8>> {
+/// Mono float samples captured from the mic, still at the device sample rate.
+#[derive(Clone)]
+pub struct RecordedSamples {
+    pub samples: Vec<f32>,
+    pub sample_rate: u32,
+}
+
+impl RecordedSamples {
+    pub fn encode_wav(&self) -> Result<Vec<u8>> {
+        encode_wav(&self.samples, self.sample_rate)
+    }
+}
+
+pub fn encode_wav(samples: &[f32], sample_rate: u32) -> Result<Vec<u8>> {
     let mut buf = std::io::Cursor::new(Vec::new());
     let spec = hound::WavSpec {
         channels: 1,

@@ -8,7 +8,7 @@ mod migration;
 mod transcription;
 mod vocab;
 
-use audio::AudioRecorder;
+use audio::{AudioRecorder, RecordedSamples};
 use db::Database;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -25,7 +25,9 @@ pub type SharedWhisperProvider = Arc<RwLock<Option<Arc<LocalWhisperProvider>>>>;
 pub struct RecorderState {
     recorder: Mutex<AudioRecorder>,
     recording_start: Mutex<Option<Instant>>,
-    last_wav: Mutex<Option<Vec<u8>>>,
+    /// Raw f32 samples from the last capture. Encoded to WAV only when
+    /// needed (cloud upload / save-audio), never for the local whisper path.
+    last_audio: Mutex<Option<RecordedSamples>>,
     last_duration_ms: Mutex<u64>,
 }
 
@@ -100,7 +102,10 @@ fn stop_recording(
         .unwrap()
         .map(|s| s.elapsed().as_millis() as u64)
         .unwrap_or(0);
-    let wav_data = recorder.stop().map_err(|e| e.to_string())?;
+    let audio = recorder.stop().map_err(|e| e.to_string())?;
+    // Keep the Tauri command signature (Vec<u8>) for any UI callers that
+    // still expect WAV bytes; hotkey path stores RecordedSamples instead.
+    let wav_data = audio.encode_wav().map_err(|e| e.to_string())?;
     app.emit("recording-stopped", duration_ms)
         .map_err(|e| e.to_string())?;
     Ok(wav_data)
@@ -140,8 +145,8 @@ async fn transcribe_last(
     whisper: tauri::State<'_, SharedWhisperProvider>,
     app: tauri::AppHandle,
 ) -> Result<DictationResult, String> {
-    let wav_data = recorder_state
-        .last_wav
+    let audio = recorder_state
+        .last_audio
         .lock()
         .unwrap()
         .clone()
@@ -178,8 +183,18 @@ async fn transcribe_last(
         None
     };
 
+    // Encode WAV only when cloud mode needs it for the HTTP multipart body.
+    // Local mode feeds f32 samples straight into whisper.
+    let wav_data = if setup_mode == "cloud" {
+        Some(audio.encode_wav().map_err(|e| e.to_string())?)
+    } else {
+        None
+    };
+
     let raw_text = transcription::transcribe_audio(
-        &wav_data,
+        &audio.samples,
+        audio.sample_rate,
+        wav_data.as_deref(),
         &setup_mode,
         local_provider.as_deref(),
         session_token.as_deref(),
@@ -228,15 +243,19 @@ async fn transcribe_last(
     if save_audio == "true" {
         match setup_mode.as_str() {
             "local" => {
+                let wav_bytes = audio.encode_wav().map_err(|e| e.to_string())?;
                 let audio_dir = Database::audio_dir().map_err(|e| e.to_string())?;
                 std::fs::create_dir_all(&audio_dir).map_err(|e| e.to_string())?;
                 let audio_path = audio_dir.join(format!("{}.wav", id));
-                std::fs::write(&audio_path, &wav_data).map_err(|e| e.to_string())?;
+                std::fs::write(&audio_path, &wav_bytes).map_err(|e| e.to_string())?;
                 let _ = db.update_dictation_audio_path(&id, &audio_path.to_string_lossy());
             }
             "cloud" => {
                 if let Some(token) = session_token.as_deref() {
-                    let wav_clone = wav_data.clone();
+                    let wav_clone = match &wav_data {
+                        Some(w) => w.clone(),
+                        None => audio.encode_wav().map_err(|e| e.to_string())?,
+                    };
                     let token_owned = token.to_string();
                     let id_clone = id.clone();
                     // Upload in background to not block transcription flow
@@ -1336,7 +1355,7 @@ pub fn run() {
     let recorder_state = RecorderState {
         recorder: Mutex::new(recorder),
         recording_start: Mutex::new(None),
-        last_wav: Mutex::new(None),
+        last_audio: Mutex::new(None),
         last_duration_ms: Mutex::new(0),
     };
 
@@ -1555,9 +1574,9 @@ fn setup_tray(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> 
                         .map(|s| s.elapsed().as_millis() as u64)
                         .unwrap_or(0);
                     match recorder.stop() {
-                        Ok(wav_data) => {
+                        Ok(audio) => {
                             *state.last_duration_ms.lock().unwrap() = duration_ms;
-                            *state.last_wav.lock().unwrap() = Some(wav_data);
+                            *state.last_audio.lock().unwrap() = Some(audio);
                             let _ = app.emit("recording-stopped", duration_ms);
                         }
                         Err(e) => eprintln!("Failed to stop recording: {}", e),
