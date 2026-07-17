@@ -7,13 +7,16 @@ import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import {
 	Check,
 	Copy,
+	FileAudio,
 	Lightbulb,
+	Loader2,
 	Mic,
 	Search,
 	Sparkles,
 	Trash2,
+	Upload,
 } from "lucide-react";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface DictationEntry {
 	id: string;
@@ -48,6 +51,11 @@ function HomePage() {
 	const [expandedId, setExpandedId] = useState<string | null>(null);
 	const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 	const [deletingId, setDeletingId] = useState<string | null>(null);
+	const [fileBusy, setFileBusy] = useState(false);
+	const [fileError, setFileError] = useState<string | null>(null);
+	const [fileProgress, setFileProgress] = useState<string | null>(null);
+	const [dragOver, setDragOver] = useState(false);
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const tip = useMemo(() => getTipOfTheDay(), []);
 
@@ -103,6 +111,51 @@ function HomePage() {
 		}
 	}
 
+	async function transcribeFile(file: File) {
+		setFileError(null);
+		const name = file.name.toLowerCase();
+		if (!name.ends_with(".wav")) {
+			setFileError("Only WAV files are supported right now.");
+			return;
+		}
+		setFileBusy(true);
+		setFileProgress(`Reading ${file.name}…`);
+		try {
+			const buf = await file.arrayBuffer();
+			const data = Array.from(new Uint8Array(buf));
+			setFileProgress("Transcribing…");
+			const result = await invoke<{
+				raw_text: string;
+				cleaned_text: string;
+			}>("transcribe_audio_file", {
+				data,
+				filename: file.name,
+			});
+			const text = result.cleaned_text || result.raw_text;
+			setFileProgress(
+				text
+					? "Done — copied to clipboard"
+					: "No speech detected in that file",
+			);
+			await loadHistory();
+			setTimeout(() => setFileProgress(null), 2500);
+		} catch (e) {
+			const msg = e instanceof Error ? e.message : String(e);
+			setFileError(msg);
+			setFileProgress(null);
+		} finally {
+			setFileBusy(false);
+			if (fileInputRef.current) fileInputRef.current.value = "";
+		}
+	}
+
+	function onDrop(e: React.DragEvent) {
+		e.preventDefault();
+		setDragOver(false);
+		const file = e.dataTransfer.files?.[0];
+		if (file) void transcribeFile(file);
+	}
+
 	function formatDuration(ms: number): string {
 		const secs = Math.round(ms / 1000);
 		if (secs < 60) return `${secs}s`;
@@ -148,7 +201,15 @@ function HomePage() {
 	}, [entries]);
 
 	return (
-		<div className="space-y-6">
+		<div
+			className="space-y-6"
+			onDragOver={(e) => {
+				e.preventDefault();
+				setDragOver(true);
+			}}
+			onDragLeave={() => setDragOver(false)}
+			onDrop={onDrop}
+		>
 			<div className="flex items-start justify-between gap-4">
 				<div>
 					<h1 className="text-2xl font-bold text-foreground tracking-tight">
@@ -158,13 +219,68 @@ function HomePage() {
 						Review and copy your past transcriptions
 					</p>
 				</div>
-				{entries.length > 0 && (
-					<div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-lg text-xs text-muted-foreground">
-						<Mic className="w-3.5 h-3.5" />
-						<span>{entries.length} entries</span>
-					</div>
-				)}
+				<div className="flex items-center gap-2">
+					{entries.length > 0 && (
+						<div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-lg text-xs text-muted-foreground">
+							<Mic className="w-3.5 h-3.5" />
+							<span>{entries.length} entries</span>
+						</div>
+					)}
+					<input
+						ref={fileInputRef}
+						type="file"
+						accept=".wav,audio/wav,audio/x-wav"
+						className="hidden"
+						onChange={(e) => {
+							const f = e.target.files?.[0];
+							if (f) void transcribeFile(f);
+						}}
+					/>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						disabled={fileBusy}
+						onClick={() => fileInputRef.current?.click()}
+					>
+						{fileBusy ? (
+							<Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+						) : (
+							<FileAudio className="w-4 h-4 mr-1.5" />
+						)}
+						Transcribe file
+					</Button>
+				</div>
 			</div>
+
+			<div
+				className={`rounded-xl border-2 border-dashed px-4 py-6 flex flex-col sm:flex-row items-center justify-center gap-3 transition-colors ${
+					dragOver
+						? "border-primary bg-primary/10"
+						: "border-border bg-muted/20"
+				}`}
+			>
+				<Upload
+					className={`w-5 h-5 shrink-0 ${dragOver ? "text-primary" : "text-muted-foreground"}`}
+				/>
+				<div className="text-center sm:text-left">
+					<p className="text-sm font-medium text-foreground">
+						{fileBusy
+							? fileProgress || "Working…"
+							: "Drop a WAV file here to transcribe"}
+					</p>
+					<p className="text-xs text-muted-foreground mt-0.5">
+						Runs fully on-device. Result is saved to history and copied to the
+						clipboard.
+					</p>
+				</div>
+			</div>
+			{fileError && (
+				<p className="text-sm text-destructive -mt-3">{fileError}</p>
+			)}
+			{fileProgress && !fileBusy && (
+				<p className="text-sm text-primary -mt-3">{fileProgress}</p>
+			)}
 
 			<div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3.5 flex items-start gap-3">
 				<Lightbulb className="w-5 h-5 text-primary shrink-0 mt-0.5" />
