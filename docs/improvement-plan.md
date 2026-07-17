@@ -76,22 +76,26 @@ Neural Engine** (VoiceInk, Superwhisper, MacWhisper, Handy all adopted it):
 ~6.3% WER — better than Whisper *large*-v3 — at ~80–150ms mic-to-text, 66MB working
 memory.
 
-- [ ] Add a `TranscriptionEngine` abstraction in `transcription.rs` (currently
+- [x] Add a `TranscriptionEngine` abstraction in `transcription.rs` (currently
       hardwired to `LocalWhisperProvider`).
-- [ ] Integrate Parakeet TDT 0.6B v2 (English) via ONNX Runtime (`ort` crate).
+      → Implemented as `LocalEngine { Whisper, Parakeet }` enum.
+- [x] Integrate Parakeet TDT 0.6B via ONNX Runtime (`transcribe-rs` / `ort`).
       Reference implementation on our exact Rust/Tauri stack: **Handy**
-      (github.com/cjpais/Handy, MIT).
-- [ ] Add Parakeet v3 (25 European languages) as the multilingual-fast option.
-- [ ] Rework model tiers in `local-setup-wizard.tsx`:
+      (github.com/cjpais/Handy, MIT). Ships v3 int8 (English + 25 EU languages)
+      from `blob.handy.computer/parakeet-v3-int8.tar.gz`.
+- [x] Add Parakeet v3 (25 European languages) as the multilingual-fast option.
+      → v3 is the default Fast tier (covers EN + multi); separate Whisper turbo
+      tier for full 99-language coverage.
+- [x] Rework model tiers in `local-setup-wizard.tsx`:
       - **Fast (default):** Parakeet TDT 0.6B — "more accurate than models 10× its size"
       - **Multilingual:** whisper `large-v3-turbo` quantized (99 languages, Metal+CoreML)
       - Keep `small.en` as low-RAM fallback for old machines; retire `tiny.en`/`base.en`
         as defaults.
-- [ ] Remove the hardcoded `set_language(Some("en"))`; add a language setting
+- [x] Remove the hardcoded `set_language(Some("en"))`; add a language setting
       (auto-detect for Whisper, language picker for Parakeet v3).
-- [ ] Beam search (beam size 2–5) for the Whisper path — the faster engine buys the
-      accuracy budget back.
-- [ ] Migration: existing users keep working with their downloaded Whisper model;
+- [x] Beam search (beam size 2–5) for the Whisper path — the faster engine buys the
+      accuracy budget back. (beam size 3)
+- [x] Migration: existing users keep working with their downloaded Whisper model;
       settings page offers the Parakeet upgrade with a one-click download.
 
 **Acceptance:** English dictation time-to-paste < 300ms on M1+; WER at or below
