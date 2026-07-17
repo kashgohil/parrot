@@ -78,27 +78,29 @@ interface SetupProgress {
 	overall_progress: number;
 }
 
-// Tuning tiers — backend ids are kept, but users see Parrot-branded labels.
+// STT model tiers — Phase 2: Parakeet is the fast default; Whisper remains
+// for full multilingual coverage and low-RAM machines.
 const WHISPER_MODELS = [
 	{
-		id: "tiny.en",
-		name: "Lite",
-		size: "75 MB",
-		description: "Fastest, basic accuracy",
-		recommended: false,
-	},
-	{
-		id: "base.en",
-		name: "Standard",
-		size: "150 MB",
-		description: "Balanced speed and accuracy",
+		id: "parakeet-v3",
+		name: "Fast",
+		size: "450 MB",
+		description:
+			"Parakeet 0.6B — more accurate than models 10× its size. English + 25 EU languages.",
 		recommended: true,
 	},
 	{
+		id: "large-v3-turbo",
+		name: "Multilingual",
+		size: "600 MB",
+		description: "Whisper large-v3-turbo (quantized). 99 languages via Metal.",
+		recommended: false,
+	},
+	{
 		id: "small.en",
-		name: "Precise",
+		name: "Low RAM",
 		size: "500 MB",
-		description: "Slower, best accuracy",
+		description: "Whisper small.en — fallback for older Macs with limited memory.",
 		recommended: false,
 	},
 ];
@@ -1100,7 +1102,7 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 
 	const [systemRequirements, setSystemRequirements] =
 		useState<SystemRequirements | null>(null);
-	const [selectedWhisperModel, setSelectedWhisperModel] = useState("base.en");
+	const [selectedWhisperModel, setSelectedWhisperModel] = useState("parakeet-v3");
 	// Cleanup engine is fixed to llama3.2 — selection UI is hidden in onboarding.
 	const [selectedOllamaModel] = useState("llama3.2");
 	const [setupProgress, setSetupProgress] = useState<SetupProgress | null>(

@@ -46,9 +46,32 @@ function SettingsPage() {
 	const [cleanupMode, setCleanupMode] = useState<
 		"off" | "background" | "blocking"
 	>("background");
+	const [sttEngine, setSttEngine] = useState("whisper");
+	const [sttModel, setSttModel] = useState("");
+	const [sttLanguage, setSttLanguage] = useState("auto");
+	const [sttSwitching, setSttSwitching] = useState(false);
+	const [sttProgress, setSttProgress] = useState<string | null>(null);
 
 	const keysRef = useRef<Set<string>>(new Set());
 	const recorderRef = useRef<HTMLDivElement>(null);
+
+	const STT_TIERS = [
+		{
+			id: "parakeet-v3",
+			name: "Fast (Parakeet)",
+			desc: "Default. More accurate than models 10× its size. ~80–150ms.",
+		},
+		{
+			id: "large-v3-turbo",
+			name: "Multilingual (Whisper turbo)",
+			desc: "99 languages. Quantized large-v3-turbo on Metal.",
+		},
+		{
+			id: "small.en",
+			name: "Low RAM (Whisper small.en)",
+			desc: "Fallback for older machines with limited memory.",
+		},
+	] as const;
 
 	const startRecording = useCallback(() => {
 		keysRef.current.clear();
@@ -158,6 +181,14 @@ function SettingsPage() {
 			} else {
 				setCleanupMode("background");
 			}
+			const stt = await invoke<{
+				engine: string;
+				model_id: string;
+				language: string;
+			}>("get_stt_status");
+			setSttEngine(stt.engine || "whisper");
+			setSttModel(stt.model_id || "");
+			setSttLanguage(stt.language || "auto");
 		} catch (e) {
 			console.error("Failed to load settings:", e);
 		}
@@ -183,6 +214,10 @@ function SettingsPage() {
 			await invoke("set_setting", {
 				key: "cleanup_mode",
 				value: cleanupMode,
+			});
+			await invoke("set_setting", {
+				key: "stt_language",
+				value: sttLanguage,
 			});
 
 			const profile = await invoke<Profile>("get_profile");
@@ -317,6 +352,142 @@ function SettingsPage() {
 
 			{/* Permissions Section */}
 			<PermissionsSection />
+
+			{/* Transcription engine */}
+			<section className="bg-card rounded-2xl border border-border p-5">
+				<div className="flex items-start gap-4 mb-5">
+					<div className="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center shrink-0">
+						<Mic className="w-5 h-5 text-sky-600" />
+					</div>
+					<div className="flex-1">
+						<h2 className="text-base font-semibold text-foreground">
+							Speech model
+						</h2>
+						<p className="text-sm text-muted-foreground">
+							Local transcription engine. Parakeet is faster and more accurate
+							for English; Whisper covers 99 languages.
+						</p>
+					</div>
+				</div>
+
+				<div className="space-y-3">
+					{STT_TIERS.map((tier) => {
+						const selected = sttModel === tier.id || (!sttModel && tier.id === "parakeet-v3" && sttEngine === "parakeet");
+						const isLegacyWhisper =
+							sttEngine === "whisper" &&
+							!STT_TIERS.some((t) => t.id === sttModel) &&
+							tier.id === "parakeet-v3";
+						return (
+							<button
+								key={tier.id}
+								type="button"
+								disabled={sttSwitching}
+								onClick={async () => {
+									if (sttModel === tier.id || sttSwitching) return;
+									setSttSwitching(true);
+									setSttProgress("Starting download…");
+									try {
+										const { listen } = await import("@tauri-apps/api/event");
+										const unsub = await listen<{
+											message: string;
+											progress: number;
+										}>("stt-model-download-progress", (e) => {
+											setSttProgress(
+												`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
+											);
+										});
+										const res = await invoke<{
+											engine: string;
+											model_id: string;
+											ready: boolean;
+										}>("switch_stt_model", { modelId: tier.id });
+										unsub();
+										setSttEngine(res.engine);
+										setSttModel(res.model_id);
+										setSttProgress(
+											res.ready ? "Ready" : "Loaded — warming up…",
+										);
+										setTimeout(() => setSttProgress(null), 2500);
+									} catch (e) {
+										console.error(e);
+										setSttProgress(
+											`Failed: ${e instanceof Error ? e.message : String(e)}`,
+										);
+									} finally {
+										setSttSwitching(false);
+									}
+								}}
+								className={`text-left p-3 rounded-xl border transition-colors w-full disabled:opacity-60 ${
+									selected || isLegacyWhisper
+										? "border-primary bg-primary/5"
+										: "border-border bg-muted/30 hover:bg-muted/50"
+								}`}
+							>
+								<p className="text-sm font-medium text-foreground flex items-center gap-2">
+									{tier.name}
+									{isLegacyWhisper && (
+										<span className="text-[10px] uppercase tracking-wide font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+											Upgrade available
+										</span>
+									)}
+									{selected && !isLegacyWhisper && (
+										<span className="text-[10px] uppercase tracking-wide font-semibold text-emerald-700 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+											Active
+										</span>
+									)}
+								</p>
+								<p className="text-xs text-muted-foreground mt-0.5">
+									{tier.desc}
+								</p>
+							</button>
+						);
+					})}
+
+					{sttEngine === "whisper" &&
+						sttModel &&
+						!STT_TIERS.some((t) => t.id === sttModel) && (
+							<p className="text-xs text-muted-foreground">
+								Currently using your existing Whisper model (
+								<span className="font-mono">{sttModel || "custom"}</span>
+								). Switch to Fast (Parakeet) for a large speed + accuracy jump.
+							</p>
+						)}
+
+					{sttProgress && (
+						<p className="text-xs text-primary font-medium">{sttProgress}</p>
+					)}
+
+					<div className="space-y-2 pt-2">
+						<Label htmlFor="sttLanguage" className="text-sm font-medium">
+							Language
+						</Label>
+						<select
+							id="sttLanguage"
+							value={sttLanguage}
+							onChange={(e) => setSttLanguage(e.target.value)}
+							className="w-full h-10 rounded-xl border border-border bg-muted/50 px-3 text-sm"
+						>
+							<option value="auto">Auto-detect</option>
+							<option value="en">English</option>
+							<option value="es">Spanish</option>
+							<option value="fr">French</option>
+							<option value="de">German</option>
+							<option value="it">Italian</option>
+							<option value="pt">Portuguese</option>
+							<option value="nl">Dutch</option>
+							<option value="pl">Polish</option>
+							<option value="ru">Russian</option>
+							<option value="ja">Japanese</option>
+							<option value="zh">Chinese</option>
+							<option value="ko">Korean</option>
+						</select>
+						<p className="text-xs text-muted-foreground">
+							Whisper uses this for decoding; Parakeet auto-detects. Prefer Auto
+							unless you always dictate in one language.
+						</p>
+					</div>
+				</div>
+			</section>
 
 			{/* Writing Preferences Section */}
 			<section className="bg-card rounded-2xl border border-border p-5">
