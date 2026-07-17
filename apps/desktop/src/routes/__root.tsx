@@ -346,6 +346,9 @@ function AuthenticatedLayout() {
 				{/* Permissions banner */}
 				<PermissionsBanner />
 
+				{/* Encourage Whisper users to switch to Parakeet */}
+				<ParakeetUpgradeBanner />
+
 				{/* Page content */}
 				<main className="flex-1 overflow-y-auto relative z-10">
 					<div className="max-w-3xl mx-auto w-full px-5 py-6 lg:py-8">
@@ -640,6 +643,115 @@ function PermissionsBanner() {
 						})
 					}
 					className="text-amber-900/60 hover:text-amber-900 text-base px-1"
+				>
+					×
+				</button>
+			</div>
+		</div>
+	);
+}
+
+const PARAKEET_BANNER_DISMISS_KEY = "parrot_dismiss_parakeet_banner";
+
+/** Nudge Whisper-only installs toward Parakeet (faster + more accurate). */
+function ParakeetUpgradeBanner() {
+	const navigate = useNavigate();
+	const [show, setShow] = useState(false);
+	const [busy, setBusy] = useState(false);
+	const [progress, setProgress] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (typeof localStorage !== "undefined") {
+			if (localStorage.getItem(PARAKEET_BANNER_DISMISS_KEY) === "1") {
+				return;
+			}
+		}
+		invoke<{ engine: string; can_upgrade_to_parakeet?: boolean }>("get_stt_status")
+			.then((s) => {
+				if (s.engine !== "parakeet" || s.can_upgrade_to_parakeet) {
+					// Show when not already on Parakeet
+					if (s.engine !== "parakeet") setShow(true);
+				}
+			})
+			.catch(() => {});
+	}, []);
+
+	if (!show) return null;
+
+	async function upgrade() {
+		setBusy(true);
+		setProgress("Starting download…");
+		try {
+			const unsub = await listen<{ message: string; progress: number }>(
+				"stt-model-download-progress",
+				(e) => {
+					setProgress(
+						`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
+					);
+				},
+			);
+			await invoke("switch_stt_model", { modelId: "parakeet-v3" });
+			unsub();
+			setProgress("Parakeet ready");
+			setShow(false);
+			if (typeof localStorage !== "undefined") {
+				localStorage.setItem(PARAKEET_BANNER_DISMISS_KEY, "1");
+			}
+		} catch (e) {
+			console.error(e);
+			setProgress(
+				`Failed: ${e instanceof Error ? e.message : String(e)}`,
+			);
+		} finally {
+			setBusy(false);
+		}
+	}
+
+	return (
+		<div className="shrink-0 relative z-10 border-b border-sky-200 bg-sky-50 text-sky-950 px-4 py-2.5">
+			<div className="max-w-3xl mx-auto flex items-center gap-3">
+				<Sparkles className="w-4 h-4 shrink-0 text-sky-600" />
+				<div className="flex-1 min-w-0">
+					<p className="text-sm font-medium leading-tight">
+						Faster, more accurate dictation is available
+					</p>
+					<p className="text-xs text-sky-900/75 leading-tight mt-0.5">
+						{progress ||
+							"Switch to Parakeet (~450 MB) — more accurate than models 10× its size. Your Whisper model stays on disk."}
+					</p>
+				</div>
+				<button
+					type="button"
+					disabled={busy}
+					onClick={() => void upgrade()}
+					className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md bg-sky-700 text-white hover:bg-sky-800 disabled:opacity-60 transition-colors shrink-0"
+				>
+					{busy ? (
+						<>
+							<Loader2 className="w-3 h-3 animate-spin" />
+							Upgrading…
+						</>
+					) : (
+						"Upgrade to Parakeet"
+					)}
+				</button>
+				<button
+					type="button"
+					onClick={() => navigate({ to: "/settings" })}
+					className="text-xs font-medium text-sky-800/80 hover:text-sky-950 underline shrink-0 hidden sm:inline"
+				>
+					Settings
+				</button>
+				<button
+					type="button"
+					aria-label="Dismiss"
+					onClick={() => {
+						setShow(false);
+						if (typeof localStorage !== "undefined") {
+							localStorage.setItem(PARAKEET_BANNER_DISMISS_KEY, "1");
+						}
+					}}
+					className="text-sky-900/50 hover:text-sky-950 text-base px-1"
 				>
 					×
 				</button>
