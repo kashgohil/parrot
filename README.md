@@ -276,7 +276,6 @@ Native cross-platform app built with Tauri 2 (Rust backend) and React 19 (fronte
 | [rusqlite](https://github.com/rusqlite/rusqlite) | Local SQLite database |
 | [reqwest](https://github.com/seanmonstar/reqwest) | HTTP client (cloud mode + Ollama API) |
 | [tokio](https://tokio.rs) | Async runtime |
-| [Sentry](https://sentry.io) | Optional error reporting |
 
 **React frontend** — settings, history, profile, onboarding wizard:
 
@@ -325,7 +324,7 @@ Backend for cloud mode — auth, transcription proxying, history sync, subscript
 - **Local mode** — audio is captured, transcribed, and cleaned entirely on your device. Zero bytes sent anywhere.
 - **Cloud mode** — audio goes directly to your chosen provider (OpenAI / Deepgram / ElevenLabs). Parrot itself does not store your recordings server-side beyond the response cycle.
 - **BYOK** — bring your own API keys. Your keys, your provider, your data.
-- **Sentry** — optional, off by default. Only crash diagnostics, never audio or transcript content.
+- **No telemetry** — no analytics, crash reporting, or tracking. Parrot never phones home.
 
 ---
 
