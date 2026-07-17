@@ -48,7 +48,7 @@ function SettingsPage() {
 	const [writingStyle, setWritingStyle] = useState("");
 	const [cleanupMode, setCleanupMode] = useState<
 		"off" | "background" | "blocking"
-	>("background");
+	>("blocking");
 	const [sttEngine, setSttEngine] = useState("whisper");
 	const [sttModel, setSttModel] = useState("");
 	const [sttLanguage, setSttLanguage] = useState("auto");
@@ -182,7 +182,7 @@ function SettingsPage() {
 			if (cm === "off" || cm === "background" || cm === "blocking") {
 				setCleanupMode(cm);
 			} else {
-				setCleanupMode("background");
+				setCleanupMode("blocking");
 			}
 			const stt = await invoke<{
 				engine: string;
@@ -513,14 +513,14 @@ function SettingsPage() {
 							{(
 								[
 									{
-										value: "background" as const,
-										title: "Background (recommended)",
-										desc: "Paste immediately, polish in the background. Press ⌘⇧C if the cleaned version differs.",
+										value: "blocking" as const,
+										title: "Wait for polish (recommended)",
+										desc: "Always paste the cleaned text into the focused field. Slight wait after each dictation.",
 									},
 									{
-										value: "blocking" as const,
-										title: "Wait for polish",
-										desc: "Always paste the cleaned text. Adds 1–3s after each dictation.",
+										value: "background" as const,
+										title: "Background",
+										desc: "Paste immediately, polish in the background. Press ⌘⇧C if the cleaned version differs.",
 									},
 									{
 										value: "off" as const,

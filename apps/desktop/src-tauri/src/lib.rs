@@ -302,13 +302,13 @@ async fn transcribe_last(
         .effective_profile_for_app(frontmost.as_deref())
         .map_err(|e| e.to_string())?;
 
-    // Step 2: Cleanup mode — off | background (default) | blocking.
-    // Background mode is the big perceived-latency win: paste the raw
-    // transcript immediately and polish in a fire-and-forget task.
+    // Step 2: Cleanup mode — off | background | blocking (default).
+    // Blocking waits for polish before paste so the focused field gets
+    // cleaned text. Background pastes raw first (latency-oriented).
     let cleanup_mode = db
         .get_setting("cleanup_mode")
         .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "background".to_string());
+        .unwrap_or_else(|| "blocking".to_string());
     let skip_cleanup = cleanup_mode == "off"
         || !effective.cleanup_enabled
         || word_count(&raw_text) < SHORT_UTTERANCE_WORD_LIMIT;
@@ -411,8 +411,8 @@ async fn transcribe_last(
         return Ok(result);
     }
 
-    // Default: background cleanup. Paste raw first so time-to-field ≈
-    // transcription time only, then polish off the hot path.
+    // Background cleanup: paste raw first so time-to-field ≈ transcription
+    // only, then polish off the hot path (opt-in via cleanup_mode).
     let paste_start = Instant::now();
     let pasted = copy_and_paste_safely(&app, raw_text.clone()).await;
     let paste_ms = paste_start.elapsed().as_millis() as i64;
@@ -726,14 +726,16 @@ async fn transcribe_audio_file(
     let cleanup_mode = db
         .get_setting("cleanup_mode")
         .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "background".to_string());
+        .unwrap_or_else(|| "blocking".to_string());
     let skip_cleanup = cleanup_mode == "off"
         || !effective.cleanup_enabled
         || word_count(&raw_text) < SHORT_UTTERANCE_WORD_LIMIT;
 
     let cleaned_text = if skip_cleanup {
         String::new()
-    } else if cleanup_mode == "blocking" {
+    } else if cleanup_mode == "blocking" || cleanup_mode != "background" {
+        // Default / blocking: wait for polish. Only explicit "background"
+        // uses the fire-and-forget path below.
         let builtin = cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner());
         let cleaned = run_cleanup(
             &db,
