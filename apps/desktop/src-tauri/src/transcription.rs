@@ -2,15 +2,63 @@ use anyhow::{Context, Result};
 use reqwest::multipart;
 use serde::Deserialize;
 use std::path::Path;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use whisper_rs::{FullParams, SamplingStrategy, WhisperContext, WhisperContextParameters};
 
 const WHISPER_TARGET_SAMPLE_RATE: u32 = 16_000;
+
+/// Options for a single local transcription call.
+#[derive(Debug, Clone, Default)]
+pub struct TranscribeOpts {
+    /// Language code (`"en"`, `"de"`, …) or `"auto"` / empty for Whisper auto-detect.
+    /// Parakeet v3 auto-detects; language hints are currently unused by the engine.
+    pub language: Option<String>,
+    /// Whisper-only initial prompt for custom vocabulary biasing.
+    pub initial_prompt: Option<String>,
+}
 
 /// Response from the backend transcription API
 #[derive(Deserialize)]
 struct BackendTranscribeResponse {
     text: String,
+}
+
+/// Local transcription engines available to the app.
+///
+/// Phase 2: Whisper (Metal) remains supported for multilingual / low-RAM;
+/// Parakeet (ONNX) is the fast English-first default.
+#[derive(Clone)]
+pub enum LocalEngine {
+    Whisper(Arc<LocalWhisperProvider>),
+    Parakeet(Arc<ParakeetProvider>),
+}
+
+impl LocalEngine {
+    pub fn engine_id(&self) -> &'static str {
+        match self {
+            LocalEngine::Whisper(_) => "whisper",
+            LocalEngine::Parakeet(_) => "parakeet",
+        }
+    }
+
+    pub fn model_label(&self) -> String {
+        match self {
+            LocalEngine::Whisper(p) => p.model_label.clone(),
+            LocalEngine::Parakeet(p) => p.model_label.clone(),
+        }
+    }
+
+    pub async fn transcribe_samples(
+        &self,
+        samples: &[f32],
+        sample_rate: u32,
+        opts: TranscribeOpts,
+    ) -> Result<String> {
+        match self {
+            LocalEngine::Whisper(p) => p.transcribe_samples(samples, sample_rate, opts).await,
+            LocalEngine::Parakeet(p) => p.transcribe_samples(samples, sample_rate, opts).await,
+        }
+    }
 }
 
 /// Local in-process whisper transcription. Holds a loaded `WhisperContext`
@@ -19,6 +67,7 @@ struct BackendTranscribeResponse {
 /// synchronous.
 pub struct LocalWhisperProvider {
     ctx: Arc<WhisperContext>,
+    model_label: String,
 }
 
 impl LocalWhisperProvider {
@@ -26,9 +75,16 @@ impl LocalWhisperProvider {
         let path_str = model_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Whisper model path is not valid UTF-8"))?;
+        let label = model_path
+            .file_name()
+            .map(|n| n.to_string_lossy().into_owned())
+            .unwrap_or_else(|| path_str.to_string());
         let ctx = WhisperContext::new_with_params(path_str, WhisperContextParameters::default())
             .with_context(|| format!("Failed to load whisper model at {}", path_str))?;
-        Ok(Self { ctx: Arc::new(ctx) })
+        Ok(Self {
+            ctx: Arc::new(ctx),
+            model_label: label,
+        })
     }
 
     /// Transcribe mono `f32` samples at `sample_rate`. Resamples to 16 kHz
@@ -38,31 +94,89 @@ impl LocalWhisperProvider {
         &self,
         samples: &[f32],
         sample_rate: u32,
-        initial_prompt: Option<String>,
+        opts: TranscribeOpts,
     ) -> Result<String> {
         let pcm = prepare_pcm(samples, sample_rate, WHISPER_TARGET_SAMPLE_RATE);
         let ctx = self.ctx.clone();
+        let language = opts.language.clone();
+        let initial_prompt = opts.initial_prompt.clone();
 
-        tokio::task::spawn_blocking(move || run_whisper(&ctx, &pcm, initial_prompt.as_deref()))
-            .await
-            .context("Whisper task panicked")?
-    }
-
-    pub async fn transcribe(
-        &self,
-        wav_data: &[u8],
-        initial_prompt: Option<String>,
-    ) -> Result<String> {
-        let pcm = decode_wav_to_mono_f32(wav_data, WHISPER_TARGET_SAMPLE_RATE)?;
-        let ctx = self.ctx.clone();
-
-        tokio::task::spawn_blocking(move || run_whisper(&ctx, &pcm, initial_prompt.as_deref()))
-            .await
-            .context("Whisper task panicked")?
+        tokio::task::spawn_blocking(move || {
+            run_whisper(
+                &ctx,
+                &pcm,
+                language.as_deref(),
+                initial_prompt.as_deref(),
+            )
+        })
+        .await
+        .context("Whisper task panicked")?
     }
 }
 
-/// Resample mono f32 to the whisper target rate when the device rate differs.
+/// NVIDIA Parakeet TDT via ONNX Runtime (`transcribe-rs`, same stack as Handy).
+///
+/// `ParakeetModel::transcribe` takes `&mut self`, so the model is behind a
+/// Mutex — dictations are serial on a single engine instance anyway.
+pub struct ParakeetProvider {
+    model: Mutex<transcribe_rs::onnx::parakeet::ParakeetModel>,
+    model_label: String,
+}
+
+impl ParakeetProvider {
+    pub fn load(model_dir: &Path, label: &str) -> Result<Self> {
+        use transcribe_rs::onnx::parakeet::ParakeetModel;
+        use transcribe_rs::onnx::Quantization;
+
+        // Prefer CoreML on Apple Silicon when available; fall back to CPU.
+        #[cfg(target_os = "macos")]
+        {
+            use transcribe_rs::{set_ort_accelerator, OrtAccelerator};
+            set_ort_accelerator(OrtAccelerator::Auto);
+        }
+
+        let model = ParakeetModel::load(model_dir, &Quantization::Int8).map_err(|e| {
+            anyhow::anyhow!("Failed to load Parakeet model at {}: {}", model_dir.display(), e)
+        })?;
+        Ok(Self {
+            model: Mutex::new(model),
+            model_label: label.to_string(),
+        })
+    }
+
+    pub async fn transcribe_samples(
+        &self,
+        samples: &[f32],
+        sample_rate: u32,
+        _opts: TranscribeOpts,
+    ) -> Result<String> {
+        use transcribe_rs::SpeechModel;
+        use transcribe_rs::TranscribeOptions;
+
+        let pcm = prepare_pcm(samples, sample_rate, WHISPER_TARGET_SAMPLE_RATE);
+        // Parakeet's mel preprocessor attenuates the start of audio — the
+        // SpeechModel::transcribe default prepends ~250ms of silence.
+        const MIN_SAMPLES_16K: usize = 16_000 / 4; // 0.25s
+        if pcm.len() < MIN_SAMPLES_16K {
+            return Ok(String::new());
+        }
+
+        // ParakeetModel needs &mut self. MutexGuard is !Send, so lock + infer
+        // on the multi-thread runtime via block_in_place (no .await while held).
+        tokio::task::block_in_place(|| {
+            let mut guard = self
+                .model
+                .lock()
+                .map_err(|_| anyhow::anyhow!("Parakeet model mutex poisoned"))?;
+            let result = guard
+                .transcribe(&pcm, &TranscribeOptions::default())
+                .map_err(|e| anyhow::anyhow!("Parakeet transcription failed: {}", e))?;
+            Ok(result.text.trim().to_string())
+        })
+    }
+}
+
+/// Resample mono f32 to the whisper/parakeet target rate when the device rate differs.
 fn prepare_pcm(samples: &[f32], sample_rate: u32, target_rate: u32) -> Vec<f32> {
     if sample_rate == target_rate {
         samples.to_vec()
@@ -71,7 +185,12 @@ fn prepare_pcm(samples: &[f32], sample_rate: u32, target_rate: u32) -> Vec<f32> 
     }
 }
 
-fn run_whisper(ctx: &WhisperContext, pcm: &[f32], initial_prompt: Option<&str>) -> Result<String> {
+fn run_whisper(
+    ctx: &WhisperContext,
+    pcm: &[f32],
+    language: Option<&str>,
+    initial_prompt: Option<&str>,
+) -> Result<String> {
     // whisper.cpp needs at least ~1s of audio internally (it pads to 30s frames
     // from there). Calling `state.full()` with a near-empty buffer surfaces as
     // "Whisper inference failed" — treat sub-threshold input as empty
@@ -85,10 +204,26 @@ fn run_whisper(ctx: &WhisperContext, pcm: &[f32], initial_prompt: Option<&str>) 
         .create_state()
         .context("Failed to create whisper state")?;
 
-    let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 1 });
+    // Beam search (size 3) — Phase 2 accuracy budget from the faster engine.
+    let mut params = FullParams::new(SamplingStrategy::BeamSearch {
+        beam_size: 3,
+        patience: 1.0,
+    });
     params.set_n_threads(num_cpus_default());
     params.set_translate(false);
-    params.set_language(Some("en"));
+
+    // Language: "auto"/empty/None → auto-detect; otherwise pin to the code.
+    let lang = language
+        .map(str::trim)
+        .filter(|s| !s.is_empty() && !s.eq_ignore_ascii_case("auto"));
+    match lang {
+        Some(code) => params.set_language(Some(code)),
+        None => {
+            params.set_language(None);
+            params.set_detect_language(true);
+        }
+    }
+
     params.set_print_special(false);
     params.set_print_progress(false);
     params.set_print_realtime(false);
@@ -145,6 +280,7 @@ fn num_cpus_default() -> std::os::raw::c_int {
 /// expects. Handles arbitrary input sample rates and channel counts via
 /// linear-interpolation resampling and channel averaging — both adequate for
 /// voice transcription.
+#[allow(dead_code)]
 fn decode_wav_to_mono_f32(wav_data: &[u8], target_rate: u32) -> Result<Vec<f32>> {
     let cursor = std::io::Cursor::new(wav_data);
     let mut reader = hound::WavReader::new(cursor).context("Failed to parse WAV header")?;
@@ -206,35 +342,34 @@ fn resample_linear(input: &[f32], from_rate: u32, to_rate: u32) -> Vec<f32> {
 
 /// Top-level dispatcher used by the Tauri command layer.
 ///
-/// Local mode requires a preloaded `LocalWhisperProvider` and feeds it the
-/// raw f32 samples from the recorder. Cloud mode needs WAV bytes for the
-/// multipart upload (`wav_data`).
+/// Local mode requires a preloaded `LocalEngine` and feeds it the raw f32
+/// samples from the recorder. Cloud mode needs WAV bytes for the multipart
+/// upload (`wav_data`).
 pub async fn transcribe_audio(
     samples: &[f32],
     sample_rate: u32,
     wav_data: Option<&[u8]>,
     mode: &str,
-    local: Option<&LocalWhisperProvider>,
+    local: Option<&LocalEngine>,
     session_token: Option<&str>,
     api_key: Option<&str>,
-    initial_prompt: Option<String>,
+    opts: TranscribeOpts,
 ) -> Result<String> {
     match mode {
         "local" => {
-            let provider = local.ok_or_else(|| {
+            let engine = local.ok_or_else(|| {
                 anyhow::anyhow!(
                     "Parrot is still warming up the local model. Try again in a moment."
                 )
             })?;
-            provider
-                .transcribe_samples(samples, sample_rate, initial_prompt)
-                .await
+            engine.transcribe_samples(samples, sample_rate, opts).await
         }
         "cloud" => {
             let wav = wav_data.ok_or_else(|| {
                 anyhow::anyhow!("WAV data required for cloud transcription")
             })?;
-            transcribe_with_backend(wav, session_token, api_key, initial_prompt.as_deref()).await
+            transcribe_with_backend(wav, session_token, api_key, opts.initial_prompt.as_deref())
+                .await
         }
         _ => anyhow::bail!("Unknown transcription mode: {}", mode),
     }

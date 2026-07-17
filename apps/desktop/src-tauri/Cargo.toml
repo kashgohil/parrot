@@ -35,7 +35,13 @@ arboard = "3"
 urlencoding = "2"
 sentry = { version = "0.34", default-features = false, features = ["backtrace", "contexts", "panic", "reqwest", "rustls"] }
 whisper-rs = { version = "0.14", features = ["metal"] }
+# Parakeet (and other ONNX ASR) — same library Handy uses (MIT).
+transcribe-rs = { version = "0.3", default-features = false, features = ["onnx"] }
+flate2 = "1"
+tar = "0.4"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 core-graphics = "0.24"
 core-foundation = "0.10"
+# CoreML EP for ONNX Parakeet on Apple Silicon (~Neural Engine).
+transcribe-rs = { version = "0.3", default-features = false, features = ["onnx", "ort-coreml"] }

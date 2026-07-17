@@ -15,12 +15,15 @@ use std::sync::Mutex;
 use std::time::Instant;
 use tauri::{Emitter, Manager};
 use tokio::sync::RwLock;
-use transcription::LocalWhisperProvider;
+use transcription::{LocalEngine, TranscribeOpts};
 
-/// Shared handle to the in-process whisper provider. `None` until the model
-/// finishes loading (eager-async at startup) — falls through to a friendly
+/// Shared handle to the in-process local STT engine (Whisper or Parakeet).
+/// `None` until the model finishes loading — falls through to a friendly
 /// error if a dictation arrives before then.
-pub type SharedWhisperProvider = Arc<RwLock<Option<Arc<LocalWhisperProvider>>>>;
+pub type SharedLocalEngine = Arc<RwLock<Option<Arc<LocalEngine>>>>;
+
+/// Back-compat alias used during the Phase 2 rename.
+pub type SharedWhisperProvider = SharedLocalEngine;
 
 pub struct RecorderState {
     recorder: Mutex<AudioRecorder>,
@@ -142,7 +145,7 @@ struct DictationResult {
 async fn transcribe_last(
     recorder_state: tauri::State<'_, RecorderState>,
     db: tauri::State<'_, Database>,
-    whisper: tauri::State<'_, SharedWhisperProvider>,
+    engine_state: tauri::State<'_, SharedLocalEngine>,
     app: tauri::AppHandle,
 ) -> Result<DictationResult, String> {
     let audio = recorder_state
@@ -163,15 +166,14 @@ async fn transcribe_last(
     // Step 1: Transcribe
     let _ = app.emit("transcription-started", ());
     let pipeline_start = Instant::now();
-    let local_provider = if setup_mode == "local" {
-        wait_for_whisper_provider(whisper.inner(), std::time::Duration::from_secs(30)).await
+    let local_engine = if setup_mode == "local" {
+        wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(30)).await
     } else {
         None
     };
 
-    // Bias the transcriber toward the user's unconditional vocabulary.
-    // Local mode uses the on-device profile; cloud mode lets the server-side
-    // route inject the profile-derived prompt against the upstream provider.
+    // Bias Whisper toward the user's vocabulary. Parakeet ignores the prompt;
+    // cloud mode injects vocab server-side.
     let initial_prompt = if setup_mode == "local" {
         match db.get_profile() {
             Ok(profile) => {
@@ -183,9 +185,13 @@ async fn transcribe_last(
     } else {
         None
     };
+    let language = db
+        .get_setting("stt_language")
+        .map_err(|e| e.to_string())?
+        .filter(|s| !s.trim().is_empty());
 
     // Encode WAV only when cloud mode needs it for the HTTP multipart body.
-    // Local mode feeds f32 samples straight into whisper.
+    // Local mode feeds f32 samples straight into the engine.
     let wav_data = if setup_mode == "cloud" {
         Some(audio.encode_wav().map_err(|e| e.to_string())?)
     } else {
@@ -198,28 +204,27 @@ async fn transcribe_last(
         audio.sample_rate,
         wav_data.as_deref(),
         &setup_mode,
-        local_provider.as_deref(),
+        local_engine.as_deref(),
         session_token.as_deref(),
         api_key.as_deref(),
-        initial_prompt,
+        TranscribeOpts {
+            language,
+            initial_prompt,
+        },
     )
     .await
     .map_err(|e| e.to_string())?;
     let transcription_ms = transcription_start.elapsed().as_millis() as i64;
     let engine_name = if setup_mode == "local" {
-        "whisper"
+        local_engine
+            .as_ref()
+            .map(|e| e.engine_id())
+            .unwrap_or("local")
     } else {
         "cloud"
     };
     let model_name = if setup_mode == "local" {
-        db.get_local_setup_config()
-            .ok()
-            .map(|c| c.whisper_model_path)
-            .and_then(|p| {
-                std::path::Path::new(&p)
-                    .file_name()
-                    .map(|n| n.to_string_lossy().into_owned())
-            })
+        local_engine.as_ref().map(|e| e.model_label())
     } else {
         None
     };
@@ -877,6 +882,82 @@ fn get_timing_stats(db: tauri::State<'_, Database>) -> Result<db::TimingStats, S
     db.timing_stats().map_err(|e| e.to_string())
 }
 
+/// Current STT engine + model tier for Settings.
+#[tauri::command]
+fn get_stt_status(db: tauri::State<'_, Database>) -> Result<serde_json::Value, String> {
+    let config = db.get_local_setup_config().map_err(|e| e.to_string())?;
+    let (engine, path, model_id) = resolve_stt_load_target(&db, &config);
+    Ok(serde_json::json!({
+        "engine": engine,
+        "model_id": model_id,
+        "model_path": path,
+        "language": db.get_setting("stt_language").ok().flatten().unwrap_or_else(|| "auto".into()),
+    }))
+}
+
+/// Download (if needed) and switch to a new STT model tier. Used for the
+/// Parakeet upgrade path and model picker in Settings.
+#[tauri::command]
+async fn switch_stt_model(
+    model_id: String,
+    app: tauri::AppHandle,
+    db: tauri::State<'_, Database>,
+    engine_state: tauri::State<'_, SharedLocalEngine>,
+) -> Result<serde_json::Value, String> {
+    let app_for_progress = app.clone();
+    let model_for_cb = model_id.clone();
+    let path = local_setup::download_stt_model(&model_id, move |msg, progress| {
+        let _ = app_for_progress.emit(
+            "stt-model-download-progress",
+            serde_json::json!({
+                "model": model_for_cb,
+                "message": msg,
+                "progress": progress,
+            }),
+        );
+    })
+    .await
+    .map_err(|e| e.to_string())?;
+
+    let engine = local_setup::stt_engine_for_model(&model_id);
+    let path_str = path.to_string_lossy().to_string();
+    let _ = db.set_setting("stt_engine", engine);
+    let _ = db.set_setting("stt_model", &model_id);
+    if engine == "parakeet" {
+        let _ = db.set_setting("parakeet_model_path", &path_str);
+    } else {
+        // Keep local_setup.whisper_model_path in sync for Whisper tiers.
+        if let Ok(mut config) = db.get_local_setup_config() {
+            config.whisper_model_path = path_str.clone();
+            let _ = db.set_local_setup_config(&config);
+        }
+    }
+
+    // Clear and reload engine.
+    {
+        let mut slot = engine_state.write().await;
+        *slot = None;
+    }
+    load_local_engine(
+        engine_state.inner().clone(),
+        engine.to_string(),
+        path_str.clone(),
+        model_id.clone(),
+    );
+
+    // Wait briefly so the UI can show "ready".
+    let ready = wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(120))
+        .await
+        .is_some();
+
+    Ok(serde_json::json!({
+        "engine": engine,
+        "model_id": model_id,
+        "model_path": path_str,
+        "ready": ready,
+    }))
+}
+
 /// DictationEntry type used by both local and cloud modes in command responses
 #[derive(serde::Serialize, serde::Deserialize, Clone)]
 struct DictationEntry {
@@ -1243,9 +1324,9 @@ async fn check_model_download_status(
     let mut downloaded_ollama = Vec::new();
 
     for model in &request.whisper_models {
-        if local_setup::is_whisper_model_downloaded(model)
+        if local_setup::is_stt_model_downloaded(model)
             .await
-            .map_err(|e| format!("Failed to check Whisper model {}: {}", model, e))?
+            .map_err(|e| format!("Failed to check STT model {}: {}", model, e))?
         {
             downloaded_whisper.push(model.clone());
         }
@@ -1281,6 +1362,7 @@ async fn start_local_setup(
 
     tokio::spawn(async move {
         let app_clone = app.clone();
+        let stt_model_id = whisper_model.clone();
 
         let result = local_setup::run_setup(
             whisper_model,
@@ -1304,13 +1386,23 @@ async fn start_local_setup(
                         "error": format!("Failed to save config: {}", e),
                     }));
                 } else {
-                    // Kick off the in-process whisper model load now that the
-                    // file is on disk. UI keeps moving; provider becomes
-                    // available a beat later.
-                    let whisper_state = app.state::<SharedWhisperProvider>();
-                    load_whisper_provider(
-                        whisper_state.inner().clone(),
+                    // Persist engine id so restarts load Parakeet vs Whisper
+                    // correctly. The setup request's model field is the tier id.
+                    let engine = local_setup::stt_engine_for_model(&stt_model_id);
+                    let _ = db.set_setting("stt_engine", engine);
+                    let _ = db.set_setting("stt_model", &stt_model_id);
+                    if engine == "parakeet" {
+                        let _ = db.set_setting(
+                            "parakeet_model_path",
+                            &config.whisper_model_path,
+                        );
+                    }
+                    let engine_state = app.state::<SharedLocalEngine>();
+                    load_local_engine(
+                        engine_state.inner().clone(),
+                        engine.to_string(),
                         config.whisper_model_path.clone(),
+                        stt_model_id.clone(),
                     );
                     let _ = app.emit("setup-complete", serde_json::json!({
                         "success": true,
@@ -1359,11 +1451,10 @@ async fn start_local_servers(
         return Err("Local setup not completed".to_string());
     }
 
-    // Whisper now runs in-process — kick off the (eager-async) model load if
-    // it hasn't been loaded yet. Errors here are surfaced via the toast layer
-    // when transcription is actually attempted.
-    if whisper.read().await.is_none() && !config.whisper_model_path.is_empty() {
-        load_whisper_provider(whisper.inner().clone(), config.whisper_model_path.clone());
+    // Local STT runs in-process — kick off the (eager-async) model load if
+    // it hasn't been loaded yet. Errors surface via toast on next dictation.
+    if whisper.read().await.is_none() {
+        kick_off_engine_load(&db, whisper.inner().clone(), &config);
     }
 
     // If we've already established a port for Ollama (either by spawning it
@@ -1396,13 +1487,13 @@ async fn start_local_servers(
     }))
 }
 
-/// Wait briefly for the whisper provider to finish loading. Returns the
-/// provider as soon as it's available, or `None` after `timeout` so the caller
+/// Wait briefly for the local STT engine to finish loading. Returns the
+/// engine as soon as it's available, or `None` after `timeout` so the caller
 /// surfaces a friendly error rather than blocking forever.
-async fn wait_for_whisper_provider(
-    state: &SharedWhisperProvider,
+async fn wait_for_local_engine(
+    state: &SharedLocalEngine,
     timeout: std::time::Duration,
-) -> Option<Arc<transcription::LocalWhisperProvider>> {
+) -> Option<Arc<LocalEngine>> {
     if let Some(p) = state.read().await.clone() {
         return Some(p);
     }
@@ -1416,26 +1507,108 @@ async fn wait_for_whisper_provider(
     None
 }
 
-/// Load the whisper model in the background. Stores the resulting provider in
-/// shared state once ready; logs and discards errors (the user will see a
-/// friendly toast on the next dictation attempt if loading failed).
-fn load_whisper_provider(state: SharedWhisperProvider, model_path: String) {
+/// Load the configured local STT engine (Whisper or Parakeet) in the background.
+fn load_local_engine(state: SharedLocalEngine, engine: String, model_path: String, model_id: String) {
     tauri::async_runtime::spawn(async move {
         let path = std::path::PathBuf::from(model_path);
-        match tokio::task::spawn_blocking(move || LocalWhisperProvider::load(&path)).await {
-            Ok(Ok(provider)) => {
+        let engine_id = engine.clone();
+        let mid = model_id.clone();
+        let result = tokio::task::spawn_blocking(move || load_engine_blocking(&engine_id, &path, &mid))
+            .await;
+        match result {
+            Ok(Ok(engine)) => {
+                let label = engine.model_label();
+                let kind = engine.engine_id();
                 let mut slot = state.write().await;
-                *slot = Some(Arc::new(provider));
-                println!("Whisper model loaded");
+                *slot = Some(Arc::new(engine));
+                println!("Local STT engine loaded: {} ({})", kind, label);
             }
             Ok(Err(e)) => {
-                eprintln!("Failed to load whisper model: {}", e);
+                eprintln!("Failed to load local STT engine: {}", e);
             }
             Err(e) => {
-                eprintln!("Whisper load task join error: {}", e);
+                eprintln!("STT engine load task join error: {}", e);
             }
         }
     });
+}
+
+/// Resolve engine + path from settings / local_setup config, then load.
+fn kick_off_engine_load(db: &Database, state: SharedLocalEngine, config: &local_setup::LocalSetupConfig) {
+    let (engine, path, model_id) = resolve_stt_load_target(db, config);
+    if path.is_empty() {
+        eprintln!("No STT model path configured — skip engine load");
+        return;
+    }
+    load_local_engine(state, engine, path, model_id);
+}
+
+fn resolve_stt_load_target(
+    db: &Database,
+    config: &local_setup::LocalSetupConfig,
+) -> (String, String, String) {
+    let model_id = db
+        .get_setting("stt_model")
+        .ok()
+        .flatten()
+        .unwrap_or_default();
+    let engine = db
+        .get_setting("stt_engine")
+        .ok()
+        .flatten()
+        .unwrap_or_else(|| {
+            // Migration: existing installs only have a whisper path.
+            if !config.whisper_model_path.is_empty() {
+                "whisper".into()
+            } else {
+                "parakeet".into()
+            }
+        });
+
+    let path = if engine == "parakeet" {
+        db.get_setting("parakeet_model_path")
+            .ok()
+            .flatten()
+            .filter(|p| !p.is_empty())
+            .or_else(|| {
+                if config.whisper_model_path.contains("parakeet") {
+                    Some(config.whisper_model_path.clone())
+                } else {
+                    local_setup::get_parakeet_model_dir(local_setup::STT_PARAKEET_V3)
+                        .ok()
+                        .map(|p| p.to_string_lossy().into_owned())
+                }
+            })
+            .unwrap_or_default()
+    } else {
+        config.whisper_model_path.clone()
+    };
+
+    (engine, path, model_id)
+}
+
+fn load_engine_blocking(
+    engine: &str,
+    path: &std::path::Path,
+    model_id: &str,
+) -> anyhow::Result<LocalEngine> {
+    match engine {
+        "parakeet" => {
+            let label = if model_id.is_empty() {
+                path.file_name()
+                    .map(|n| n.to_string_lossy().into_owned())
+                    .unwrap_or_else(|| "parakeet".into())
+            } else {
+                model_id.to_string()
+            };
+            let provider = transcription::ParakeetProvider::load(path, &label)?;
+            Ok(LocalEngine::Parakeet(Arc::new(provider)))
+        }
+        _ => {
+            let provider = transcription::LocalWhisperProvider::load(path)?;
+            Ok(LocalEngine::Whisper(Arc::new(provider)))
+        }
+    }
 }
 
 #[tauri::command]
@@ -1533,6 +1706,8 @@ pub fn run() {
             transcribe_last,
             apply_pending_cleanup,
             get_timing_stats,
+            get_stt_status,
+            switch_stt_model,
             get_history,
             search_history,
             delete_dictation,
@@ -1630,12 +1805,9 @@ pub fn run() {
                 let config = db.get_local_setup_config();
                 if let Ok(config) = config {
                     if config.setup_completed {
-                        // 1. Load the whisper model in-process (eager async).
-                        let whisper_state = app.state::<SharedWhisperProvider>();
-                        load_whisper_provider(
-                            whisper_state.inner().clone(),
-                            config.whisper_model_path.clone(),
-                        );
+                        // 1. Load the local STT engine in-process (eager async).
+                        let engine_state = app.state::<SharedLocalEngine>();
+                        kick_off_engine_load(&db, engine_state.inner().clone(), &config);
 
                         // 2. Make sure the Ollama daemon is running, then
                         //    pre-warm the configured LLM in the background so

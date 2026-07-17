@@ -347,16 +347,48 @@ pub fn get_models_dir() -> Result<PathBuf> {
     Ok(models_dir)
 }
 
+/// STT model tier ids used by the setup wizard / settings.
+/// Parakeet is the Phase 2 default; Whisper tiers remain for multilingual / low-RAM.
+pub const STT_PARAKEET_V3: &str = "parakeet-v3";
+#[allow(dead_code)]
+pub const STT_WHISPER_LARGE_TURBO: &str = "large-v3-turbo";
+#[allow(dead_code)]
+pub const STT_WHISPER_SMALL_EN: &str = "small.en";
+
+/// Pre-built int8 ONNX bundle hosted by Handy (MIT, same stack we run).
+const PARAKEET_V3_URL: &str = "https://blob.handy.computer/parakeet-v3-int8.tar.gz";
+
+pub fn is_parakeet_model_id(model: &str) -> bool {
+    model.starts_with("parakeet")
+}
+
+pub fn stt_engine_for_model(model: &str) -> &'static str {
+    if is_parakeet_model_id(model) {
+        "parakeet"
+    } else {
+        "whisper"
+    }
+}
+
 /// Get the download URL for a whisper model
 pub fn get_whisper_model_url(model: &str) -> String {
+    let file = whisper_ggml_file_name(model);
     format!(
-        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-{}.bin",
-        model
+        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/{}",
+        file
     )
 }
 
+fn whisper_ggml_file_name(model: &str) -> String {
+    match model {
+        // Quantized turbo — ~600MB, 99 languages, Metal-friendly.
+        "large-v3-turbo" => "ggml-large-v3-turbo-q5_0.bin".to_string(),
+        other => format!("ggml-{}.bin", other),
+    }
+}
+
 fn get_whisper_model_file_name(model: &str) -> String {
-    format!("ggml-{}.bin", model)
+    whisper_ggml_file_name(model)
 }
 
 pub fn get_whisper_model_path(model: &str) -> Result<PathBuf> {
@@ -364,8 +396,41 @@ pub fn get_whisper_model_path(model: &str) -> Result<PathBuf> {
     Ok(models_dir.join(get_whisper_model_file_name(model)))
 }
 
+pub fn get_parakeet_model_dir(model: &str) -> Result<PathBuf> {
+    Ok(get_models_dir()?.join(model))
+}
+
+/// Resolved on-disk path for any STT model id (file for Whisper, dir for Parakeet).
+#[allow(dead_code)]
+pub fn get_stt_model_path(model: &str) -> Result<PathBuf> {
+    if is_parakeet_model_id(model) {
+        get_parakeet_model_dir(model)
+    } else {
+        get_whisper_model_path(model)
+    }
+}
+
 pub async fn is_whisper_model_downloaded(model: &str) -> Result<bool> {
     Ok(get_whisper_model_path(model)?.exists())
+}
+
+fn parakeet_dir_ready(dir: &PathBuf) -> bool {
+    if !dir.is_dir() {
+        return false;
+    }
+    // Any of the int8 / fp encoder filenames count as "present".
+    dir.join("vocab.txt").exists()
+        && (dir.join("encoder-model.int8.onnx").exists()
+            || dir.join("encoder-model.onnx").exists()
+            || dir.join("encoder-model.int8.onnx").exists())
+}
+
+pub async fn is_stt_model_downloaded(model: &str) -> Result<bool> {
+    if is_parakeet_model_id(model) {
+        Ok(parakeet_dir_ready(&get_parakeet_model_dir(model)?))
+    } else {
+        is_whisper_model_downloaded(model).await
+    }
 }
 
 pub async fn list_ollama_models() -> Result<Vec<String>> {
@@ -475,6 +540,157 @@ where
     
     progress_callback(format!("Model {} downloaded successfully", model), 100.0);
     Ok(model_path)
+}
+
+/// Download + extract a Parakeet ONNX bundle (int8 tarball from Handy's CDN).
+pub async fn download_parakeet_model<F>(model: &str, progress_callback: F) -> Result<PathBuf>
+where
+    F: Fn(String, f32) + Send + 'static,
+{
+    let model_dir = get_parakeet_model_dir(model)?;
+    if parakeet_dir_ready(&model_dir) {
+        progress_callback(format!("Model {} already downloaded", model), 100.0);
+        return Ok(model_dir);
+    }
+
+    std::fs::create_dir_all(&model_dir)?;
+    progress_callback(format!("Downloading {} model...", model), 0.0);
+
+    let url = match model {
+        id if id == STT_PARAKEET_V3 || id == "parakeet-tdt-0.6b-v3" => PARAKEET_V3_URL,
+        _ => PARAKEET_V3_URL, // only v3 is hosted as a ready tarball today
+    };
+
+    let archive_path = model_dir.with_extension("tar.gz.tmp");
+    let client = reqwest::Client::new();
+    let mut response = client
+        .get(url)
+        .send()
+        .await
+        .context("Failed to start Parakeet model download")?
+        .error_for_status()
+        .context("Parakeet model download request failed")?;
+
+    let total_bytes = response.content_length();
+    let mut downloaded_bytes: u64 = 0;
+    let mut temp_file = tokio::fs::File::create(&archive_path)
+        .await
+        .context("Failed to create temporary archive")?;
+
+    while let Some(chunk) = response
+        .chunk()
+        .await
+        .context("Failed while downloading Parakeet model")?
+    {
+        temp_file
+            .write_all(&chunk)
+            .await
+            .context("Failed to write Parakeet archive")?;
+        downloaded_bytes += chunk.len() as u64;
+        if let Some(total) = total_bytes {
+            if total > 0 {
+                // Reserve 0–90% for download, 90–100% for extract.
+                let progress = (downloaded_bytes as f32 / total as f32) * 90.0;
+                progress_callback(
+                    format!("Downloading {} model...", model),
+                    progress.min(90.0),
+                );
+            }
+        } else {
+            let mb = downloaded_bytes as f64 / (1024.0 * 1024.0);
+            progress_callback(format!("Downloaded {:.0} MB...", mb), 0.0);
+        }
+    }
+    temp_file.flush().await?;
+    drop(temp_file);
+
+    progress_callback(format!("Extracting {} model...", model), 92.0);
+    let archive_for_blocking = archive_path.clone();
+    let dest_for_blocking = model_dir.clone();
+    tokio::task::spawn_blocking(move || extract_parakeet_tarball(&archive_for_blocking, &dest_for_blocking))
+        .await
+        .context("Parakeet extract task panicked")??;
+
+    let _ = tokio::fs::remove_file(&archive_path).await;
+
+    if !parakeet_dir_ready(&model_dir) {
+        anyhow::bail!(
+            "Parakeet model extracted but required files missing in {}",
+            model_dir.display()
+        );
+    }
+
+    progress_callback(format!("Model {} ready", model), 100.0);
+    Ok(model_dir)
+}
+
+fn extract_parakeet_tarball(archive_path: &std::path::Path, dest: &std::path::Path) -> Result<()> {
+    use flate2::read::GzDecoder;
+    use std::fs::File;
+    use tar::Archive;
+
+    let file = File::open(archive_path).context("Failed to open Parakeet archive")?;
+    let decoder = GzDecoder::new(file);
+    let mut archive = Archive::new(decoder);
+
+    // Extract into a staging dir so we can normalize nested layouts.
+    let staging = dest.with_extension("extracting");
+    if staging.exists() {
+        std::fs::remove_dir_all(&staging)?;
+    }
+    std::fs::create_dir_all(&staging)?;
+    archive
+        .unpack(&staging)
+        .context("Failed to extract Parakeet archive")?;
+
+    // Handy’s tarball either unpacks files at the root or one nested folder.
+    let model_root = find_parakeet_root(&staging).unwrap_or(staging.clone());
+
+    // Move contents into dest.
+    if dest.exists() {
+        std::fs::remove_dir_all(dest)?;
+    }
+    std::fs::create_dir_all(dest)?;
+    for entry in std::fs::read_dir(&model_root)? {
+        let entry = entry?;
+        let target = dest.join(entry.file_name());
+        std::fs::rename(entry.path(), target)?;
+    }
+
+    let _ = std::fs::remove_dir_all(&staging);
+    Ok(())
+}
+
+fn find_parakeet_root(staging: &std::path::Path) -> Option<PathBuf> {
+    if staging.join("vocab.txt").exists() {
+        return Some(staging.to_path_buf());
+    }
+    let mut dirs = std::fs::read_dir(staging).ok()?.flatten();
+    // Single child directory with the model files?
+    let first = dirs.next()?;
+    if dirs.next().is_none() && first.path().is_dir() && first.path().join("vocab.txt").exists() {
+        return Some(first.path());
+    }
+    // Search one level deep.
+    for entry in std::fs::read_dir(staging).ok()?.flatten() {
+        let p = entry.path();
+        if p.is_dir() && p.join("vocab.txt").exists() {
+            return Some(p);
+        }
+    }
+    None
+}
+
+/// Download any STT model id (Parakeet tarball or Whisper ggml).
+pub async fn download_stt_model<F>(model: &str, progress_callback: F) -> Result<PathBuf>
+where
+    F: Fn(String, f32) + Send + 'static,
+{
+    if is_parakeet_model_id(model) {
+        download_parakeet_model(model, progress_callback).await
+    } else {
+        download_whisper_model(model, progress_callback).await
+    }
 }
 
 /// Install Ollama via the official `install.sh`.
@@ -1012,8 +1228,19 @@ pub fn get_ollama_manual_instructions_with_model(
 pub fn get_model_manual_instructions(model_type: &str, model_name: &str) -> ManualInstructions {
     let (command, explanation) = match model_type {
         "whisper" => (
-            format!("mkdir -p ~/.parrot/models && curl -L -o ~/.parrot/models/ggml-{}.bin 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-{}.bin'", model_name, model_name),
-            format!("Downloads the {} speech recognition model (~150MB)", model_name)
+            format!(
+                "mkdir -p \"$HOME/Library/Application Support/com.kash.parrot/models\" && curl -L -o \"$HOME/Library/Application Support/com.kash.parrot/models/{}\" '{}'",
+                whisper_ggml_file_name(model_name),
+                get_whisper_model_url(model_name)
+            ),
+            format!("Downloads the {} speech recognition model", model_name),
+        ),
+        "parakeet" => (
+            format!(
+                "mkdir -p \"$HOME/Library/Application Support/com.kash.parrot/models/{}\" && curl -L -o /tmp/parakeet.tar.gz '{}' && tar -xzf /tmp/parakeet.tar.gz -C \"$HOME/Library/Application Support/com.kash.parrot/models/{}\"",
+                model_name, PARAKEET_V3_URL, model_name
+            ),
+            format!("Downloads the {} Parakeet ONNX model (~450MB)", model_name),
         ),
         "ollama" => (
             format!("ollama pull {}", model_name),
@@ -1101,7 +1328,7 @@ where
         overall_progress: current_step / total_steps,
     });
 
-    // Step 2: Download whisper model
+    // Step 2: Download STT model (Parakeet ONNX or Whisper ggml)
     progress_emitter(SetupProgress {
         step: SetupStep::DownloadWhisperModel { model: whisper_model.clone() },
         status: SetupStatus::InProgress { message: format!("Downloading {} model...", whisper_model), progress: 0.0 },
@@ -1111,7 +1338,7 @@ where
     let whisper_model_for_closure = whisper_model.clone();
     let progress_emitter_clone = progress_emitter.clone();
     let current_step_clone = current_step;
-    let model_path = match download_whisper_model(&whisper_model, move |msg, progress| {
+    let model_path = match download_stt_model(&whisper_model, move |msg, progress| {
         progress_emitter_clone(SetupProgress {
             step: SetupStep::DownloadWhisperModel { model: whisper_model_for_closure.clone() },
             status: SetupStatus::InProgress { message: msg, progress },
@@ -1121,10 +1348,15 @@ where
         Ok(path) => path,
         Err(_e) => {
         let whisper_model_for_error = whisper_model.clone();
+        let kind = if is_parakeet_model_id(&whisper_model_for_error) {
+            "parakeet"
+        } else {
+            "whisper"
+        };
         progress_emitter(SetupProgress {
             step: SetupStep::DownloadWhisperModel { model: whisper_model_for_error.clone() },
             status: SetupStatus::ManualInterventionRequired {
-                instructions: get_model_manual_instructions("whisper", &whisper_model_for_error),
+                instructions: get_model_manual_instructions(kind, &whisper_model_for_error),
             },
             overall_progress: current_step / total_steps,
         });
