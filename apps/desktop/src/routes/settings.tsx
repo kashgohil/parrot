@@ -1,6 +1,13 @@
 // import { CloudMigration } from "@/components/cloud-migration";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { createFileRoute } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
@@ -478,26 +485,29 @@ function SettingsPage() {
 						<Label htmlFor="sttLanguage" className="text-sm font-medium">
 							Language
 						</Label>
-						<select
-							id="sttLanguage"
-							value={sttLanguage}
-							onChange={(e) => setSttLanguage(e.target.value)}
-							className="w-full h-10 rounded-xl border border-border bg-muted/50 px-3 text-sm"
-						>
-							<option value="auto">Auto-detect</option>
-							<option value="en">English</option>
-							<option value="es">Spanish</option>
-							<option value="fr">French</option>
-							<option value="de">German</option>
-							<option value="it">Italian</option>
-							<option value="pt">Portuguese</option>
-							<option value="nl">Dutch</option>
-							<option value="pl">Polish</option>
-							<option value="ru">Russian</option>
-							<option value="ja">Japanese</option>
-							<option value="zh">Chinese</option>
-							<option value="ko">Korean</option>
-						</select>
+						<Select value={sttLanguage} onValueChange={setSttLanguage}>
+							<SelectTrigger
+								id="sttLanguage"
+								className="w-full h-10 rounded-xl border-border bg-muted/50"
+							>
+								<SelectValue placeholder="Select language" />
+							</SelectTrigger>
+							<SelectContent position="popper" className="rounded-xl">
+								<SelectItem value="auto">Auto-detect</SelectItem>
+								<SelectItem value="en">English</SelectItem>
+								<SelectItem value="es">Spanish</SelectItem>
+								<SelectItem value="fr">French</SelectItem>
+								<SelectItem value="de">German</SelectItem>
+								<SelectItem value="it">Italian</SelectItem>
+								<SelectItem value="pt">Portuguese</SelectItem>
+								<SelectItem value="nl">Dutch</SelectItem>
+								<SelectItem value="pl">Polish</SelectItem>
+								<SelectItem value="ru">Russian</SelectItem>
+								<SelectItem value="ja">Japanese</SelectItem>
+								<SelectItem value="zh">Chinese</SelectItem>
+								<SelectItem value="ko">Korean</SelectItem>
+							</SelectContent>
+						</Select>
 						<p className="text-xs text-muted-foreground">
 							Whisper uses this for decoding; Parakeet auto-detects. Prefer Auto
 							unless you always dictate in one language.
