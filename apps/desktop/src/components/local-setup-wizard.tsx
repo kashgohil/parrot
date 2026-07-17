@@ -60,6 +60,7 @@ interface ManualInstructions {
 type SetupStep =
 	| { type: "system_check" }
 	| { type: "download_whisper_model"; model: string }
+	| { type: "download_cleanup_model"; model: string }
 	| { type: "install_ollama" }
 	| { type: "download_ollama_model"; model: string }
 	| { type: "start_ollama" }
@@ -105,27 +106,15 @@ const WHISPER_MODELS = [
 	},
 ];
 
-const OLLAMA_MODELS = [
+// Phase 3: in-process cleanup GGUF (no Ollama install / admin password).
+const CLEANUP_MODELS = [
 	{
-		id: "llama3.2",
-		name: "Standard",
-		size: "2 GB",
-		description: "Great for general text cleanup",
+		id: "qwen2.5-0.5b-instruct-q4_k_m",
+		name: "Built-in cleanup",
+		size: "490 MB",
+		description:
+			"Qwen2.5 0.5B Instruct — runs entirely inside Parrot. No third-party installs.",
 		recommended: true,
-	},
-	{
-		id: "phi4",
-		name: "Technical",
-		size: "2.5 GB",
-		description: "Tuned for technical writing",
-		recommended: false,
-	},
-	{
-		id: "qwen2.5-coder:1.5b",
-		name: "Code",
-		size: "1 GB",
-		description: "Better for code and documentation",
-		recommended: false,
 	},
 ];
 
@@ -479,7 +468,7 @@ function ModelSelectionStep({
 	onContinue: () => void;
 }) {
 	const whisperModel = WHISPER_MODELS.find((m) => m.id === selectedWhisper);
-	const ollamaModel = OLLAMA_MODELS.find((m) => m.id === selectedOllama);
+	const cleanupModel = CLEANUP_MODELS.find((m) => m.id === selectedOllama);
 	const [downloadedModels, setDownloadedModels] = useState<{
 		whisper: string[];
 		ollama: string[];
@@ -496,7 +485,7 @@ function ModelSelectionStep({
 				}>("check_model_download_status", {
 					request: {
 						whisperModels: WHISPER_MODELS.map((model) => model.id),
-						ollamaModels: OLLAMA_MODELS.map((model) => model.id),
+						ollamaModels: CLEANUP_MODELS.map((model) => model.id),
 					},
 				});
 
@@ -526,14 +515,14 @@ function ModelSelectionStep({
 	const calculateDownloadSize = (): number => {
 		let total = 0;
 
-		// Add whisper model size if not downloaded
+		// Add dictation model size if not downloaded
 		if (whisperModel && !downloadedModels.whisper.includes(whisperModel.id)) {
 			total += parseSizeToGB(whisperModel.size);
 		}
 
-		// Add ollama model size if not downloaded
-		if (ollamaModel && !downloadedModels.ollama.includes(ollamaModel.id)) {
-			total += parseSizeToGB(ollamaModel.size);
+		// Built-in cleanup GGUF (always included for new setups)
+		if (cleanupModel && !downloadedModels.ollama.includes(cleanupModel.id)) {
+			total += parseSizeToGB(cleanupModel.size);
 		}
 
 		return total;
@@ -551,7 +540,7 @@ function ModelSelectionStep({
 				</div>
 			)}
 
-			{/* Whisper Models */}
+			{/* Dictation models */}
 			<div>
 				<div className="flex items-center gap-2 mb-3">
 					<Mic className="w-5 h-5 text-primary" />
@@ -568,6 +557,17 @@ function ModelSelectionStep({
 						/>
 					))}
 				</div>
+			</div>
+
+			<div className="p-4 rounded-xl border border-border bg-muted/40 space-y-1">
+				<div className="flex items-center gap-2">
+					<Brain className="w-4 h-4 text-primary" />
+					<p className="text-sm font-medium">Built-in cleanup included</p>
+				</div>
+				<p className="text-xs text-muted-foreground">
+					{cleanupModel?.description ??
+						"A small on-device model polishes grammar and filler words — no Ollama, no admin password."}
+				</p>
 			</div>
 
 			<div className="p-4 bg-muted rounded-lg">
@@ -677,6 +677,8 @@ function InstallationProgressStep({
 				return "Validating setup";
 			case "download_whisper_model":
 				return "Downloading dictation engine";
+			case "download_cleanup_model":
+				return "Downloading cleanup model";
 			case "download_ollama_model":
 				return "Downloading cleanup engine";
 		}
@@ -861,6 +863,8 @@ function getEducationalTooltip(step: SetupStep): string {
 			return "Running a quick test to make sure cleanup is working.";
 		case "download_whisper_model":
 			return "The dictation engine converts your voice into text using your Mac's Neural Engine — your audio never leaves your computer.";
+		case "download_cleanup_model":
+			return "A small language model that fixes grammar, punctuation, and filler words. Runs entirely inside Parrot — no third-party installs.";
 		case "download_ollama_model":
 			return "The cleanup engine fixes grammar, punctuation, and filler words like 'um' and 'uh'. It runs entirely on your Mac.";
 	}
@@ -1103,8 +1107,8 @@ export function LocalSetupWizard({ onComplete }: { onComplete: () => void }) {
 	const [systemRequirements, setSystemRequirements] =
 		useState<SystemRequirements | null>(null);
 	const [selectedWhisperModel, setSelectedWhisperModel] = useState("parakeet-v3");
-	// Cleanup engine is fixed to llama3.2 — selection UI is hidden in onboarding.
-	const [selectedOllamaModel] = useState("llama3.2");
+	// Phase 3: in-process Qwen cleanup GGUF (no Ollama).
+	const [selectedOllamaModel] = useState("qwen2.5-0.5b-instruct-q4_k_m");
 	const [setupProgress, setSetupProgress] = useState<SetupProgress | null>(
 		null,
 	);

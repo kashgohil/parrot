@@ -108,19 +108,17 @@ whisper `large-v3` on internal test clips; multilingual path works end-to-end.
 Owns the "100% local including AI cleanup" position and deletes the worst onboarding
 step (install Ollama → admin password → 2GB download → daemon lifecycle management).
 
-- [ ] Embed llama.cpp in-process via `llama-cpp-rs` (or `mistral.rs`) — the same
-      playbook already used for whisper-rs. No daemon, no port, no zombie processes.
-- [ ] Default cleanup model: a sub-1B instruct model (Qwen3-0.6B or Gemma 3 1B,
-      Q4/Q5 GGUF, ~400–800MB). Benchmark both on a corpus of raw dictations for
-      cleanup fidelity (must not answer questions or follow instructions in the
-      transcript — reuse the guardrail prompt from `cleanup.rs`).
+- [x] Embed llama.cpp in-process via `llama-cpp-2` (Metal on macOS) — same
+      playbook as whisper-rs. No daemon, no port, no zombie processes.
+- [x] Default cleanup model: Qwen2.5-0.5B-Instruct Q4_K_M GGUF (~490MB).
+      Reuses the guardrail prompt from `cleanup.rs`. (Corpus benchmark still TODO.)
 - [ ] Optional "macOS 26+" path: Apple Foundation Models for cleanup — zero download,
       ships with the OS. Feature-gate at runtime.
-- [ ] Simplify `local_setup.rs`: remove Ollama install/launch/probe/daemon code paths
-      for new users; keep a compatibility path for existing Ollama users (setting:
-      `cleanup_backend = builtin | ollama`).
-- [ ] Setup wizard becomes: mic/accessibility permissions → one combined model
-      download (~1GB total) → done.
+- [x] Simplify `local_setup.rs`: new installs download cleanup GGUF only; no Ollama
+      install/admin password. Compat path: `cleanup_backend = builtin | ollama`
+      (existing llama3.2 installs keep Ollama).
+- [x] Setup wizard becomes: permissions → STT model + cleanup GGUF download → done.
+      (No separate Ollama step for new users.)
 
 **Acceptance:** fresh install to first successful dictation with cleanup in < 5
 minutes with no admin password and no third-party installs; background cleanup of a
