@@ -1,10 +1,17 @@
 #!/usr/bin/env bun
 /**
- * Development script that runs the API server.
- * Desktop dev is intentionally not orchestrated from the repo root —
- * run `bun run tauri dev` from `apps/desktop/` so the workspace's `.env`
- * (signing key, etc.) is loaded correctly.
- * Handles SIGTERM/SIGINT to gracefully kill child processes and their descendants
+ * Development orchestrator (repo root).
+ *
+ * Default: API + desktop (Tauri).
+ *   bun run dev
+ *   bun run dev -- --api-only
+ *   bun run dev -- --desktop-only
+ *   bun run dev -- --with-hero
+ *
+ * Desktop is spawned from apps/desktop with its .env so Tauri signing
+ * keys and Vite vars load correctly.
+ *
+ * Handles SIGTERM/SIGINT to gracefully kill child process trees.
  */
 /// <reference types="bun" />
 
@@ -17,9 +24,20 @@ interface ChildProcess {
 const children: ChildProcess[] = [];
 let shuttingDown = false;
 
+const root = new URL("..", import.meta.url).pathname;
+const desktopDir = `${root}/apps/desktop`;
+
+function parseArgs(argv: string[]) {
+	const flags = new Set(argv);
+	return {
+		apiOnly: flags.has("--api-only"),
+		desktopOnly: flags.has("--desktop-only"),
+		withHero: flags.has("--with-hero"),
+	};
+}
+
 async function getChildPids(parentPid: number): Promise<number[]> {
 	try {
-		// Use pgrep to find child processes on macOS
 		const proc = Bun.spawn(["pgrep", "-P", parentPid.toString()], {
 			stdout: "pipe",
 			stderr: "pipe",
@@ -35,13 +53,12 @@ async function getChildPids(parentPid: number): Promise<number[]> {
 				.filter((pid) => !Number.isNaN(pid));
 		}
 	} catch {
-		// pgrep might fail if no children exist
+		// no children
 	}
 	return [];
 }
 
 async function killProcessTree(pid: number, signal: string): Promise<void> {
-	// Get all descendants recursively
 	const visited = new Set<number>();
 	const toKill: number[] = [];
 
@@ -49,21 +66,19 @@ async function killProcessTree(pid: number, signal: string): Promise<void> {
 		if (visited.has(p)) return;
 		visited.add(p);
 		toKill.push(p);
-
-		const children = await getChildPids(p);
-		for (const child of children) {
+		const kids = await getChildPids(p);
+		for (const child of kids) {
 			await collectPids(child);
 		}
 	}
 
 	await collectPids(pid);
 
-	// Kill in reverse order (children first)
 	for (const p of toKill.reverse()) {
 		try {
 			process.kill(p, signal);
 		} catch {
-			// Process may have already exited
+			// already gone
 		}
 	}
 }
@@ -71,22 +86,25 @@ async function killProcessTree(pid: number, signal: string): Promise<void> {
 function spawnProcess(
 	name: string,
 	command: string[],
-	cwd?: string,
+	opts?: { cwd?: string; env?: Record<string, string | undefined> },
 ): ChildProcess {
-	console.log(`[${name}] Starting...`);
+	console.log(`[${name}] Starting: ${command.join(" ")}`);
 
 	const proc = Bun.spawn(command, {
 		stdio: ["inherit", "inherit", "inherit"],
-		cwd,
-		env: { ...process.env, FORCE_COLOR: "1" },
-		onExit: (proc, exitCode, signalCode) => {
+		cwd: opts?.cwd,
+		env: {
+			...process.env,
+			...opts?.env,
+			FORCE_COLOR: "1",
+		},
+		onExit: (_proc, exitCode, signalCode) => {
 			if (shuttingDown) return;
-
 			if (signalCode) {
 				console.log(`[${name}] exited with signal ${signalCode}`);
-			} else if (exitCode !== 0) {
+			} else if (exitCode !== 0 && exitCode !== null) {
 				console.error(`[${name}] exited with code ${exitCode}`);
-				shutdown();
+				void shutdown();
 			}
 		},
 	});
@@ -100,56 +118,108 @@ function spawnProcess(
 	return child;
 }
 
+async function loadDesktopEnv(): Promise<Record<string, string>> {
+	const envPath = `${desktopDir}/.env`;
+	const file = Bun.file(envPath);
+	if (!(await file.exists())) {
+		console.warn(
+			`[dev] No ${envPath} — desktop will run without TAURI_/VITE_ secrets`,
+		);
+		return {};
+	}
+	const text = await file.text();
+	const out: Record<string, string> = {};
+	for (const line of text.split("\n")) {
+		const trimmed = line.trim();
+		if (!trimmed || trimmed.startsWith("#")) continue;
+		const eq = trimmed.indexOf("=");
+		if (eq <= 0) continue;
+		const key = trimmed.slice(0, eq).trim();
+		let val = trimmed.slice(eq + 1).trim();
+		if (
+			(val.startsWith('"') && val.endsWith('"')) ||
+			(val.startsWith("'") && val.endsWith("'"))
+		) {
+			val = val.slice(1, -1);
+		}
+		out[key] = val;
+	}
+	return out;
+}
+
 async function shutdown() {
 	if (shuttingDown) return;
 	shuttingDown = true;
 
 	console.log("\n[dev] Shutting down gracefully...");
 
-	// First, try graceful shutdown with SIGTERM on the whole tree
-	const termPromises = children.map(async ({ name, pid }) => {
-		console.log(`[${name}] Stopping (SIGTERM)...`);
-		await killProcessTree(pid, "SIGTERM");
-	});
+	await Promise.all(
+		children.map(async ({ name, pid }) => {
+			console.log(`[${name}] Stopping (SIGTERM)...`);
+			await killProcessTree(pid, "SIGTERM");
+		}),
+	);
 
-	await Promise.all(termPromises);
-
-	// Wait a bit for processes to exit
 	await new Promise((resolve) => setTimeout(resolve, 2000));
 
-	// Force kill any remaining processes with SIGKILL
-	const killPromises = children.map(async ({ name, pid }) => {
-		try {
-			// Check if process is still running by trying to signal 0
-			process.kill(pid, 0);
-			console.log(`[${name}] Force killing (SIGKILL)...`);
-			await killProcessTree(pid, "SIGKILL");
-		} catch {
-			// Process already exited
-		}
-	});
-
-	await Promise.all(killPromises);
+	await Promise.all(
+		children.map(async ({ name, pid }) => {
+			try {
+				process.kill(pid, 0);
+				console.log(`[${name}] Force killing (SIGKILL)...`);
+				await killProcessTree(pid, "SIGKILL");
+			} catch {
+				// exited
+			}
+		}),
+	);
 
 	console.log("[dev] All processes stopped");
 	process.exit(0);
 }
 
-// Handle signals
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
-
-// Handle uncaught errors
+process.on("SIGINT", () => void shutdown());
+process.on("SIGTERM", () => void shutdown());
 process.on("uncaughtException", (err) => {
 	console.error("[dev] Uncaught exception:", err);
-	shutdown();
+	void shutdown();
 });
-
 process.on("unhandledRejection", (reason) => {
 	console.error("[dev] Unhandled rejection:", reason);
-	shutdown();
+	void shutdown();
 });
 
-spawnProcess("API", ["bun", "run", "dev:api"]);
+const args = parseArgs(process.argv.slice(2));
+const startApi = !args.desktopOnly;
+const startDesktop = !args.apiOnly;
+const startHero = args.withHero;
 
-console.log("[dev] API starting... Press Ctrl+C to stop\n");
+if (startApi) {
+	spawnProcess("API", ["bun", "run", "dev:api"], { cwd: root });
+}
+
+if (startDesktop) {
+	const desktopEnv = await loadDesktopEnv();
+	// Prefer apps/desktop/.env over shell env for Tauri keys
+	spawnProcess("Desktop", ["bun", "run", "desktop", "dev"], {
+		cwd: desktopDir,
+		env: { ...process.env, ...desktopEnv },
+	});
+}
+
+if (startHero) {
+	spawnProcess("Hero", ["bun", "run", "dev:hero"], { cwd: root });
+}
+
+const parts = [
+	startApi && "API :3001",
+	startDesktop && "Desktop (Tauri)",
+	startHero && "Hero :3002",
+]
+	.filter(Boolean)
+	.join(" + ");
+
+console.log(`[dev] Starting ${parts}. Press Ctrl+C to stop.\n`);
+console.log(
+	"[dev] Tip: quit the App Store/DMG Parrot first so hotkeys and com.kash.parrot data don't clash.\n",
+);
