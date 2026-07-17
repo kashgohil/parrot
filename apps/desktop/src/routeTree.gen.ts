@@ -12,12 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VocabularyRouteImport } from './routes/vocabulary'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as ModeSelectionRouteImport } from './routes/mode-selection'
 import { Route as OnboardingRouteImport } from './routes/_onboarding'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingTourRouteImport } from './routes/_onboarding/tour'
-import { Route as OnboardingSetupModeRouteImport } from './routes/_onboarding/setup-mode'
 import { Route as OnboardingLocalSetupRouteImport } from './routes/_onboarding/local-setup'
 import { Route as OnboardingLocalProfileRouteImport } from './routes/_onboarding/local-profile'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
@@ -38,11 +36,6 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ModeSelectionRoute = ModeSelectionRouteImport.update({
-  id: '/mode-selection',
-  path: '/mode-selection',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/_onboarding',
   getParentRoute: () => rootRouteImport,
@@ -59,11 +52,6 @@ const IndexRoute = IndexRouteImport.update({
 const OnboardingTourRoute = OnboardingTourRouteImport.update({
   id: '/tour',
   path: '/tour',
-  getParentRoute: () => OnboardingRoute,
-} as any)
-const OnboardingSetupModeRoute = OnboardingSetupModeRouteImport.update({
-  id: '/setup-mode',
-  path: '/setup-mode',
   getParentRoute: () => OnboardingRoute,
 } as any)
 const OnboardingLocalSetupRoute = OnboardingLocalSetupRouteImport.update({
@@ -89,7 +77,6 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/mode-selection': typeof ModeSelectionRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/vocabulary': typeof VocabularyRoute
@@ -97,12 +84,10 @@ export interface FileRoutesByFullPath {
   '/signup': typeof AuthSignupRoute
   '/local-profile': typeof OnboardingLocalProfileRoute
   '/local-setup': typeof OnboardingLocalSetupRoute
-  '/setup-mode': typeof OnboardingSetupModeRoute
   '/tour': typeof OnboardingTourRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/mode-selection': typeof ModeSelectionRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/vocabulary': typeof VocabularyRoute
@@ -110,7 +95,6 @@ export interface FileRoutesByTo {
   '/signup': typeof AuthSignupRoute
   '/local-profile': typeof OnboardingLocalProfileRoute
   '/local-setup': typeof OnboardingLocalSetupRoute
-  '/setup-mode': typeof OnboardingSetupModeRoute
   '/tour': typeof OnboardingTourRoute
 }
 export interface FileRoutesById {
@@ -118,7 +102,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
   '/_onboarding': typeof OnboardingRouteWithChildren
-  '/mode-selection': typeof ModeSelectionRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/vocabulary': typeof VocabularyRoute
@@ -126,14 +109,12 @@ export interface FileRoutesById {
   '/_auth/signup': typeof AuthSignupRoute
   '/_onboarding/local-profile': typeof OnboardingLocalProfileRoute
   '/_onboarding/local-setup': typeof OnboardingLocalSetupRoute
-  '/_onboarding/setup-mode': typeof OnboardingSetupModeRoute
   '/_onboarding/tour': typeof OnboardingTourRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/mode-selection'
     | '/profile'
     | '/settings'
     | '/vocabulary'
@@ -141,12 +122,10 @@ export interface FileRouteTypes {
     | '/signup'
     | '/local-profile'
     | '/local-setup'
-    | '/setup-mode'
     | '/tour'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/mode-selection'
     | '/profile'
     | '/settings'
     | '/vocabulary'
@@ -154,14 +133,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/local-profile'
     | '/local-setup'
-    | '/setup-mode'
     | '/tour'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/_onboarding'
-    | '/mode-selection'
     | '/profile'
     | '/settings'
     | '/vocabulary'
@@ -169,7 +146,6 @@ export interface FileRouteTypes {
     | '/_auth/signup'
     | '/_onboarding/local-profile'
     | '/_onboarding/local-setup'
-    | '/_onboarding/setup-mode'
     | '/_onboarding/tour'
   fileRoutesById: FileRoutesById
 }
@@ -177,7 +153,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
   OnboardingRoute: typeof OnboardingRouteWithChildren
-  ModeSelectionRoute: typeof ModeSelectionRoute
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
   VocabularyRoute: typeof VocabularyRoute
@@ -206,13 +181,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mode-selection': {
-      id: '/mode-selection'
-      path: '/mode-selection'
-      fullPath: '/mode-selection'
-      preLoaderRoute: typeof ModeSelectionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_onboarding': {
       id: '/_onboarding'
       path: ''
@@ -239,13 +207,6 @@ declare module '@tanstack/react-router' {
       path: '/tour'
       fullPath: '/tour'
       preLoaderRoute: typeof OnboardingTourRouteImport
-      parentRoute: typeof OnboardingRoute
-    }
-    '/_onboarding/setup-mode': {
-      id: '/_onboarding/setup-mode'
-      path: '/setup-mode'
-      fullPath: '/setup-mode'
-      preLoaderRoute: typeof OnboardingSetupModeRouteImport
       parentRoute: typeof OnboardingRoute
     }
     '/_onboarding/local-setup': {
@@ -294,14 +255,12 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 interface OnboardingRouteChildren {
   OnboardingLocalProfileRoute: typeof OnboardingLocalProfileRoute
   OnboardingLocalSetupRoute: typeof OnboardingLocalSetupRoute
-  OnboardingSetupModeRoute: typeof OnboardingSetupModeRoute
   OnboardingTourRoute: typeof OnboardingTourRoute
 }
 
 const OnboardingRouteChildren: OnboardingRouteChildren = {
   OnboardingLocalProfileRoute: OnboardingLocalProfileRoute,
   OnboardingLocalSetupRoute: OnboardingLocalSetupRoute,
-  OnboardingSetupModeRoute: OnboardingSetupModeRoute,
   OnboardingTourRoute: OnboardingTourRoute,
 }
 
@@ -313,7 +272,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   OnboardingRoute: OnboardingRouteWithChildren,
-  ModeSelectionRoute: ModeSelectionRoute,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
   VocabularyRoute: VocabularyRoute,
