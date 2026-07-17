@@ -6,6 +6,7 @@ mod db;
 mod hotkey;
 mod local_setup;
 mod migration;
+mod streaming;
 mod transcription;
 mod vocab;
 
@@ -77,18 +78,8 @@ fn word_count(text: &str) -> usize {
 }
 
 #[tauri::command]
-fn start_recording(
-    state: tauri::State<'_, RecorderState>,
-    app: tauri::AppHandle,
-) -> Result<(), String> {
-    let mut recorder = state.recorder.lock().unwrap();
-    if recorder.is_recording() {
-        return Ok(());
-    }
-    recorder.start().map_err(|e| e.to_string())?;
-    *state.recording_start.lock().unwrap() = Some(Instant::now());
-    app.emit("recording-started", ())
-        .map_err(|e| e.to_string())?;
+fn start_recording(app: tauri::AppHandle) -> Result<(), String> {
+    hotkey::begin_recording(&app);
     Ok(())
 }
 
@@ -97,23 +88,15 @@ fn stop_recording(
     state: tauri::State<'_, RecorderState>,
     app: tauri::AppHandle,
 ) -> Result<Vec<u8>, String> {
-    let mut recorder = state.recorder.lock().unwrap();
-    if !recorder.is_recording() {
-        return Err("Not recording".into());
-    }
-    let duration_ms = state
-        .recording_start
+    hotkey::end_recording(&app);
+    // Return last capture as WAV for any legacy UI callers.
+    let audio = state
+        .last_audio
         .lock()
         .unwrap()
-        .map(|s| s.elapsed().as_millis() as u64)
-        .unwrap_or(0);
-    let audio = recorder.stop().map_err(|e| e.to_string())?;
-    // Keep the Tauri command signature (Vec<u8>) for any UI callers that
-    // still expect WAV bytes; hotkey path stores RecordedSamples instead.
-    let wav_data = audio.encode_wav().map_err(|e| e.to_string())?;
-    app.emit("recording-stopped", duration_ms)
-        .map_err(|e| e.to_string())?;
-    Ok(wav_data)
+        .clone()
+        .ok_or_else(|| "Not recording".to_string())?;
+    audio.encode_wav().map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -2443,6 +2426,7 @@ pub fn run() {
         .manage::<SharedServerProcesses>(Arc::new(RwLock::new(ServerProcesses::new())))
         .manage::<SharedWhisperProvider>(Arc::new(RwLock::new(None)))
         .manage::<SharedCleanupEngine>(Arc::new(std::sync::RwLock::new(None)))
+        .manage(Arc::new(streaming::StreamingCoordinator::new()))
         .invoke_handler(tauri::generate_handler![
             start_recording,
             stop_recording,
@@ -2630,9 +2614,7 @@ pub fn run() {
             if let tauri::RunEvent::ExitRequested { .. } | tauri::RunEvent::Exit = event {
                 {
                     let state = app.state::<RecorderState>();
-                    if let Ok(mut rec) = state.recorder.lock() {
-                        rec.shutdown();
-                    }
+                    let _ = state.recorder.lock().map(|mut rec| rec.shutdown());
                 }
                 let servers = app.state::<SharedServerProcesses>().inner().clone();
                 tauri::async_runtime::block_on(async move {
@@ -2671,29 +2653,12 @@ fn setup_tray(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> 
             }
             "toggle" => {
                 let state = app.state::<RecorderState>();
-                let mut recorder = state.recorder.lock().unwrap();
-                if recorder.is_recording() {
-                    let duration_ms = state
-                        .recording_start
-                        .lock()
-                        .unwrap()
-                        .map(|s| s.elapsed().as_millis() as u64)
-                        .unwrap_or(0);
-                    match recorder.stop() {
-                        Ok(audio) => {
-                            *state.last_duration_ms.lock().unwrap() = duration_ms;
-                            *state.last_audio.lock().unwrap() = Some(audio);
-                            let _ = app.emit("recording-stopped", duration_ms);
-                        }
-                        Err(e) => eprintln!("Failed to stop recording: {}", e),
-                    }
+                let is_rec = state.recorder.lock().unwrap().is_recording();
+                drop(state);
+                if is_rec {
+                    hotkey::end_recording(app);
                 } else {
-                    if let Err(e) = recorder.start() {
-                        eprintln!("Failed to start recording: {}", e);
-                        return;
-                    }
-                    *state.recording_start.lock().unwrap() = Some(Instant::now());
-                    let _ = app.emit("recording-started", ());
+                    hotkey::begin_recording(app);
                 }
             }
             "quit" => {

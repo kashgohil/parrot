@@ -128,6 +128,16 @@ impl AudioRecorder {
     pub fn is_warm(&self) -> bool {
         self.stream.is_some()
     }
+
+    /// Clone of the in-flight capture buffer for streaming partials.
+    /// Does not stop recording or clear samples.
+    pub fn snapshot(&self) -> RecordedSamples {
+        let samples = self.samples.lock().unwrap().clone();
+        RecordedSamples {
+            samples,
+            sample_rate: self.sample_rate.max(1),
+        }
+    }
 }
 
 /// Mono float samples captured from the mic, still at the device sample rate.

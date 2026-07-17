@@ -83,11 +83,24 @@ pub fn begin_recording(app: &AppHandle) {
         return;
     }
     *state.recording_start.lock().unwrap() = Some(Instant::now());
+    drop(recorder);
+
+    // Phase 5 interim streaming: re-transcribe the growing buffer while held.
+    let gen = app
+        .state::<std::sync::Arc<crate::streaming::StreamingCoordinator>>()
+        .next_generation();
+    crate::streaming::start_partial_loop(app.clone(), gen);
+
     let _ = app.emit("recording-started", ());
 }
 
 /// Stop recording — invoked from any hotkey path. Idempotent.
 pub fn end_recording(app: &AppHandle) {
+    // Invalidate in-flight streaming partials before we stop capture.
+    let _ = app
+        .state::<std::sync::Arc<crate::streaming::StreamingCoordinator>>()
+        .next_generation();
+
     let state = app.state::<RecorderState>();
     let mut recorder = state.recorder.lock().unwrap();
     if !recorder.is_recording() {
