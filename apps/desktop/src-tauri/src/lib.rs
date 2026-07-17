@@ -823,10 +823,14 @@ async fn apply_pending_cleanup(
 
 /// Deliver `text` into the focused app.
 ///
-/// Default path: clipboard + synthetic Cmd+V (fast, preserves formatting intent).
-/// Fallback: type via `CGEventKeyboardSetUnicodeString` when paste is unreliable
-/// (terminals, secure fields, remapped paste) or when the paste event can't be
-/// constructed. Typing never clobbers the clipboard.
+/// Default path: clipboard + synthetic Cmd+V (matches pre–Phase-4 behavior).
+/// Fallback: type via `CGEventKeyboardSetUnicodeString` only when paste cannot
+/// be constructed or clipboard write fails.
+///
+/// Note: we do **not** prefer typing for Terminal first — keycode 0 is the "A"
+/// key; combined with leftover Command flags that becomes Cmd+A (select all).
+/// AX "paste verification" is also skipped for terminals (unreliable and caused
+/// paste-then-type double delivery).
 ///
 /// After a successful clipboard paste, the previous pasteboard contents are
 /// restored ~1s later so dictation doesn't permanently clobber the clipboard.
@@ -847,15 +851,7 @@ async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
             return false;
         }
 
-        // Prefer typing for apps where Cmd+V is unreliable or dangerous.
-        let prefer_type = frontmost_prefers_typing();
-        if prefer_type {
-            let typed = type_text_macos_async(text.clone()).await;
-            if typed {
-                return true;
-            }
-            eprintln!("Typing fallback failed; attempting clipboard paste");
-        }
+        let terminalish = frontmost_prefers_typing();
 
         // Snapshot prior clipboard so we can restore it after paste.
         use tauri_plugin_clipboard_manager::ClipboardExt;
@@ -863,13 +859,19 @@ async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
 
         if let Err(e) = app.clipboard().write_text(text.clone()) {
             eprintln!("Failed to set clipboard text: {}", e);
-            // Clipboard write failed — type instead.
             return type_text_macos_async(text).await;
         }
 
         wait_for_clipboard_text(app, &text, std::time::Duration::from_millis(100)).await;
 
-        let value_before = ax_focused_value();
+        // Only use AX before/after checks in normal text fields. Terminals
+        // and consoles often expose a static/large AXValue, which falsely
+        // fails verification and triggered a second type-insert (and Cmd+A).
+        let value_before = if terminalish {
+            None
+        } else {
+            ax_focused_value()
+        };
         let paste_ok = {
             let result = tauri::async_runtime::spawn_blocking(|| {
                 std::panic::catch_unwind(post_cmd_v_macos)
@@ -893,15 +895,14 @@ async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
         };
 
         if paste_ok {
-            // Brief wait then check whether the focused field changed. If AX
-            // can't see a value (webviews, etc.) we trust the paste.
-            tokio::time::sleep(std::time::Duration::from_millis(40)).await;
-            let verified = match (value_before.as_deref(), ax_focused_value().as_deref()) {
-                (Some(before), Some(after)) if before == after && !text.is_empty() => {
-                    // Paste likely didn't land — fall back to typing.
-                    false
+            let verified = if terminalish {
+                true
+            } else {
+                tokio::time::sleep(std::time::Duration::from_millis(40)).await;
+                match (value_before.as_deref(), ax_focused_value().as_deref()) {
+                    (Some(before), Some(after)) if before == after && !text.is_empty() => false,
+                    _ => true,
                 }
-                _ => true,
             };
 
             if verified {
@@ -963,10 +964,14 @@ async fn type_text_macos_async(text: String) -> bool {
 }
 
 /// Insert unicode text with `CGEventKeyboardSetUnicodeString` in ≤20-char
-/// chunks (API limit). Used when Cmd+V is unavailable or failed.
+/// chunks (API limit). Used when Cmd+V cannot be constructed.
+///
+/// Important: keycode `0` is ANSI **A**. We must clear modifier flags so this
+/// never becomes Cmd+A (select all). Only post key-down with the string set
+/// (same pattern as enigo) — key-up with set_string double-fires in some apps.
 #[cfg(target_os = "macos")]
 fn type_text_macos(text: &str) -> bool {
-    use core_graphics::event::{CGEvent, CGEventTapLocation};
+    use core_graphics::event::{CGEvent, CGEventFlags, CGEventTapLocation};
     use core_graphics::event_source::{CGEventSource, CGEventSourceStateID};
 
     let Ok(source) = CGEventSource::new(CGEventSourceStateID::HIDSystemState) else {
@@ -982,22 +987,17 @@ fn type_text_macos(text: &str) -> bool {
         if buf.is_empty() {
             return;
         }
-        // CGEventKeyboardSetUnicodeString truncates past 20 UTF-16 units.
         let s = std::mem::take(buf);
         for chunk in s.chars().collect::<Vec<_>>().chunks(20) {
             let piece: String = chunk.iter().collect();
+            // keycode 0 == 'A' — flags must be empty or this is Cmd+A.
             let Ok(down) = CGEvent::new_keyboard_event(source.clone(), 0, true) else {
                 *ok = false;
                 continue;
             };
+            down.set_flags(CGEventFlags::empty());
             down.set_string(&piece);
             down.post(CGEventTapLocation::HID);
-            let Ok(up) = CGEvent::new_keyboard_event(source.clone(), 0, false) else {
-                *ok = false;
-                continue;
-            };
-            up.set_string(&piece);
-            up.post(CGEventTapLocation::HID);
         }
     };
 
@@ -1006,14 +1006,12 @@ fn type_text_macos(text: &str) -> bool {
             '\t' => {
                 flush(&source, &mut buf, &mut ok);
                 if !post_key_macos(48) {
-                    // Tab keycode
                     ok = false;
                 }
             }
             '\n' | '\r' => {
                 flush(&source, &mut buf, &mut ok);
                 if !post_key_macos(36) {
-                    // Return keycode
                     ok = false;
                 }
             }
@@ -1026,7 +1024,7 @@ fn type_text_macos(text: &str) -> bool {
 
 #[cfg(target_os = "macos")]
 fn post_key_macos(keycode: u16) -> bool {
-    use core_graphics::event::{CGEvent, CGEventTapLocation};
+    use core_graphics::event::{CGEvent, CGEventFlags, CGEventTapLocation};
     use core_graphics::event_source::{CGEventSource, CGEventSourceStateID};
 
     let Ok(source) = CGEventSource::new(CGEventSourceStateID::HIDSystemState) else {
@@ -1035,30 +1033,37 @@ fn post_key_macos(keycode: u16) -> bool {
     let Ok(down) = CGEvent::new_keyboard_event(source.clone(), keycode, true) else {
         return false;
     };
+    down.set_flags(CGEventFlags::empty());
     down.post(CGEventTapLocation::HID);
     let Ok(up) = CGEvent::new_keyboard_event(source, keycode, false) else {
         return false;
     };
+    up.set_flags(CGEventFlags::empty());
     up.post(CGEventTapLocation::HID);
     true
 }
 
-/// Apps where Cmd+V is known-bad (terminals, some IDEs' remapped paste).
+/// Apps where AX paste-verification is unreliable (consoles / terminals).
 #[cfg(target_os = "macos")]
 fn frontmost_prefers_typing() -> bool {
     let Some(bundle) = frontmost_bundle_id() else {
         return false;
     };
-    const TYPE_BUNDLES: &[&str] = &[
+    const TERMINALISH: &[&str] = &[
         "com.apple.Terminal",
         "com.googlecode.iterm2",
         "net.kovidgoyal.kitty",
         "com.github.wez.wezterm",
         "co.zeit.hyper",
-        "com.apple.SecureShell", // Prompt?
-        "com.apple.dt.Xcode",    // often remaps paste in console
+        "com.apple.SecureShell",
+        "com.apple.dt.Xcode",
+        "com.microsoft.VSCode",
+        "com.todesktop.", // Cursor and other VS Code forks often use this prefix
+        "com.exafunction.windsurf",
     ];
-    TYPE_BUNDLES.iter().any(|b| bundle.eq_ignore_ascii_case(b))
+    TERMINALISH.iter().any(|b| {
+        bundle.eq_ignore_ascii_case(b) || bundle.to_lowercase().starts_with(&b.to_lowercase())
+    })
 }
 
 /// Frontmost app bundle id via NSWorkspace (AppKit).
@@ -1259,6 +1264,7 @@ fn post_cmd_v_macos() -> bool {
     let Ok(down) = CGEvent::new_keyboard_event(source.clone(), KEY_V, true) else {
         return false;
     };
+    // Only Command — never inherit other modifiers from HID state.
     down.set_flags(CGEventFlags::CGEventFlagCommand);
     down.post(CGEventTapLocation::HID);
 
