@@ -144,17 +144,16 @@ Ordered by value-for-effort:
       entries in the profile UI. Plus a deterministic post-STT pass: fuzzy-match
       transcript words against the dictionary and fix high-confidence near-misses
       before cleanup (fixes the proper-noun weakness all Whisper apps share).
-- [ ] **File transcription.** Drag-and-drop an audio file onto the app → transcript.
-      The pipeline already exists; this is a file picker + progress UI.
+- [x] **File transcription.** Drag-and-drop an audio file onto the app → transcript.
+      The pipeline already exists; this is a file picker + progress UI. (WAV; history + clipboard.)
 - [ ] **Voice command mode.** With text selected, hold a secondary hotkey and speak
       an instruction ("make this a bullet list"); read the selection via the
       accessibility API, route through the local LLM with an edit prompt, replace
       selection. Only cloud apps (Wispr/Aqua/Willow) do this today — doing it fully
       locally is itself a differentiator.
-- [ ] **Bluetooth mic handling.** Detect BT input devices and keep a warm input
-      stream (or pre-open on hotkey *press*, which we already do — verify the BT
-      codec-negotiation delay is actually avoided; top complaint on Handy's HN
-      threads).
+- [x] **Bluetooth mic handling.** Keep a warm input stream across dictations and
+      pre-open at local-mode startup so BT codec negotiation is not paid on the
+      first hotkey press. (Voice command mode still deferred.)
 
 ---
 
