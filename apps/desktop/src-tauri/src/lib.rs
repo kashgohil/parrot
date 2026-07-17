@@ -299,6 +299,15 @@ async fn transcribe_last(
         }
     }
 
+    // Per-app profile (bundle ID at paste time — same as focused app).
+    #[cfg(target_os = "macos")]
+    let frontmost = frontmost_bundle_id();
+    #[cfg(not(target_os = "macos"))]
+    let frontmost: Option<String> = None;
+    let effective = db
+        .effective_profile_for_app(frontmost.as_deref())
+        .map_err(|e| e.to_string())?;
+
     // Step 2: Cleanup mode — off | background (default) | blocking.
     // Background mode is the big perceived-latency win: paste the raw
     // transcript immediately and polish in a fire-and-forget task.
@@ -307,6 +316,7 @@ async fn transcribe_last(
         .map_err(|e| e.to_string())?
         .unwrap_or_else(|| "background".to_string());
     let skip_cleanup = cleanup_mode == "off"
+        || !effective.cleanup_enabled
         || word_count(&raw_text) < SHORT_UTTERANCE_WORD_LIMIT;
 
     // Clear any previous polish affordance so a new dictation doesn't
@@ -348,8 +358,15 @@ async fn transcribe_last(
         let _ = app.emit("cleanup-started", ());
         let cleanup_start = Instant::now();
         let builtin = cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner());
-        let cleaned_text =
-            run_cleanup(&db, &setup_mode, &raw_text, session_token.as_deref(), builtin).await;
+        let cleaned_text = run_cleanup(
+            &db,
+            &setup_mode,
+            &raw_text,
+            session_token.as_deref(),
+            builtin,
+            &effective,
+        )
+        .await;
         let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
         if !cleaned_text.is_empty() && cleaned_text != raw_text {
             match setup_mode.as_str() {
@@ -435,12 +452,20 @@ async fn transcribe_last(
     let raw_bg = raw_text.clone();
     let mode_bg = setup_mode.clone();
     let token_bg = session_token.clone();
+    let effective_bg = effective.clone();
     tokio::spawn(async move {
         let db = app_handle.state::<Database>();
         let builtin = cleanup::peek_builtin(app_handle.state::<SharedCleanupEngine>().inner());
         let cleanup_start = Instant::now();
-        let cleaned =
-            run_cleanup(&db, &mode_bg, &raw_bg, token_bg.as_deref(), builtin).await;
+        let cleaned = run_cleanup(
+            &db,
+            &mode_bg,
+            &raw_bg,
+            token_bg.as_deref(),
+            builtin,
+            &effective_bg,
+        )
+        .await;
         let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
         if mode_bg == "local" {
             let _ = db.update_dictation_timings(
@@ -499,19 +524,13 @@ async fn run_cleanup(
     raw_text: &str,
     session_token: Option<&str>,
     builtin: Option<std::sync::Arc<cleanup_engine::BuiltinCleanupEngine>>,
+    profile: &db::EffectiveProfile,
 ) -> String {
     let cleanup_backend = resolve_cleanup_backend(db);
 
     match setup_mode {
         "local" => {
             let llm_model = db.get_setting("llm_model").ok().flatten();
-            let profile = match db.get_profile() {
-                Ok(p) => p,
-                Err(e) => {
-                    eprintln!("Failed to load profile for cleanup: {}", e);
-                    return String::new();
-                }
-            };
             match cleanup::cleanup_text(
                 raw_text,
                 "local",
@@ -1478,6 +1497,53 @@ async fn get_profile(db: tauri::State<'_, Database>) -> Result<ProfileData, Stri
 }
 
 #[tauri::command]
+fn list_app_profiles(db: tauri::State<'_, Database>) -> Result<Vec<db::AppProfile>, String> {
+    db.list_app_profiles().map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn upsert_app_profile(
+    profile: db::AppProfile,
+    db: tauri::State<'_, Database>,
+) -> Result<(), String> {
+    if profile.bundle_id.trim().is_empty() {
+        return Err("bundle_id is required".into());
+    }
+    db.upsert_app_profile(&profile).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn delete_app_profile(bundle_id: String, db: tauri::State<'_, Database>) -> Result<(), String> {
+    db.delete_app_profile(&bundle_id).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn get_frontmost_app() -> Result<serde_json::Value, String> {
+    #[cfg(target_os = "macos")]
+    {
+        let bundle_id = frontmost_bundle_id();
+        Ok(serde_json::json!({
+            "bundle_id": bundle_id,
+            "app_name": bundle_id.as_ref().map(|b| app_name_for_bundle(b)),
+        }))
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        Ok(serde_json::json!({ "bundle_id": null, "app_name": null }))
+    }
+}
+
+/// Human-ish name from a bundle id (`com.apple.Terminal` → `Terminal`).
+#[cfg(target_os = "macos")]
+fn app_name_for_bundle(bundle_id: &str) -> String {
+    bundle_id
+        .rsplit('.')
+        .next()
+        .unwrap_or(bundle_id)
+        .to_string()
+}
+
+#[tauri::command]
 async fn update_profile(
     custom_words: &str,
     context_prompt: &str,
@@ -2136,6 +2202,10 @@ pub fn run() {
             set_setting,
             get_profile,
             update_profile,
+            list_app_profiles,
+            upsert_app_profile,
+            delete_app_profile,
+            get_frontmost_app,
             get_local_user,
             set_local_user,
             complete_local_onboarding,

@@ -177,6 +177,29 @@ impl Database {
             )?;
         }
 
+        // Migration: per-app profiles keyed by macOS bundle ID
+        let has_app_profiles: bool = conn
+            .prepare("SELECT COUNT(*) FROM _migrations WHERE name = 'add_app_profiles'")?
+            .query_row([], |row| row.get::<_, i64>(0))
+            .unwrap_or(0)
+            > 0;
+
+        if !has_app_profiles {
+            conn.execute_batch(
+                "
+                CREATE TABLE IF NOT EXISTS app_profiles (
+                    bundle_id TEXT PRIMARY KEY,
+                    app_name TEXT NOT NULL DEFAULT '',
+                    context_prompt TEXT NOT NULL DEFAULT '',
+                    writing_style TEXT NOT NULL DEFAULT '',
+                    cleanup_enabled INTEGER NOT NULL DEFAULT 1,
+                    enabled INTEGER NOT NULL DEFAULT 1
+                );
+                INSERT INTO _migrations (name) VALUES ('add_app_profiles');
+                ",
+            )?;
+        }
+
         Ok(())
     }
 
@@ -494,6 +517,110 @@ impl Database {
         Ok(())
     }
 
+    pub fn list_app_profiles(&self) -> Result<Vec<AppProfile>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT bundle_id, app_name, context_prompt, writing_style, cleanup_enabled, enabled
+             FROM app_profiles ORDER BY app_name COLLATE NOCASE, bundle_id",
+        )?;
+        let rows = stmt
+            .query_map([], |row| {
+                Ok(AppProfile {
+                    bundle_id: row.get(0)?,
+                    app_name: row.get(1)?,
+                    context_prompt: row.get(2)?,
+                    writing_style: row.get(3)?,
+                    cleanup_enabled: row.get::<_, i64>(4)? != 0,
+                    enabled: row.get::<_, i64>(5)? != 0,
+                })
+            })?
+            .collect::<std::result::Result<Vec<_>, _>>()?;
+        Ok(rows)
+    }
+
+    pub fn get_app_profile(&self, bundle_id: &str) -> Result<Option<AppProfile>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT bundle_id, app_name, context_prompt, writing_style, cleanup_enabled, enabled
+             FROM app_profiles WHERE bundle_id = ?1",
+        )?;
+        let result = stmt
+            .query_row([bundle_id], |row| {
+                Ok(AppProfile {
+                    bundle_id: row.get(0)?,
+                    app_name: row.get(1)?,
+                    context_prompt: row.get(2)?,
+                    writing_style: row.get(3)?,
+                    cleanup_enabled: row.get::<_, i64>(4)? != 0,
+                    enabled: row.get::<_, i64>(5)? != 0,
+                })
+            })
+            .ok();
+        Ok(result)
+    }
+
+    pub fn upsert_app_profile(&self, profile: &AppProfile) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT INTO app_profiles (bundle_id, app_name, context_prompt, writing_style, cleanup_enabled, enabled)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+             ON CONFLICT(bundle_id) DO UPDATE SET
+               app_name = excluded.app_name,
+               context_prompt = excluded.context_prompt,
+               writing_style = excluded.writing_style,
+               cleanup_enabled = excluded.cleanup_enabled,
+               enabled = excluded.enabled",
+            rusqlite::params![
+                profile.bundle_id,
+                profile.app_name,
+                profile.context_prompt,
+                profile.writing_style,
+                profile.cleanup_enabled as i64,
+                profile.enabled as i64,
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn delete_app_profile(&self, bundle_id: &str) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute("DELETE FROM app_profiles WHERE bundle_id = ?1", [bundle_id])?;
+        Ok(())
+    }
+
+    /// Merge global profile with an optional per-app override.
+    /// App fields that are non-empty override global; empty means inherit.
+    pub fn effective_profile_for_app(&self, bundle_id: Option<&str>) -> Result<EffectiveProfile> {
+        let global = self.get_profile()?;
+        let mut effective = EffectiveProfile {
+            custom_words: global.custom_words,
+            context_prompt: global.context_prompt,
+            writing_style: global.writing_style,
+            cleanup_enabled: true,
+            bundle_id: bundle_id.map(|s| s.to_string()),
+            app_name: None,
+        };
+
+        let Some(bid) = bundle_id.filter(|s| !s.is_empty()) else {
+            return Ok(effective);
+        };
+
+        if let Some(app) = self.get_app_profile(bid)? {
+            if !app.enabled {
+                return Ok(effective);
+            }
+            effective.app_name = Some(app.app_name);
+            if !app.context_prompt.is_empty() {
+                effective.context_prompt = app.context_prompt;
+            }
+            if !app.writing_style.is_empty() {
+                effective.writing_style = app.writing_style;
+            }
+            effective.cleanup_enabled = app.cleanup_enabled;
+        }
+        Ok(effective)
+    }
+
     pub fn get_local_setup_config(&self) -> Result<LocalSetupConfig> {
         let conn = self.conn.lock().unwrap();
         // `whisper_server_port` is still in the schema for backwards
@@ -608,6 +735,28 @@ pub struct Profile {
     pub custom_words: String,
     pub context_prompt: String,
     pub writing_style: String,
+}
+
+/// Per-app dictation profile keyed by macOS bundle identifier.
+#[derive(serde::Serialize, serde::Deserialize, Clone)]
+pub struct AppProfile {
+    pub bundle_id: String,
+    pub app_name: String,
+    pub context_prompt: String,
+    pub writing_style: String,
+    pub cleanup_enabled: bool,
+    pub enabled: bool,
+}
+
+/// Global profile with optional per-app overrides applied.
+#[derive(serde::Serialize, serde::Deserialize, Clone)]
+pub struct EffectiveProfile {
+    pub custom_words: String,
+    pub context_prompt: String,
+    pub writing_style: String,
+    pub cleanup_enabled: bool,
+    pub bundle_id: Option<String>,
+    pub app_name: Option<String>,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Clone)]

@@ -15,6 +15,9 @@ import {
 	Mic,
 	Accessibility,
 	ExternalLink,
+	AppWindow,
+	Plus,
+	Trash2,
 } from "lucide-react";
 import {
 	isMissing,
@@ -590,6 +593,8 @@ function SettingsPage() {
 				</div>
 			</section>
 
+			<AppProfilesSection />
+
 			{/* Data Section */}
 			<section className="bg-card rounded-2xl border border-border p-5">
 				<div className="flex items-start gap-4 mb-4">
@@ -692,6 +697,241 @@ function PermissionsSection() {
 					state={status.accessibility}
 					pane="accessibility"
 				/>
+			</div>
+		</section>
+	);
+}
+
+interface AppProfileRow {
+	bundle_id: string;
+	app_name: string;
+	context_prompt: string;
+	writing_style: string;
+	cleanup_enabled: boolean;
+	enabled: boolean;
+}
+
+function AppProfilesSection() {
+	const [profiles, setProfiles] = useState<AppProfileRow[]>([]);
+	const [editing, setEditing] = useState<AppProfileRow | null>(null);
+	const [busy, setBusy] = useState(false);
+
+	const load = useCallback(async () => {
+		try {
+			const rows = await invoke<AppProfileRow[]>("list_app_profiles");
+			setProfiles(rows);
+		} catch (e) {
+			console.error("Failed to load app profiles:", e);
+		}
+	}, []);
+
+	useEffect(() => {
+		void load();
+	}, [load]);
+
+	async function addFromFrontmost() {
+		setBusy(true);
+		try {
+			const front = await invoke<{
+				bundle_id: string | null;
+				app_name: string | null;
+			}>("get_frontmost_app");
+			if (!front.bundle_id) {
+				alert("Couldn't detect the frontmost app. Focus another app and try again.");
+				return;
+			}
+			// Don't capture Parrot itself as a profile target.
+			if (front.bundle_id.includes("parrot") || front.bundle_id.includes("kash.parrot")) {
+				alert(
+					"Parrot is frontmost. Switch to the app you want to profile, then click again.",
+				);
+				return;
+			}
+			setEditing({
+				bundle_id: front.bundle_id,
+				app_name: front.app_name || front.bundle_id,
+				context_prompt: "",
+				writing_style: "",
+				cleanup_enabled: true,
+				enabled: true,
+			});
+		} catch (e) {
+			console.error(e);
+		} finally {
+			setBusy(false);
+		}
+	}
+
+	async function saveEditing() {
+		if (!editing) return;
+		setBusy(true);
+		try {
+			await invoke("upsert_app_profile", { profile: editing });
+			setEditing(null);
+			await load();
+		} catch (e) {
+			console.error(e);
+		} finally {
+			setBusy(false);
+		}
+	}
+
+	async function remove(bundleId: string) {
+		setBusy(true);
+		try {
+			await invoke("delete_app_profile", { bundleId });
+			await load();
+		} catch (e) {
+			console.error(e);
+		} finally {
+			setBusy(false);
+		}
+	}
+
+	return (
+		<section className="bg-card rounded-2xl border border-border p-5">
+			<div className="flex items-start gap-4 mb-5">
+				<div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center shrink-0">
+					<AppWindow className="w-5 h-5 text-indigo-600" />
+				</div>
+				<div className="flex-1">
+					<h2 className="text-base font-semibold text-foreground">
+						Per-app modes
+					</h2>
+					<p className="text-sm text-muted-foreground">
+						Override writing style, context, or turn cleanup off for specific
+						apps (by bundle ID — no screen capture).
+					</p>
+				</div>
+			</div>
+
+			<div className="space-y-3">
+				{profiles.length === 0 && !editing && (
+					<p className="text-sm text-muted-foreground">
+						No app profiles yet. Focus Slack, Notes, Terminal, etc., then add
+						the frontmost app.
+					</p>
+				)}
+
+				{profiles.map((p) => (
+					<div
+						key={p.bundle_id}
+						className="p-3 rounded-xl border border-border bg-muted/30 space-y-1"
+					>
+						<div className="flex items-start justify-between gap-2">
+							<div>
+								<p className="text-sm font-medium text-foreground">
+									{p.app_name || p.bundle_id}
+								</p>
+								<p className="text-xs font-mono text-muted-foreground">
+									{p.bundle_id}
+								</p>
+							</div>
+							<div className="flex gap-1">
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									onClick={() => setEditing({ ...p })}
+								>
+									Edit
+								</Button>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									onClick={() => void remove(p.bundle_id)}
+									disabled={busy}
+								>
+									<Trash2 className="w-3.5 h-3.5" />
+								</Button>
+							</div>
+						</div>
+						<p className="text-xs text-muted-foreground">
+							Cleanup: {p.cleanup_enabled ? "on" : "off"}
+							{p.writing_style ? ` · style set` : ""}
+							{p.context_prompt ? ` · context set` : ""}
+						</p>
+					</div>
+				))}
+
+				{editing && (
+					<div className="p-4 rounded-xl border border-primary/30 bg-primary/5 space-y-3">
+						<div>
+							<p className="text-sm font-medium">{editing.app_name}</p>
+							<p className="text-xs font-mono text-muted-foreground">
+								{editing.bundle_id}
+							</p>
+						</div>
+						<div className="space-y-1">
+							<Label className="text-xs">Context override (empty = global)</Label>
+							<Textarea
+								value={editing.context_prompt}
+								onChange={(e) =>
+									setEditing({ ...editing, context_prompt: e.target.value })
+								}
+								rows={2}
+								className="resize-none text-sm"
+								placeholder="e.g. Writing a Slack message — casual, short"
+							/>
+						</div>
+						<div className="space-y-1">
+							<Label className="text-xs">
+								Writing style override (empty = global)
+							</Label>
+							<Textarea
+								value={editing.writing_style}
+								onChange={(e) =>
+									setEditing({ ...editing, writing_style: e.target.value })
+								}
+								rows={2}
+								className="resize-none text-sm"
+								placeholder="e.g. Brief bullets, no fluff"
+							/>
+						</div>
+						<label className="flex items-center gap-2 text-sm">
+							<input
+								type="checkbox"
+								checked={editing.cleanup_enabled}
+								onChange={(e) =>
+									setEditing({
+										...editing,
+										cleanup_enabled: e.target.checked,
+									})
+								}
+							/>
+							Run AI cleanup in this app
+						</label>
+						<div className="flex gap-2">
+							<Button type="button" size="sm" onClick={() => void saveEditing()} disabled={busy}>
+								Save profile
+							</Button>
+							<Button
+								type="button"
+								size="sm"
+								variant="outline"
+								onClick={() => setEditing(null)}
+							>
+								Cancel
+							</Button>
+						</div>
+					</div>
+				)}
+
+				<Button
+					type="button"
+					variant="outline"
+					onClick={() => void addFromFrontmost()}
+					disabled={busy}
+					className="w-full sm:w-auto"
+				>
+					<Plus className="w-4 h-4 mr-1" />
+					Add frontmost app
+				</Button>
+				<p className="text-xs text-muted-foreground">
+					Tip: click into the target app first so Parrot can read its bundle ID
+					when you return.
+				</p>
 			</div>
 		</section>
 	);
