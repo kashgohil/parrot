@@ -43,6 +43,9 @@ function SettingsPage() {
 	const [saved, setSaved] = useState(false);
 	const [contextPrompt, setContextPrompt] = useState("");
 	const [writingStyle, setWritingStyle] = useState("");
+	const [cleanupMode, setCleanupMode] = useState<
+		"off" | "background" | "blocking"
+	>("background");
 
 	const keysRef = useRef<Set<string>>(new Set());
 	const recorderRef = useRef<HTMLDivElement>(null);
@@ -147,6 +150,14 @@ function SettingsPage() {
 				key: "save_audio",
 			});
 			setSaveAudio(sa === "true");
+			const cm = await invoke<string | null>("get_setting", {
+				key: "cleanup_mode",
+			});
+			if (cm === "off" || cm === "background" || cm === "blocking") {
+				setCleanupMode(cm);
+			} else {
+				setCleanupMode("background");
+			}
 		} catch (e) {
 			console.error("Failed to load settings:", e);
 		}
@@ -168,6 +179,10 @@ function SettingsPage() {
 			await invoke("set_setting", {
 				key: "save_audio",
 				value: saveAudio ? "true" : "false",
+			});
+			await invoke("set_setting", {
+				key: "cleanup_mode",
+				value: cleanupMode,
 			});
 
 			const profile = await invoke<Profile>("get_profile");
@@ -318,6 +333,56 @@ function SettingsPage() {
 				</div>
 
 				<div className="space-y-5">
+					<div className="space-y-2">
+						<Label className="text-sm font-medium">Cleanup timing</Label>
+						<div className="grid gap-2">
+							{(
+								[
+									{
+										value: "background" as const,
+										title: "Background (recommended)",
+										desc: "Paste immediately, polish in the background. Press ⌘⇧C if the cleaned version differs.",
+									},
+									{
+										value: "blocking" as const,
+										title: "Wait for polish",
+										desc: "Always paste the cleaned text. Adds 1–3s after each dictation.",
+									},
+									{
+										value: "off" as const,
+										title: "Off",
+										desc: "Paste the raw transcript only. No LLM cleanup.",
+									},
+								] as const
+							).map((opt) => {
+								const selected = cleanupMode === opt.value;
+								return (
+									<button
+										key={opt.value}
+										type="button"
+										onClick={() => setCleanupMode(opt.value)}
+										className={`text-left p-3 rounded-xl border transition-colors ${
+											selected
+												? "border-primary bg-primary/5"
+												: "border-border bg-muted/30 hover:bg-muted/50"
+										}`}
+									>
+										<p className="text-sm font-medium text-foreground">
+											{opt.title}
+										</p>
+										<p className="text-xs text-muted-foreground mt-0.5">
+											{opt.desc}
+										</p>
+									</button>
+								);
+							})}
+						</div>
+						<p className="text-xs text-muted-foreground">
+							Short utterances (under ~15 words) always skip cleanup — Whisper
+							already handles punctuation.
+						</p>
+					</div>
+
 					<div className="space-y-2">
 						<Label htmlFor="contextPrompt" className="text-sm font-medium">
 							Context / Instructions
