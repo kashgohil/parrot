@@ -276,18 +276,18 @@ fn num_cpus_default() -> std::os::raw::c_int {
         .unwrap_or(4)
 }
 
-/// Decode a WAV byte buffer into 16 kHz mono `f32` PCM, the format whisper
-/// expects. Handles arbitrary input sample rates and channel counts via
-/// linear-interpolation resampling and channel averaging — both adequate for
-/// voice transcription.
-#[allow(dead_code)]
-fn decode_wav_to_mono_f32(wav_data: &[u8], target_rate: u32) -> Result<Vec<f32>> {
+/// Decode a WAV file into mono `f32` at the file's sample rate (no resample).
+/// Used for file transcription; engines resample as needed.
+pub fn load_wav_samples(wav_data: &[u8]) -> Result<(Vec<f32>, u32)> {
     let cursor = std::io::Cursor::new(wav_data);
-    let mut reader = hound::WavReader::new(cursor).context("Failed to parse WAV header")?;
+    let mut reader = hound::WavReader::new(cursor).context(
+        "Failed to parse audio file. Parrot currently supports WAV (16-bit or float PCM).",
+    )?;
     let spec = reader.spec();
     let channels = spec.channels.max(1) as usize;
+    let sample_rate = spec.sample_rate;
 
-    let mut mono: Vec<f32> = match spec.sample_format {
+    let mono: Vec<f32> = match spec.sample_format {
         hound::SampleFormat::Float => {
             let samples: Vec<f32> = reader
                 .samples::<f32>()
@@ -296,18 +296,45 @@ fn decode_wav_to_mono_f32(wav_data: &[u8], target_rate: u32) -> Result<Vec<f32>>
             average_channels(&samples, channels)
         }
         hound::SampleFormat::Int => {
-            let max = i16::MAX as f32;
-            let samples: Vec<i16> = reader
-                .samples::<i16>()
-                .collect::<std::result::Result<_, _>>()
-                .context("Failed to decode WAV int samples")?;
-            let floats: Vec<f32> = samples.into_iter().map(|s| s as f32 / max).collect();
-            average_channels(&floats, channels)
+            let bits = spec.bits_per_sample;
+            let max = match bits {
+                8 => i8::MAX as f32,
+                16 => i16::MAX as f32,
+                24 => (1i32 << 23) as f32,
+                32 => i32::MAX as f32,
+                _ => i16::MAX as f32,
+            };
+            // hound reads i16 for 16-bit; for other bit depths use i32 if available
+            if bits <= 16 {
+                let samples: Vec<i16> = reader
+                    .samples::<i16>()
+                    .collect::<std::result::Result<_, _>>()
+                    .context("Failed to decode WAV int samples")?;
+                let floats: Vec<f32> = samples.into_iter().map(|s| s as f32 / max).collect();
+                average_channels(&floats, channels)
+            } else {
+                let samples: Vec<i32> = reader
+                    .samples::<i32>()
+                    .collect::<std::result::Result<_, _>>()
+                    .context("Failed to decode WAV int samples")?;
+                let floats: Vec<f32> = samples.into_iter().map(|s| s as f32 / max).collect();
+                average_channels(&floats, channels)
+            }
         }
     };
 
-    if spec.sample_rate != target_rate {
-        mono = resample_linear(&mono, spec.sample_rate, target_rate);
+    Ok((mono, sample_rate))
+}
+
+/// Decode a WAV byte buffer into 16 kHz mono `f32` PCM, the format whisper
+/// expects. Handles arbitrary input sample rates and channel counts via
+/// linear-interpolation resampling and channel averaging — both adequate for
+/// voice transcription.
+#[allow(dead_code)]
+fn decode_wav_to_mono_f32(wav_data: &[u8], target_rate: u32) -> Result<Vec<f32>> {
+    let (mut mono, sample_rate) = load_wav_samples(wav_data)?;
+    if sample_rate != target_rate {
+        mono = resample_linear(&mono, sample_rate, target_rate);
     }
     Ok(mono)
 }

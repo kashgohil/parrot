@@ -593,6 +593,235 @@ async fn run_cleanup(
     }
 }
 
+/// Transcribe a user-supplied audio file (WAV bytes from the frontend file
+/// picker / drag-drop). Saves to history, runs cleanup, copies text to the
+/// clipboard — does **not** synthesize Cmd+V (there is no target field).
+#[tauri::command]
+async fn transcribe_audio_file(
+    data: Vec<u8>,
+    filename: Option<String>,
+    db: tauri::State<'_, Database>,
+    engine_state: tauri::State<'_, SharedLocalEngine>,
+    app: tauri::AppHandle,
+) -> Result<DictationResult, String> {
+    if data.is_empty() {
+        return Err("Empty audio file".into());
+    }
+    let name = filename.unwrap_or_else(|| "audio.wav".into());
+    let lower = name.to_lowercase();
+    if !lower.ends_with(".wav") {
+        return Err(
+            "Only WAV files are supported right now. Export or convert to WAV and try again."
+                .into(),
+        );
+    }
+
+    let (samples, sample_rate) =
+        transcription::load_wav_samples(&data).map_err(|e| e.to_string())?;
+    if samples.is_empty() {
+        return Err("Audio file has no samples".into());
+    }
+    let duration_ms = (samples.len() as f64 / sample_rate as f64 * 1000.0) as u64;
+
+    let setup_mode = db
+        .get_setting("setup_mode")
+        .map_err(|e| e.to_string())?
+        .unwrap_or_else(|| "local".to_string());
+    let session_token = db.get_setting("session_token").map_err(|e| e.to_string())?;
+    let api_key = db.get_setting("api_key").map_err(|e| e.to_string())?;
+
+    let _ = app.emit("transcription-started", ());
+    let local_engine = if setup_mode == "local" {
+        wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(60)).await
+    } else {
+        None
+    };
+
+    let initial_prompt = if setup_mode == "local" {
+        match db.get_profile() {
+            Ok(profile) => {
+                let entries = vocab::parse(&profile.custom_words);
+                vocab::whisper_initial_prompt(&entries)
+            }
+            Err(_) => None,
+        }
+    } else {
+        None
+    };
+    let language = db
+        .get_setting("stt_language")
+        .map_err(|e| e.to_string())?
+        .filter(|s| !s.trim().is_empty());
+
+    let wav_for_cloud = if setup_mode == "cloud" {
+        Some(data.clone())
+    } else {
+        None
+    };
+
+    let transcription_start = Instant::now();
+    let raw_text = transcription::transcribe_audio(
+        &samples,
+        sample_rate,
+        wav_for_cloud.as_deref(),
+        &setup_mode,
+        local_engine.as_deref(),
+        session_token.as_deref(),
+        api_key.as_deref(),
+        TranscribeOpts {
+            language,
+            initial_prompt,
+        },
+    )
+    .await
+    .map_err(|e| e.to_string())?;
+    let transcription_ms = transcription_start.elapsed().as_millis() as i64;
+
+    let raw_text = {
+        let entries = match db.get_profile() {
+            Ok(p) => vocab::parse(&p.custom_words),
+            Err(_) => Vec::new(),
+        };
+        vocab::apply_dictionary_pass(&raw_text, &entries)
+    };
+
+    if raw_text.trim().is_empty() {
+        let result = DictationResult {
+            raw_text: String::new(),
+            cleaned_text: String::new(),
+            pasted: false,
+        };
+        let _ = app.emit("dictation-complete", result.clone());
+        return Ok(result);
+    }
+
+    let id = uuid::Uuid::new_v4().to_string();
+    let provider = if setup_mode == "local" {
+        "local-file"
+    } else {
+        "cloud-file"
+    };
+    match setup_mode.as_str() {
+        "local" => {
+            db.insert_dictation(&id, &raw_text, "", provider, duration_ms as i64)
+                .map_err(|e| e.to_string())?;
+        }
+        "cloud" => {
+            let token = session_token
+                .as_deref()
+                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
+            cloud_api::insert_dictation(token, &id, &raw_text, "", provider, duration_ms as i64)
+                .await
+                .map_err(|e| e.to_string())?;
+        }
+        _ => return Err(format!("Unknown setup mode: {}", setup_mode)),
+    }
+
+    let engine_name = local_engine
+        .as_ref()
+        .map(|e| e.engine_id())
+        .unwrap_or(if setup_mode == "local" {
+            "local"
+        } else {
+            "cloud"
+        });
+    let model_name = local_engine.as_ref().map(|e| e.model_label());
+    if setup_mode == "local" {
+        let _ = db.update_dictation_timings(
+            &id,
+            Some(transcription_ms),
+            None,
+            None,
+            Some(engine_name),
+            model_name.as_deref(),
+        );
+    }
+
+    let effective = db
+        .effective_profile_for_app(None)
+        .map_err(|e| e.to_string())?;
+    let cleanup_mode = db
+        .get_setting("cleanup_mode")
+        .map_err(|e| e.to_string())?
+        .unwrap_or_else(|| "background".to_string());
+    let skip_cleanup = cleanup_mode == "off"
+        || !effective.cleanup_enabled
+        || word_count(&raw_text) < SHORT_UTTERANCE_WORD_LIMIT;
+
+    let cleaned_text = if skip_cleanup {
+        String::new()
+    } else if cleanup_mode == "blocking" {
+        let builtin = cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner());
+        let cleaned = run_cleanup(
+            &db,
+            &setup_mode,
+            &raw_text,
+            session_token.as_deref(),
+            builtin,
+            &effective,
+        )
+        .await;
+        if !cleaned.is_empty() && cleaned != raw_text {
+            let _ = db.update_dictation_cleaned(&id, &cleaned);
+        }
+        cleaned
+    } else {
+        // Background cleanup — return raw immediately.
+        let app_handle = app.clone();
+        let id_bg = id.clone();
+        let raw_bg = raw_text.clone();
+        let mode_bg = setup_mode.clone();
+        let token_bg = session_token.clone();
+        let effective_bg = effective.clone();
+        tokio::spawn(async move {
+            let db = app_handle.state::<Database>();
+            let builtin = cleanup::peek_builtin(app_handle.state::<SharedCleanupEngine>().inner());
+            let cleaned = run_cleanup(
+                &db,
+                &mode_bg,
+                &raw_bg,
+                token_bg.as_deref(),
+                builtin,
+                &effective_bg,
+            )
+            .await;
+            if !cleaned.is_empty() && cleaned.trim() != raw_bg.trim() {
+                let _ = db.update_dictation_cleaned(&id_bg, &cleaned);
+                let _ = app_handle.emit(
+                    "cleanup-ready",
+                    serde_json::json!({ "id": id_bg, "cleaned_text": cleaned }),
+                );
+            }
+            let _ = app_handle.emit("dictation-complete", ());
+        });
+        String::new()
+    };
+
+    let output = if cleaned_text.is_empty() {
+        raw_text.clone()
+    } else {
+        cleaned_text.clone()
+    };
+
+    // Copy only — no synthetic paste for file transcription.
+    {
+        use tauri_plugin_clipboard_manager::ClipboardExt;
+        let _ = app.clipboard().write_text(output);
+    }
+
+    let result = DictationResult {
+        raw_text: raw_text.clone(),
+        cleaned_text,
+        pasted: false,
+    };
+    let _ = app.emit("dictation-complete", result.clone());
+    eprintln!(
+        "file transcription complete name={} duration={}ms transcription={}ms",
+        name, duration_ms, transcription_ms
+    );
+    Ok(result)
+}
+
 /// Paste the most recent background-cleanup result (bound to ⌘⇧C).
 #[tauri::command]
 async fn apply_pending_cleanup(
@@ -2220,6 +2449,7 @@ pub fn run() {
             is_recording,
             toggle_recording,
             transcribe_last,
+            transcribe_audio_file,
             apply_pending_cleanup,
             get_timing_stats,
             get_stt_status,
@@ -2334,6 +2564,18 @@ pub fn run() {
                         //    the user still uses the legacy backend).
                         kick_off_cleanup_load(&db, app.state::<SharedCleanupEngine>().inner().clone(), &config);
 
+                        // 3. Pre-open the mic stream so Bluetooth headsets
+                        //    finish codec negotiation before the first press.
+                        {
+                            let state = app.state::<RecorderState>();
+                            let warm_result = state.recorder.lock().map(|mut rec| rec.warm_up());
+                            match warm_result {
+                                Ok(Ok(())) => println!("Mic input stream warmed"),
+                                Ok(Err(e)) => eprintln!("Mic warm-up skipped: {}", e),
+                                Err(e) => eprintln!("Mic warm-up lock error: {}", e),
+                            }
+                        }
+
                         let app_handle = app.handle().clone();
                         let ollama_model = config.ollama_model.clone();
                         tauri::async_runtime::spawn(async move {
@@ -2386,6 +2628,12 @@ pub fn run() {
             // crashes leave a pile of zombie `ollama serve` processes that
             // hold the preferred port and break the next session.
             if let tauri::RunEvent::ExitRequested { .. } | tauri::RunEvent::Exit = event {
+                {
+                    let state = app.state::<RecorderState>();
+                    if let Ok(mut rec) = state.recorder.lock() {
+                        rec.shutdown();
+                    }
+                }
                 let servers = app.state::<SharedServerProcesses>().inner().clone();
                 tauri::async_runtime::block_on(async move {
                     let mut guard = servers.write().await;

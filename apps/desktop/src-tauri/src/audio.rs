@@ -31,8 +31,31 @@ impl AudioRecorder {
         // otherwise re-encode whatever was left from the prior recording —
         // surfacing as "it transcribed my last dictation again."
         self.samples.lock().unwrap().clear();
-        *self.is_recording.lock().unwrap() = false;
 
+        // If a warm stream is already open (kept after the last stop for BT
+        // codec negotiation), just flip the capture flag — no reopen delay.
+        if self.stream.is_some() {
+            *self.is_recording.lock().unwrap() = true;
+            return Ok(());
+        }
+
+        *self.is_recording.lock().unwrap() = false;
+        self.open_stream()?;
+        *self.is_recording.lock().unwrap() = true;
+        Ok(())
+    }
+
+    /// Open the input stream without capturing into the dictation buffer.
+    /// Call at app startup / after local setup so Bluetooth mics finish
+    /// codec negotiation before the first hotkey press.
+    pub fn warm_up(&mut self) -> Result<()> {
+        if self.stream.is_some() {
+            return Ok(());
+        }
+        self.open_stream()
+    }
+
+    fn open_stream(&mut self) -> Result<()> {
         let host = cpal::default_host();
         let device = host
             .default_input_device()
@@ -45,13 +68,12 @@ impl AudioRecorder {
         let samples = self.samples.clone();
         let is_recording = self.is_recording.clone();
 
-        *is_recording.lock().unwrap() = true;
-
         let channels = self.channels as usize;
         let stream = device.build_input_stream(
             &config.into(),
             move |data: &[f32], _: &cpal::InputCallbackInfo| {
                 if !*is_recording.lock().unwrap() {
+                    // Warm path: discard samples so the device stays open.
                     return;
                 }
                 let mut buf = samples.lock().unwrap();
@@ -74,13 +96,15 @@ impl AudioRecorder {
         Ok(())
     }
 
-    /// Stop recording and return raw mono `f32` samples plus the device
-    /// sample rate. Callers that need WAV (cloud upload, save-audio) should
-    /// encode via [`encode_wav`]; local whisper takes the floats directly so
-    /// we avoid an f32 → i16 → f32 round trip on the hot path.
+    /// Stop capturing and return raw mono `f32` samples plus the device
+    /// sample rate. **Keeps the input stream open** so the next dictation
+    /// (especially Bluetooth mics) does not re-pay codec negotiation.
+    /// Callers that need WAV (cloud upload, save-audio) should encode via
+    /// [`encode_wav`]; local whisper takes the floats directly so we avoid
+    /// an f32 → i16 → f32 round trip on the hot path.
     pub fn stop(&mut self) -> Result<RecordedSamples> {
         *self.is_recording.lock().unwrap() = false;
-        self.stream = None;
+        // Intentionally do NOT drop `self.stream` — warm path for BT.
 
         let mut samples = self.samples.lock().unwrap();
         let out = RecordedSamples {
@@ -90,8 +114,19 @@ impl AudioRecorder {
         Ok(out)
     }
 
+    /// Fully tear down the input stream (app exit / device change).
+    pub fn shutdown(&mut self) {
+        *self.is_recording.lock().unwrap() = false;
+        self.stream = None;
+        self.samples.lock().unwrap().clear();
+    }
+
     pub fn is_recording(&self) -> bool {
         *self.is_recording.lock().unwrap()
+    }
+
+    pub fn is_warm(&self) -> bool {
+        self.stream.is_some()
     }
 }
 
