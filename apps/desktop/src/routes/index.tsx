@@ -114,7 +114,7 @@ function HomePage() {
 	async function transcribeFile(file: File) {
 		setFileError(null);
 		const name = file.name.toLowerCase();
-		if (!name.ends_with(".wav")) {
+		if (!name.endsWith(".wav")) {
 			setFileError("Only WAV files are supported right now.");
 			return;
 		}
