@@ -8,16 +8,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Install dependencies
 bun install
 
-# Development (runs API + desktop in parallel)
-bun run dev
+# Development from repo root (loads apps/desktop/.env for Tauri)
+bun run dev                  # API (:3001) + desktop Tauri
+bun run dev:desktop          # Desktop only
+bun run dev:api              # API only
+bun run dev:hero             # Marketing site (:3002)
+bun run dev:all              # API + desktop + hero
 
-# Run individual apps
-bun run dev:api              # API server on port 3001
-bun run dev:desktop          # Desktop app (Vite on 1420, Tauri dev)
-bun run dev:hero             # Marketing site on port 3002
-
-# Build desktop app
-bun run build:desktop
+# Build desktop app (from apps/desktop: bun run desktop build)
+# bun run build:desktop
 
 # Database migrations (API)
 bun run db:generate          # Generate Drizzle migrations
