@@ -202,7 +202,7 @@ async fn cleanup_with_backend(
 
     let client = reqwest::Client::new();
     let mut req_builder = client
-        .post("http://localhost:3001/api/cleanup")
+        .post("http://localhost:8030/api/cleanup")
         .header("Authorization", format!("Bearer {}", session_token))
         .json(&request);
 

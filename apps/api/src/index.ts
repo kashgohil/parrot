@@ -49,6 +49,6 @@ app.route("/api/subscription", subscription);
 app.route("/api/subscribe", subscribeRoute);
 
 export default {
-	port: 3001,
+	port: 8030,
 	fetch: app.fetch,
 };

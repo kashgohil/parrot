@@ -422,7 +422,7 @@ async fn transcribe_with_backend(
 
     let client = reqwest::Client::new();
     let mut req_builder = client
-        .post("http://localhost:3001/api/transcribe")
+        .post("http://localhost:8030/api/transcribe")
         .header("Authorization", format!("Bearer {}", session_token))
         .multipart(form);
 

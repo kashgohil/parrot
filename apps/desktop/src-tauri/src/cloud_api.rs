@@ -1,7 +1,7 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
-const BACKEND_URL: &str = "http://localhost:3001";
+const BACKEND_URL: &str = "http://localhost:8030";
 
 // -- History --
 

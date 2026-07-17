@@ -113,7 +113,7 @@ const pendingOAuthFlows = new Map<
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3001";
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8030";
 
 // Initiate Google OAuth - desktop app opens this in browser
 auth.get("/google/redirect", (c) => {

@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 bun install
 
 # Development from repo root (loads apps/desktop/.env for Tauri)
-bun run dev                  # API (:3001) + desktop Tauri
+bun run dev                  # API (:8030) + desktop Tauri
 bun run dev:desktop          # Desktop only
 bun run dev:api              # API only
 bun run dev:hero             # Marketing site (:3002)
@@ -92,4 +92,4 @@ pnpm dlx shadcn@latest add <component>
 - **Tauri identifier**: `com.kash.parrot`
 - **Vite dev server (desktop)**: port 1420 (HMR on 1421)
 - **Vite dev server (hero)**: port 3002
-- **API server**: port 3001
+- **API server**: port 8030

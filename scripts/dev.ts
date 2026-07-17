@@ -212,7 +212,7 @@ if (startHero) {
 }
 
 const parts = [
-	startApi && "API :3001",
+	startApi && "API :8030",
 	startDesktop && "Desktop (Tauri)",
 	startHero && "Hero :3002",
 ]

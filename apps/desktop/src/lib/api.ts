@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = "http://localhost:8030";
 
 export interface AuthUser {
 	id: string;
