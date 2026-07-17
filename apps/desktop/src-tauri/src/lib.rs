@@ -469,20 +469,27 @@ async fn apply_pending_cleanup(
 /// *Automation → System Events* on top of Accessibility, and reported error
 /// 1002 ("not allowed to send keystrokes") in confusing ways even when
 /// Accessibility was granted. CGEvent only needs Accessibility.
+///
+/// After paste, the previous pasteboard contents are restored ~1s later so
+/// dictation doesn't permanently clobber the user's clipboard.
 async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
     use tauri_plugin_clipboard_manager::ClipboardExt;
+
+    // Snapshot prior clipboard so we can restore it after paste. Text-only —
+    // non-text contents (images, files) are left alone if we can't read them.
+    let previous = app.clipboard().read_text().ok();
 
     if let Err(e) = app.clipboard().write_text(text.clone()) {
         eprintln!("Failed to set clipboard text: {}", e);
         return false;
     }
 
-    // Give the system a beat to register the new pasteboard contents before
-    // we synthesize Cmd+V into whatever app currently holds focus.
-    tokio::time::sleep(std::time::Duration::from_millis(80)).await;
+    // Poll until the pasteboard reflects our write (or 100ms cap) instead of
+    // a fixed 80ms sleep — short writes resolve in a few ms.
+    wait_for_clipboard_text(app, &text, std::time::Duration::from_millis(100)).await;
 
     #[cfg(target_os = "macos")]
-    {
+    let pasted = {
         if !is_accessibility_trusted() {
             let _ = app.emit(
                 "paste-permission-needed",
@@ -490,34 +497,77 @@ async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
                     "details": "Accessibility permission required to paste",
                 }),
             );
-            return false;
+            false
+        } else {
+            let result = tauri::async_runtime::spawn_blocking(|| {
+                std::panic::catch_unwind(post_cmd_v_macos)
+            })
+            .await;
+
+            match result {
+                Ok(Ok(true)) => true,
+                Ok(Ok(false)) => {
+                    eprintln!("CGEvent paste: failed to construct keystroke");
+                    false
+                }
+                Ok(Err(_)) => {
+                    eprintln!("CGEvent paste panicked");
+                    false
+                }
+                Err(e) => {
+                    eprintln!("CGEvent paste task join error: {}", e);
+                    false
+                }
+            }
         }
+    };
 
-        let result =
-            tauri::async_runtime::spawn_blocking(|| std::panic::catch_unwind(post_cmd_v_macos))
-                .await;
+    #[cfg(not(target_os = "macos"))]
+    let pasted = {
+        let _ = app;
+        false
+    };
 
-        match result {
-            Ok(Ok(true)) => true,
-            Ok(Ok(false)) => {
-                eprintln!("CGEvent paste: failed to construct keystroke");
-                false
-            }
-            Ok(Err(_)) => {
-                eprintln!("CGEvent paste panicked");
-                false
-            }
-            Err(e) => {
-                eprintln!("CGEvent paste task join error: {}", e);
-                false
-            }
+    // Restore the user's prior clipboard after the synthetic paste has had
+    // time to land. Detached so we don't add latency to the dictation path.
+    if let Some(prev) = previous {
+        if prev != text {
+            let app_restore = app.clone();
+            tokio::spawn(async move {
+                tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
+                // Only restore if the clipboard still holds our transcript —
+                // if the user copied something else in the meantime, leave it.
+                use tauri_plugin_clipboard_manager::ClipboardExt;
+                let still_ours = app_restore
+                    .clipboard()
+                    .read_text()
+                    .ok()
+                    .as_deref()
+                    == Some(text.as_str());
+                if still_ours {
+                    if let Err(e) = app_restore.clipboard().write_text(prev) {
+                        eprintln!("Failed to restore clipboard: {}", e);
+                    }
+                }
+            });
         }
     }
 
-    #[cfg(not(target_os = "macos"))]
-    {
-        let _ = app;
-        false
+    pasted
+}
+
+/// Poll the pasteboard until `text` is present or `cap` elapses.
+async fn wait_for_clipboard_text(app: &tauri::AppHandle, text: &str, cap: std::time::Duration) {
+    use tauri_plugin_clipboard_manager::ClipboardExt;
+    let deadline = std::time::Instant::now() + cap;
+    loop {
+        if app.clipboard().read_text().ok().as_deref() == Some(text) {
+            return;
+        }
+        if std::time::Instant::now() >= deadline {
+            return;
+        }
+        tokio::time::sleep(std::time::Duration::from_millis(4)).await;
     }
 }
 
