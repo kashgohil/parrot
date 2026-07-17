@@ -3,7 +3,6 @@ import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { DoodleBackground } from "../components/doodle-background";
 import Header from "../components/Header";
-import { Telemetry } from "../components/Telemetry";
 
 import appCss from "../styles.css?url";
 
@@ -119,7 +118,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
-				<Telemetry />
 				<Header />
 				<div className="relative min-h-screen">
 					<DoodleBackground opacity={0.07} />
