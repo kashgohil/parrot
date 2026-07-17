@@ -130,16 +130,16 @@ minutes with no admin password and no third-party installs; background cleanup o
 
 Ordered by value-for-effort:
 
-- [ ] **Per-app modes ("Profiles").** Read the frontmost app's bundle ID at paste
+- [x] **Per-app modes ("Profiles").** Read the frontmost app's bundle ID at paste
       time; key `writing_style` / `context_prompt` / cleanup on-off off a per-app
       profile table (the profile plumbing in `db.rs` already exists — make it keyed).
       Bundle-ID based only — no screenshots (the Wispr scandal made screen capture
       radioactive; if we ever add screen context it must be explicit opt-in and
       provably local).
-- [ ] **Typing fallback.** Where Cmd+V fails (terminals, secure fields, apps that
+- [x] **Typing fallback.** Where Cmd+V fails (terminals, secure fields, apps that
       remap paste), type the text directly via `CGEventKeyboardSetUnicodeString` —
       no clipboard involved. Auto-fallback when paste verification fails.
-- [ ] **Self-learning dictionary.** Mine local history (raw vs. cleaned pairs we
+- [x] **Self-learning dictionary.** Mine local history (raw vs. cleaned pairs we
       already store) for words the user repeatedly corrects; suggest dictionary
       entries in the profile UI. Plus a deterministic post-STT pass: fuzzy-match
       transcript words against the dictionary and fix high-confidence near-misses
