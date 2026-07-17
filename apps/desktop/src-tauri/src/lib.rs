@@ -1,5 +1,6 @@
 mod audio;
 mod cleanup;
+mod cleanup_engine;
 mod cloud_api;
 mod db;
 mod hotkey;
@@ -15,6 +16,7 @@ use std::sync::Mutex;
 use std::time::Instant;
 use tauri::{Emitter, Manager};
 use tokio::sync::RwLock;
+use cleanup_engine::{load_cleanup_engine, SharedCleanupEngine};
 use transcription::{LocalEngine, TranscribeOpts};
 
 /// Shared handle to the in-process local STT engine (Whisper or Parakeet).
@@ -345,7 +347,9 @@ async fn transcribe_last(
     if cleanup_mode == "blocking" {
         let _ = app.emit("cleanup-started", ());
         let cleanup_start = Instant::now();
-        let cleaned_text = run_cleanup(&db, &setup_mode, &raw_text, session_token.as_deref()).await;
+        let builtin = cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner());
+        let cleaned_text =
+            run_cleanup(&db, &setup_mode, &raw_text, session_token.as_deref(), builtin).await;
         let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
         if !cleaned_text.is_empty() && cleaned_text != raw_text {
             match setup_mode.as_str() {
@@ -433,9 +437,10 @@ async fn transcribe_last(
     let token_bg = session_token.clone();
     tokio::spawn(async move {
         let db = app_handle.state::<Database>();
+        let builtin = cleanup::peek_builtin(app_handle.state::<SharedCleanupEngine>().inner());
         let cleanup_start = Instant::now();
         let cleaned =
-            run_cleanup(&db, &mode_bg, &raw_bg, token_bg.as_deref()).await;
+            run_cleanup(&db, &mode_bg, &raw_bg, token_bg.as_deref(), builtin).await;
         let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
         if mode_bg == "local" {
             let _ = db.update_dictation_timings(
@@ -493,7 +498,10 @@ async fn run_cleanup(
     setup_mode: &str,
     raw_text: &str,
     session_token: Option<&str>,
+    builtin: Option<std::sync::Arc<cleanup_engine::BuiltinCleanupEngine>>,
 ) -> String {
+    let cleanup_backend = resolve_cleanup_backend(db);
+
     match setup_mode {
         "local" => {
             let llm_model = db.get_setting("llm_model").ok().flatten();
@@ -513,6 +521,8 @@ async fn run_cleanup(
                 &profile.custom_words,
                 &profile.context_prompt,
                 &profile.writing_style,
+                &cleanup_backend,
+                builtin,
             )
             .await
             {
@@ -537,6 +547,8 @@ async fn run_cleanup(
                 "",
                 "",
                 "",
+                "builtin",
+                None,
             )
             .await
             {
@@ -1332,14 +1344,19 @@ async fn check_model_download_status(
         }
     }
 
-    if local_setup::command_exists("ollama").await {
-        for model in &request.ollama_models {
-            if local_setup::is_ollama_model_downloaded(model)
+    for model in &request.ollama_models {
+        // Phase 3: "ollama_models" field also carries builtin cleanup GGUF ids.
+        let ready = if model.contains("qwen") || model.ends_with(".gguf") {
+            local_setup::is_cleanup_model_downloaded(model)
                 .await
-                .map_err(|e| format!("Failed to check Ollama model {}: {}", model, e))?
-            {
-                downloaded_ollama.push(model.clone());
-            }
+                .map_err(|e| format!("Failed to check cleanup model {}: {}", model, e))?
+        } else {
+            local_setup::is_ollama_model_downloaded(model)
+                .await
+                .unwrap_or(false)
+        };
+        if ready {
+            downloaded_ollama.push(model.clone());
         }
     }
 
@@ -1391,6 +1408,16 @@ async fn start_local_setup(
                     let engine = local_setup::stt_engine_for_model(&stt_model_id);
                     let _ = db.set_setting("stt_engine", engine);
                     let _ = db.set_setting("stt_model", &stt_model_id);
+                    let _ = db.set_setting("cleanup_backend", "builtin");
+                    let cleanup_id = config.ollama_model.clone();
+                    if let Ok(path) = local_setup::get_cleanup_model_path(&cleanup_id) {
+                        let path_str = path.to_string_lossy().to_string();
+                        let _ = db.set_setting("cleanup_model_path", &path_str);
+                        load_cleanup_engine(
+                            app.state::<SharedCleanupEngine>().inner().clone(),
+                            path_str,
+                        );
+                    }
                     if engine == "parakeet" {
                         let _ = db.set_setting(
                             "parakeet_model_path",
@@ -1543,6 +1570,70 @@ fn kick_off_engine_load(db: &Database, state: SharedLocalEngine, config: &local_
     load_local_engine(state, engine, path, model_id);
 }
 
+fn resolve_cleanup_backend(db: &Database) -> String {
+    if let Some(b) = db.get_setting("cleanup_backend").ok().flatten() {
+        if !b.is_empty() {
+            return b;
+        }
+    }
+    // Migration defaults for installs that predate cleanup_backend:
+    if db
+        .get_setting("cleanup_model_path")
+        .ok()
+        .flatten()
+        .filter(|p| !p.is_empty())
+        .is_some()
+    {
+        return "builtin".into();
+    }
+    if let Ok(config) = db.get_local_setup_config() {
+        if config.ollama_model.contains("qwen") || config.ollama_model.ends_with(".gguf") {
+            return "builtin".into();
+        }
+        if !config.ollama_model.is_empty() {
+            // e.g. llama3.2 — keep Ollama path working.
+            return "ollama".into();
+        }
+    }
+    "builtin".into()
+}
+
+fn kick_off_cleanup_load(
+    db: &Database,
+    state: SharedCleanupEngine,
+    config: &local_setup::LocalSetupConfig,
+) {
+    let backend = resolve_cleanup_backend(db);
+
+    if backend != "builtin" {
+        return;
+    }
+
+    let path = db
+        .get_setting("cleanup_model_path")
+        .ok()
+        .flatten()
+        .filter(|p| !p.is_empty())
+        .or_else(|| {
+            local_setup::get_cleanup_model_path(&config.ollama_model)
+                .ok()
+                .filter(|p| p.exists())
+                .map(|p| p.to_string_lossy().into_owned())
+        })
+        .or_else(|| {
+            local_setup::get_cleanup_model_path(local_setup::CLEANUP_QWEN25_05B)
+                .ok()
+                .filter(|p| p.exists())
+                .map(|p| p.to_string_lossy().into_owned())
+        });
+
+    if let Some(path) = path {
+        load_cleanup_engine(state, path);
+    } else {
+        eprintln!("No cleanup GGUF found — download via setup or Settings");
+    }
+}
+
 fn resolve_stt_load_target(
     db: &Database,
     config: &local_setup::LocalSetupConfig,
@@ -1625,6 +1716,7 @@ async fn validate_local_servers(
     db: tauri::State<'_, Database>,
     servers: tauri::State<'_, SharedServerProcesses>,
     whisper: tauri::State<'_, SharedWhisperProvider>,
+    cleanup_engine: tauri::State<'_, SharedCleanupEngine>,
 ) -> Result<serde_json::Value, String> {
     let config = db
         .get_local_setup_config()
@@ -1635,10 +1727,7 @@ async fn validate_local_servers(
         guard.ollama_port.unwrap_or(config.ollama_server_port)
     };
 
-    // Transcription "validation" is now just a check that the whisper model
-    // loaded successfully — it lives in-process, no network probe needed.
-    // The load is kicked off in a background task when setup finishes, so
-    // poll briefly here to avoid racing the user to the completion screen.
+    // Transcription validation: local STT engine loaded in-process.
     let transcription_ok = {
         let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
         loop {
@@ -1651,10 +1740,29 @@ async fn validate_local_servers(
             tokio::time::sleep(std::time::Duration::from_millis(250)).await;
         }
     };
-    let cleanup_ok =
+
+    let backend = db
+        .get_setting("cleanup_backend")
+        .ok()
+        .flatten()
+        .unwrap_or_else(|| "builtin".into());
+    let cleanup_ok = if backend == "ollama" {
         local_setup::test_cleanup(ollama_port, &config.ollama_model)
             .await
-            .is_ok();
+            .is_ok()
+    } else {
+        // Builtin: model loaded, or path exists (load may still be in flight).
+        if cleanup::peek_builtin(cleanup_engine.inner()).is_some() {
+            true
+        } else {
+            local_setup::get_cleanup_model_path(&config.ollama_model)
+                .map(|p| p.exists())
+                .unwrap_or(false)
+                || local_setup::get_cleanup_model_path(local_setup::CLEANUP_QWEN25_05B)
+                    .map(|p| p.exists())
+                    .unwrap_or(false)
+        }
+    };
 
     Ok(serde_json::json!({
         "transcription": transcription_ok,
@@ -1698,6 +1806,7 @@ pub fn run() {
         .manage(PendingCleanup::new())
         .manage::<SharedServerProcesses>(Arc::new(RwLock::new(ServerProcesses::new())))
         .manage::<SharedWhisperProvider>(Arc::new(RwLock::new(None)))
+        .manage::<SharedCleanupEngine>(Arc::new(std::sync::RwLock::new(None)))
         .invoke_handler(tauri::generate_handler![
             start_recording,
             stop_recording,
@@ -1809,14 +1918,23 @@ pub fn run() {
                         let engine_state = app.state::<SharedLocalEngine>();
                         kick_off_engine_load(&db, engine_state.inner().clone(), &config);
 
-                        // 2. Make sure the Ollama daemon is running, then
-                        //    pre-warm the configured LLM in the background so
-                        //    the first dictation doesn't pay the cold-load
-                        //    tax. Both run in a detached task so the UI is
-                        //    interactive immediately.
+                        // 2. Load in-process cleanup GGUF (or warm Ollama if
+                        //    the user still uses the legacy backend).
+                        kick_off_cleanup_load(&db, app.state::<SharedCleanupEngine>().inner().clone(), &config);
+
                         let app_handle = app.handle().clone();
                         let ollama_model = config.ollama_model.clone();
                         tauri::async_runtime::spawn(async move {
+                            let backend = app_handle
+                                .state::<Database>()
+                                .get_setting("cleanup_backend")
+                                .ok()
+                                .flatten()
+                                .unwrap_or_else(|| "builtin".into());
+                            if backend != "ollama" {
+                                println!("Using builtin cleanup (no Ollama daemon)");
+                                return;
+                            }
                             match start_local_servers(
                                 app_handle.state::<Database>(),
                                 app_handle.state::<SharedServerProcesses>(),
@@ -1825,7 +1943,7 @@ pub fn run() {
                             .await
                             {
                                 Ok(_) => {
-                                    println!("Local services started");
+                                    println!("Local services started (Ollama compat)");
                                     let port = {
                                         let servers =
                                             app_handle.state::<SharedServerProcesses>();

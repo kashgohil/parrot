@@ -49,6 +49,9 @@ pub struct ManualStep {
 pub enum SetupStep {
     SystemCheck,
     DownloadWhisperModel { model: String },
+    /// In-process cleanup GGUF (Phase 3 default — no Ollama).
+    DownloadCleanupModel { model: String },
+    /// Legacy Ollama path (kept for serde / older UI clients).
     InstallOllama,
     DownloadOllamaModel { model: String },
     StartOllama,
@@ -354,6 +357,12 @@ pub const STT_PARAKEET_V3: &str = "parakeet-v3";
 pub const STT_WHISPER_LARGE_TURBO: &str = "large-v3-turbo";
 #[allow(dead_code)]
 pub const STT_WHISPER_SMALL_EN: &str = "small.en";
+
+/// Default in-process cleanup model (Phase 3 — no Ollama).
+pub const CLEANUP_QWEN25_05B: &str = "qwen2.5-0.5b-instruct-q4_k_m";
+const CLEANUP_QWEN25_05B_FILE: &str = "qwen2.5-0.5b-instruct-q4_k_m.gguf";
+const CLEANUP_QWEN25_05B_URL: &str =
+    "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf";
 
 /// Pre-built int8 ONNX bundle hosted by Handy (MIT, same stack we run).
 const PARAKEET_V3_URL: &str = "https://blob.handy.computer/parakeet-v3-int8.tar.gz";
@@ -693,6 +702,90 @@ where
     }
 }
 
+pub fn get_cleanup_model_path(model_id: &str) -> Result<PathBuf> {
+    let file = match model_id {
+        id if id == CLEANUP_QWEN25_05B || id.ends_with(".gguf") => {
+            if id.ends_with(".gguf") {
+                id.to_string()
+            } else {
+                CLEANUP_QWEN25_05B_FILE.to_string()
+            }
+        }
+        _ => CLEANUP_QWEN25_05B_FILE.to_string(),
+    };
+    Ok(get_models_dir()?.join(file))
+}
+
+pub fn get_cleanup_model_url(model_id: &str) -> String {
+    match model_id {
+        id if id == CLEANUP_QWEN25_05B => CLEANUP_QWEN25_05B_URL.to_string(),
+        _ => CLEANUP_QWEN25_05B_URL.to_string(),
+    }
+}
+
+pub async fn is_cleanup_model_downloaded(model_id: &str) -> Result<bool> {
+    Ok(get_cleanup_model_path(model_id)?.exists())
+}
+
+/// Download the in-process cleanup GGUF (~400–500MB).
+pub async fn download_cleanup_model<F>(model_id: &str, progress_callback: F) -> Result<PathBuf>
+where
+    F: Fn(String, f32) + Send + 'static,
+{
+    let model_path = get_cleanup_model_path(model_id)?;
+    if model_path.exists() {
+        progress_callback(
+            format!("Cleanup model already downloaded"),
+            100.0,
+        );
+        return Ok(model_path);
+    }
+
+    progress_callback("Downloading cleanup model...".into(), 0.0);
+    let url = get_cleanup_model_url(model_id);
+    let temp_path = model_path.with_extension("gguf.tmp");
+
+    let client = reqwest::Client::new();
+    let mut response = client
+        .get(&url)
+        .send()
+        .await
+        .context("Failed to start cleanup model download")?
+        .error_for_status()
+        .context("Cleanup model download request failed")?;
+
+    let total_bytes = response.content_length();
+    let mut downloaded_bytes: u64 = 0;
+    let mut temp_file = tokio::fs::File::create(&temp_path)
+        .await
+        .context("Failed to create temporary cleanup model file")?;
+
+    while let Some(chunk) = response
+        .chunk()
+        .await
+        .context("Failed while downloading cleanup model")?
+    {
+        temp_file
+            .write_all(&chunk)
+            .await
+            .context("Failed to write cleanup model data")?;
+        downloaded_bytes += chunk.len() as u64;
+        if let Some(total) = total_bytes {
+            if total > 0 {
+                let progress = (downloaded_bytes as f32 / total as f32) * 100.0;
+                progress_callback("Downloading cleanup model...".into(), progress.min(99.0));
+            }
+        } else {
+            let mb = downloaded_bytes as f64 / (1024.0 * 1024.0);
+            progress_callback(format!("Downloaded {:.0} MB...", mb), 0.0);
+        }
+    }
+    temp_file.flush().await?;
+    tokio::fs::rename(&temp_path, &model_path).await?;
+    progress_callback("Cleanup model ready".into(), 100.0);
+    Ok(model_path)
+}
+
 /// Install Ollama via the official `install.sh`.
 ///
 /// The installer needs `sudo` to write into `/usr/local/bin`. Spawning it
@@ -818,6 +911,7 @@ fn is_progress_noise(line: &str) -> bool {
 // Trim and reject errors that aren't useful to surface (empty, trivially short,
 // or generic placeholders we substituted upstream). The UI uses None to hide
 // the technical-details disclosure entirely.
+#[allow(dead_code)]
 fn optional_error(error: &str) -> Option<String> {
     let trimmed = error.trim();
     if trimmed.is_empty() || trimmed == "unknown error" {
@@ -832,6 +926,7 @@ fn optional_error(error: &str) -> Option<String> {
 /// The `ollama pull` CLI does not support `--json`, and its TTY progress uses
 /// `\r` updates that don't surface as line-buffered reads. Hitting the daemon
 /// API directly gives us reliable NDJSON progress events.
+#[allow(dead_code)]
 pub async fn download_ollama_model<F>(model: &str, progress_callback: F) -> Result<()>
 where
     F: Fn(String, f32) + Send + 'static,
@@ -1126,7 +1221,23 @@ pub async fn warm_up_ollama(port: u16, model: &str) {
     }
 }
 
-/// Test text cleanup
+/// Smoke-test the in-process cleanup GGUF (load + one short generation).
+pub fn test_builtin_cleanup(model_path: &std::path::Path) -> Result<()> {
+    use crate::cleanup_engine::BuiltinCleanupEngine;
+    let engine = BuiltinCleanupEngine::load(model_path)?;
+    let out = engine.cleanup(
+        "You are a transcript cleanup tool. Output ONLY the cleaned text.",
+        "Clean up this transcript:\n\n<transcript>\num hello world\n</transcript>",
+        48,
+    )?;
+    if out.trim().is_empty() {
+        anyhow::bail!("Builtin cleanup returned empty output");
+    }
+    println!("Builtin cleanup smoke test ok: {:?}", out.chars().take(60).collect::<String>());
+    Ok(())
+}
+
+/// Test text cleanup via Ollama (legacy path).
 pub async fn test_cleanup(port: u16, model: &str) -> Result<()> {
     let client = reqwest::Client::new();
     
@@ -1162,6 +1273,7 @@ pub async fn test_cleanup(port: u16, model: &str) -> Result<()> {
 /// Macs where the user doesn't have local admin and `curl | sh` (which uses
 /// sudo) gets blocked. The shell installer is included as a fallback for
 /// users who prefer it.
+#[allow(dead_code)]
 pub fn get_ollama_manual_instructions(error: &str) -> ManualInstructions {
     ManualInstructions {
         title: "Install Ollama manually".to_string(),
@@ -1202,6 +1314,7 @@ pub fn get_ollama_manual_instructions(error: &str) -> ManualInstructions {
 /// us with a working Ollama, so the user needs both steps in one place — we
 /// can't surface a "pull MODEL" instruction in isolation when `ollama` itself
 /// is missing.
+#[allow(dead_code)]
 pub fn get_ollama_manual_instructions_with_model(
     error: &str,
     model: &str,
@@ -1278,15 +1391,24 @@ pub fn get_model_manual_instructions(model_type: &str, model_name: &str) -> Manu
 pub async fn run_setup<F>(
     whisper_model: String,
     ollama_model: String,
-    servers: SharedServerProcesses,
+    _servers: SharedServerProcesses,
     progress_emitter: F,
 ) -> Result<LocalSetupConfig>
 where
     F: Fn(SetupProgress) + Send + Sync + 'static,
 {
-    let total_steps = 6.0;
+    // Phase 3: STT download + cleanup GGUF + validate. No Ollama install.
+    let total_steps = 4.0;
     let mut current_step = 0.0;
     let progress_emitter = std::sync::Arc::new(progress_emitter);
+    let cleanup_model_id = if ollama_model.is_empty() || ollama_model == "llama3.2" {
+        CLEANUP_QWEN25_05B.to_string()
+    } else if ollama_model.ends_with(".gguf") || ollama_model.starts_with("qwen") {
+        ollama_model.clone()
+    } else {
+        // Wizard still may pass an Ollama model id — map to the builtin default.
+        CLEANUP_QWEN25_05B.to_string()
+    };
     
     // Step 1: System Check
     progress_emitter(SetupProgress {
@@ -1371,141 +1493,56 @@ where
         overall_progress: current_step / total_steps,
     });
     
-    // Step 4: Install Ollama
+    // Step 3: Download in-process cleanup GGUF (no Ollama / admin password).
     progress_emitter(SetupProgress {
-        step: SetupStep::InstallOllama,
-        status: SetupStatus::InProgress { message: "Installing Ollama...".to_string(), progress: 0.0 },
-        overall_progress: current_step / total_steps,
-    });
-    
-    let progress_emitter_clone = progress_emitter.clone();
-    let current_step_clone = current_step;
-    let ollama_result = install_ollama(move |msg, progress| {
-        progress_emitter_clone(SetupProgress {
-            step: SetupStep::InstallOllama,
-            status: SetupStatus::InProgress { message: msg, progress },
-            overall_progress: (current_step_clone + progress / 100.0) / total_steps,
-        });
-    }).await;
-    
-    if let Err(e) = ollama_result {
-        progress_emitter(SetupProgress {
-            step: SetupStep::InstallOllama,
-            status: SetupStatus::ManualInterventionRequired {
-                instructions: get_ollama_manual_instructions_with_model(
-                    &e.to_string(),
-                    &ollama_model,
-                ),
-            },
-            overall_progress: current_step / total_steps,
-        });
-        return Err(anyhow::anyhow!("Manual intervention required: Ollama installation"));
-    }
-
-    // Belt-and-suspenders: osascript can return success while leaving us
-    // without a usable Ollama (MDM-blocked installer, network blip after the
-    // password prompt, stale Ollama.app resources making `command_exists`
-    // lie). If we can't actually find or talk to Ollama after the install
-    // call, route to manual instructions now — otherwise the next step
-    // would fail with a generic "ollama pull" error and the user would see
-    // a pull command they can't actually run.
-    if !ollama_available().await {
-        progress_emitter(SetupProgress {
-            step: SetupStep::InstallOllama,
-            status: SetupStatus::ManualInterventionRequired {
-                instructions: get_ollama_manual_instructions_with_model(
-                    "Ollama wasn't runnable after installation",
-                    &ollama_model,
-                ),
-            },
-            overall_progress: current_step / total_steps,
-        });
-        return Err(anyhow::anyhow!("Manual intervention required: Ollama installation"));
-    }
-
-    current_step += 1.0;
-    progress_emitter(SetupProgress {
-        step: SetupStep::InstallOllama,
-        status: SetupStatus::Completed,
-        overall_progress: current_step / total_steps,
-    });
-    
-    // Step 5: Download Ollama model
-    progress_emitter(SetupProgress {
-        step: SetupStep::DownloadOllamaModel { model: ollama_model.clone() },
-        status: SetupStatus::InProgress { message: format!("Downloading {} model...", ollama_model), progress: 0.0 },
-        overall_progress: current_step / total_steps,
-    });
-    
-    let ollama_model_clone = ollama_model.clone();
-    let progress_emitter_clone = progress_emitter.clone();
-    let current_step_clone = current_step;
-    let ollama_model_result = download_ollama_model(&ollama_model, move |msg, progress| {
-        progress_emitter_clone(SetupProgress {
-            step: SetupStep::DownloadOllamaModel { model: ollama_model_clone.clone() },
-            status: SetupStatus::InProgress { message: msg, progress },
-            overall_progress: (current_step_clone + progress / 100.0) / total_steps,
-        });
-    }).await;
-    
-    if let Err(e) = ollama_model_result {
-        // If Ollama itself isn't reachable here, the user can't run
-        // `ollama pull` either. Show the install steps with the pull
-        // appended so they get one self-contained recovery flow.
-        let instructions = if ollama_available().await {
-            get_model_manual_instructions("ollama", &ollama_model)
-        } else {
-            get_ollama_manual_instructions_with_model(&e.to_string(), &ollama_model)
-        };
-        progress_emitter(SetupProgress {
-            step: SetupStep::DownloadOllamaModel { model: ollama_model.clone() },
-            status: SetupStatus::ManualInterventionRequired { instructions },
-            overall_progress: current_step / total_steps,
-        });
-        return Err(anyhow::anyhow!("Manual intervention required: Ollama model download"));
-    }
-    
-    current_step += 1.0;
-    progress_emitter(SetupProgress {
-        step: SetupStep::DownloadOllamaModel { model: ollama_model.clone() },
-        status: SetupStatus::Completed,
-        overall_progress: current_step / total_steps,
-    });
-    
-    // Step 5: Start the Ollama daemon (whisper now runs in-process — no
-    // server to spawn for it).
-    progress_emitter(SetupProgress {
-        step: SetupStep::StartOllama,
+        step: SetupStep::DownloadCleanupModel { model: cleanup_model_id.clone() },
         status: SetupStatus::InProgress {
-            message: "Starting Ollama server...".to_string(),
+            message: "Downloading cleanup model...".to_string(),
             progress: 0.0,
         },
         overall_progress: current_step / total_steps,
     });
 
+    let cleanup_id_for_cb = cleanup_model_id.clone();
+    let progress_emitter_clone = progress_emitter.clone();
+    let current_step_clone = current_step;
+    let cleanup_path = match download_cleanup_model(&cleanup_model_id, move |msg, progress| {
+        progress_emitter_clone(SetupProgress {
+            step: SetupStep::DownloadCleanupModel {
+                model: cleanup_id_for_cb.clone(),
+            },
+            status: SetupStatus::InProgress { message: msg, progress },
+            overall_progress: (current_step_clone + progress / 100.0) / total_steps,
+        });
+    })
+    .await
     {
-        let mut guard = servers.write().await;
-        guard.stop_all().await;
-    }
-
-    let (ollama_child, ollama_port) = start_ollama_server(11434)
-        .await
-        .context("Failed to start Ollama server")?;
-
-    {
-        let mut guard = servers.write().await;
-        guard.ollama = ollama_child;
-        guard.ollama_port = Some(ollama_port);
-    }
+        Ok(p) => p,
+        Err(e) => {
+            progress_emitter(SetupProgress {
+                step: SetupStep::DownloadCleanupModel {
+                    model: cleanup_model_id.clone(),
+                },
+                status: SetupStatus::Failed {
+                    error: format!("Failed to download cleanup model: {e}"),
+                    recoverable: true,
+                },
+                overall_progress: current_step / total_steps,
+            });
+            return Err(e.context("Cleanup model download failed"));
+        }
+    };
 
     current_step += 1.0;
     progress_emitter(SetupProgress {
-        step: SetupStep::StartOllama,
+        step: SetupStep::DownloadCleanupModel {
+            model: cleanup_model_id.clone(),
+        },
         status: SetupStatus::Completed,
         overall_progress: current_step / total_steps,
     });
 
-    // Step 6: Validate the cleanup model end-to-end.
+    // Step 4: Validate cleanup model loads and produces output.
     progress_emitter(SetupProgress {
         step: SetupStep::ValidateSetup,
         status: SetupStatus::InProgress {
@@ -1515,9 +1552,11 @@ where
         overall_progress: current_step / total_steps,
     });
 
-    test_cleanup(ollama_port, &ollama_model)
+    let cleanup_path_for_test = cleanup_path.clone();
+    tokio::task::spawn_blocking(move || test_builtin_cleanup(&cleanup_path_for_test))
         .await
-        .context("Ollama validation failed")?;
+        .context("Cleanup validation task panicked")?
+        .context("Cleanup model validation failed")?;
 
     progress_emitter(SetupProgress {
         step: SetupStep::ValidateSetup,
@@ -1527,8 +1566,9 @@ where
 
     Ok(LocalSetupConfig {
         whisper_model_path: model_path.to_string_lossy().to_string(),
-        ollama_server_port: ollama_port,
-        ollama_model,
+        // Ollama no longer required; keep schema fields for DB compat.
+        ollama_server_port: 11434,
+        ollama_model: cleanup_model_id,
         setup_completed: true,
         setup_version: CURRENT_SETUP_VERSION.to_string(),
     })
