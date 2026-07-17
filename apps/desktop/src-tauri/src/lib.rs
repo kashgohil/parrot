@@ -162,6 +162,7 @@ async fn transcribe_last(
 
     // Step 1: Transcribe
     let _ = app.emit("transcription-started", ());
+    let pipeline_start = Instant::now();
     let local_provider = if setup_mode == "local" {
         wait_for_whisper_provider(whisper.inner(), std::time::Duration::from_secs(30)).await
     } else {
@@ -191,6 +192,7 @@ async fn transcribe_last(
         None
     };
 
+    let transcription_start = Instant::now();
     let raw_text = transcription::transcribe_audio(
         &audio.samples,
         audio.sample_rate,
@@ -203,6 +205,24 @@ async fn transcribe_last(
     )
     .await
     .map_err(|e| e.to_string())?;
+    let transcription_ms = transcription_start.elapsed().as_millis() as i64;
+    let engine_name = if setup_mode == "local" {
+        "whisper"
+    } else {
+        "cloud"
+    };
+    let model_name = if setup_mode == "local" {
+        db.get_local_setup_config()
+            .ok()
+            .map(|c| c.whisper_model_path)
+            .and_then(|p| {
+                std::path::Path::new(&p)
+                    .file_name()
+                    .map(|n| n.to_string_lossy().into_owned())
+            })
+    } else {
+        None
+    };
 
     // Skip empty transcriptions (e.g. silence / accidental hotkey tap) — don't
     // save, clean up, or paste.
@@ -287,7 +307,27 @@ async fn transcribe_last(
     app.state::<PendingCleanup>().clear();
 
     if skip_cleanup {
+        let paste_start = Instant::now();
         let pasted = copy_and_paste_safely(&app, raw_text.clone()).await;
+        let paste_ms = paste_start.elapsed().as_millis() as i64;
+        if setup_mode == "local" {
+            let _ = db.update_dictation_timings(
+                &id,
+                Some(transcription_ms),
+                None,
+                Some(paste_ms),
+                Some(engine_name),
+                model_name.as_deref(),
+            );
+        }
+        eprintln!(
+            "dictation timings id={} audio={}ms transcription={}ms paste={}ms total={}ms (cleanup skipped)",
+            id,
+            duration_ms,
+            transcription_ms,
+            paste_ms,
+            pipeline_start.elapsed().as_millis()
+        );
         let result = DictationResult {
             raw_text: raw_text.clone(),
             cleaned_text: String::new(),
@@ -299,7 +339,9 @@ async fn transcribe_last(
 
     if cleanup_mode == "blocking" {
         let _ = app.emit("cleanup-started", ());
+        let cleanup_start = Instant::now();
         let cleaned_text = run_cleanup(&db, &setup_mode, &raw_text, session_token.as_deref()).await;
+        let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
         if !cleaned_text.is_empty() && cleaned_text != raw_text {
             match setup_mode.as_str() {
                 "local" => {
@@ -318,7 +360,28 @@ async fn transcribe_last(
         } else {
             cleaned_text.clone()
         };
+        let paste_start = Instant::now();
         let pasted = copy_and_paste_safely(&app, output_text).await;
+        let paste_ms = paste_start.elapsed().as_millis() as i64;
+        if setup_mode == "local" {
+            let _ = db.update_dictation_timings(
+                &id,
+                Some(transcription_ms),
+                Some(cleanup_ms),
+                Some(paste_ms),
+                Some(engine_name),
+                model_name.as_deref(),
+            );
+        }
+        eprintln!(
+            "dictation timings id={} audio={}ms transcription={}ms cleanup={}ms paste={}ms total={}ms (blocking)",
+            id,
+            duration_ms,
+            transcription_ms,
+            cleanup_ms,
+            paste_ms,
+            pipeline_start.elapsed().as_millis()
+        );
         let result = DictationResult {
             raw_text: raw_text.clone(),
             cleaned_text,
@@ -330,7 +393,27 @@ async fn transcribe_last(
 
     // Default: background cleanup. Paste raw first so time-to-field ≈
     // transcription time only, then polish off the hot path.
+    let paste_start = Instant::now();
     let pasted = copy_and_paste_safely(&app, raw_text.clone()).await;
+    let paste_ms = paste_start.elapsed().as_millis() as i64;
+    if setup_mode == "local" {
+        let _ = db.update_dictation_timings(
+            &id,
+            Some(transcription_ms),
+            None,
+            Some(paste_ms),
+            Some(engine_name),
+            model_name.as_deref(),
+        );
+    }
+    eprintln!(
+        "dictation timings id={} audio={}ms transcription={}ms paste={}ms time_to_paste={}ms (background cleanup)",
+        id,
+        duration_ms,
+        transcription_ms,
+        paste_ms,
+        pipeline_start.elapsed().as_millis()
+    );
     let result = DictationResult {
         raw_text: raw_text.clone(),
         cleaned_text: String::new(),
@@ -345,8 +428,24 @@ async fn transcribe_last(
     let token_bg = session_token.clone();
     tokio::spawn(async move {
         let db = app_handle.state::<Database>();
+        let cleanup_start = Instant::now();
         let cleaned =
             run_cleanup(&db, &mode_bg, &raw_bg, token_bg.as_deref()).await;
+        let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
+        if mode_bg == "local" {
+            let _ = db.update_dictation_timings(
+                &id_bg,
+                None,
+                Some(cleanup_ms),
+                None,
+                None,
+                None,
+            );
+        }
+        eprintln!(
+            "dictation cleanup timings id={} cleanup={}ms",
+            id_bg, cleanup_ms
+        );
         if cleaned.is_empty() || cleaned.trim() == raw_bg.trim() {
             return;
         }
@@ -770,6 +869,12 @@ fn get_default_dictation_hotkey() -> serde_json::Value {
         "default": hotkey::default_for_platform(),
         "platform": std::env::consts::OS,
     })
+}
+
+/// Local latency aggregates for the debug timing panel (no network telemetry).
+#[tauri::command]
+fn get_timing_stats(db: tauri::State<'_, Database>) -> Result<db::TimingStats, String> {
+    db.timing_stats().map_err(|e| e.to_string())
 }
 
 /// DictationEntry type used by both local and cloud modes in command responses
@@ -1427,6 +1532,7 @@ pub fn run() {
             toggle_recording,
             transcribe_last,
             apply_pending_cleanup,
+            get_timing_stats,
             get_history,
             search_history,
             delete_dictation,

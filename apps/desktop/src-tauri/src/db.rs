@@ -157,6 +157,26 @@ impl Database {
             )?;
         }
 
+        // Migration: per-dictation latency metrics (local only, no telemetry)
+        let has_timing: bool = conn
+            .prepare("SELECT COUNT(*) FROM _migrations WHERE name = 'add_dictation_timing'")?
+            .query_row([], |row| row.get::<_, i64>(0))
+            .unwrap_or(0)
+            > 0;
+
+        if !has_timing {
+            conn.execute_batch(
+                "
+                ALTER TABLE dictation_history ADD COLUMN transcription_ms INTEGER;
+                ALTER TABLE dictation_history ADD COLUMN cleanup_ms INTEGER;
+                ALTER TABLE dictation_history ADD COLUMN paste_ms INTEGER;
+                ALTER TABLE dictation_history ADD COLUMN engine TEXT;
+                ALTER TABLE dictation_history ADD COLUMN model TEXT;
+                INSERT INTO _migrations (name) VALUES ('add_dictation_timing');
+                ",
+            )?;
+        }
+
         Ok(())
     }
 
@@ -268,6 +288,85 @@ impl Database {
             [cleaned_text, id],
         )?;
         Ok(())
+    }
+
+    /// Record pipeline latency for a dictation. All values are milliseconds;
+    /// `None` means that stage was skipped (e.g. cleanup off).
+    pub fn update_dictation_timings(
+        &self,
+        id: &str,
+        transcription_ms: Option<i64>,
+        cleanup_ms: Option<i64>,
+        paste_ms: Option<i64>,
+        engine: Option<&str>,
+        model: Option<&str>,
+    ) -> Result<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "UPDATE dictation_history SET
+                transcription_ms = COALESCE(?1, transcription_ms),
+                cleanup_ms = COALESCE(?2, cleanup_ms),
+                paste_ms = COALESCE(?3, paste_ms),
+                engine = COALESCE(?4, engine),
+                model = COALESCE(?5, model)
+             WHERE id = ?6",
+            rusqlite::params![
+                transcription_ms,
+                cleanup_ms,
+                paste_ms,
+                engine,
+                model,
+                id,
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// Aggregate p50/p95 latency from recent local history (last 100 rows
+    /// with non-null transcription_ms). Used by the debug timing panel.
+    pub fn timing_stats(&self) -> Result<TimingStats> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT transcription_ms, cleanup_ms, paste_ms, duration_ms
+             FROM dictation_history
+             WHERE transcription_ms IS NOT NULL
+             ORDER BY created_at DESC
+             LIMIT 100",
+        )?;
+        let mut transcription = Vec::new();
+        let mut cleanup = Vec::new();
+        let mut paste = Vec::new();
+        let mut audio = Vec::new();
+        let rows = stmt.query_map([], |row| {
+            Ok((
+                row.get::<_, Option<i64>>(0)?,
+                row.get::<_, Option<i64>>(1)?,
+                row.get::<_, Option<i64>>(2)?,
+                row.get::<_, Option<i64>>(3)?,
+            ))
+        })?;
+        for row in rows {
+            let (t, c, p, a) = row?;
+            if let Some(v) = t {
+                transcription.push(v);
+            }
+            if let Some(v) = c {
+                cleanup.push(v);
+            }
+            if let Some(v) = p {
+                paste.push(v);
+            }
+            if let Some(v) = a {
+                audio.push(v);
+            }
+        }
+        Ok(TimingStats {
+            sample_count: transcription.len(),
+            transcription: percentile_pair(&transcription),
+            cleanup: percentile_pair(&cleanup),
+            paste: percentile_pair(&paste),
+            audio_duration: percentile_pair(&audio),
+        })
     }
 
     pub fn update_dictation_audio_path(&self, id: &str, audio_path: &str) -> Result<()> {
@@ -467,6 +566,41 @@ pub struct DictationEntry {
     pub duration_ms: i64,
     pub created_at: String,
     pub audio_path: Option<String>,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Clone, Default)]
+pub struct PercentilePair {
+    pub p50: Option<i64>,
+    pub p95: Option<i64>,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Clone, Default)]
+pub struct TimingStats {
+    pub sample_count: usize,
+    pub transcription: PercentilePair,
+    pub cleanup: PercentilePair,
+    pub paste: PercentilePair,
+    pub audio_duration: PercentilePair,
+}
+
+fn percentile_pair(values: &[i64]) -> PercentilePair {
+    if values.is_empty() {
+        return PercentilePair::default();
+    }
+    let mut sorted = values.to_vec();
+    sorted.sort_unstable();
+    PercentilePair {
+        p50: Some(percentile(&sorted, 50)),
+        p95: Some(percentile(&sorted, 95)),
+    }
+}
+
+fn percentile(sorted: &[i64], pct: usize) -> i64 {
+    if sorted.is_empty() {
+        return 0;
+    }
+    let idx = ((pct as f64 / 100.0) * (sorted.len() as f64 - 1.0)).round() as usize;
+    sorted[idx.min(sorted.len() - 1)]
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Clone)]
