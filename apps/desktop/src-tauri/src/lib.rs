@@ -29,6 +29,46 @@ pub struct RecorderState {
     last_duration_ms: Mutex<u64>,
 }
 
+/// Most recent background-cleanup result that differs from the raw paste.
+/// Surfaced in the HUD as "⌘⇧C to polish"; applied by `apply_pending_cleanup`.
+pub struct PendingCleanup {
+    text: Mutex<Option<String>>,
+    dictation_id: Mutex<Option<String>>,
+}
+
+impl PendingCleanup {
+    fn new() -> Self {
+        Self {
+            text: Mutex::new(None),
+            dictation_id: Mutex::new(None),
+        }
+    }
+
+    fn set(&self, id: String, text: String) {
+        *self.dictation_id.lock().unwrap() = Some(id);
+        *self.text.lock().unwrap() = Some(text);
+    }
+
+    fn take(&self) -> Option<(String, String)> {
+        let id = self.dictation_id.lock().unwrap().take()?;
+        let text = self.text.lock().unwrap().take()?;
+        Some((id, text))
+    }
+
+    fn clear(&self) {
+        *self.dictation_id.lock().unwrap() = None;
+        *self.text.lock().unwrap() = None;
+    }
+}
+
+/// Utterances shorter than this are already well-formed by Whisper
+/// (punctuation + casing) — skip the LLM cleanup round-trip.
+const SHORT_UTTERANCE_WORD_LIMIT: usize = 15;
+
+fn word_count(text: &str) -> usize {
+    text.split_whitespace().count()
+}
+
 #[tauri::command]
 fn start_recording(
     state: tauri::State<'_, RecorderState>,
@@ -213,15 +253,136 @@ async fn transcribe_last(
         }
     }
 
-    // Step 2: LLM cleanup
-    let _ = app.emit("cleanup-started", ());
+    // Step 2: Cleanup mode — off | background (default) | blocking.
+    // Background mode is the big perceived-latency win: paste the raw
+    // transcript immediately and polish in a fire-and-forget task.
+    let cleanup_mode = db
+        .get_setting("cleanup_mode")
+        .map_err(|e| e.to_string())?
+        .unwrap_or_else(|| "background".to_string());
+    let skip_cleanup = cleanup_mode == "off"
+        || word_count(&raw_text) < SHORT_UTTERANCE_WORD_LIMIT;
 
-    let cleaned_text = match setup_mode.as_str() {
+    // Clear any previous polish affordance so a new dictation doesn't
+    // accidentally apply a stale cleanup.
+    app.state::<PendingCleanup>().clear();
+
+    if skip_cleanup {
+        let pasted = copy_and_paste_safely(&app, raw_text.clone()).await;
+        let result = DictationResult {
+            raw_text: raw_text.clone(),
+            cleaned_text: String::new(),
+            pasted,
+        };
+        let _ = app.emit("dictation-complete", result.clone());
+        return Ok(result);
+    }
+
+    if cleanup_mode == "blocking" {
+        let _ = app.emit("cleanup-started", ());
+        let cleaned_text = run_cleanup(&db, &setup_mode, &raw_text, session_token.as_deref()).await;
+        if !cleaned_text.is_empty() && cleaned_text != raw_text {
+            match setup_mode.as_str() {
+                "local" => {
+                    let _ = db.update_dictation_cleaned(&id, &cleaned_text);
+                }
+                "cloud" => {
+                    if let Some(token) = session_token.as_deref() {
+                        let _ = cloud_api::update_dictation_cleaned(token, &id, &cleaned_text).await;
+                    }
+                }
+                _ => {}
+            }
+        }
+        let output_text = if cleaned_text.is_empty() {
+            raw_text.clone()
+        } else {
+            cleaned_text.clone()
+        };
+        let pasted = copy_and_paste_safely(&app, output_text).await;
+        let result = DictationResult {
+            raw_text: raw_text.clone(),
+            cleaned_text,
+            pasted,
+        };
+        let _ = app.emit("dictation-complete", result.clone());
+        return Ok(result);
+    }
+
+    // Default: background cleanup. Paste raw first so time-to-field ≈
+    // transcription time only, then polish off the hot path.
+    let pasted = copy_and_paste_safely(&app, raw_text.clone()).await;
+    let result = DictationResult {
+        raw_text: raw_text.clone(),
+        cleaned_text: String::new(),
+        pasted,
+    };
+    let _ = app.emit("dictation-complete", result.clone());
+
+    let app_handle = app.clone();
+    let id_bg = id.clone();
+    let raw_bg = raw_text.clone();
+    let mode_bg = setup_mode.clone();
+    let token_bg = session_token.clone();
+    tokio::spawn(async move {
+        let db = app_handle.state::<Database>();
+        let cleaned =
+            run_cleanup(&db, &mode_bg, &raw_bg, token_bg.as_deref()).await;
+        if cleaned.is_empty() || cleaned.trim() == raw_bg.trim() {
+            return;
+        }
+        match mode_bg.as_str() {
+            "local" => {
+                if let Err(e) = db.update_dictation_cleaned(&id_bg, &cleaned) {
+                    eprintln!("Failed to save cleaned text: {}", e);
+                }
+            }
+            "cloud" => {
+                if let Some(token) = token_bg.as_deref() {
+                    if let Err(e) =
+                        cloud_api::update_dictation_cleaned(token, &id_bg, &cleaned).await
+                    {
+                        eprintln!("Failed to save cleaned text (cloud): {}", e);
+                    }
+                }
+            }
+            _ => {}
+        }
+        app_handle
+            .state::<PendingCleanup>()
+            .set(id_bg.clone(), cleaned.clone());
+        let _ = app_handle.emit(
+            "cleanup-ready",
+            serde_json::json!({
+                "id": id_bg,
+                "cleaned_text": cleaned,
+            }),
+        );
+    });
+
+    Ok(result)
+}
+
+/// Run LLM cleanup for the given mode. Returns empty string on failure so
+/// callers can fall back to the raw transcript.
+async fn run_cleanup(
+    db: &Database,
+    setup_mode: &str,
+    raw_text: &str,
+    session_token: Option<&str>,
+) -> String {
+    match setup_mode {
         "local" => {
-            let llm_model = db.get_setting("llm_model").map_err(|e| e.to_string())?;
-            let profile = db.get_profile().map_err(|e| e.to_string())?;
+            let llm_model = db.get_setting("llm_model").ok().flatten();
+            let profile = match db.get_profile() {
+                Ok(p) => p,
+                Err(e) => {
+                    eprintln!("Failed to load profile for cleanup: {}", e);
+                    return String::new();
+                }
+            };
             match cleanup::cleanup_text(
-                &raw_text,
+                raw_text,
                 "local",
                 None,
                 None,
@@ -232,23 +393,20 @@ async fn transcribe_last(
             )
             .await
             {
-                Ok(cleaned) => {
-                    let _ = db.update_dictation_cleaned(&id, &cleaned);
-                    cleaned
-                }
+                Ok(cleaned) => cleaned,
                 Err(e) => {
                     eprintln!("LLM cleanup failed: {}", e);
-                    raw_text.clone()
+                    String::new()
                 }
             }
         }
         "cloud" => {
-            let token = session_token
-                .as_deref()
-                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
-            let llm_api_key = db.get_setting("llm_api_key").map_err(|e| e.to_string())?;
+            let Some(token) = session_token else {
+                return String::new();
+            };
+            let llm_api_key = db.get_setting("llm_api_key").ok().flatten();
             match cleanup::cleanup_text(
-                &raw_text,
+                raw_text,
                 "cloud",
                 Some(token),
                 llm_api_key.as_deref(),
@@ -259,34 +417,29 @@ async fn transcribe_last(
             )
             .await
             {
-                Ok(cleaned) => {
-                    let _ = cloud_api::update_dictation_cleaned(token, &id, &cleaned).await;
-                    cleaned
-                }
+                Ok(cleaned) => cleaned,
                 Err(e) => {
                     eprintln!("LLM cleanup failed: {}", e);
-                    raw_text.clone()
+                    String::new()
                 }
             }
         }
-        _ => raw_text.clone(),
-    };
+        _ => String::new(),
+    }
+}
 
-    // Step 3: Copy to clipboard and paste into the previously-focused field.
-    let output_text = if cleaned_text.is_empty() {
-        raw_text.clone()
-    } else {
-        cleaned_text.clone()
+/// Paste the most recent background-cleanup result (bound to ⌘⇧C).
+#[tauri::command]
+async fn apply_pending_cleanup(
+    pending: tauri::State<'_, PendingCleanup>,
+    app: tauri::AppHandle,
+) -> Result<bool, String> {
+    let Some((_id, cleaned)) = pending.take() else {
+        return Ok(false);
     };
-    let pasted = copy_and_paste_safely(&app, output_text).await;
-
-    let result = DictationResult {
-        raw_text: raw_text.clone(),
-        cleaned_text: cleaned_text.clone(),
-        pasted,
-    };
-    let _ = app.emit("dictation-complete", result.clone());
-    Ok(result)
+    let pasted = copy_and_paste_safely(&app, cleaned).await;
+    let _ = app.emit("cleanup-applied", ());
+    Ok(pasted)
 }
 
 /// Copy text to the clipboard via Tauri's clipboard plugin and paste it into
@@ -1195,6 +1348,7 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .manage(db)
         .manage(recorder_state)
+        .manage(PendingCleanup::new())
         .manage::<SharedServerProcesses>(Arc::new(RwLock::new(ServerProcesses::new())))
         .manage::<SharedWhisperProvider>(Arc::new(RwLock::new(None)))
         .invoke_handler(tauri::generate_handler![
@@ -1203,6 +1357,7 @@ pub fn run() {
             is_recording,
             toggle_recording,
             transcribe_last,
+            apply_pending_cleanup,
             get_history,
             search_history,
             delete_dictation,
@@ -1261,6 +1416,35 @@ pub fn run() {
                     .unwrap_or_else(|| hotkey::default_for_platform());
                 if let Err(e) = hotkey::register(app.handle(), binding) {
                     eprintln!("Failed to register dictation hotkey '{}': {}", binding, e);
+                }
+            }
+
+            // ⌘⇧C applies the latest background cleanup when it differs from
+            // the raw paste (see paste-then-refine flow in transcribe_last).
+            {
+                use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
+                let apply_binding = "CmdOrCtrl+Shift+C";
+                if let Err(e) = app.global_shortcut().on_shortcut(
+                    apply_binding,
+                    |app, _shortcut, event| {
+                        if event.state() != ShortcutState::Pressed {
+                            return;
+                        }
+                        let app = app.clone();
+                        tauri::async_runtime::spawn(async move {
+                            let pending = app.state::<PendingCleanup>();
+                            let Some((_id, cleaned)) = pending.take() else {
+                                return;
+                            };
+                            let _ = copy_and_paste_safely(&app, cleaned).await;
+                            let _ = app.emit("cleanup-applied", ());
+                        });
+                    },
+                ) {
+                    eprintln!(
+                        "Failed to register cleanup-apply hotkey '{}': {}",
+                        apply_binding, e
+                    );
                 }
             }
 
