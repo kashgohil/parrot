@@ -1,15 +1,3 @@
-import * as Sentry from "@sentry/bun";
-
-const sentryDsn = process.env.SENTRY_DSN;
-if (sentryDsn) {
-	Sentry.init({
-		dsn: sentryDsn,
-		environment: process.env.NODE_ENV ?? "development",
-		tracesSampleRate: 0.1,
-		initialScope: { tags: { app: "parrot-api" } },
-	});
-}
-
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -30,7 +18,6 @@ app.use("*", cors());
 app.use("*", logger());
 
 app.onError((err, c) => {
-	Sentry.captureException(err);
 	console.error(err);
 	return c.json({ error: "Internal Server Error" }, 500);
 });

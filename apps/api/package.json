@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@polar-sh/sdk": "^0.42.5",
-    "@sentry/bun": "^8.47.0",
     "drizzle-orm": "^0.38.3",
     "hono": "^4",
     "minio": "^8.0.6",
