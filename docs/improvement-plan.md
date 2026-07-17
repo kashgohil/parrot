@@ -167,11 +167,10 @@ demo-able, screenshot-able headline feature.
       - **Moonshine** streaming variants (27–400M params, ~107ms latency, compute
         proportional to audio length — built for exactly this).
       - **Kyutai STT** (stt-1b, native streaming, built-in semantic VAD/end-of-speech).
-- [ ] Interim milestone that works with *any* batch engine: VAD-chunked incremental
-      transcription during recording (transcribe segments while the user is still
-      speaking; only the final chunk remains on release). Ship this even if true
-      streaming slips.
-- [ ] UX: live text in the HUD orb first (low risk); direct-to-field streaming later
+- [x] Interim milestone that works with *any* batch engine: re-transcribe the growing
+      capture buffer on an interval while the user is still speaking; final full
+      pass on release remains authoritative. Energy-gated; generation-cancelled.
+- [x] UX: live text in the HUD orb first (low risk); direct-to-field streaming later
       (requires insert/correct via accessibility APIs — much harder, defer).
 
 ---
