@@ -216,6 +216,17 @@ async fn transcribe_last(
     )
     .await
     .map_err(|e| e.to_string())?;
+
+    // Deterministic dictionary pass before cleanup — fixes proper-noun
+    // near-misses Whisper never learns on its own.
+    let raw_text = {
+        let entries = match db.get_profile() {
+            Ok(p) => vocab::parse(&p.custom_words),
+            Err(_) => Vec::new(),
+        };
+        vocab::apply_dictionary_pass(&raw_text, &entries)
+    };
+
     let transcription_ms = transcription_start.elapsed().as_millis() as i64;
     let engine_name = if setup_mode == "local" {
         local_engine
@@ -1496,6 +1507,24 @@ async fn get_profile(db: tauri::State<'_, Database>) -> Result<ProfileData, Stri
     }
 }
 
+/// Suggest dictionary terms mined from raw→cleaned history pairs.
+#[tauri::command]
+fn suggest_vocab_from_history(
+    db: tauri::State<'_, Database>,
+) -> Result<Vec<vocab::VocabSuggestion>, String> {
+    let history = db.get_history().map_err(|e| e.to_string())?;
+    let pairs: Vec<(String, String)> = history
+        .into_iter()
+        .filter(|e| !e.cleaned_text.trim().is_empty())
+        .map(|e| (e.raw_text, e.cleaned_text))
+        .collect();
+    let existing = match db.get_profile() {
+        Ok(p) => vocab::parse(&p.custom_words),
+        Err(_) => Vec::new(),
+    };
+    Ok(vocab::mine_vocab_suggestions(&pairs, &existing, 2))
+}
+
 #[tauri::command]
 fn list_app_profiles(db: tauri::State<'_, Database>) -> Result<Vec<db::AppProfile>, String> {
     db.list_app_profiles().map_err(|e| e.to_string())
@@ -2206,6 +2235,7 @@ pub fn run() {
             upsert_app_profile,
             delete_app_profile,
             get_frontmost_app,
+            suggest_vocab_from_history,
             get_local_user,
             set_local_user,
             complete_local_onboarding,

@@ -55,15 +55,23 @@ function serializeEntries(entries: VocabEntry[]): string {
 	);
 }
 
+interface VocabSuggestion {
+	term: string;
+	seen_as: string;
+	count: number;
+}
+
 function VocabularyPage() {
 	const [entries, setEntries] = useState<VocabEntry[]>([]);
 	const [newTerm, setNewTerm] = useState("");
 	const [newContext, setNewContext] = useState("");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [saved, setSaved] = useState(false);
+	const [suggestions, setSuggestions] = useState<VocabSuggestion[]>([]);
 
 	useEffect(() => {
 		loadEntries();
+		loadSuggestions();
 	}, []);
 
 	async function loadEntries() {
@@ -72,6 +80,15 @@ function VocabularyPage() {
 			setEntries(parseEntries(profile.custom_words));
 		} catch (e) {
 			console.error("Failed to load vocabulary:", e);
+		}
+	}
+
+	async function loadSuggestions() {
+		try {
+			const s = await invoke<VocabSuggestion[]>("suggest_vocab_from_history");
+			setSuggestions(s);
+		} catch (e) {
+			console.error("Failed to load vocab suggestions:", e);
 		}
 	}
 
@@ -131,10 +148,56 @@ function VocabularyPage() {
 					<p className="text-xs text-muted-foreground">
 						Optionally add a "use when" hint so Parrot only applies the spelling in
 						the right context (e.g. "Tauri" when discussing software, leave "tory"
-						alone when discussing politics).
+						alone when discussing politics). Near-misses are also fixed
+						automatically before cleanup.
 					</p>
 				</div>
 			</div>
+
+			{suggestions.length > 0 && (
+				<div className="bg-card rounded-2xl border border-border p-5 space-y-3">
+					<div className="flex items-start gap-3">
+						<div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
+							<Sparkles className="w-5 h-5 text-amber-600" />
+						</div>
+						<div>
+							<h2 className="text-base font-semibold text-foreground">
+								Learned from your history
+							</h2>
+							<p className="text-sm text-muted-foreground">
+								Words cleanup often corrects — add them so dictation gets them
+								right the first time.
+							</p>
+						</div>
+					</div>
+					<div className="flex flex-wrap gap-2">
+						{suggestions.map((s) => (
+							<button
+								key={s.term}
+								type="button"
+								onClick={() => {
+									if (
+										entries.some(
+											(e) => e.term.toLowerCase() === s.term.toLowerCase(),
+										)
+									) {
+										return;
+									}
+									setEntries([{ term: s.term }, ...entries]);
+									setSuggestions(suggestions.filter((x) => x.term !== s.term));
+								}}
+								className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-muted/40 hover:bg-primary/10 hover:border-primary/30 text-sm transition-colors"
+							>
+								<span className="font-medium">{s.term}</span>
+								<span className="text-xs text-muted-foreground">
+									was &ldquo;{s.seen_as}&rdquo; ×{s.count}
+								</span>
+								<Plus className="w-3.5 h-3.5 text-primary" />
+							</button>
+						))}
+					</div>
+				</div>
+			)}
 
 			<div className="bg-card rounded-2xl border border-border p-5">
 				<div className="flex items-start gap-4 mb-4">
