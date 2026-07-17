@@ -1,13 +1,22 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
-/// Request body for Ollama's OpenAI-compatible chat endpoint
+/// Request body for Ollama's native `/api/chat` endpoint.
+/// Using the native API (not OpenAI-compat) so we can pass `keep_alive` on
+/// every cleanup request — otherwise Ollama falls back to its 5-minute default
+/// after the first dictation and idle users pay a cold-load stall.
 #[derive(Serialize)]
 struct OllamaChatRequest {
     model: String,
     messages: Vec<ChatMessage>,
-    temperature: f32,
     stream: bool,
+    keep_alive: String,
+    options: OllamaChatOptions,
+}
+
+#[derive(Serialize)]
+struct OllamaChatOptions {
+    temperature: f32,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -16,14 +25,9 @@ struct ChatMessage {
     content: String,
 }
 
-/// Response from Ollama's OpenAI-compatible chat endpoint
+/// Response from Ollama's native `/api/chat` endpoint (non-streaming).
 #[derive(Deserialize)]
 struct OllamaChatResponse {
-    choices: Vec<OllamaChatChoice>,
-}
-
-#[derive(Deserialize)]
-struct OllamaChatChoice {
     message: ChatMessage,
 }
 
@@ -93,13 +97,16 @@ async fn cleanup_with_ollama(
                 content: user_message,
             },
         ],
-        temperature: 0.1,
         stream: false,
+        // Match warm_up_ollama: hold the model resident for 30m after each
+        // cleanup so a later dictation never pays the cold-load tax.
+        keep_alive: "30m".to_string(),
+        options: OllamaChatOptions { temperature: 0.1 },
     };
 
     let client = reqwest::Client::new();
     let resp = client
-        .post("http://localhost:11434/v1/chat/completions")
+        .post("http://localhost:11434/api/chat")
         .json(&request)
         .send()
         .await?;
@@ -111,11 +118,10 @@ async fn cleanup_with_ollama(
     }
 
     let chat_resp: OllamaChatResponse = resp.json().await?;
-    let cleaned = chat_resp
-        .choices
-        .first()
-        .map(|c| c.message.content.clone())
-        .unwrap_or_else(|| raw_text.to_string());
+    let cleaned = chat_resp.message.content;
+    if cleaned.trim().is_empty() {
+        return Ok(raw_text.to_string());
+    }
 
     Ok(cleaned)
 }
