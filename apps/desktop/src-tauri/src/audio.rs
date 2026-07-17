@@ -125,10 +125,6 @@ impl AudioRecorder {
         *self.is_recording.lock().unwrap()
     }
 
-    pub fn is_warm(&self) -> bool {
-        self.stream.is_some()
-    }
-
     /// Clone of the in-flight capture buffer for streaming partials.
     /// Does not stop recording or clear samples.
     pub fn snapshot(&self) -> RecordedSamples {
