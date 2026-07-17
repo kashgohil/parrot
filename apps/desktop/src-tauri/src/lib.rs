@@ -1450,7 +1450,7 @@ fn get_timing_stats(db: tauri::State<'_, Database>) -> Result<db::TimingStats, S
     db.timing_stats().map_err(|e| e.to_string())
 }
 
-/// Current STT engine + model tier for Settings.
+/// Current STT engine + model tier for Settings / upgrade banners.
 #[tauri::command]
 fn get_stt_status(db: tauri::State<'_, Database>) -> Result<serde_json::Value, String> {
     let config = db.get_local_setup_config().map_err(|e| e.to_string())?;
@@ -1460,6 +1460,102 @@ fn get_stt_status(db: tauri::State<'_, Database>) -> Result<serde_json::Value, S
         "model_id": model_id,
         "model_path": path,
         "language": db.get_setting("stt_language").ok().flatten().unwrap_or_else(|| "auto".into()),
+        "can_upgrade_to_parakeet": engine != "parakeet",
+    }))
+}
+
+/// Cleanup backend status for Settings (builtin vs Ollama).
+#[tauri::command]
+fn get_cleanup_status(
+    db: tauri::State<'_, Database>,
+    cleanup_engine: tauri::State<'_, SharedCleanupEngine>,
+) -> Result<serde_json::Value, String> {
+    let backend = resolve_cleanup_backend(&db);
+    let gguf_path = db
+        .get_setting("cleanup_model_path")
+        .ok()
+        .flatten()
+        .filter(|p| !p.is_empty())
+        .or_else(|| {
+            local_setup::get_cleanup_model_path(local_setup::CLEANUP_QWEN25_05B)
+                .ok()
+                .map(|p| p.to_string_lossy().into_owned())
+        });
+    let gguf_on_disk = gguf_path
+        .as_ref()
+        .map(|p| std::path::Path::new(p).exists())
+        .unwrap_or(false);
+    let loaded = cleanup::peek_builtin(cleanup_engine.inner()).is_some();
+    Ok(serde_json::json!({
+        "backend": backend,
+        "can_upgrade_to_builtin": backend == "ollama",
+        "builtin_model_id": local_setup::CLEANUP_QWEN25_05B,
+        "builtin_model_path": gguf_path,
+        "builtin_on_disk": gguf_on_disk,
+        "builtin_loaded": loaded,
+    }))
+}
+
+/// Download the Qwen cleanup GGUF (if needed) and switch off Ollama.
+#[tauri::command]
+async fn upgrade_cleanup_to_builtin(
+    app: tauri::AppHandle,
+    db: tauri::State<'_, Database>,
+    cleanup_engine: tauri::State<'_, SharedCleanupEngine>,
+) -> Result<serde_json::Value, String> {
+    let model_id = local_setup::CLEANUP_QWEN25_05B.to_string();
+    let app_for_progress = app.clone();
+    let path = local_setup::download_cleanup_model(&model_id, move |msg, progress| {
+        let _ = app_for_progress.emit(
+            "cleanup-model-download-progress",
+            serde_json::json!({
+                "model": local_setup::CLEANUP_QWEN25_05B,
+                "message": msg,
+                "progress": progress,
+            }),
+        );
+    })
+    .await
+    .map_err(|e| e.to_string())?;
+
+    let path_str = path.to_string_lossy().to_string();
+    let _ = db.set_setting("cleanup_backend", "builtin");
+    let _ = db.set_setting("cleanup_model_path", &path_str);
+
+    // Drop any previous engine and load the new GGUF.
+    {
+        let mut slot = cleanup_engine
+            .write()
+            .map_err(|e| format!("cleanup engine lock: {e}"))?;
+        *slot = None;
+    }
+    load_cleanup_engine(cleanup_engine.inner().clone(), path_str.clone());
+
+    // Wait briefly for load so Settings can show ready state.
+    let ready = {
+        let deadline = Instant::now() + std::time::Duration::from_secs(120);
+        loop {
+            if cleanup::peek_builtin(cleanup_engine.inner()).is_some() {
+                break true;
+            }
+            if Instant::now() >= deadline {
+                break false;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+        }
+    };
+
+    // Stop Ollama if we started it (best-effort).
+    {
+        let servers = app.state::<SharedServerProcesses>();
+        let mut guard = servers.write().await;
+        guard.stop_all().await;
+    }
+
+    Ok(serde_json::json!({
+        "backend": "builtin",
+        "model_path": path_str,
+        "ready": ready,
     }))
 }
 
@@ -2439,6 +2535,8 @@ pub fn run() {
             apply_pending_cleanup,
             get_timing_stats,
             get_stt_status,
+            get_cleanup_status,
+            upgrade_cleanup_to_builtin,
             switch_stt_model,
             get_history,
             search_history,
@@ -2562,15 +2660,21 @@ pub fn run() {
                             }
                         }
 
+                        // Persist resolved backend so upgrades don't flip-flop
+                        // between ollama/builtin on every launch.
+                        let resolved_backend = resolve_cleanup_backend(&db);
+                        let _ = db.set_setting("cleanup_backend", &resolved_backend);
+
                         let app_handle = app.handle().clone();
                         let ollama_model = config.ollama_model.clone();
                         tauri::async_runtime::spawn(async move {
-                            let backend = app_handle
-                                .state::<Database>()
-                                .get_setting("cleanup_backend")
-                                .ok()
-                                .flatten()
-                                .unwrap_or_else(|| "builtin".into());
+                            // Must use the same migration-aware resolver as cleanup
+                            // itself — a bare default of "builtin" skipped Ollama
+                            // start for legacy installs and broke cleanup on update.
+                            let backend = {
+                                let db = app_handle.state::<Database>();
+                                resolve_cleanup_backend(&db)
+                            };
                             if backend != "ollama" {
                                 println!("Using builtin cleanup (no Ollama daemon)");
                                 return;
@@ -2591,10 +2695,17 @@ pub fn run() {
                                         guard.ollama_port
                                     };
                                     if let Some(port) = port {
-                                        if !ollama_model.is_empty() {
-                                            local_setup::warm_up_ollama(port, &ollama_model)
-                                                .await;
-                                        }
+                                        // Prefer the configured Ollama model; ignore
+                                        // qwen/gguf ids that may have been written later.
+                                        let model = if ollama_model.is_empty()
+                                            || ollama_model.contains("qwen")
+                                            || ollama_model.ends_with(".gguf")
+                                        {
+                                            "llama3.2".to_string()
+                                        } else {
+                                            ollama_model
+                                        };
+                                        local_setup::warm_up_ollama(port, &model).await;
                                     }
                                 }
                                 Err(e) => eprintln!("Failed to auto-start local services: {}", e),
