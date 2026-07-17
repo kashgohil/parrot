@@ -2495,20 +2495,6 @@ async fn validate_local_servers(
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let _sentry_guard = option_env!("SENTRY_DSN").map(|dsn| {
-        let guard = sentry::init((
-            dsn,
-            sentry::ClientOptions {
-                release: sentry::release_name!(),
-                ..Default::default()
-            },
-        ));
-        sentry::configure_scope(|scope| {
-            scope.set_tag("app", "parrot-desktop-rust");
-        });
-        guard
-    });
-
     let db = Database::new().expect("Failed to initialize database");
     let recorder = AudioRecorder::new().expect("Failed to initialize audio recorder");
     let recorder_state = RecorderState {

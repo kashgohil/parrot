@@ -33,7 +33,6 @@ uuid = { version = "1", features = ["v4"] }
 dirs = "5"
 arboard = "3"
 urlencoding = "2"
-sentry = { version = "0.34", default-features = false, features = ["backtrace", "contexts", "panic", "reqwest", "rustls"] }
 whisper-rs = { version = "0.14", features = ["metal"] }
 # Parakeet (and other ONNX ASR) — same library Handy uses (MIT).
 transcribe-rs = { version = "0.3", default-features = false, features = ["onnx"] }
