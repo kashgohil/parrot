@@ -54,6 +54,12 @@ function SettingsPage() {
 	const [sttLanguage, setSttLanguage] = useState("auto");
 	const [sttSwitching, setSttSwitching] = useState(false);
 	const [sttProgress, setSttProgress] = useState<string | null>(null);
+	const [cleanupBackend, setCleanupBackend] = useState<"builtin" | "ollama">(
+		"builtin",
+	);
+	const [canUpgradeCleanup, setCanUpgradeCleanup] = useState(false);
+	const [cleanupUpgrading, setCleanupUpgrading] = useState(false);
+	const [cleanupProgress, setCleanupProgress] = useState<string | null>(null);
 
 	const keysRef = useRef<Set<string>>(new Set());
 	const recorderRef = useRef<HTMLDivElement>(null);
@@ -192,6 +198,14 @@ function SettingsPage() {
 			setSttEngine(stt.engine || "whisper");
 			setSttModel(stt.model_id || "");
 			setSttLanguage(stt.language || "auto");
+			const cleanup = await invoke<{
+				backend: string;
+				can_upgrade_to_builtin: boolean;
+			}>("get_cleanup_status");
+			setCleanupBackend(
+				cleanup.backend === "ollama" ? "ollama" : "builtin",
+			);
+			setCanUpgradeCleanup(!!cleanup.can_upgrade_to_builtin);
 		} catch (e) {
 			console.error("Failed to load settings:", e);
 		}
@@ -489,6 +503,96 @@ function SettingsPage() {
 							unless you always dictate in one language.
 						</p>
 					</div>
+				</div>
+			</section>
+
+			{/* Cleanup backend */}
+			<section className="bg-card rounded-2xl border border-border p-5">
+				<div className="flex items-start gap-4 mb-4">
+					<div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+						<Wand2 className="w-5 h-5 text-emerald-600" />
+					</div>
+					<div className="flex-1">
+						<h2 className="text-base font-semibold text-foreground">
+							Cleanup engine
+						</h2>
+						<p className="text-sm text-muted-foreground">
+							How Parrot polishes grammar and filler words after dictation.
+						</p>
+					</div>
+				</div>
+
+				<div className="space-y-3">
+					<div className="p-3 rounded-xl border border-border bg-muted/30">
+						<p className="text-sm font-medium text-foreground">
+							{cleanupBackend === "builtin"
+								? "Built-in (on-device)"
+								: "Ollama (legacy)"}
+						</p>
+						<p className="text-xs text-muted-foreground mt-0.5">
+							{cleanupBackend === "builtin"
+								? "Runs a small model inside Parrot — no third-party apps or admin password."
+								: "Uses the Ollama daemon you installed earlier. You can switch to the built-in engine and drop Ollama."}
+						</p>
+					</div>
+
+					{canUpgradeCleanup && (
+						<div className="p-4 rounded-xl border border-primary/25 bg-primary/5 space-y-3">
+							<p className="text-sm text-foreground">
+								<strong>Upgrade available:</strong> switch to built-in cleanup
+								(~490&nbsp;MB download). After that you no longer need Ollama for
+								Parrot.
+							</p>
+							<Button
+								type="button"
+								disabled={cleanupUpgrading}
+								onClick={async () => {
+									setCleanupUpgrading(true);
+									setCleanupProgress("Starting download…");
+									try {
+										const { listen } = await import("@tauri-apps/api/event");
+										const unsub = await listen<{
+											message: string;
+											progress: number;
+										}>("cleanup-model-download-progress", (e) => {
+											setCleanupProgress(
+												`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
+											);
+										});
+										const res = await invoke<{
+											backend: string;
+											ready: boolean;
+										}>("upgrade_cleanup_to_builtin");
+										unsub();
+										setCleanupBackend("builtin");
+										setCanUpgradeCleanup(false);
+										setCleanupProgress(
+											res.ready
+												? "Built-in cleanup ready — Ollama no longer required"
+												: "Downloaded — loading model…",
+										);
+										setTimeout(() => setCleanupProgress(null), 4000);
+									} catch (e) {
+										console.error(e);
+										setCleanupProgress(
+											`Failed: ${e instanceof Error ? e.message : String(e)}`,
+										);
+									} finally {
+										setCleanupUpgrading(false);
+									}
+								}}
+							>
+								{cleanupUpgrading
+									? "Upgrading…"
+									: "Upgrade to built-in cleanup"}
+							</Button>
+							{cleanupProgress && (
+								<p className="text-xs text-primary font-medium">
+									{cleanupProgress}
+								</p>
+							)}
+						</div>
+					)}
 				</div>
 			</section>
 
