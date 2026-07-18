@@ -823,17 +823,19 @@ async fn apply_pending_cleanup(
 
 /// Deliver `text` into the focused app.
 ///
-/// Default path: clipboard + synthetic Cmd+V (matches pre–Phase-4 behavior).
-/// Fallback: type via `CGEventKeyboardSetUnicodeString` only when paste cannot
-/// be constructed or clipboard write fails.
+/// Path: clipboard + synthetic Cmd+V. Typing via
+/// `CGEventKeyboardSetUnicodeString` is only a fallback for when the Cmd+V
+/// keystroke can't be constructed or the clipboard write fails.
 ///
-/// Note: we do **not** prefer typing for Terminal first — keycode 0 is the "A"
-/// key; combined with leftover Command flags that becomes Cmd+A (select all).
-/// AX "paste verification" is also skipped for terminals (unreliable and caused
-/// paste-then-type double delivery).
+/// We deliberately do **not** verify the paste by re-reading the focused
+/// element's AXValue and re-typing on mismatch: many apps (terminals such as
+/// Ghostty, Electron apps, browser contenteditables) never reflect pasted text
+/// in AXValue, so that check false-negatived and delivered the text twice. A
+/// dispatched Cmd+V is trusted; a rare missed paste is recoverable because the
+/// text stays on the clipboard.
 ///
-/// After a successful clipboard paste, the previous pasteboard contents are
-/// restored ~1s later so dictation doesn't permanently clobber the clipboard.
+/// After a successful paste, the previous pasteboard contents are restored ~1s
+/// later so dictation doesn't permanently clobber the clipboard.
 async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
     if text.is_empty() {
         return false;
@@ -851,8 +853,6 @@ async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
             return false;
         }
 
-        let terminalish = frontmost_prefers_typing();
-
         // Snapshot prior clipboard so we can restore it after paste.
         use tauri_plugin_clipboard_manager::ClipboardExt;
         let previous = app.clipboard().read_text().ok();
@@ -864,14 +864,6 @@ async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
 
         wait_for_clipboard_text(app, &text, std::time::Duration::from_millis(100)).await;
 
-        // Only use AX before/after checks in normal text fields. Terminals
-        // and consoles often expose a static/large AXValue, which falsely
-        // fails verification and triggered a second type-insert (and Cmd+A).
-        let value_before = if terminalish {
-            None
-        } else {
-            ax_focused_value()
-        };
         let paste_ok = {
             let result = tauri::async_runtime::spawn_blocking(|| {
                 std::panic::catch_unwind(post_cmd_v_macos)
@@ -895,41 +887,38 @@ async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
         };
 
         if paste_ok {
-            let verified = if terminalish {
-                true
-            } else {
-                tokio::time::sleep(std::time::Duration::from_millis(40)).await;
-                match (value_before.as_deref(), ax_focused_value().as_deref()) {
-                    (Some(before), Some(after)) if before == after && !text.is_empty() => false,
-                    _ => true,
+            // Cmd+V was dispatched into the focused app — trust it. We used to
+            // read the focused element's AXValue before/after and re-type the
+            // text when it looked unchanged, but that check is a false negative
+            // in every app whose AXValue doesn't mirror inserted text (terminals
+            // like Ghostty, Electron apps, browser contenteditables), so it
+            // delivered the text twice. A missed paste is recoverable — the text
+            // is still on the clipboard — so we never re-type after a successful
+            // dispatch. Restore the prior clipboard ~1s later so dictation
+            // doesn't permanently clobber it.
+            if let Some(prev) = previous {
+                if prev != text {
+                    let app_restore = app.clone();
+                    tokio::spawn(async move {
+                        tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
+                        use tauri_plugin_clipboard_manager::ClipboardExt;
+                        let still_ours = app_restore
+                            .clipboard()
+                            .read_text()
+                            .ok()
+                            .as_deref()
+                            == Some(text.as_str());
+                        if still_ours {
+                            let _ = app_restore.clipboard().write_text(prev);
+                        }
+                    });
                 }
-            };
-
-            if verified {
-                if let Some(prev) = previous {
-                    if prev != text {
-                        let app_restore = app.clone();
-                        tokio::spawn(async move {
-                            tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
-                            use tauri_plugin_clipboard_manager::ClipboardExt;
-                            let still_ours = app_restore
-                                .clipboard()
-                                .read_text()
-                                .ok()
-                                .as_deref()
-                                == Some(text.as_str());
-                            if still_ours {
-                                let _ = app_restore.clipboard().write_text(prev);
-                            }
-                        });
-                    }
-                }
-                return true;
             }
-            eprintln!("Paste verification failed; typing text instead");
+            return true;
         }
 
-        // Restore clipboard before typing so we don't leave the transcript stuck.
+        // Cmd+V keystroke couldn't be constructed — fall back to typing.
+        // Restore clipboard first so we don't leave the transcript stuck.
         if let Some(prev) = previous {
             let _ = app.clipboard().write_text(prev);
         }
@@ -1043,29 +1032,6 @@ fn post_key_macos(keycode: u16) -> bool {
     true
 }
 
-/// Apps where AX paste-verification is unreliable (consoles / terminals).
-#[cfg(target_os = "macos")]
-fn frontmost_prefers_typing() -> bool {
-    let Some(bundle) = frontmost_bundle_id() else {
-        return false;
-    };
-    const TERMINALISH: &[&str] = &[
-        "com.apple.Terminal",
-        "com.googlecode.iterm2",
-        "net.kovidgoyal.kitty",
-        "com.github.wez.wezterm",
-        "co.zeit.hyper",
-        "com.apple.SecureShell",
-        "com.apple.dt.Xcode",
-        "com.microsoft.VSCode",
-        "com.todesktop.", // Cursor and other VS Code forks often use this prefix
-        "com.exafunction.windsurf",
-    ];
-    TERMINALISH.iter().any(|b| {
-        bundle.eq_ignore_ascii_case(b) || bundle.to_lowercase().starts_with(&b.to_lowercase())
-    })
-}
-
 /// Frontmost app bundle id via NSWorkspace (AppKit).
 #[cfg(target_os = "macos")]
 fn frontmost_bundle_id() -> Option<String> {
@@ -1119,117 +1085,6 @@ fn frontmost_bundle_id() -> Option<String> {
             return None;
         }
         Some(CStr::from_ptr(c_str).to_string_lossy().into_owned())
-    }
-}
-
-/// Read the AX value of the focused UI element, if available.
-#[cfg(target_os = "macos")]
-fn ax_focused_value() -> Option<String> {
-    use std::ffi::{c_void, CStr};
-
-    type CFTypeRef = *const c_void;
-    type AXUIElementRef = *const c_void;
-    type CFStringRef = *const c_void;
-    type AXError = i32;
-
-    #[link(name = "ApplicationServices", kind = "framework")]
-    extern "C" {
-        fn AXUIElementCreateSystemWide() -> AXUIElementRef;
-        fn AXUIElementCopyAttributeValue(
-            element: AXUIElementRef,
-            attribute: CFStringRef,
-            value: *mut CFTypeRef,
-        ) -> AXError;
-        fn CFRelease(cf: CFTypeRef);
-        fn CFStringCreateWithCString(
-            alloc: *const c_void,
-            cStr: *const i8,
-            encoding: u32,
-        ) -> CFStringRef;
-        fn CFStringGetCStringPtr(theString: CFStringRef, encoding: u32) -> *const i8;
-        fn CFStringGetLength(theString: CFStringRef) -> isize;
-        fn CFStringGetCString(
-            theString: CFStringRef,
-            buffer: *mut i8,
-            bufferSize: isize,
-            encoding: u32,
-        ) -> u8;
-        fn CFGetTypeID(cf: CFTypeRef) -> usize;
-        fn CFStringGetTypeID() -> usize;
-    }
-
-    const K_CF_STRING_ENCODING_UTF8: u32 = 0x0800_0100;
-    const K_AX_ERROR_SUCCESS: AXError = 0;
-
-    unsafe {
-        let system = AXUIElementCreateSystemWide();
-        if system.is_null() {
-            return None;
-        }
-
-        let focused_attr = CFStringCreateWithCString(
-            std::ptr::null(),
-            c"AXFocusedUIElement".as_ptr() as *const i8,
-            K_CF_STRING_ENCODING_UTF8,
-        );
-        let value_attr = CFStringCreateWithCString(
-            std::ptr::null(),
-            c"AXValue".as_ptr() as *const i8,
-            K_CF_STRING_ENCODING_UTF8,
-        );
-
-        let mut focused: CFTypeRef = std::ptr::null();
-        let err = AXUIElementCopyAttributeValue(system, focused_attr, &mut focused);
-        CFRelease(system as CFTypeRef);
-        CFRelease(focused_attr as CFTypeRef);
-        if err != K_AX_ERROR_SUCCESS || focused.is_null() {
-            CFRelease(value_attr as CFTypeRef);
-            return None;
-        }
-
-        let mut value: CFTypeRef = std::ptr::null();
-        let err = AXUIElementCopyAttributeValue(focused as AXUIElementRef, value_attr, &mut value);
-        CFRelease(focused);
-        CFRelease(value_attr as CFTypeRef);
-        if err != K_AX_ERROR_SUCCESS || value.is_null() {
-            return None;
-        }
-
-        // Only handle CFString values.
-        if CFGetTypeID(value) != CFStringGetTypeID() {
-            CFRelease(value);
-            return None;
-        }
-
-        let len = CFStringGetLength(value as CFStringRef);
-        if len < 0 {
-            CFRelease(value);
-            return None;
-        }
-        // Fast path for pure UTF-8 internal reps.
-        let ptr = CFStringGetCStringPtr(value as CFStringRef, K_CF_STRING_ENCODING_UTF8);
-        if !ptr.is_null() {
-            let s = CStr::from_ptr(ptr).to_string_lossy().into_owned();
-            CFRelease(value);
-            return Some(s);
-        }
-        let buf_size = (len as usize) * 4 + 1;
-        let mut buf = vec![0i8; buf_size];
-        let ok = CFStringGetCString(
-            value as CFStringRef,
-            buf.as_mut_ptr(),
-            buf_size as isize,
-            K_CF_STRING_ENCODING_UTF8,
-        );
-        CFRelease(value);
-        if ok == 0 {
-            return None;
-        }
-        Some(
-            CStr::from_ptr(buf.as_ptr())
-                .to_string_lossy()
-                .into_owned(),
-        )
     }
 }
 
