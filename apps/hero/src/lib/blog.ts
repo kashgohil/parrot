@@ -394,6 +394,7 @@ export const posts: BlogPost[] = [
 		description:
 			"What local-first voice dictation actually means, why it matters for privacy and reliability, and how to verify an app is genuinely local-first.",
 		date: "2026-04-25",
+		dateModified: "2026-07-18",
 		readingTime: "8 min read",
 		category: "Industry",
 		keywords: [
@@ -415,6 +416,7 @@ export const posts: BlogPost[] = [
 		description:
 			"A comprehensive comparison of the best voice dictation apps for Mac, including Parrot, Whisper Flow, macOS Dictation, and more.",
 		date: "2026-02-05",
+		dateModified: "2026-07-18",
 		readingTime: "8 min read",
 		category: "Comparison",
 		keywords: [
@@ -494,6 +496,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Step-by-step guide to running voice dictation entirely on your Mac with no cloud services, no API keys, and no internet required.",
 		date: "2026-01-24",
+		dateModified: "2026-07-18",
 		readingTime: "5 min read",
 		category: "Tutorial",
 		keywords: [
@@ -511,15 +514,15 @@ export const posts: BlogPost[] = [
 			steps: [
 				{
 					name: "Install Parrot",
-					text: "Download Parrot from tryparrot.app/download and grant microphone permission on first launch.",
+					text: "Download Parrot from tryparrot.app/download and grant microphone and accessibility permissions on first launch.",
 				},
 				{
 					name: "Run the setup wizard",
-					text: "The wizard checks your system, requests macOS permissions, and downloads the dictation and cleanup engines automatically.",
+					text: "The wizard checks your system, requests macOS permissions, and downloads what it needs automatically.",
 				},
 				{
-					name: "Pick a quality tier",
-					text: "Choose Lite, Standard, or Precise for dictation. Standard is recommended for most Macs.",
+					name: "Pick a speed/accuracy balance",
+					text: "Choose the recommended default or a faster/more precise option. Download once, then run offline.",
 				},
 				{
 					name: "Start dictating",
@@ -541,6 +544,7 @@ export const posts: BlogPost[] = [
 		description:
 			"A practical comparison of three popular transcription APIs - accuracy, speed, pricing, and which one to pick for voice dictation.",
 		date: "2026-01-20",
+		dateModified: "2026-07-18",
 		readingTime: "7 min read",
 		category: "Comparison",
 		keywords: [
@@ -561,6 +565,7 @@ export const posts: BlogPost[] = [
 		description:
 			"How medical professionals can use voice dictation without compromising patient privacy. Local-first tools and HIPAA considerations.",
 		date: "2026-01-15",
+		dateModified: "2026-07-18",
 		readingTime: "6 min read",
 		category: "Industry",
 		keywords: [
@@ -580,6 +585,7 @@ export const posts: BlogPost[] = [
 		description:
 			"A developer's guide to using voice dictation to reduce strain, stay productive, and protect your hands from repetitive stress injury.",
 		date: "2026-01-10",
+		dateModified: "2026-07-18",
 		readingTime: "5 min read",
 		category: "Story",
 		keywords: [
@@ -618,6 +624,7 @@ export const posts: BlogPost[] = [
 		description:
 			"How custom vocabulary lists fix the most frustrating part of voice dictation - names, jargon, and domain-specific terms that always get mangled.",
 		date: "2026-01-01",
+		dateModified: "2026-07-18",
 		readingTime: "5 min read",
 		category: "Guide",
 		keywords: [
