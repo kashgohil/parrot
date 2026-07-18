@@ -53,12 +53,6 @@ export const competitors: Competitor[] = [
 			{ name: "On-device transcription", parrot: true, them: false },
 			{ name: "AI cleanup", parrot: true, them: true },
 			{ name: "Custom vocabulary", parrot: "Deep", them: "Limited" },
-			{ name: "Bring your own API key", parrot: true, them: false },
-			{
-				name: "Provider choice (Whisper / Deepgram / ElevenLabs)",
-				parrot: true,
-				them: false,
-			},
 			{ name: "Mac (Apple Silicon)", parrot: true, them: true },
 			{ name: "Windows", parrot: false, them: true },
 			{ name: "Works offline", parrot: true, them: false },
@@ -73,7 +67,6 @@ export const competitors: Competitor[] = [
 		theirWeaknesses: [
 			"Cloud-only — your audio is uploaded for processing",
 			"Free tier capped by weekly word count, not minutes",
-			"No way to swap in your own transcription provider",
 			"No fully offline mode for sensitive industries",
 			"Pro plan is recurring, not one-time",
 		],
@@ -84,28 +77,27 @@ export const competitors: Competitor[] = [
 			},
 			{
 				title: "Local-first by design",
-				body: "On-device Whisper means your microphone audio never leaves your Mac. Wispr Flow processes audio in the cloud — a non-starter for HIPAA-covered, legal, or finance work.",
+				body: "Your microphone audio never leaves your Mac. Wispr Flow processes audio in the cloud — a non-starter for HIPAA-covered, legal, or finance work.",
 			},
 			{
-				title: "Bring your own provider",
-				body: "Use OpenAI Whisper, Deepgram, or ElevenLabs depending on your accuracy/cost needs. Wispr Flow locks you into their stack.",
+				title: "Fast enough for daily work",
+				body: "Snappy time-to-text with strong first-pass accuracy — so you dictate more and fix less.",
 			},
 			{
 				title: "Deeper vocabulary control",
-				body: "Custom words, writing style profiles, and context tags that move the needle on accuracy for technical or domain-specific dictation.",
+				body: "Custom words, writing style, and context that move the needle on accuracy for technical or domain-specific dictation.",
 			},
 		],
 		chooseParrotWhen: [
 			"You're on Mac and want to stop paying monthly for dictation",
 			"You handle sensitive content (medical, legal, financial, internal)",
 			"You hit Wispr Flow's free-tier word cap regularly",
-			"You want to bring your own Whisper, Deepgram, or ElevenLabs key",
 			"You travel and need dictation that works on planes and bad Wi-Fi",
 		],
 		chooseThemWhen: [
 			"You need Windows support (Parrot is Mac-only today)",
 			"You're already deep into Wispr Flow's workflow and free tier covers your usage",
-			"You strongly prefer cloud-managed tooling over local models",
+			"You strongly prefer cloud-managed tooling",
 		],
 		keywords: [
 			"wispr flow alternative",
@@ -117,19 +109,19 @@ export const competitors: Competitor[] = [
 		faq: [
 			{
 				q: "Is Parrot a free Wispr Flow alternative?",
-				a: "Yes. Parrot is free for life with no word caps. The app itself never charges you. If you want to use cloud transcription providers, you bring your own API key — usually well under $1/hour of dictation, or free if you use the local mode.",
+				a: "Yes. Parrot is free for life with no word caps — unlimited on-device dictation, no account required.",
 			},
 			{
 				q: "Can Parrot do everything Wispr Flow does?",
-				a: "On Mac, yes — global hotkey, AI-cleaned transcription, paste at cursor, custom vocabulary. The two main gaps are Windows support (Parrot is Mac-only) and Wispr's account-synced history across devices.",
+				a: "On Mac, yes for the daily loop — global hotkey, AI-cleaned transcription, paste at cursor, custom vocabulary. The two main gaps are Windows support (Parrot is Mac-only) and Wispr's account-synced history across devices.",
 			},
 			{
 				q: "Why is Parrot free when Wispr Flow charges?",
-				a: "Parrot's local mode runs entirely on your Mac, so there are no per-minute server costs to recoup. A managed cloud mode is coming later for users who want it; that one will be paid.",
+				a: "Parrot runs entirely on your Mac, so there are no per-minute server costs to recoup. Unlimited local dictation stays free.",
 			},
 			{
 				q: "How does accuracy compare?",
-				a: "On the same audio, Whisper-large (which Parrot can run locally or via API) is competitive with Wispr Flow's cloud stack on most everyday speech. Wispr may edge ahead on noisy audio or heavy accents — but the gap is small.",
+				a: "On everyday speech, Parrot is competitive for the daily dictation loop — strong first-pass accuracy plus optional cleanup. Wispr may still edge ahead on very noisy audio or heavy accents in some cases.",
 			},
 		],
 	},
@@ -137,7 +129,7 @@ export const competitors: Competitor[] = [
 		slug: "superwhisper",
 		name: "Superwhisper",
 		shortName: "Superwhisper",
-		tagline: "Mac-native dictation with local Whisper models",
+		tagline: "Mac-native dictation with local models",
 		description:
 			"Parrot vs Superwhisper — comparing two Mac-native voice dictation apps on price, features, and AI cleanup quality.",
 		heroVerdict:
@@ -149,11 +141,10 @@ export const competitors: Competitor[] = [
 		},
 		features: [
 			{ name: "Price", parrot: "Free for life", them: "$8.49/mo Pro" },
-			{ name: "Local Whisper models", parrot: true, them: true },
+			{ name: "Fully local", parrot: true, them: true },
 			{ name: "AI cleanup", parrot: "Free", them: "Pro only" },
 			{ name: "Custom vocabulary", parrot: "Deep", them: "Yes" },
 			{ name: "Voice commands", parrot: false, them: true },
-			{ name: "Bring your own API key", parrot: true, them: true },
 			{ name: "Mac (Apple Silicon)", parrot: true, them: true },
 			{ name: "Windows", parrot: false, them: false },
 			{ name: "Works offline", parrot: true, them: true },
@@ -162,7 +153,6 @@ export const competitors: Competitor[] = [
 		theirStrengths: [
 			"Voice commands for app actions (open, navigate, etc.)",
 			"Mature Mac-native experience",
-			"Multiple local model sizes to choose from",
 			"Established user base with frequent updates",
 		],
 		theirWeaknesses: [
@@ -176,8 +166,8 @@ export const competitors: Competitor[] = [
 				body: "Parrot's full feature set — including AI cleanup — is free with no time limit. Superwhisper gates cleanup behind the $8.49/mo Pro tier.",
 			},
 			{
-				title: "Provider flexibility",
-				body: "Both apps support local Whisper, but Parrot also lets you swap in cloud providers (Deepgram, ElevenLabs) for specific accuracy or speed needs.",
+				title: "Fast everyday dictation",
+				body: "Parrot is tuned for the daily hotkey loop: snappy time-to-text and strong first-pass accuracy without a paid tier.",
 			},
 		],
 		chooseParrotWhen: [
@@ -205,8 +195,8 @@ export const competitors: Competitor[] = [
 				a: "Not yet. Parrot focuses on transcription and cleanup. If voice-driven app actions are core to your workflow, Superwhisper has the edge there.",
 			},
 			{
-				q: "Are the local models the same?",
-				a: "Both apps use OpenAI's open-source Whisper models. Accuracy on the same model size will be effectively identical between the two.",
+				q: "How does accuracy compare?",
+				a: "Both apps are strong on-device. Parrot leans hard into first-pass accuracy for everyday dictation and proper nouns, plus an optional cleanup pass for filler and style — without a paid tier for the basics.",
 			},
 		],
 	},
@@ -231,10 +221,10 @@ export const competitors: Competitor[] = [
 				parrot: true,
 				them: "Limited",
 			},
-			{ name: "Audio file transcription", parrot: false, them: true },
+			{ name: "Audio file transcription", parrot: true, them: true },
 			{ name: "AI cleanup", parrot: true, them: false },
 			{ name: "Custom vocabulary", parrot: "Deep", them: "Limited" },
-			{ name: "Local Whisper models", parrot: true, them: true },
+			{ name: "Fully local", parrot: true, them: true },
 			{ name: "Mac (Apple Silicon)", parrot: true, them: true },
 			{ name: "Works offline", parrot: true, them: true },
 		],
@@ -252,12 +242,12 @@ export const competitors: Competitor[] = [
 		],
 		parrotWins: [
 			{
-				title: "Built for dictation, not transcription",
-				body: "Parrot is designed around the live workflow: press hotkey, speak, transcript appears at cursor. MacWhisper is optimized for batch-transcribing audio files.",
+				title: "Built for dictation first",
+				body: "Parrot is designed around the live workflow: press hotkey, speak, transcript appears at cursor. You can still drop in a file when you need a batch transcript.",
 			},
 			{
 				title: "AI cleanup",
-				body: "Parrot removes filler words and applies your writing style automatically. MacWhisper outputs raw Whisper transcripts.",
+				body: "Parrot removes filler words and applies your writing style automatically. MacWhisper leaves you with raw transcripts.",
 			},
 		],
 		chooseParrotWhen: [
@@ -266,9 +256,9 @@ export const competitors: Competitor[] = [
 			"You want custom vocabulary to handle names and jargon",
 		],
 		chooseThemWhen: [
-			"Your main job is transcribing recorded audio (interviews, podcasts, lectures)",
-			"You don't need live dictation",
-			"You want a one-time purchase tool",
+			"Your main job is batch-transcribing long recordings with a specialized editor UI",
+			"You don't need live dictation or AI cleanup",
+			"You want a one-time purchase tool focused only on files",
 		],
 		keywords: [
 			"macwhisper alternative",
@@ -279,11 +269,11 @@ export const competitors: Competitor[] = [
 		faq: [
 			{
 				q: "Is Parrot a free MacWhisper alternative?",
-				a: "Parrot and MacWhisper solve different problems. Parrot is for live dictation; MacWhisper is for transcribing audio files. If you want live dictation for free, Parrot is the answer.",
+				a: "If you want free live dictation with AI cleanup, yes. MacWhisper is still strong if you mostly live in a file-transcription editor — Parrot is built for the daily hotkey workflow first.",
 			},
 			{
 				q: "Can Parrot transcribe audio files like MacWhisper?",
-				a: "Not currently — Parrot is focused on the live dictation workflow. For batch audio file transcription, MacWhisper or whisper.cpp directly are better tools.",
+				a: "Yes. Drop a file onto History or pick one from the app — Parrot transcribes it locally. Live hotkey dictation is still the main experience.",
 			},
 		],
 	},

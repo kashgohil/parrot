@@ -7,11 +7,11 @@ import { SubscribeCTA } from "@/components/SubscribeCTA";
 const DOWNLOAD_FAQ = [
 	{
 		title: "Is it really free?",
-		body: "Yes. Local mode is free, for life. No account, no trial, no card. A managed cloud mode is coming later for people who want higher accuracy and cross-device sync — that one will be paid.",
+		body: "Yes. Local mode is free, for life. No account, no trial, no card. Unlimited dictation on your Mac.",
 	},
 	{
 		title: "Does it work on Intel Macs?",
-		body: "Not currently. The local Whisper and LLM models we ship are tuned for Apple Silicon's Neural Engine, which Intel Macs don't have.",
+		body: "Not currently. Parrot is built for Apple Silicon (M1 and later) and the on-device performance that makes dictation feel instant.",
 	},
 	{
 		title: "Will my audio be uploaded?",
@@ -275,8 +275,8 @@ function DownloadPage() {
 								body: "Press fn to start recording from any app. Release the hotkey and your words paste at the cursor.",
 							},
 							{
-								label: "On-device transcription",
-								body: "Whisper runs locally via whisper.cpp. Audio never leaves your Mac.",
+								label: "Fast, private transcription",
+								body: "Speech turns into text on your Mac — snappy enough for daily work, with nothing uploaded.",
 							},
 							{
 								label: "Custom vocabulary",
@@ -284,15 +284,15 @@ function DownloadPage() {
 							},
 							{
 								label: "Optional AI cleanup",
-								body: "An on-device LLM (Ollama) cleans up filler words, fixes grammar, and applies your writing style.",
+								body: "On-device cleanup removes filler words, fixes grammar, and matches your writing style.",
 							},
 							{
 								label: "Local history",
-								body: "Every dictation is saved to a local SQLite database. Search, copy, re-paste — all offline.",
+								body: "Every dictation is saved on your Mac. Search, copy, re-paste — all offline.",
 							},
 							{
 								label: "Native menu bar app",
-								body: "Built with Tauri. ~30MB download, low memory, no Electron.",
+								body: "Light native app. Low memory, no Electron bloat.",
 							},
 						].map((item) => (
 							<div key={item.label}>
@@ -336,8 +336,8 @@ function DownloadPage() {
 							},
 							{
 								num: "04",
-								title: "Pick a model in onboarding",
-								body: "Choose your Whisper model size — small is fast, large is most accurate. Parrot downloads it once and runs everything offline from there.",
+								title: "Finish onboarding",
+								body: "Pick the speed and accuracy balance you want. Parrot downloads what it needs once — then everything runs offline.",
 							},
 							{
 								num: "05",
@@ -462,7 +462,7 @@ function DownloadPage() {
 			{/* ── CTA ── */}
 			<SubscribeCTA
 				heading="Stay in the loop."
-				subheading="Get notified about new releases, model updates, and the managed cloud mode launch."
+				subheading="Get notified about new releases and product updates."
 				source="download"
 			/>
 

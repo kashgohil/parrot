@@ -61,9 +61,32 @@ export const Route = createFileRoute("/changelog")({
 
 const RELEASES = [
 	{
+		version: "v0.2.0",
+		date: "July 18, 2026",
+		tag: "Latest",
+		changes: [
+			{
+				type: "improved",
+				items: [
+					"Dictation feels dramatically faster — text lands at your cursor with less wait after you release the hotkey",
+					"Higher first-pass accuracy, especially on names, jargon, and technical terms",
+					"Setup is simpler: download once in the app and start dictating — no extra tools to install",
+				],
+			},
+			{
+				type: "added",
+				items: [
+					"Live transcript in the floating HUD while you hold the hotkey — see your words form as you speak",
+					"Smarter vocabulary that learns from how you write and suggests terms worth saving",
+					"Per-app writing polish so Slack, docs, and code can each sound the way you want",
+					"Drop an audio file onto History (or pick one) for a full transcript",
+				],
+			},
+		],
+	},
+	{
 		version: "v0.1.6",
 		date: "May 7, 2026",
-		tag: "Latest",
 		changes: [
 			{
 				type: "added",
@@ -372,9 +395,9 @@ function ChangelogPage() {
 					</h2>
 					<div className="space-y-4">
 						{[
-							"Cloud mode with sync across devices and managed transcription",
-							"Windows support via Tauri's cross-platform build",
-							"Mobile apps for iOS and Android",
+							"Even snappier dictation and smarter cleanup",
+							"Cross-device sync when you want it",
+							"Windows support",
 							"Multi-lingual transcription with automatic language detection",
 						].map((item, i) => (
 							<div

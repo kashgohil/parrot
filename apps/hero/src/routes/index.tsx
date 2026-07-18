@@ -131,7 +131,7 @@ export const Route = createFileRoute("/")({
 					image: "https://tryparrot.app/og/home.png",
 					screenshot: "https://tryparrot.app/og/home.png",
 					downloadUrl: "https://tryparrot.app/download",
-					softwareVersion: "1.0.0",
+					softwareVersion: "0.2.0",
 					author: {
 						"@type": "Person",
 						name: "Kash Gohil",
@@ -149,11 +149,11 @@ export const Route = createFileRoute("/")({
 							price: "0",
 							priceCurrency: "USD",
 							description:
-								"Free for life. Unlimited on-device transcription, local AI cleanup, custom vocabulary, and offline support. Cloud mode coming soon.",
+								"Free for life. Fast on-device dictation, AI cleanup, custom vocabulary, and full offline support. No subscription required.",
 						},
 					],
 					featureList:
-						"Voice dictation, AI text cleanup, Custom vocabulary, Local-first privacy, Multiple transcription providers, Global hotkey, Works in any app, Dictation history",
+						"Voice dictation, Fast on-device transcription, AI text cleanup, Custom vocabulary, Local-first privacy, Global hotkey, Works in any app, Dictation history, Live transcript preview",
 				}),
 			},
 			{
@@ -167,15 +167,15 @@ export const Route = createFileRoute("/")({
 							name: "What's local mode?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "In local mode, Parrot runs transcription and AI cleanup entirely on your Mac. Everything happens on-device - zero data leaves your computer. You download models once (~4GB), then no internet is needed. This is ideal for HIPAA-sensitive work, legal documents, or anyone who values privacy.",
+								text: "Parrot runs transcription and AI cleanup entirely on your Mac. Everything happens on-device — zero data leaves your computer. You download what you need once, then no internet is required. Ideal for private work, legal documents, or anyone who values control.",
 							},
 						},
 						{
 							"@type": "Question",
-							name: "Is cloud mode available?",
+							name: "How fast is it?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Not yet. Parrot ships with local mode today — transcription and cleanup running fully on-device. A managed cloud mode is coming soon. Subscribe for updates to be notified when it launches.",
+								text: "Built for daily use: release the hotkey and text lands at your cursor with minimal wait. Accuracy is tuned for first-pass names, jargon, and everyday speech — not a raw draft you have to rewrite.",
 							},
 						},
 						{
@@ -183,7 +183,7 @@ export const Route = createFileRoute("/")({
 							name: "Does it work offline?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Yes. Local mode runs fully offline once models are downloaded. No internet, no account, no API keys.",
+								text: "Yes. After the one-time download, Parrot runs fully offline. No internet, no account, no API keys.",
 							},
 						},
 						{
@@ -191,7 +191,7 @@ export const Route = createFileRoute("/")({
 							name: "How does the cleanup work?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "After transcription, an AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. Cleanup is optional, can be toggled per-dictation, and runs locally on your Mac.",
+								text: "After transcription, an optional AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. It runs entirely on your Mac.",
 							},
 						},
 						{
@@ -199,7 +199,7 @@ export const Route = createFileRoute("/")({
 							name: "What about my privacy?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Local mode keeps everything on your Mac — audio, transcripts, history, vocabulary. Nothing is sent to our servers.",
+								text: "Everything stays on your Mac — audio, transcripts, history, vocabulary. Nothing is sent to our servers.",
 							},
 						},
 					],
@@ -716,17 +716,17 @@ function DualModeSpotlight() {
 	];
 
 	const stats = [
+		{ value: "Snappy", label: "time to paste" },
 		{ value: "0 bytes", label: "data sent" },
-		{ value: "100%", label: "offline" },
 		{ value: "Free", label: "for life" },
 	];
 
 	const features = [
+		"Fast, accurate first-pass dictation",
 		"Audio never leaves your device",
 		"No account, no sign-in",
 		"Works fully offline",
-		"Custom vocabulary",
-		"Cleanup",
+		"Custom vocabulary & AI cleanup",
 		"Dictation history",
 	];
 
@@ -736,10 +736,10 @@ function DualModeSpotlight() {
 			<div className="flex items-center justify-center gap-3 mb-10">
 				<div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-foreground text-background shadow-md">
 					<Monitor size={16} />
-					Local mode
+					On your Mac
 				</div>
 				<span className="text-sm text-muted-foreground">
-					Cloud mode coming soon
+					Private by design
 				</span>
 			</div>
 
@@ -1114,9 +1114,9 @@ function ComparisonTable() {
 		macos: boolean | "partial" | "soon";
 	}[] = [
 		{ feature: "Local mode", parrot: true, wispr: false, macos: false },
-		{ feature: "Cloud mode", parrot: "soon", wispr: true, macos: false },
+		{ feature: "Fast on-device dictation", parrot: true, wispr: false, macos: "partial" },
 		{ feature: "Custom vocabulary", parrot: true, wispr: true, macos: false },
-		{ feature: "Cleanup", parrot: true, wispr: true, macos: false },
+		{ feature: "AI cleanup", parrot: true, wispr: true, macos: false },
 		{
 			feature: "Privacy (no data sent)",
 			parrot: true,
@@ -1124,7 +1124,6 @@ function ComparisonTable() {
 			macos: "partial",
 		},
 		{ feature: "Offline support", parrot: true, wispr: false, macos: true },
-		{ feature: "Open source", parrot: true, wispr: false, macos: false },
 		{ feature: "Free, for life", parrot: true, wispr: false, macos: true },
 	];
 
@@ -1188,22 +1187,20 @@ const FAQ: { q: string; a: ReactNode }[] = [
 		q: "What's local mode?",
 		a: (
 			<>
-				Parrot runs on your Mac - <strong>locally</strong>. For transcription
-				and cleanup, we install models for you. Everything happens on-device.
+				Parrot runs on your Mac — <strong>fully on-device</strong>. Transcription
+				and cleanup never leave your machine.
 				<br />
-				You download models once (~4GB), then no internet needed.
+				You download what you need once, then no internet required.
 			</>
 		),
 	},
 	{
-		q: "Is cloud mode available?",
+		q: "How fast and accurate is it?",
 		a: (
 			<>
-				Not yet. Parrot ships with <strong>local mode</strong> today —
-				transcription and cleanup running fully on-device.
-				<br />
-				Managed <strong>cloud mode</strong> is coming soon. Subscribe for
-				updates to be notified when it launches.
+				Built for the daily loop: release the hotkey and text shows up at your
+				cursor with minimal wait. First-pass accuracy is strong on names,
+				jargon, and everyday speech — so you spend less time fixing typos.
 			</>
 		),
 	},
@@ -1211,8 +1208,8 @@ const FAQ: { q: string; a: ReactNode }[] = [
 		q: "Does it work offline?",
 		a: (
 			<>
-				Yes. Local mode runs fully offline once models are downloaded. No
-				internet, no account, no API keys.
+				Yes. After the one-time download, Parrot runs fully offline. No internet,
+				no account, no API keys.
 			</>
 		),
 	},
@@ -1260,7 +1257,7 @@ function HomePage() {
 						>
 							<div className="w-1.5 h-1.5 rounded-full bg-primary" />
 							<span className="text-xs font-semibold text-primary tracking-wide">
-								macOS &middot; Free for life &middot; Cloud coming soon
+								macOS &middot; Free for life &middot; Faster &amp; sharper
 							</span>
 						</div>
 
@@ -1275,10 +1272,10 @@ function HomePage() {
 						<p
 							className="text-lg text-muted-foreground leading-relaxed max-w-md mb-8"
 						>
-							Parrot transcribes what you say and pastes it where your cursor
-							is. Custom vocabulary, AI cleanup, and full history. Runs fully
-							local on your Mac &mdash; download today and use it free, for
-							life. Cloud mode is coming soon.
+							Press a hotkey, speak, and polished text lands at your cursor —
+							fast enough for daily work, accurate enough to trust. Custom
+							vocabulary, AI cleanup, full history. Runs entirely on your Mac.
+							Free for life.
 						</p>
 
 						<div
@@ -1380,17 +1377,14 @@ function HomePage() {
 			<section className="py-20 md:py-28 px-6">
 				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Your setup
+						On your Mac
 					</p>
 					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
-						Local transcription today.
-						<br />
-						Cloud coming soon.
+						Fast. Private. Free for life.
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px]">
-						Parrot runs fully on your Mac &mdash; free, for life. Cloud mode is
-						on the way for higher accuracy and cross-device sync; you'll be able
-						to flip between them anytime in settings.
+						Transcription and cleanup run entirely on-device. Nothing leaves
+						your Mac — and you never pay a subscription to keep dictating.
 					</p>
 				</div>
 				<DualModeSpotlight />
@@ -1406,14 +1400,14 @@ function HomePage() {
 							Voice dictation features that work for you
 						</h2>
 						<p className="text-muted-foreground max-w-lg text-[15px]">
-							Custom vocabulary, writing style, and searchable history built
-							into a native Mac app.
+							Faster dictation, sharper accuracy, and the polish you actually
+							use every day.
 						</p>
 					</div>
 					<div className="space-y-20 md:space-y-28">
 						<FeatureRow
 							title="Custom vocabulary that actually remembers"
-							body="Add names, acronyms, brand terms, and jargon. Parrot feeds them to the transcription engine so 'Kubernetes' doesn't become 'Cooper Netties' and your coworker's name isn't butchered every time."
+							body="Add names, acronyms, brand terms, and jargon. Parrot learns the words that matter so 'Kubernetes' doesn't become 'Cooper Netties' and your coworker's name isn't butchered every time."
 							visual={
 								<div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 									<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
@@ -1582,23 +1576,23 @@ function HomePage() {
 							},
 							{
 								title: "Auto-paste",
-								desc: "Transcription goes to clipboard and is pasted at your cursor automatically.",
+								desc: "Text lands at your cursor the moment you're done speaking.",
+							},
+							{
+								title: "Fast & accurate",
+								desc: "Snappy time-to-text with strong first-pass accuracy on names and jargon.",
+							},
+							{
+								title: "Live preview",
+								desc: "Watch your words form in the HUD while you hold the hotkey.",
 							},
 							{
 								title: "Free, for life",
-								desc: "Local mode is free forever. Managed cloud is coming soon.",
+								desc: "No subscription, no word caps, no trial that expires.",
 							},
 							{
-								title: "Offline capable",
-								desc: "Local mode works without internet once models are downloaded.",
-							},
-							{
-								title: "Native Mac app",
-								desc: "Built with Tauri and Rust. Light on resources, no Electron.",
-							},
-							{
-								title: "No account needed",
-								desc: "Local mode works out of the box — no sign-in, no API keys, no setup.",
+								title: "Fully offline",
+								desc: "After one download, dictate without internet — or an account.",
 							},
 						].map((f, i) => (
 							<div key={i} className="border-l-2 border-primary/25 pl-4">
@@ -1623,8 +1617,8 @@ function HomePage() {
 						Parrot vs the alternatives
 					</h2>
 					<p className="text-muted-foreground max-w-lg text-[15px] mb-12">
-						Free for life with full local-mode privacy today. Managed cloud mode
-						is coming soon.
+						Free for life, fully local, and built for the daily dictation loop —
+						not a metered cloud trial.
 					</p>
 					<ComparisonTable />
 				</div>
@@ -1740,7 +1734,7 @@ function FinalCTA() {
 				</div>
 
 				<p className="text-background/40 text-xs mt-8 mb-3">
-					Or subscribe to get notified when cloud mode lands.
+					Or subscribe for product updates.
 				</p>
 				<div className="max-w-md mx-auto">
 					<SubscribeCTA

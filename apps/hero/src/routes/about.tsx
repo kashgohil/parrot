@@ -151,8 +151,8 @@ function AboutPage() {
 								body: "Most dictation tools are web apps. You record in one tab, copy from another, paste into a third. Parrot runs natively and pastes directly where you're typing.",
 							},
 							{
-								label: "One engine, take it or leave it",
-								body: "Locked into whoever built the app. Parrot ships with local mode today, running entirely on your Mac. A managed cloud mode is on the way for higher accuracy when you want it.",
+								label: "Slow, fussy, or locked-in",
+								body: "Many tools feel laggy, need constant connectivity, or gate the good stuff behind a subscription. Parrot is fast, fully local, and free for life on your Mac.",
 							},
 							{
 								label: "Your audio, their servers",
@@ -187,8 +187,8 @@ function AboutPage() {
 							},
 							{
 								num: "02",
-								title: "Local today, cloud soon",
-								body: "Local mode runs entirely on-device — free, for life. A managed cloud mode is coming soon for higher accuracy and cross-device sync.",
+								title: "Fast and fully local",
+								body: "Transcription and cleanup run entirely on your Mac — free for life. Snappy enough for daily work, private by design.",
 							},
 							{
 								num: "03",
@@ -238,9 +238,9 @@ function AboutPage() {
 							to="/changelog"
 							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
 						>
-							<p className="text-2xl font-black text-foreground mb-1">Soon</p>
+							<p className="text-2xl font-black text-foreground mb-1">Faster</p>
 							<p className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
-								Managed cloud mode &rarr;
+								v0.2 is out &rarr;
 							</p>
 						</Link>
 						<Link
@@ -272,8 +272,8 @@ function AboutPage() {
 								body: "We don't want your audio or transcripts. Local mode keeps everything on your Mac — nothing is ever sent to our servers.",
 							},
 							{
-								title: "Choice over lock-in",
-								body: "Local mode is free for life. When managed cloud lands, you'll be able to flip between them anytime in settings — no vendor lock-in, no data migration headaches.",
+								title: "Free means free",
+								body: "Local mode is free for life — no word caps, no trial that expires, no feature paywall for the daily dictation loop.",
 							},
 							{
 								title: "Simple beats clever",
@@ -377,16 +377,12 @@ function AboutPage() {
 								text: "Shipped a draggable HUD orb, dictation history with grouping and quick-copy, and steady polish across the app based on early-user feedback.",
 							},
 							{
-								date: "Next",
-								text: "Cloud mode — higher accuracy, AI cleanup, and cross-device sync.",
-							},
-							{
-								date: "Later in 2026",
-								text: "Windows support via Tauri's cross-platform build, plus mobile apps for iOS and Android.",
+								date: "Summer 2026",
+								text: "v0.2 — much snappier dictation, sharper accuracy, live transcript preview, smarter vocabulary, and simpler setup.",
 							},
 							{
 								date: "On the roadmap",
-								text: "Multi-lingual transcription with automatic language detection.",
+								text: "Cross-device sync, Windows support, and multi-lingual transcription.",
 							},
 						].map((item, i) => (
 							<div key={i} className="relative flex gap-5 mb-8 last:mb-0">
@@ -408,7 +404,7 @@ function AboutPage() {
 			{/* ── CTA ── */}
 			<SubscribeCTA
 				heading="Stay in the loop."
-				subheading="Local mode is available today — download free, for life. Subscribe to get notified when managed cloud mode lands."
+				subheading="Local mode is available today — download free, for life. Subscribe for product updates."
 				source="about"
 			/>
 
