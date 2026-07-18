@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "vite dev --port 3002",
 		"generate-seo": "bun run scripts/generate-seo.ts",
+		"generate-og": "bun run scripts/generate-og.ts",
 		"build": "bun run generate-seo && vite build",
 		"preview": "vite preview",
 		"test": "vitest run",
