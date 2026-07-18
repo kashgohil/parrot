@@ -193,7 +193,7 @@ export default function FreeVoiceDictationApps2026() {
 			<ul>
 				<li>
 					<strong>Want a real dictation app for $0?</strong>{" "}
-					<Link to="/">Parrot</Link> in local mode.
+					<Link to="/">Parrot</Link> — free for life on Mac.
 				</li>
 				<li>
 					<strong>Just need quick notes?</strong> macOS Dictation.

@@ -127,8 +127,8 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 						Try Parrot
 					</h2>
 					<p className="text-background/50 mb-6 text-[15px]">
-						Voice dictation for Mac. Free local mode &mdash; for life. Cloud
-						mode coming soon.
+						Voice dictation for Mac. Free for life &mdash; fully local, no
+						subscription.
 					</p>
 					<div className="flex items-center justify-center gap-4 flex-wrap">
 						<Link
