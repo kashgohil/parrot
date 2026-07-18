@@ -226,19 +226,19 @@ export default function LocalFirstVoiceDictationExplained() {
 					transcription.
 				</li>
 				<li>
-					<strong>Older hardware.</strong> Intel Macs and base-model M1s can
-					struggle with the largest Whisper variants.
+					<strong>Hardware floor.</strong> The best on-device experience is on
+					Apple Silicon. Older machines may feel slower or simply not be
+					supported.
 				</li>
 				<li>
 					<strong>Specialized accuracy.</strong> Cloud providers fine-tune on
-					millions of hours of audio. For very heavy accents or noisy
-					environments, cloud still has an edge.
+					massive datasets. For very heavy accents or noisy environments, cloud
+					can still have an edge in some cases.
 				</li>
 			</ul>
 			<p>
-				The right answer for most people is an app that <em>can</em> go local
-				but lets you pick a cloud provider when you specifically want one -
-				which is how <Link to="/">Parrot</Link> is built.
+				For everyday Mac dictation, a fully local app is enough — which is how{" "}
+				<Link to="/">Parrot</Link> is built: free, on-device, no cloud required.
 			</p>
 
 			<h2>The bottom line</h2>
@@ -250,8 +250,7 @@ export default function LocalFirstVoiceDictationExplained() {
 				private.
 			</p>
 			<p>
-				<Link to="/">Parrot</Link> is local-first by default, with optional
-				cloud providers when you want them.{" "}
+				<Link to="/">Parrot</Link> is local-first by design.{" "}
 				<Link to="/download">Download it</Link> and run the airplane test
 				yourself.
 			</p>

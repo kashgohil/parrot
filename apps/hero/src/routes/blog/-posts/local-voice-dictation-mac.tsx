@@ -103,29 +103,26 @@ export default function LocalVoiceDictationMac() {
 
 			<h2>Performance expectations</h2>
 			<p>
-				Local transcription is slightly slower than cloud APIs. Here's what to
-				expect by hardware:
+				On Apple Silicon, local dictation is fast enough for daily work — short
+				clips feel near-instant once the app is warm. Parrot targets M1 and
+				later; that&apos;s where the experience is built to shine.
 			</p>
 			<ul>
 				<li>
-					<strong>Apple Silicon (M1/M2/M3/M4)</strong> — about 1–2 seconds of
-					processing per 10 seconds of audio at the Standard tier. Metal GPU
-					acceleration makes this feel near-instant for short dictations.
+					<strong>Time-to-text</strong> — release the hotkey and text lands at
+					your cursor with minimal wait for everyday phrases.
 				</li>
 				<li>
-					<strong>Intel Macs</strong> — roughly 2–4× slower than Apple Silicon.
-					Consider using the Lite or Standard dictation tier for faster
-					results.
+					<strong>Disk</strong> — budget a few GB once for models; after that,
+					no network needed.
 				</li>
 				<li>
-					<strong>RAM</strong> — the Standard dictation tier needs about 2–3 GB
-					of RAM. With cleanup running too, aim for at least 16 GB total system
-					memory.
+					<strong>RAM</strong> — leave headroom while dictating; 16 GB system
+					memory is a comfortable baseline for most machines.
 				</li>
 			</ul>
 			<p>
-				Accuracy at the Standard tier is very good for everyday dictation.
-				Adding{" "}
+				Accuracy is strong for everyday speech. Adding{" "}
 				<Link
 					to="/blog/$slug"
 					params={{ slug: "custom-vocabulary-voice-dictation" }}

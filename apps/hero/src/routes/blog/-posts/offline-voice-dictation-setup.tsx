@@ -55,17 +55,11 @@ export default function OfflineVoiceDictationSetup() {
 
 			<h2>What you need</h2>
 			<ul>
-				<li>A Mac with Apple Silicon (M1 or newer recommended).</li>
-				<li>
-					~2-5 GB of disk space (depending on which Whisper model you choose).
-				</li>
+				<li>A Mac with Apple Silicon (M1 or newer).</li>
+				<li>~2–5 GB of disk space for a one-time model download.</li>
 				<li>About 8 GB of free RAM during transcription.</li>
 				<li>10 minutes.</li>
 			</ul>
-			<p>
-				Intel Macs work too, but expect slower transcription on the larger
-				models.
-			</p>
 
 			<h2>Option 1: Parrot (recommended for most people)</h2>
 			<p>
@@ -240,8 +234,8 @@ export default function OfflineVoiceDictationSetup() {
 					option.
 				</li>
 				<li>
-					<strong>Slow on Intel Macs:</strong> drop down to the small or base
-					model. The accuracy gap is smaller than you'd expect.
+					<strong>Feels slow:</strong> keep the app running so engines stay
+					warm, and prefer shorter bursts over multi-minute monologues.
 				</li>
 			</ul>
 
