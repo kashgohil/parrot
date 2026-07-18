@@ -71,8 +71,8 @@ export default function OfflineVoiceDictationSetup() {
 			<p>
 				<Link to="/">Parrot</Link> is the fastest path to a fully offline
 				dictation workflow with a real UI. You get a global hotkey, on-device
-				Whisper transcription, custom vocabulary, and AI cleanup that can also
-				run locally.
+				transcription, custom vocabulary, and AI cleanup — all local after
+				setup.
 			</p>
 			<p>
 				<strong>Setup:</strong>
@@ -87,8 +87,8 @@ export default function OfflineVoiceDictationSetup() {
 					prompted.
 				</li>
 				<li>
-					In the setup wizard, choose <em>Local</em>. Parrot downloads the
-					Whisper model the first time you use it.
+					Finish onboarding. Parrot downloads what it needs once, then runs
+					offline.
 				</li>
 				<li>Pick a hotkey (default is fn).</li>
 				<li>

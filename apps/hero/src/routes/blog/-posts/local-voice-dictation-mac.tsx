@@ -22,9 +22,8 @@ export default function LocalVoiceDictationMac() {
 			<ul>
 				<li>
 					<strong>Transcription</strong> — your voice is converted to text
-					using a speech-to-text engine that runs natively on Apple Silicon and
-					Intel Macs. On Apple Silicon it uses Metal acceleration for
-					near-real-time performance.
+					using an on-device speech-to-text engine optimized for Apple Silicon.
+					It&apos;s fast enough for daily email, notes, and chat.
 				</li>
 				<li>
 					<strong>Cleanup</strong> — an on-device AI engine fixes grammar,
@@ -58,9 +57,9 @@ export default function LocalVoiceDictationMac() {
 				Terminal, no package managers, no manual model downloads.
 			</p>
 			<p>
-				You'll pick a quality tier for each engine — Lite, Standard, or Precise
-				for dictation; Standard, Technical, or Code for cleanup. Standard is
-				the recommended default and works well on most Macs.
+				You&apos;ll pick a speed/accuracy balance once. Parrot downloads what it
+				needs, then everything runs offline from there. The recommended default
+				works well on most Apple Silicon Macs.
 			</p>
 
 			<h2>Step 3: Start dictating</h2>
@@ -186,25 +185,23 @@ export default function LocalVoiceDictationMac() {
 				</li>
 			</ul>
 
-			<h2>What about cloud transcription?</h2>
+			<h2>Do you still need cloud transcription?</h2>
 			<p>
-				Local mode is what Parrot ships with today, and it's free for life. A
-				managed cloud mode is in development for users who want the absolute
-				fastest transcription or are on older Intel Macs where local
-				processing is slow. When it lands, you'll be able to switch between
-				local and cloud anytime in settings — your vocabulary, history, and
-				preferences carry over.
+				For most daily dictation on a modern Mac, no. Local is what Parrot
+				ships — free for life, private by default, and fast enough for email,
+				docs, and chat. Cloud APIs still make sense for specialized server-side
+				pipelines, batch jobs, or apps that can&apos;t run models on-device.
 			</p>
 			<p>
-				If you're curious about how the major transcription APIs compare, see
-				our{" "}
+				If you&apos;re comparing API vendors for a product you&apos;re building,
+				see our{" "}
 				<Link
 					to="/blog/$slug"
 					params={{ slug: "transcription-apis-compared" }}
 				>
 					comparison of transcription APIs
 				</Link>
-				.
+				. If you just want to dictate on your Mac, stay local.
 			</p>
 		</>
 	);

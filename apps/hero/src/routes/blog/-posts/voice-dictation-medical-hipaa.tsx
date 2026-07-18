@@ -96,11 +96,11 @@ export default function VoiceDictationMedicalHipaa() {
 
 			<h2>What about cloud options?</h2>
 			<p>
-				Parrot ships with local mode today. A managed cloud mode is in
-				development for users who need higher accuracy or are on older Macs
-				where local processing is slow. When it lands, we'll publish exactly
-				what is sent, where it's stored, and how long it's retained — so you
-				can make an informed call before opting in.
+				Some practices use enterprise cloud dictation under a BAA and clear
+				vendor contracts. That can be valid for specific workflows — it is not
+				the same as a consumer app quietly uploading mic audio. Parrot is built
+				for the simpler default: keep patient-adjacent drafting on-device so you
+				are not inventing a data path you have to defend later.
 			</p>
 
 			<h2>What about Dragon Medical?</h2>

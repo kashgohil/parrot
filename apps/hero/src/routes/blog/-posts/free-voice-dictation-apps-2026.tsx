@@ -58,7 +58,7 @@ export default function FreeVoiceDictationApps2026() {
 							<strong>Parrot</strong>
 						</td>
 						<td>Full app, free for life</td>
-						<td>Bring API key for cloud providers (or use free local mode)</td>
+						<td>Apple Silicon Mac; one-time model download</td>
 						<td>Yes</td>
 					</tr>
 					<tr>
@@ -88,45 +88,24 @@ export default function FreeVoiceDictationApps2026() {
 				</tbody>
 			</table>
 
-			<h2>Parrot - free app, optional paid providers</h2>
+			<h2>Parrot - free for life, fully local</h2>
 			<p>
 				<Link to="/">Parrot</Link> is free for life with no word caps. The app
-				itself doesn't charge you anything - ever.
+				doesn&apos;t charge you anything — ever. Transcription and AI cleanup
+				run on your Mac after a one-time download. No account, no API key, no
+				per-minute bill.
 			</p>
-			<p>There are two ways to use it for $0:</p>
-			<ul>
-				<li>
-					<strong>Local mode.</strong> Transcription runs on your Mac using
-					on-device Whisper. No API key, no internet, no cost.
-				</li>
-				<li>
-					<strong>Free-tier providers.</strong> Some transcription providers
-					offer free monthly minutes (Deepgram and others periodically run
-					generous free tiers). Drop in your key and you're set until you exceed
-					the free tier.
-				</li>
-			</ul>
 			<p>
-				If you want better-than-local accuracy and you dictate heavily, cloud
-				APIs cost roughly $0.006-0.01 per minute. For reference,{" "}
-				<a
-					href="https://openai.com/api/pricing/"
-					rel="noopener noreferrer"
-					target="_blank"
-				>
-					OpenAI's Whisper API is priced at $0.006 per minute
-				</a>
-				, and{" "}
-				<a
-					href="https://deepgram.com/pricing"
-					rel="noopener noreferrer"
-					target="_blank"
-				>
-					Deepgram's Nova-2 model lands around $0.0043 per minute
-				</a>{" "}
-				on the pay-as-you-go tier. So an hour of dictation is well under a
-				dollar - sustainable, but not necessary if your machine can run the
-				model itself.
+				That puts it in the rare &quot;truly free&quot; bucket: a real dictation
+				UI (global hotkey, paste at cursor, vocabulary, history) without a
+				freemium ceiling. The only practical requirements are an Apple Silicon
+				Mac and disk space for models.
+			</p>
+			<p>
+				Other products still use the &quot;free app, paid API&quot; pattern.
+				Cloud transcription APIs often land around a fraction of a cent per
+				minute — fine for builders, easy to underestimate if you dictate all
+				day. If you want $0 forever for personal Mac dictation, stay local.
 			</p>
 
 			<h2>macOS Dictation - the most truly-free option</h2>

@@ -5,11 +5,10 @@ export default function BestVoiceDictationAppsMac2026() {
 		<>
 			<p>
 				<strong>Parrot is the best voice dictation app for Mac in 2026</strong>{" "}
-				if you want AI-powered cleanup, custom vocabulary, and the option to run
-				everything locally. For casual use, macOS Dictation is solid and free.
-				For meetings, Otter.ai leads. We tested all five top options
-				head-to-head across accuracy, speed, privacy, and price to help you pick
-				the right one.
+				if you want AI-powered cleanup, custom vocabulary, and fully local
+				processing — free for life. For casual use, macOS Dictation is solid and
+				free. For meetings, Otter.ai leads. We compared the top options across
+				accuracy, speed, privacy, and price to help you pick the right one.
 			</p>
 
 			<h2>Quick comparison</h2>
@@ -85,18 +84,16 @@ export default function BestVoiceDictationAppsMac2026() {
 				</li>
 				<li>
 					<strong>Custom vocabulary</strong> - Add names, technical terms, and
-					jargon that other apps consistently get wrong. Your vocabulary syncs
-					across devices.
+					jargon that other apps consistently get wrong.
 				</li>
 				<li>
-					<strong>Multiple transcription providers</strong> - Choose between
-					OpenAI Whisper, Deepgram, or ElevenLabs depending on your needs for
-					accuracy, speed, or cost.
+					<strong>Fully local</strong> - Transcription and cleanup run on your
+					Mac. Your audio never leaves your device, and it works offline after
+					setup.
 				</li>
 				<li>
-					<strong>Local-first option</strong> - Run transcription entirely on
-					your Mac with no internet required. Your audio never leaves your
-					device.
+					<strong>Free for life</strong> - No subscription, no word caps, no
+					API bills for daily dictation.
 				</li>
 			</ul>
 			<p>

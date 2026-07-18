@@ -129,35 +129,29 @@ export default function TranscriptionApisCompared() {
 				</li>
 			</ul>
 
-			<h2>Our recommendation</h2>
+			<h2>Our recommendation (if you need an API)</h2>
 			<p>
-				For most Parrot users,{" "}
-				<strong>Whisper is the best starting point</strong>. It's accurate,
-				affordable, and you probably already have an OpenAI key. If speed is
-				your priority, switch to Deepgram. If you're already paying for
-				ElevenLabs, use that.
-			</p>
-			<p>
-				The good news is you can switch providers anytime in Parrot's settings
-				without losing your history or configuration. Try one for a week, switch
-				if it's not working for you.
+				If you&apos;re building a product that must call a cloud transcription
+				API: start with <strong>Whisper</strong> for accuracy and ecosystem,
+				switch to <strong>Deepgram</strong> when latency dominates, and use{" "}
+				<strong>ElevenLabs</strong> if you&apos;re already on that stack. Try
+				one for a week on real audio before you lock in pricing.
 			</p>
 
-			<h2>How Parrot uses transcription</h2>
+			<h2>How this relates to Parrot</h2>
 			<p>
-				Parrot ships with <strong>local mode</strong> today — transcription
-				and cleanup both run entirely on your Mac. No API keys, no internet,
-				no data leaving your machine. It's free, for life. See our{" "}
+				Parrot is a different path: <strong>local dictation on your Mac</strong>
+				. Transcription and cleanup run on-device — no API keys, no per-minute
+				bills, no audio upload. Free for life. See our{" "}
 				<Link to="/blog/$slug" params={{ slug: "local-voice-dictation-mac" }}>
 					local setup guide
 				</Link>
 				.
 			</p>
 			<p>
-				A managed cloud mode is coming soon for users who want higher
-				accuracy or are on older Macs where local processing is slow. When it
-				lands, you'll be able to switch between local and cloud anytime in
-				settings — your vocabulary, history, and preferences carry over.
+				Use this API comparison when you&apos;re evaluating cloud vendors. Use
+				Parrot when you just want to speak and have text appear at your cursor
+				without standing up infrastructure.
 			</p>
 		</>
 	);

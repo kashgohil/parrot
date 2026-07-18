@@ -5,11 +5,11 @@ export default function WisprFlowAlternatives() {
 		<>
 			<p>
 				<strong>The best Wispr Flow alternative in 2026 is Parrot</strong> if
-				you want the same fast, AI-cleaned dictation experience but with a
-				local-first option, no forced subscription, and your choice of
-				transcription provider. Below, we compare the five strongest Wispr Flow
-				alternatives across price, privacy, accuracy, and platform support so
-				you can pick the right one for how you actually work.
+				you want the same fast, AI-cleaned dictation experience with a fully
+				local option, no forced subscription, and no weekly word cap. Below, we
+				compare the five strongest Wispr Flow alternatives across price,
+				privacy, accuracy, and platform support so you can pick the right one
+				for how you actually work.
 			</p>
 
 			<h2>Why people look for a Wispr Flow alternative</h2>
@@ -27,8 +27,8 @@ export default function WisprFlowAlternatives() {
 					remote servers, which is a non-starter for some industries.
 				</li>
 				<li>
-					<strong>No provider choice</strong> - you can't swap in your own
-					Whisper, Deepgram, or ElevenLabs key.
+					<strong>No fully offline path</strong> - daily dictation still depends
+					on a network connection.
 				</li>
 				<li>
 					<strong>Limited customization</strong> - vocabulary and writing style
@@ -105,17 +105,16 @@ export default function WisprFlowAlternatives() {
 					words. Parrot doesn't.
 				</li>
 				<li>
-					<strong>Bring your own key.</strong> Use OpenAI Whisper, Deepgram, or
-					ElevenLabs - whichever balance of speed, cost, and accuracy you
-					prefer.
+					<strong>Free for life.</strong> Full local dictation with AI cleanup
+					included — no subscription and no API bills.
 				</li>
 				<li>
-					<strong>Local-first.</strong> Run transcription entirely on-device
-					with no internet required.
+					<strong>Local-first.</strong> Transcription and cleanup run entirely
+					on-device with no internet required after setup.
 				</li>
 				<li>
 					<strong>Deeper customization.</strong> Custom vocabulary, writing
-					style, and context profiles that actually move the needle on accuracy.
+					style, and context that actually move the needle on accuracy.
 				</li>
 			</ul>
 			<p>

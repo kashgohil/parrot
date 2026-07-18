@@ -23,10 +23,9 @@ export default function CustomVocabularyVoiceDictation() {
 				guesses wrong a lot.
 			</p>
 			<p>
-				This isn't a flaw in any specific provider. Whisper, Deepgram, and
-				ElevenLabs all have the same issue. The model doesn't know that
-				"Supabase" is a word, so it transcribes what sounds closest in its
-				training data.
+				This isn't a flaw in any one product. Cloud APIs and on-device engines
+				share the same challenge: the model doesn't know that "Supabase" is a
+				word, so it transcribes what sounds closest in its training data.
 			</p>
 
 			<h2>How custom vocabulary works</h2>
@@ -37,10 +36,10 @@ export default function CustomVocabularyVoiceDictation() {
 				scale toward the correct transcription.
 			</p>
 			<p>
-				In <Link to="/">Parrot</Link>, you add terms in your profile settings.
-				The list is stored locally in your SQLite database and is fed into the
-				dictation engine on every transcription. Managed cloud mode is coming
-				soon and will pick up the same vocabulary automatically.
+				In <Link to="/">Parrot</Link>, you add terms in your vocabulary
+				settings. The list is stored locally on your Mac and is applied on every
+				dictation — including a post-pass that fixes near-miss spellings before
+				cleanup.
 			</p>
 
 			<h2>What to add to your vocabulary</h2>
