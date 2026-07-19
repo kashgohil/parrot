@@ -20,15 +20,13 @@ type HudStatus =
 // mounted across recording/transcribing/cleaning, with only its inner content
 // swapping. Avoids the pop-out/pop-in jitter of remounting between states.
 // cleanup-ready is wider so "⌘⇧C polish" fits without truncating.
-// streaming expands further when live partial text is available.
 const SIZES: Record<
-	"idle" | "active" | "cleanup-ready" | "streaming",
+	"idle" | "active" | "cleanup-ready",
 	{ w: number; h: number }
 > = {
 	idle: { w: 36, h: 36 },
 	active: { w: 160, h: 34 },
 	"cleanup-ready": { w: 148, h: 34 },
-	streaming: { w: 280, h: 34 },
 };
 
 const CLEANUP_READY_MS = 8_000;
@@ -38,7 +36,6 @@ const DRAG_THRESHOLD = 4;
 
 export function HudOrb() {
 	const [status, setStatus] = useState<HudStatus>("idle");
-	const [partial, setPartial] = useState("");
 	const placed = useRef(false);
 	const cleanupReadyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -53,15 +50,9 @@ export function HudOrb() {
 		const unsubs = [
 			listen("recording-started", () => {
 				clearCleanupTimer();
-				setPartial("");
 				setStatus("recording");
 			}),
-			listen<{ text: string }>("streaming-partial", (e) => {
-				const t = e.payload?.text?.trim() ?? "";
-				if (t) setPartial(t);
-			}),
 			listen("recording-stopped", () => {
-				setPartial("");
 				setStatus("transcribing");
 			}),
 			// Blocking cleanup mode only — background mode never emits this.
@@ -69,7 +60,6 @@ export function HudOrb() {
 			// Paste-then-refine: raw paste is done; go idle immediately.
 			// cleanup-ready may re-open the chip a moment later if polish differs.
 			listen("dictation-complete", () => {
-				setPartial("");
 				setStatus((prev) => (prev === "cleanup-ready" ? prev : "idle"));
 			}),
 			listen("cleanup-ready", () => {
@@ -91,14 +81,12 @@ export function HudOrb() {
 		};
 	}, []);
 
-	const shape: "idle" | "active" | "cleanup-ready" | "streaming" =
+	const shape: "idle" | "active" | "cleanup-ready" =
 		status === "idle"
 			? "idle"
 			: status === "cleanup-ready"
 				? "cleanup-ready"
-				: status === "recording" && partial
-					? "streaming"
-					: "active";
+				: "active";
 
 	useEffect(() => {
 		if (!placed.current) {
@@ -157,7 +145,6 @@ export function HudOrb() {
 					<ActiveChip
 						key="active"
 						status={status}
-						partial={partial}
 						onPointerDown={handlePointerDown}
 					/>
 				)}
@@ -167,7 +154,7 @@ export function HudOrb() {
 }
 
 async function initialPlacement(
-	shape: "idle" | "active" | "cleanup-ready" | "streaming",
+	shape: "idle" | "active" | "cleanup-ready",
 ) {
 	const { w, h } = SIZES[shape];
 	const win = getCurrentWindow();
@@ -190,7 +177,7 @@ async function initialPlacement(
 // Keep the HUD anchored to its current center across resizes so the chip
 // expands outward from the icon's position rather than growing from a corner.
 async function resizeAnchored(
-	shape: "idle" | "active" | "cleanup-ready" | "streaming",
+	shape: "idle" | "active" | "cleanup-ready",
 ) {
 	const { w, h } = SIZES[shape];
 	const win = getCurrentWindow();
@@ -239,11 +226,9 @@ function IdleOrb({
 
 function ActiveChip({
 	status,
-	partial,
 	onPointerDown,
 }: {
 	status: HudStatus;
-	partial: string;
 	onPointerDown: (e: React.PointerEvent) => void;
 }) {
 	const clickable = status === "recording" || status === "cleanup-ready";
@@ -278,9 +263,7 @@ function ActiveChip({
 			}
 		>
 			<AnimatePresence mode="wait" initial={false}>
-				{status === "recording" && (
-					<RecordingContent key="recording" partial={partial} />
-				)}
+				{status === "recording" && <RecordingContent key="recording" />}
 				{status === "transcribing" && (
 					<ProcessingContent key="transcribing" label="Transcribing…" />
 				)}
@@ -316,7 +299,7 @@ function CleanupReadyContent() {
 	);
 }
 
-function RecordingContent({ partial }: { partial: string }) {
+function RecordingContent() {
 	const [elapsed, setElapsed] = useState(0);
 	const startedAt = useRef(Date.now());
 
@@ -331,10 +314,6 @@ function RecordingContent({ partial }: { partial: string }) {
 	const mins = Math.floor(elapsed / 60);
 	const secs = elapsed % 60;
 
-	// Show the tail of the partial so the latest words stay visible.
-	const display =
-		partial.length > 36 ? `…${partial.slice(-34).trimStart()}` : partial;
-
 	return (
 		<motion.span
 			initial={{ opacity: 0 }}
@@ -344,26 +323,18 @@ function RecordingContent({ partial }: { partial: string }) {
 			className="flex items-center gap-2 min-w-0 max-w-full"
 		>
 			<span className="w-2 h-2 bg-white rounded-full animate-blink shrink-0" />
-			{display ? (
-				<span className="truncate opacity-95 font-medium tracking-tight">
-					{display}
-				</span>
-			) : (
-				<>
-					<span className="flex items-center gap-[2px] h-3 shrink-0">
-						{[0, 1, 2, 3, 4].map((i) => (
-							<span
-								key={i}
-								className="w-[2px] h-1.5 bg-white rounded-sm animate-waveform"
-								style={{ animationDelay: `${i * 0.12}s` }}
-							/>
-						))}
-					</span>
-					<span className="tabular-nums opacity-90 shrink-0">
-						{mins}:{secs.toString().padStart(2, "0")}
-					</span>
-				</>
-			)}
+			<span className="flex items-center gap-[2px] h-3 shrink-0">
+				{[0, 1, 2, 3, 4].map((i) => (
+					<span
+						key={i}
+						className="w-[2px] h-1.5 bg-white rounded-sm animate-waveform"
+						style={{ animationDelay: `${i * 0.12}s` }}
+					/>
+				))}
+			</span>
+			<span className="tabular-nums opacity-90 shrink-0">
+				{mins}:{secs.toString().padStart(2, "0")}
+			</span>
 		</motion.span>
 	);
 }
