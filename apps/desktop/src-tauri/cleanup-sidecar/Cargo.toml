@@ -3,7 +3,7 @@
 # The main app spawns this and talks to it over stdin/stdout JSON.
 [package]
 name = "parrot-cleanup-sidecar"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 
 [[bin]]
