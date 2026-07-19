@@ -60,9 +60,28 @@ export const Route = createFileRoute("/changelog")({
 
 const RELEASES = [
 	{
+		version: "v0.2.1",
+		date: "July 19, 2026",
+		tag: "Latest",
+		changes: [
+			{
+				type: "improved",
+				items: [
+					"Parrot is fully local-only — no account, login, or cloud sync. Dictation, cleanup, and history stay on your Mac",
+					"Simpler onboarding: set up a local profile and start dictating without cloud migration or subscription steps",
+				],
+			},
+			{
+				type: "fixed",
+				items: [
+					"More reliable paste into the focused app — Parrot pastes with ⌘V and falls back to typing if paste doesn’t land",
+				],
+			},
+		],
+	},
+	{
 		version: "v0.2.0",
 		date: "July 18, 2026",
-		tag: "Latest",
 		changes: [
 			{
 				type: "improved",
