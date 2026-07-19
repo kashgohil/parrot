@@ -19,6 +19,17 @@ pub type SharedCleanupEngine = Arc<std::sync::RwLock<Option<Arc<BuiltinCleanupEn
 
 static LLAMA_BACKEND: OnceLock<Result<LlamaBackend, String>> = OnceLock::new();
 
+/// llama.cpp's `LLAMA_FLASH_ATTN_TYPE_DISABLED` (see llama.h — 0 is part of the
+/// stable public enum; `llama_flash_attn_type` is a transparent `c_int` alias).
+///
+/// We force flash attention off for the cleanup context. With the default AUTO
+/// policy, llama.cpp enables the fused `ggml_flash_attn_ext` kernel for Qwen2 on
+/// Metal, and that op aborts (`ggml_abort`) during graph reservation when the
+/// STT (whisper) and cleanup (llama.cpp) Metal backends contend in-process —
+/// the crash seen when cleaning up longer dictations. The unfused attention path
+/// is numerically equivalent and the perf cost is negligible on a 0.5B model.
+const FLASH_ATTN_DISABLED: i32 = 0;
+
 fn backend() -> Result<&'static LlamaBackend> {
     match LLAMA_BACKEND.get_or_init(|| {
         LlamaBackend::init().map_err(|e| format!("Failed to init llama.cpp backend: {e}"))
@@ -96,7 +107,8 @@ impl BuiltinCleanupEngine {
         let ctx_params = LlamaContextParams::default()
             .with_n_ctx(NonZeroU32::new(n_ctx))
             .with_n_threads(num_threads())
-            .with_n_threads_batch(num_threads());
+            .with_n_threads_batch(num_threads())
+            .with_flash_attention_policy(FLASH_ATTN_DISABLED);
 
         let mut ctx = self
             .model
