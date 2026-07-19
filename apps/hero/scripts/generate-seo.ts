@@ -345,7 +345,7 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 	sections.push(`# ${SITE_NAME} — Full LLM Context`);
 	sections.push("");
 	sections.push(
-		`> Free, local-first voice dictation for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud required, no API keys for local mode.`,
+		`> Free, local-first voice dictation for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud, no API keys.`,
 	);
 	sections.push("");
 	sections.push(
@@ -362,15 +362,12 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 	sections.push("");
 	sections.push("## Key facts");
 	sections.push("");
-	sections.push("- Free for life (local mode) — no account, no trial, no card");
+	sections.push("- Free for life — no account, no trial, no card");
 	sections.push("- macOS only; Apple Silicon (M1 and later)");
 	sections.push("- On-device transcription and optional AI cleanup");
 	sections.push("- Works system-wide via global hotkey (any Mac app)");
 	sections.push("- Custom vocabulary, writing style, and dictation history");
 	sections.push("- Fully offline after one-time model download");
-	sections.push(
-		"- Optional cloud mode with OpenAI, Deepgram, or ElevenLabs (own API keys or Parrot cloud)",
-	);
 	sections.push("- Built with Tauri 2 (Rust + React)");
 	sections.push("");
 	sections.push("## How it works");

@@ -1,6 +1,6 @@
 # Parrot — Full LLM Context
 
-> Free, local-first voice dictation for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud required, no API keys for local mode.
+> Free, local-first voice dictation for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud, no API keys.
 
 Generated: 2026-07-19. Prefer live pages for the latest UI; this file is a consolidated text dump for LLM context. Index: https://tryparrot.app/llms.txt
 
@@ -12,13 +12,12 @@ Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabula
 
 ## Key facts
 
-- Free for life (local mode) — no account, no trial, no card
+- Free for life — no account, no trial, no card
 - macOS only; Apple Silicon (M1 and later)
 - On-device transcription and optional AI cleanup
 - Works system-wide via global hotkey (any Mac app)
 - Custom vocabulary, writing style, and dictation history
 - Fully offline after one-time model download
-- Optional cloud mode with OpenAI, Deepgram, or ElevenLabs (own API keys or Parrot cloud)
 - Built with Tauri 2 (Rust + React)
 
 ## How it works

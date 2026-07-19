@@ -1,16 +1,16 @@
 # Parrot
 
-> Parrot is a free, local-first voice dictation app for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud required, no API keys for local mode.
+> Parrot is a free, local-first voice dictation app for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud, no API keys.
 
-Parrot runs fully offline when you choose local mode (Whisper.cpp + optional Ollama cleanup). It supports custom vocabulary, writing style, and context so names and jargon land correctly. Built with Tauri 2 (Rust + React). Website: https://tryparrot.app
+Parrot runs fully offline on-device (Whisper.cpp + optional Ollama cleanup). It supports custom vocabulary, writing style, and context so names and jargon land correctly. Built with Tauri 2 (Rust + React). Website: https://tryparrot.app
 
 Key facts:
-- Free for life (local mode)
+- Free for life
 - macOS only; Apple Silicon (M1/M2/M3/M4)
 - On-device transcription and optional AI cleanup
 - Works system-wide (Slack, Notion, VS Code, email, browsers, etc.)
 - Custom vocabulary, writing style, and dictation history
-- Optional cloud mode with provider APIs (OpenAI, Deepgram, ElevenLabs)
+- Fully offline after a one-time model download
 
 ## Core pages
 
@@ -18,7 +18,6 @@ Key facts:
 - [Download](https://tryparrot.app/download): Get Parrot for Mac
 - [About](https://tryparrot.app/about): Mission, story, and product principles
 - [Changelog](https://tryparrot.app/changelog): Release notes and product updates
-- [Pricing](https://tryparrot.app/pricing): Pricing (local mode is free)
 - [Contact](https://tryparrot.app/contact): Support and contact
 - [Privacy](https://tryparrot.app/privacy): Privacy policy
 - [Terms](https://tryparrot.app/terms): Terms of service
