@@ -2120,13 +2120,15 @@ pub fn run() {
                         &config,
                     );
 
-                    // 3. Pre-open the mic stream so Bluetooth headsets
-                    //    finish codec negotiation before the first press.
+                    // 3. Pre-open the mic stream only for Bluetooth inputs
+                    //    so codec negotiation is paid before the first press
+                    //    (built-in / USB mics skip this to avoid a permanent
+                    //    orange "mic in use" indicator while idle).
                     {
                         let state = app.state::<RecorderState>();
                         let warm_result = state.recorder.lock().map(|mut rec| rec.warm_up());
                         match warm_result {
-                            Ok(Ok(())) => println!("Mic input stream warmed"),
+                            Ok(Ok(())) => println!("Mic warm-up checked (BT-only)"),
                             Ok(Err(e)) => eprintln!("Mic warm-up skipped: {}", e),
                             Err(e) => eprintln!("Mic warm-up lock error: {}", e),
                         }
