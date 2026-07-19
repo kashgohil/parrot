@@ -130,7 +130,7 @@ export const Route = createFileRoute("/")({
 					image: "https://tryparrot.app/og/home.png",
 					screenshot: "https://tryparrot.app/og/home.png",
 					downloadUrl: "https://tryparrot.app/download",
-					softwareVersion: "0.2.0",
+					softwareVersion: "0.2.1",
 					author: {
 						"@type": "Person",
 						name: "Kash Gohil",
