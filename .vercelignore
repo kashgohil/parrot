@@ -30,9 +30,9 @@ scripts
 **/.turbo
 **/.nitro
 
-# Large / irrelevant root files
+# Large / irrelevant root files (leading / = repo root only — do NOT
+# ignore apps/hero/package.json or the install step has nothing to read)
 *.md
 !apps/hero/**/*.md
-bun.lock
-package.json
-CLAUDE.md
+/bun.lock
+/package.json
