@@ -68,17 +68,15 @@ Add names, acronyms, brand terms, medical / technical jargon. Parrot feeds these
 
 Set your context ("I'm a software engineer writing Slack messages") and tone ("concise and direct"). The cleanup matches how you actually write.
 
-### Local or cloud — your choice
+### Fully local
 
-| | Local mode | Cloud mode |
-|---|---|---|
-| Transcription | Whisper.cpp (in-process via `whisper-rs`) | OpenAI Whisper, Deepgram, or ElevenLabs |
-| AI cleanup | Ollama (on-device) | GPT-4o-mini |
-| Privacy | Zero data leaves your machine | Audio sent to your chosen provider |
-| Internet | Not required | Required |
-| Setup | One-time ~2–5 GB model download | API key or Parrot account |
-
-Switch between modes anytime in settings. No data migration, no lock-in.
+| | |
+|---|---|
+| Transcription | Whisper.cpp or Parakeet (on-device) |
+| AI cleanup | Builtin llama.cpp or optional Ollama |
+| Privacy | Zero dictation data leaves your machine |
+| Internet | Not required after model download |
+| Setup | One-time model download |
 
 ### Searchable history
 
@@ -108,7 +106,7 @@ When releases are out:
 
 ## Build from source
 
-Parrot is a Bun monorepo with three apps: a Tauri 2 desktop app, a Hono API server (only needed for cloud mode), and a marketing site. For most contributors, only the desktop app matters.
+Parrot is a Bun monorepo with two apps: a Tauri 2 desktop app (local-only dictation) and a marketing site. For most contributors, only the desktop app matters.
 
 ### 1. Install toolchain
 
@@ -184,11 +182,11 @@ bun install
 ### 4. Run in dev mode
 
 ```bash
-# Just the desktop app (most common)
-bun run dev:desktop
-
-# Or everything (desktop + API + marketing site)
+# Desktop app (default)
 bun run dev
+
+# Desktop + marketing site
+bun run dev:all
 ```
 
 The first build compiles `whisper.cpp` from source, which takes ~30–60 seconds. Subsequent builds are cached and incremental.
@@ -223,16 +221,15 @@ open -a Parrot
 
 ## First-time setup
 
-When you first launch Parrot in **local mode**, the onboarding wizard handles everything:
+When you first launch Parrot, the onboarding wizard handles everything:
 
 1. **System check** — verifies OS version, architecture, free disk space.
 2. **Accessibility permission** *(macOS only)* — Parrot needs this to listen for the global hotkey and paste into other apps. The wizard opens the right System Settings pane and detects the moment you flip the switch.
-3. **Whisper model** — downloads your chosen model (`tiny.en` / `base.en` / `small.en` — 75 MB to 500 MB) into Parrot's data directory. Loaded in-process, no separate server.
-4. **Ollama** — installs Ollama (via its official installer) if not already present.
-5. **Cleanup model** — pulls a 1–3 GB LLM (Llama 3.2 / Phi-4 / Qwen) for text cleanup.
-6. **Validation** — quick end-to-end smoke test.
+3. **Speech model** — downloads Parakeet or Whisper into Parrot's data directory. Loaded in-process, no separate server.
+4. **Cleanup model** — installs the builtin on-device cleanup model (optional Ollama path for power users).
+5. **Validation** — quick end-to-end smoke test.
 
-No manual configuration needed. **Cloud mode** skips all of the above — just paste an API key or sign in.
+No account, API keys, or cloud signup required.
 
 ### Permissions
 
@@ -255,7 +252,6 @@ Parrot only requests what it needs. No screen recording, no contacts, no calenda
 parrot/
 ├── apps/
 │   ├── desktop/          # Tauri 2 (Rust) + React 19 desktop app
-│   ├── api/              # Hono 4 API server on Bun (cloud mode only)
 │   └── hero/             # Marketing site (tryparrot.app)
 └── package.json          # Bun monorepo root
 ```
@@ -274,7 +270,7 @@ Native cross-platform app built with Tauri 2 (Rust backend) and React 19 (fronte
 | [hound](https://github.com/ruuda/hound) | WAV encoding/decoding |
 | [core-graphics](https://crates.io/crates/core-graphics) | macOS `CGEventTap` for the `fn`-key hotkey |
 | [rusqlite](https://github.com/rusqlite/rusqlite) | Local SQLite database |
-| [reqwest](https://github.com/seanmonstar/reqwest) | HTTP client (cloud mode + Ollama API) |
+| [reqwest](https://github.com/seanmonstar/reqwest) | HTTP client (model downloads + Ollama API) |
 | [tokio](https://tokio.rs) | Async runtime |
 
 **React frontend** — settings, history, profile, onboarding wizard:
@@ -289,19 +285,6 @@ Native cross-platform app built with Tauri 2 (Rust backend) and React 19 (fronte
 | [Motion](https://motion.dev) | Animations |
 | [Sonner](https://sonner.emilkowal.ski) | Toasts |
 
-### API server (cloud mode only)
-
-Backend for cloud mode — auth, transcription proxying, history sync, subscription billing. Not required for local-mode users; not bundled into the desktop binary.
-
-| Library | Purpose |
-|---|---|
-| [Hono 4](https://hono.dev) | Web framework |
-| [Bun](https://bun.sh) | Runtime |
-| [Drizzle ORM](https://orm.drizzle.team) | Database ORM + migrations |
-| [PostgreSQL](https://www.postgresql.org) | Database |
-| [Polar.sh](https://polar.sh) | Subscription billing |
-| [MinIO](https://min.io) | S3-compatible audio storage |
-
 ---
 
 ## Transcription providers
@@ -309,22 +292,19 @@ Backend for cloud mode — auth, transcription proxying, history sync, subscript
 | Provider | Mode | Model |
 |---|---|---|
 | [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) (in-process) | Local | `ggml-tiny.en` / `ggml-base.en` / `ggml-small.en` |
-| [OpenAI Whisper](https://platform.openai.com/docs/guides/speech-to-text) | Cloud | `whisper-1` |
-| [Deepgram](https://deepgram.com) | Cloud | `nova-2` |
-| [ElevenLabs](https://elevenlabs.io) | Cloud | `scribe_v1` |
+| [Parakeet](https://github.com/NVIDIA/NeMo) (ONNX) | Local | Parakeet v3 (fast, accurate default) |
 
-**Cleanup models:**
-- **Local:** Ollama with `llama3.2`, `phi4`, or `qwen2.5-coder`
-- **Cloud:** GPT-4o-mini
+**Cleanup models (local only):**
+- Builtin in-process llama.cpp model
+- Optional Ollama (`llama3.2`, `phi4`, `qwen2.5-coder`, etc.)
 
 ---
 
 ## Privacy
 
-- **Local mode** — audio is captured, transcribed, and cleaned entirely on your device. Zero bytes sent anywhere.
-- **Cloud mode** — audio goes directly to your chosen provider (OpenAI / Deepgram / ElevenLabs). Parrot itself does not store your recordings server-side beyond the response cycle.
-- **BYOK** — bring your own API keys. Your keys, your provider, your data.
-- **No telemetry** — no analytics, crash reporting, or tracking. Parrot never phones home.
+- **Local-only** — audio is captured, transcribed, and cleaned entirely on your device. Zero bytes sent anywhere for dictation.
+- **No cloud accounts** — no sign-in, no server-side history, no API keys required.
+- **No telemetry** — no analytics or tracking of what you dictate.
 
 ---
 
@@ -334,21 +314,16 @@ Backend for cloud mode — auth, transcription proxying, history sync, subscript
                         ┌──────────────┐
         Hotkey held →   │  Mic capture │
                         └──────┬───────┘
-                               │ WAV audio
-                    ┌──────────┴──────────┐
-                    │                     │
-              Local mode             Cloud mode
-                    │                     │
-            ┌───────┴───────┐    ┌────────┴─────────┐
-            │  whisper-rs   │    │  OpenAI/Deepgram │
-            │  (in-process) │    │   /ElevenLabs    │
-            └───────┬───────┘    └────────┬─────────┘
-                    │                     │
-                    └──────────┬──────────┘
+                               │ audio
+                        ┌──────┴───────┐
+                        │ Local STT    │
+                        │ Whisper /    │
+                        │ Parakeet     │
+                        └──────┬───────┘
                                │ raw text
                         ┌──────┴───────┐
-                        │  AI cleanup  │
-                        │  (LLM pass)  │
+                        │ AI cleanup   │
+                        │ (on-device)   │
                         └──────┬───────┘
                                │ clean text
                     ┌──────────┴──────────┐
@@ -384,18 +359,13 @@ apps/
 │           ├── lib.rs             # Tauri commands, app entrypoint
 │           ├── audio.rs           # Audio capture (cpal) + WAV encoding
 │           ├── hotkey.rs          # Cross-platform hotkey, macOS fn-key tap
-│           ├── transcription.rs   # whisper-rs + cloud HTTP providers
-│           ├── cleanup.rs         # LLM text cleanup (Ollama / GPT-4o-mini)
+│           ├── transcription.rs   # Local STT (Whisper / Parakeet)
+│           ├── cleanup.rs         # On-device cleanup (builtin / Ollama)
 │           ├── local_setup.rs     # Onboarding wizard backend
 │           └── db.rs              # Local SQLite database
 │
-├── api/                           # Hono API server (cloud mode only)
-│   └── src/
-│       ├── routes/                # API endpoints
-│       └── db/schema/             # Drizzle ORM schema
-│
 └── hero/                          # Marketing site (tryparrot.app)
-    └── src/routes/                # Pages (landing, pricing, about, blog)
+    └── src/routes/                # Pages (landing, about, download, blog)
 ```
 
 ---
@@ -404,14 +374,12 @@ apps/
 
 | Feature | Parrot | Wispr Flow | macOS Dictation |
 |---|---|---|---|
-| Local-only mode | Yes | No | No |
-| Cloud mode | Yes | Yes | No |
+| Local-only | Yes | No | Partial |
 | Custom vocabulary | Yes | Yes | No |
 | AI cleanup | Yes | Yes | No |
 | Offline support | Yes | No | Yes |
 | Privacy (no data sent) | Yes | No | Partial |
-| Cross-platform | macOS, Windows, Linux | macOS, Windows | macOS only |
-| Open source | Yes | No | No |
+| Platform | macOS (Apple Silicon) | macOS, Windows | macOS only |
 
 ---
 

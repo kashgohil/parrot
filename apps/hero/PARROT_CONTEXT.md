@@ -1,6 +1,6 @@
 # Parrot App Context for Landing Page
 
-Context gathered from the desktop app (`apps/desktop/`) and API (`apps/api/`) to inform the hero/landing site copy and structure.
+Context gathered from the desktop app (`apps/desktop/`) to inform the hero/landing site copy and structure. Local-only product — no cloud API.
 
 ---
 

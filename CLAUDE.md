@@ -9,19 +9,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 bun install
 
 # Development from repo root (loads apps/desktop/.env for Tauri)
-bun run dev                  # API (:8030) + desktop Tauri
-bun run dev:desktop          # Desktop only
-bun run dev:api              # API only
+bun run dev                  # Desktop Tauri
+bun run dev:desktop          # Desktop only (same as default)
 bun run dev:hero             # Marketing site (:3002)
-bun run dev:all              # API + desktop + hero
+bun run dev:all              # Desktop + hero
 
-# Build desktop app (from apps/desktop: bun run desktop build)
-# bun run build:desktop
+# Hero SEO assets (sitemap, rss, llms-full.txt)
+bun run generate-seo
 
-# Database migrations (API)
-bun run db:generate          # Generate Drizzle migrations
-bun run db:migrate           # Apply migrations
-bun run db:studio            # Open Drizzle Studio
+# Desktop local DB
+bun run db:clean             # Wipe local SQLite history/settings
 
 # Hero app commands (run from apps/hero/)
 bun run test                 # Run tests with Vitest
@@ -31,35 +28,26 @@ bun run check                # Type check + lint with Biome
 
 ## Architecture Overview
 
-Parrot is a **voice dictation app** built as a Bun monorepo with three apps:
+Parrot is a **local-only voice dictation app** built as a Bun monorepo with two apps:
 
 ### Desktop App (`apps/desktop/`)
 - **Frontend**: React 19 + TanStack Router (file-based) + Tailwind CSS 4
-- **Backend**: Tauri 2 (Rust) handling audio capture, transcription, and system integration
+- **Backend**: Tauri 2 (Rust) handling audio capture, on-device transcription, cleanup, and system integration
 
 **Key Rust modules** (`src-tauri/src/`):
-- `lib.rs` - Tauri commands, global hotkey (Cmd+Shift+Space), event emission
-- `audio.rs` - Audio capture via cpal, WAV encoding via hound
-- `transcription.rs` - Trait-based providers (OpenAI Whisper, Deepgram, ElevenLabs)
-- `cleanup.rs` - LLM text cleanup via GPT-4o-mini
+- `lib.rs` - Tauri commands, global hotkey, event emission
+- `audio.rs` - Audio capture via cpal
+- `transcription.rs` - Local STT (Whisper / Parakeet)
+- `cleanup.rs` / `cleanup_engine.rs` - On-device AI cleanup (builtin llama.cpp or Ollama)
 - `db.rs` - Local SQLite for history, settings, profile
+- `local_setup.rs` - Model download and local setup
 
 **Frontend routes** (`src/routes/`):
-- `/_auth/` - Login/signup pages
-- `/_onboarding/` - Setup wizard (local vs cloud)
+- `/_onboarding/` - Local profile, model setup, tour
 - `/index.tsx` - Dictation history
-- `/settings.tsx` - API keys, provider selection, hotkey
-- `/profile.tsx` - Custom vocabulary, context, writing style
-
-### API Server (`apps/api/`)
-- **Framework**: Hono 4 on Bun runtime
-- **Database**: SQLite with Drizzle ORM
-- **Auth**: Session-based (30-day expiry) with password (Argon2id) and Google OAuth
-
-**Routes** (`src/routes/`):
-- `/api/auth/*` - Signup, login, logout, session validation, Google OAuth
-- `/api/subscription/*` - Subscription management
-- `/health` - Health check
+- `/settings.tsx` - Hotkey, STT model, cleanup, writing style
+- `/vocabulary.tsx` - Custom vocabulary
+- `/profile.tsx` - Local profile
 
 ### Hero/Marketing Site (`apps/hero/`)
 - **Framework**: React 19 + TanStack Router (file-based) + Vite
@@ -68,9 +56,13 @@ Parrot is a **voice dictation app** built as a Bun monorepo with three apps:
 
 **Key pages** (`src/routes/`):
 - `/index.tsx` - Landing page with interactive demos
-- `/pricing.tsx`, `/about.tsx`, `/download.tsx` - Marketing pages
-- `/blog/` - Blog with MDX-like posts
+- `/about.tsx`, `/download.tsx` - Marketing pages
+- `/blog/` - Blog posts
+- `/compare/` - Competitor comparisons
 - `/privacy.tsx`, `/terms.tsx`, `/contact.tsx` - Legal/support pages
+
+**Public SEO/LLM assets** (`public/`):
+- `llms.txt`, `llms-full.txt` (generated), `sitemap.xml`, `rss.xml`, `robots.txt`
 
 **Adding shadcn components** (from `apps/hero/`):
 ```bash
@@ -80,16 +72,14 @@ pnpm dlx shadcn@latest add <component>
 ## Data Flow
 
 1. User presses global hotkey → Rust captures audio
-2. Audio sent to transcription provider (OpenAI/Deepgram/ElevenLabs)
-3. Optional: Text cleaned via GPT-4o-mini with user's custom words/context
+2. Audio transcribed on-device (Whisper or Parakeet)
+3. Optional: text cleaned on-device (builtin model or Ollama) with custom words/context
 4. Result copied to clipboard and pasted via enigo
 5. Saved to local SQLite history
 
 ## Key Configuration
 
 - **Desktop DB**: `~/Library/Application Support/com.kash.parrot/parrot.db`
-- **API DB**: `./parrot.db` in API directory
 - **Tauri identifier**: `com.kash.parrot`
 - **Vite dev server (desktop)**: port 1420 (HMR on 1421)
 - **Vite dev server (hero)**: port 3002
-- **API server**: port 8030
