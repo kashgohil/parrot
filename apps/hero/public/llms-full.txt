@@ -243,13 +243,13 @@ MacWhisper is great for transcribing audio files but isn't built for live dictat
 
 - Parrot: Free for life
 - MacWhisper free: Free tier with smaller models
-- MacWhisper paid: $19 one-time (Pro)
+- MacWhisper paid: €59 one-time (Pro)
 
 ### Feature comparison
 
 | Feature | Parrot | MacWhisper |
 | --- | --- | --- |
-| Price | Free for life | $19 one-time |
+| Price | Free for life | €59 one-time |
 | Live dictation (hotkey + paste) | Yes | Limited |
 | Audio file transcription | Yes | Yes |
 | AI cleanup | Yes | No |
@@ -1486,7 +1486,7 @@ Wispr Flow is a polished voice dictation app, but the most common reasons people
 | Parrot | Free for life | Yes | Yes | Yes |
 | Wispr Flow | Free tier / $15/mo | No | Yes | Limited |
 | Superwhisper | $8.49/mo | Yes | Yes | Yes |
-| MacWhisper | $19 one-time | Yes | No | Limited |
+| MacWhisper | €59 one-time | Yes | No | Limited |
 | macOS Dictation | Free | Yes | No | No |
 
 ## 1. Parrot - the closest match, without the subscription
@@ -1513,7 +1513,7 @@ Trade-offs: the Pro plan is required for AI cleanup and unlocks better models, s
 
 ## 3. MacWhisper - one-time payment, no cleanup
 
-MacWhisper is a popular choice for people who want to run Whisper locally with a real GUI. It nails transcription quality and the license is a one-time $19.
+MacWhisper is a popular choice for people who want to run Whisper locally with a real GUI. It nails transcription quality and the license is a one-time €59.
 
 The catch: there's no AI cleanup, so you get raw transcripts with filler words ("um", "uh", "you know") and speech-style punctuation. If you mostly transcribe audio files, that's fine. For dictation - where you want output that reads like you wrote it - you'll want a tool with a cleanup pass.
 

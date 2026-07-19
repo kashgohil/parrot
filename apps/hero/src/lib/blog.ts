@@ -42,9 +42,7 @@ export const posts: BlogPost[] = [
 			"voiceink free alternative",
 			"best local dictation app",
 		],
-		component: lazy(
-			() => import("@/routes/blog/-posts/voiceink-alternatives"),
-		),
+		component: lazy(() => import("@/routes/blog/-posts/voiceink-alternatives")),
 	},
 	{
 		slug: "willow-voice-alternatives",
@@ -170,9 +168,7 @@ export const posts: BlogPost[] = [
 			"voice typing focus",
 			"adhd productivity dictation",
 		],
-		component: lazy(
-			() => import("@/routes/blog/-posts/voice-dictation-adhd"),
-		),
+		component: lazy(() => import("@/routes/blog/-posts/voice-dictation-adhd")),
 	},
 	{
 		slug: "superwhisper-alternatives",
@@ -256,7 +252,8 @@ export const posts: BlogPost[] = [
 	},
 	{
 		slug: "voice-dictation-for-writers",
-		title: "Voice Dictation for Writers: Draft Faster Without Fighting the Tool",
+		title:
+			"Voice Dictation for Writers: Draft Faster Without Fighting the Tool",
 		description:
 			"How authors, bloggers, and content teams use voice dictation for first drafts — workflow tips, vocabulary setup, privacy, and the best free Mac setup.",
 		date: "2026-07-16",
@@ -301,7 +298,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Looking for a Wispr Flow alternative? We compare the 5 best voice dictation apps on price, privacy, accuracy, and offline support so you can pick the right one.",
 		date: "2026-04-29",
-		dateModified: "2026-07-18",
+		dateModified: "2026-07-19",
 		readingTime: "7 min read",
 		category: "Comparison",
 		keywords: [

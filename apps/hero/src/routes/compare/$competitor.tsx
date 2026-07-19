@@ -252,6 +252,10 @@ function CompareCompetitorPage() {
 							)}
 						</div>
 					</div>
+					<p className="text-xs text-muted-foreground/70 mt-5">
+						{c.shortName} pricing checked {c.pricesCheckedOn}. Vendor prices can
+						change — check their site for the latest.
+					</p>
 				</div>
 			</section>
 

@@ -21,6 +21,8 @@ export interface Competitor {
 		theirPaid: string;
 		parrotPrice: string;
 	};
+	/** Month competitor pricing was last verified, e.g. "July 2026". */
+	pricesCheckedOn: string;
 	features: FeatureRow[];
 	theirStrengths: string[];
 	theirWeaknesses: string[];
@@ -46,6 +48,7 @@ export const competitors: Competitor[] = [
 			theirPaid: "$15/mo Pro",
 			parrotPrice: "Free for life",
 		},
+		pricesCheckedOn: "July 2026",
 		features: [
 			{ name: "Price", parrot: "Free for life", them: "Free tier / $15/mo" },
 			{ name: "Word caps", parrot: "None", them: "Weekly cap on free tier" },
@@ -139,6 +142,7 @@ export const competitors: Competitor[] = [
 			theirPaid: "$8.49/mo Pro",
 			parrotPrice: "Free for life",
 		},
+		pricesCheckedOn: "July 2026",
 		features: [
 			{ name: "Price", parrot: "Free for life", them: "$8.49/mo Pro" },
 			{ name: "Fully local", parrot: true, them: true },
@@ -211,11 +215,12 @@ export const competitors: Competitor[] = [
 			"MacWhisper is great for transcribing audio files but isn't built for live dictation. Parrot is the better choice if you want global-hotkey dictation with AI cleanup. Pick MacWhisper if you mostly transcribe pre-recorded audio.",
 		pricing: {
 			theirFree: "Free tier with smaller models",
-			theirPaid: "$19 one-time (Pro)",
+			theirPaid: "€59 one-time (Pro)",
 			parrotPrice: "Free for life",
 		},
+		pricesCheckedOn: "July 2026",
 		features: [
-			{ name: "Price", parrot: "Free for life", them: "$19 one-time" },
+			{ name: "Price", parrot: "Free for life", them: "€59 one-time" },
 			{
 				name: "Live dictation (hotkey + paste)",
 				parrot: true,
@@ -291,6 +296,7 @@ export const competitors: Competitor[] = [
 			theirPaid: "$699 one-time (Professional)",
 			parrotPrice: "Free for life",
 		},
+		pricesCheckedOn: "July 2026",
 		features: [
 			{ name: "Price", parrot: "Free for life", them: "$699 one-time" },
 			{ name: "Setup time", parrot: "5 min", them: "Hours of voice training" },

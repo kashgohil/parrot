@@ -22,6 +22,7 @@ function parseBlogPosts(): {
 	title: string;
 	description: string;
 	date: string;
+	dateModified?: string;
 	keywords: string[];
 }[] {
 	const blogPath = resolve(import.meta.dir, "../src/lib/blog.ts");
@@ -32,15 +33,18 @@ function parseBlogPosts(): {
 		title: string;
 		description: string;
 		date: string;
+		dateModified?: string;
 		keywords: string[];
 	}[] = [];
 
+	// `dateModified` is optional and always immediately follows `date` in blog.ts,
+	// so an optional group here stays bounded to the same post entry.
 	const postRegex =
-		/\{\s*slug:\s*"([^"]+)"[\s\S]*?title:\s*"([^"]+)"[\s\S]*?description:\s*\n?\s*"([^"]+)"[\s\S]*?date:\s*"([^"]+)"[\s\S]*?keywords:\s*\[([\s\S]*?)\]/g;
+		/\{\s*slug:\s*"([^"]+)"[\s\S]*?title:\s*"([^"]+)"[\s\S]*?description:\s*\n?\s*"([^"]+)"[\s\S]*?date:\s*"([^"]+)"\s*(?:,\s*dateModified:\s*"([^"]+)")?[\s\S]*?keywords:\s*\[([\s\S]*?)\]/g;
 
 	let match: RegExpExecArray | null;
 	while ((match = postRegex.exec(content)) !== null) {
-		const keywords = match[5]
+		const keywords = match[6]
 			.split(",")
 			.map((k) => k.trim().replace(/^"|"$/g, ""))
 			.filter(Boolean);
@@ -49,11 +53,22 @@ function parseBlogPosts(): {
 			title: match[2],
 			description: match[3],
 			date: match[4],
+			dateModified: match[5],
 			keywords,
 		});
 	}
 
 	return posts;
+}
+
+/** ISO YYYY-MM-DD dates compare correctly as strings; pick the most recent. */
+function effectiveLastmod(post: {
+	date: string;
+	dateModified?: string;
+}): string {
+	return post.dateModified && post.dateModified > post.date
+		? post.dateModified
+		: post.date;
 }
 
 // ---------------------------------------------------------------------------
@@ -82,15 +97,21 @@ const staticPages: {
 
 function generateSitemap(posts: ReturnType<typeof parseBlogPosts>): string {
 	const today = new Date().toISOString().split("T")[0];
-	const latestPostDate = posts.length > 0 ? posts[0].date : today;
+	const latestPostDate =
+		posts.length > 0
+			? posts.map(effectiveLastmod).sort().at(-1)!
+			: today;
 
 	const urls: string[] = [];
 
 	for (const page of staticPages) {
-		const lastmod = page.path === "/blog" ? latestPostDate : today;
+		// Only /blog has a truthful change signal (its newest post). Every other
+		// static page omits <lastmod> rather than stamp a fake `today` each build —
+		// invented freshness gets discounted by crawlers.
+		const lastmod = page.path === "/blog" ? latestPostDate : undefined;
+		const lastmodLine = lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "";
 		urls.push(`  <url>
-    <loc>${SITE_URL}${page.path}</loc>
-    <lastmod>${lastmod}</lastmod>
+    <loc>${SITE_URL}${page.path}</loc>${lastmodLine}
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority.toFixed(1)}</priority>
   </url>`);
@@ -99,7 +120,7 @@ function generateSitemap(posts: ReturnType<typeof parseBlogPosts>): string {
 	for (const post of posts) {
 		urls.push(`  <url>
     <loc>${SITE_URL}/blog/${post.slug}</loc>
-    <lastmod>${post.date}</lastmod>
+    <lastmod>${effectiveLastmod(post)}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>`);

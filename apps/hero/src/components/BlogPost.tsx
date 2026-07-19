@@ -1,8 +1,8 @@
-import type { BlogPost } from "@/lib/blog";
-import { getRelatedPosts } from "@/lib/blog";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Suspense } from "react";
+import type { BlogPost } from "@/lib/blog";
+import { getRelatedPosts } from "@/lib/blog";
 import Footer from "./Footer";
 
 export default function BlogPostLayout({ post }: { post: BlogPost }) {
@@ -65,6 +65,18 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 								</span>
 								<span>·</span>
 								<span>{post.readingTime}</span>
+								{post.dateModified && post.dateModified !== post.date && (
+									<>
+										<span>·</span>
+										<span>
+											Updated{" "}
+											{new Date(post.dateModified).toLocaleDateString("en-US", {
+												year: "numeric",
+												month: "long",
+											})}
+										</span>
+									</>
+								)}
 							</div>
 						</div>
 					</div>

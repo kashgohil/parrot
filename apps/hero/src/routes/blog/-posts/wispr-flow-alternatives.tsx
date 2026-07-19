@@ -73,7 +73,7 @@ export default function WisprFlowAlternatives() {
 					</tr>
 					<tr>
 						<td>MacWhisper</td>
-						<td>$19 one-time</td>
+						<td>€59 one-time</td>
 						<td>Yes</td>
 						<td>No</td>
 						<td>Limited</td>
@@ -139,7 +139,7 @@ export default function WisprFlowAlternatives() {
 			<p>
 				MacWhisper is a popular choice for people who want to run Whisper
 				locally with a real GUI. It nails transcription quality and the license
-				is a one-time $19.
+				is a one-time €59.
 			</p>
 			<p>
 				<strong>The catch:</strong> there's no AI cleanup, so you get raw
