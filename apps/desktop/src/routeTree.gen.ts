@@ -9,27 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as OnboardingRouteImport } from './routes/_onboarding'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as VocabularyRouteImport } from './routes/vocabulary'
-import { Route as OnboardingLocalProfileRouteImport } from './routes/_onboarding/local-profile'
-import { Route as OnboardingLocalSetupRouteImport } from './routes/_onboarding/local-setup'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as OnboardingRouteImport } from './routes/_onboarding'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingTourRouteImport } from './routes/_onboarding/tour'
+import { Route as OnboardingLocalSetupRouteImport } from './routes/_onboarding/local-setup'
+import { Route as OnboardingLocalProfileRouteImport } from './routes/_onboarding/local-profile'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/_onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const VocabularyRoute = VocabularyRouteImport.update({
+  id: '/vocabulary',
+  path: '/vocabulary',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -37,14 +28,23 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VocabularyRoute = VocabularyRouteImport.update({
-  id: '/vocabulary',
-  path: '/vocabulary',
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OnboardingLocalProfileRoute = OnboardingLocalProfileRouteImport.update({
-  id: '/local-profile',
-  path: '/local-profile',
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/_onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingTourRoute = OnboardingTourRouteImport.update({
+  id: '/tour',
+  path: '/tour',
   getParentRoute: () => OnboardingRoute,
 } as any)
 const OnboardingLocalSetupRoute = OnboardingLocalSetupRouteImport.update({
@@ -52,9 +52,9 @@ const OnboardingLocalSetupRoute = OnboardingLocalSetupRouteImport.update({
   path: '/local-setup',
   getParentRoute: () => OnboardingRoute,
 } as any)
-const OnboardingTourRoute = OnboardingTourRouteImport.update({
-  id: '/tour',
-  path: '/tour',
+const OnboardingLocalProfileRoute = OnboardingLocalProfileRouteImport.update({
+  id: '/local-profile',
+  path: '/local-profile',
   getParentRoute: () => OnboardingRoute,
 } as any)
 
@@ -128,25 +128,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_onboarding': {
-      id: '/_onboarding'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
+    '/vocabulary': {
+      id: '/vocabulary'
+      path: '/vocabulary'
+      fullPath: '/vocabulary'
+      preLoaderRoute: typeof VocabularyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -156,18 +142,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/vocabulary': {
-      id: '/vocabulary'
-      path: '/vocabulary'
-      fullPath: '/vocabulary'
-      preLoaderRoute: typeof VocabularyRouteImport
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_onboarding/local-profile': {
-      id: '/_onboarding/local-profile'
-      path: '/local-profile'
-      fullPath: '/local-profile'
-      preLoaderRoute: typeof OnboardingLocalProfileRouteImport
+    '/_onboarding': {
+      id: '/_onboarding'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_onboarding/tour': {
+      id: '/_onboarding/tour'
+      path: '/tour'
+      fullPath: '/tour'
+      preLoaderRoute: typeof OnboardingTourRouteImport
       parentRoute: typeof OnboardingRoute
     }
     '/_onboarding/local-setup': {
@@ -177,11 +177,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingLocalSetupRouteImport
       parentRoute: typeof OnboardingRoute
     }
-    '/_onboarding/tour': {
-      id: '/_onboarding/tour'
-      path: '/tour'
-      fullPath: '/tour'
-      preLoaderRoute: typeof OnboardingTourRouteImport
+    '/_onboarding/local-profile': {
+      id: '/_onboarding/local-profile'
+      path: '/local-profile'
+      fullPath: '/local-profile'
+      preLoaderRoute: typeof OnboardingLocalProfileRouteImport
       parentRoute: typeof OnboardingRoute
     }
   }
