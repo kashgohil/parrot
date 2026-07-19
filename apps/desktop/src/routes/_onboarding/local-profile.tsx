@@ -40,7 +40,7 @@ function LocalProfilePage() {
 			});
 
 			// Pull the freshly-created local user into auth context so
-			// subsequent steps (local-setup, tour) see user.isLocal=true.
+			// subsequent steps (local-setup, tour) see the new local user.
 			await refreshUser();
 
 			// Navigate to local setup (installation)

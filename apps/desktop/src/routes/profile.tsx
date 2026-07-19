@@ -17,20 +17,20 @@ function ProfilePage() {
 					Profile
 				</h1>
 				<p className="text-sm text-muted-foreground mt-1">
-					Your account details
+					Your local profile on this Mac
 				</p>
 			</div>
 
-			{/* Account Info Card */}
+			{/* Profile Info Card */}
 			<section className="bg-card rounded-2xl border border-border p-5">
 				<div className="flex items-start gap-4 mb-5">
 					<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
 						<User className="w-5 h-5 text-primary" />
 					</div>
 					<div>
-						<h2 className="text-base font-semibold text-foreground">Account</h2>
+						<h2 className="text-base font-semibold text-foreground">Profile</h2>
 						<p className="text-sm text-muted-foreground">
-							Your personal information
+							Stored only on this device — no cloud account
 						</p>
 					</div>
 				</div>

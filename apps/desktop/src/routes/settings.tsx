@@ -1,4 +1,3 @@
-// import { CloudMigration } from "@/components/cloud-migration";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -752,8 +751,6 @@ function SettingsPage() {
 				</div>
 			</section>
 
-			{/* Cloud sync - hidden until cloud mode is available */}
-			{/* <CloudMigration /> */}
 
 			{/* Save button */}
 			<div className="pt-4">

@@ -30,11 +30,7 @@ const KNOWN_PATTERNS: ErrorPattern[] = [
 	{
 		match: /(connection refused|failed to connect|network|timed out|timeout)/i,
 		message:
-			"Couldn't reach the network. Check your internet connection and try again.",
-	},
-	{
-		match: /session token|unauthor|401|403/i,
-		message: "Your session expired. Please sign in again.",
+			"Couldn't reach a local service (model download or Ollama). Check Settings, or that you're online if Parrot is downloading a model.",
 	},
 	{
 		match: /no audio|recording.*empty|no microphone/i,

@@ -9,26 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VocabularyRouteImport } from './routes/vocabulary'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as OnboardingRouteImport } from './routes/_onboarding'
-import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as OnboardingTourRouteImport } from './routes/_onboarding/tour'
-import { Route as OnboardingLocalSetupRouteImport } from './routes/_onboarding/local-setup'
+import { Route as OnboardingRouteImport } from './routes/_onboarding'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as VocabularyRouteImport } from './routes/vocabulary'
 import { Route as OnboardingLocalProfileRouteImport } from './routes/_onboarding/local-profile'
-import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
-import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as OnboardingLocalSetupRouteImport } from './routes/_onboarding/local-setup'
+import { Route as OnboardingTourRouteImport } from './routes/_onboarding/tour'
 
-const VocabularyRoute = VocabularyRouteImport.update({
-  id: '/vocabulary',
-  path: '/vocabulary',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/_onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -36,22 +32,19 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/_onboarding',
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
+const VocabularyRoute = VocabularyRouteImport.update({
+  id: '/vocabulary',
+  path: '/vocabulary',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingTourRoute = OnboardingTourRouteImport.update({
-  id: '/tour',
-  path: '/tour',
+const OnboardingLocalProfileRoute = OnboardingLocalProfileRouteImport.update({
+  id: '/local-profile',
+  path: '/local-profile',
   getParentRoute: () => OnboardingRoute,
 } as any)
 const OnboardingLocalSetupRoute = OnboardingLocalSetupRouteImport.update({
@@ -59,20 +52,10 @@ const OnboardingLocalSetupRoute = OnboardingLocalSetupRouteImport.update({
   path: '/local-setup',
   getParentRoute: () => OnboardingRoute,
 } as any)
-const OnboardingLocalProfileRoute = OnboardingLocalProfileRouteImport.update({
-  id: '/local-profile',
-  path: '/local-profile',
+const OnboardingTourRoute = OnboardingTourRouteImport.update({
+  id: '/tour',
+  path: '/tour',
   getParentRoute: () => OnboardingRoute,
-} as any)
-const AuthSignupRoute = AuthSignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AuthRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -80,8 +63,6 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/vocabulary': typeof VocabularyRoute
-  '/login': typeof AuthLoginRoute
-  '/signup': typeof AuthSignupRoute
   '/local-profile': typeof OnboardingLocalProfileRoute
   '/local-setup': typeof OnboardingLocalSetupRoute
   '/tour': typeof OnboardingTourRoute
@@ -91,8 +72,6 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/vocabulary': typeof VocabularyRoute
-  '/login': typeof AuthLoginRoute
-  '/signup': typeof AuthSignupRoute
   '/local-profile': typeof OnboardingLocalProfileRoute
   '/local-setup': typeof OnboardingLocalSetupRoute
   '/tour': typeof OnboardingTourRoute
@@ -100,13 +79,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_auth': typeof AuthRouteWithChildren
   '/_onboarding': typeof OnboardingRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/vocabulary': typeof VocabularyRoute
-  '/_auth/login': typeof AuthLoginRoute
-  '/_auth/signup': typeof AuthSignupRoute
   '/_onboarding/local-profile': typeof OnboardingLocalProfileRoute
   '/_onboarding/local-setup': typeof OnboardingLocalSetupRoute
   '/_onboarding/tour': typeof OnboardingTourRoute
@@ -118,8 +94,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/settings'
     | '/vocabulary'
-    | '/login'
-    | '/signup'
     | '/local-profile'
     | '/local-setup'
     | '/tour'
@@ -129,21 +103,16 @@ export interface FileRouteTypes {
     | '/profile'
     | '/settings'
     | '/vocabulary'
-    | '/login'
-    | '/signup'
     | '/local-profile'
     | '/local-setup'
     | '/tour'
   id:
     | '__root__'
     | '/'
-    | '/_auth'
     | '/_onboarding'
     | '/profile'
     | '/settings'
     | '/vocabulary'
-    | '/_auth/login'
-    | '/_auth/signup'
     | '/_onboarding/local-profile'
     | '/_onboarding/local-setup'
     | '/_onboarding/tour'
@@ -151,7 +120,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRouteWithChildren
   OnboardingRoute: typeof OnboardingRouteWithChildren
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
@@ -160,25 +128,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/vocabulary': {
-      id: '/vocabulary'
-      path: '/vocabulary'
-      fullPath: '/vocabulary'
-      preLoaderRoute: typeof VocabularyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_onboarding': {
@@ -188,25 +142,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthRouteImport
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_onboarding/tour': {
-      id: '/_onboarding/tour'
-      path: '/tour'
-      fullPath: '/tour'
-      preLoaderRoute: typeof OnboardingTourRouteImport
+    '/vocabulary': {
+      id: '/vocabulary'
+      path: '/vocabulary'
+      fullPath: '/vocabulary'
+      preLoaderRoute: typeof VocabularyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_onboarding/local-profile': {
+      id: '/_onboarding/local-profile'
+      path: '/local-profile'
+      fullPath: '/local-profile'
+      preLoaderRoute: typeof OnboardingLocalProfileRouteImport
       parentRoute: typeof OnboardingRoute
     }
     '/_onboarding/local-setup': {
@@ -216,41 +177,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingLocalSetupRouteImport
       parentRoute: typeof OnboardingRoute
     }
-    '/_onboarding/local-profile': {
-      id: '/_onboarding/local-profile'
-      path: '/local-profile'
-      fullPath: '/local-profile'
-      preLoaderRoute: typeof OnboardingLocalProfileRouteImport
+    '/_onboarding/tour': {
+      id: '/_onboarding/tour'
+      path: '/tour'
+      fullPath: '/tour'
+      preLoaderRoute: typeof OnboardingTourRouteImport
       parentRoute: typeof OnboardingRoute
-    }
-    '/_auth/signup': {
-      id: '/_auth/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof AuthSignupRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/login': {
-      id: '/_auth/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof AuthRoute
     }
   }
 }
-
-interface AuthRouteChildren {
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthSignupRoute: typeof AuthSignupRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthLoginRoute: AuthLoginRoute,
-  AuthSignupRoute: AuthSignupRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface OnboardingRouteChildren {
   OnboardingLocalProfileRoute: typeof OnboardingLocalProfileRoute
@@ -270,7 +205,6 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthRoute: AuthRouteWithChildren,
   OnboardingRoute: OnboardingRouteWithChildren,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,

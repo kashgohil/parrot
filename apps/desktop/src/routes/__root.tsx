@@ -26,11 +26,9 @@ import {
 	AlertTriangle,
 	ArrowDownToLine,
 	BookA,
-	CircleCheck,
 	ExternalLink,
 	History,
 	Loader2,
-	LogOut,
 	Settings,
 	Sparkles,
 	User,
@@ -50,18 +48,12 @@ interface DictationResult {
 	pasted: boolean;
 }
 
+const ONBOARDING_PATHS = ["/local-profile", "/local-setup", "/tour"];
+
 function RootLayout() {
-	const {
-		isAuthenticated,
-		isLoading,
-		user,
-		justLoggedIn,
-		clearJustLoggedIn,
-		setupMode,
-	} = useAuth();
+	const { isLoading, user } = useAuth();
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [showWelcome, setShowWelcome] = useState(false);
 
 	useEffect(() => {
 		installGlobalErrorHandlers();
@@ -77,53 +69,14 @@ function RootLayout() {
 		};
 	}, []);
 
-	// Show welcome screen after login
+	// Local-only: send first-run users through profile → setup → tour.
 	useEffect(() => {
-		if (justLoggedIn && isAuthenticated) {
-			setShowWelcome(true);
-			const timer = setTimeout(() => {
-				setShowWelcome(false);
-				clearJustLoggedIn();
-			}, 2000);
-			return () => clearTimeout(timer);
-		}
-	}, [justLoggedIn, isAuthenticated, clearJustLoggedIn]);
+		if (isLoading) return;
 
-	// Auth redirect logic — skip while welcome screen is showing
-	useEffect(() => {
-		if (isLoading || showWelcome) return;
-
-		const isAuthRoute =
-			location.pathname.startsWith("/login") ||
-			location.pathname.startsWith("/signup");
-		const localOnboardingPaths = [
-			"/local-profile",
-			"/local-setup",
-			"/tour",
-		];
-		const isLocalOnboardingRoute = localOnboardingPaths.some((p) =>
+		const onOnboarding = ONBOARDING_PATHS.some((p) =>
 			location.pathname.startsWith(p),
 		);
-		// Local-only app — everyone goes through the same onboarding flow.
-		if (isLocalOnboardingRoute) {
-			return; // Allow access
-		}
-
-		// Persist setup_mode=local on first launch so backend stays consistent.
-		if (!setupMode && !isAuthRoute) {
-			invoke("set_setting", { key: "setup_mode", value: "local" })
-				.then(() => {
-					if (!user?.onboarding_completed) {
-						if (!user?.name) {
-							navigate({ to: "/local-profile" });
-						} else {
-							navigate({ to: "/local-setup" });
-						}
-					}
-				})
-				.catch((e) => showError(e, { context: "saving your mode preference" }));
-			return;
-		}
+		if (onOnboarding) return;
 
 		if (!user?.onboarding_completed) {
 			if (!user?.name) {
@@ -131,30 +84,15 @@ function RootLayout() {
 			} else {
 				navigate({ to: "/local-setup" });
 			}
-			return;
 		}
-	}, [
-		isAuthenticated,
-		isLoading,
-		user,
-		location.pathname,
-		navigate,
-		showWelcome,
-		setupMode,
-	]);
+	}, [isLoading, user, location.pathname, navigate]);
 
-	const isAuthRoute =
-		location.pathname.startsWith("/login") ||
-		location.pathname.startsWith("/signup");
-	const localOnboardingPaths = ["/local-profile", "/local-setup", "/tour"];
-	const isLocalOnboardingRoute = localOnboardingPaths.some((p) =>
+	const onOnboarding = ONBOARDING_PATHS.some((p) =>
 		location.pathname.startsWith(p),
 	);
 
 	let content: React.ReactNode;
-	if (showWelcome) {
-		content = <WelcomeScreen name={user?.name} />;
-	} else if (isAuthRoute || isLocalOnboardingRoute) {
+	if (onOnboarding) {
 		content = <Outlet />;
 	} else if (isLoading) {
 		content = (
@@ -162,10 +100,15 @@ function RootLayout() {
 				<div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin-fast" />
 			</div>
 		);
-	} else if (!isAuthenticated) {
-		content = null;
+	} else if (!user?.onboarding_completed) {
+		// Redirect in progress
+		content = (
+			<div className="min-h-screen flex items-center justify-center bg-background">
+				<div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin-fast" />
+			</div>
+		);
 	} else {
-		content = <AuthenticatedLayout />;
+		content = <MainShell />;
 	}
 
 	return (
@@ -176,39 +119,8 @@ function RootLayout() {
 	);
 }
 
-function WelcomeScreen({ name }: { name?: string | null }) {
-	const [phase, setPhase] = useState<"enter" | "exit">("enter");
-
-	useEffect(() => {
-		const timer = setTimeout(() => setPhase("exit"), 1400);
-		return () => clearTimeout(timer);
-	}, []);
-
-	return (
-		<div
-			className={`min-h-screen flex flex-col items-center justify-center bg-background transition-opacity duration-500 ${
-				phase === "exit" ? "opacity-0" : "opacity-100"
-			}`}
-		>
-			<div className="animate-fade-in-up flex flex-col items-center gap-4">
-				<div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center animate-welcome-pop">
-					<CircleCheck className="w-8 h-8 text-primary animate-welcome-check" />
-				</div>
-				<div className="text-center">
-					<h1 className="text-2xl font-semibold text-foreground">
-						{name ? `Welcome back, ${name.split(" ")[0]}` : "Welcome back"}
-					</h1>
-					<p className="text-sm text-muted-foreground mt-1">
-						Setting things up...
-					</p>
-				</div>
-			</div>
-		</div>
-	);
-}
-
-function AuthenticatedLayout() {
-	const { user, logout } = useAuth();
+function MainShell() {
+	const { user } = useAuth();
 	const [status, setStatus] = useState<AppStatus>("idle");
 	const [result, setResult] = useState<DictationResult | null>(null);
 	const updater = useUpdater();
@@ -247,12 +159,10 @@ function AuthenticatedLayout() {
 
 			{/* Left Sidebar */}
 			<div className="hidden md:flex md:w-[240px] lg:w-[260px] bg-pk-primary flex-col relative overflow-hidden shrink-0">
-				{/* Decorative elements */}
 				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
 				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
 				<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl" />
 
-				{/* Brand header */}
 				<div className="relative z-10 p-6 lg:p-7">
 					<div className="flex items-center gap-3">
 						<div className="w-11 h-11 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-lg">
@@ -273,7 +183,6 @@ function AuthenticatedLayout() {
 					</div>
 				</div>
 
-				{/* Navigation */}
 				<nav className="relative z-10 flex-1 px-4 py-4">
 					<div className="space-y-1">
 						<NavLink to="/" icon={History} label="History" />
@@ -283,45 +192,35 @@ function AuthenticatedLayout() {
 					</div>
 				</nav>
 
-				{/* Update available card — only renders when there's something to do. */}
 				<UpdateBanner updater={updater} />
 
-				{/* User section */}
 				<div className="relative z-10 p-4 lg:p-6">
 					<div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-						<div className="flex items-center gap-3 mb-3">
+						<div className="flex items-center gap-3">
 							<div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
 								<User className="w-4 h-4 text-white" />
 							</div>
 							<div className="flex-1 min-w-0">
 								<p className="text-sm font-medium text-white truncate">
-									{user?.name || user?.email?.split("@")[0] || "User"}
+									{user?.name || "You"}
 								</p>
-								<p className="text-xs text-white/50 truncate">{user?.email}</p>
+								<p className="text-xs text-white/50 truncate">
+									Local · on this Mac
+								</p>
 							</div>
 						</div>
-						<button
-							onClick={logout}
-							className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all"
-						>
-							<LogOut className="w-3.5 h-3.5" />
-							Sign out
-						</button>
 					</div>
 				</div>
 			</div>
 
-			{/* Main content area */}
 			<div className="flex-1 flex flex-col relative overflow-hidden">
 				<DoodleBackground opacity={0.06} />
 
-				{/* Mobile header */}
 				<div
 					data-tauri-drag-region
 					className="h-8 shrink-0 cursor-default md:hidden"
 				/>
 
-				{/* Mobile navigation bar */}
 				<div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-border bg-background/80 backdrop-blur-sm relative z-10">
 					<div className="flex items-center gap-2">
 						<div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -335,7 +234,6 @@ function AuthenticatedLayout() {
 					</div>
 				</div>
 
-				{/* Mobile tab bar */}
 				<div className="md:hidden flex items-center justify-around px-2 py-2 border-b border-border bg-background/80 backdrop-blur-sm relative z-10">
 					<MobileNavLink to="/" icon={History} label="History" />
 					<MobileNavLink to="/vocabulary" icon={BookA} label="Words" />
@@ -343,13 +241,9 @@ function AuthenticatedLayout() {
 					<MobileNavLink to="/profile" icon={User} label="Profile" />
 				</div>
 
-				{/* Permissions banner */}
 				<PermissionsBanner />
-
-				{/* Encourage Whisper users to switch to Parakeet */}
 				<ParakeetUpgradeBanner />
 
-				{/* Page content */}
 				<main className="flex-1 overflow-y-auto relative z-10">
 					<div className="max-w-3xl mx-auto w-full px-5 py-6 lg:py-8">
 						<Outlet />
@@ -357,7 +251,6 @@ function AuthenticatedLayout() {
 				</main>
 			</div>
 
-			{/* Status overlays */}
 			{status === "recording" && <RecordingOverlay />}
 			{status === "transcribing" && (
 				<ProcessingOverlay label="Transcribing..." />
@@ -521,8 +414,6 @@ function UpdateBanner({
 }) {
 	const { phase, availableVersion, error, apply, dismiss } = updater;
 
-	// Hidden while idle, checking, or silently downloading in the background.
-	// Only surfaces once the new build is on disk and ready to apply.
 	if (phase !== "ready" && phase !== "installing" && phase !== "error") {
 		return null;
 	}
@@ -588,7 +479,11 @@ function PermissionsBanner() {
 
 	const missing: MissingPermission[] = [];
 	if (isMissing(status.microphone)) {
-		missing.push({ key: "microphone", label: "Microphone", state: status.microphone });
+		missing.push({
+			key: "microphone",
+			label: "Microphone",
+			state: status.microphone,
+		});
 	}
 	if (isMissing(status.accessibility)) {
 		missing.push({
@@ -618,7 +513,9 @@ function PermissionsBanner() {
 				<AlertTriangle className="w-4 h-4 shrink-0" />
 				<div className="flex-1 min-w-0">
 					<p className="text-sm font-medium leading-tight">{headline}</p>
-					<p className="text-xs text-amber-800/80 leading-tight mt-0.5">{detail}</p>
+					<p className="text-xs text-amber-800/80 leading-tight mt-0.5">
+						{detail}
+					</p>
 				</div>
 				<button
 					type="button"
@@ -653,7 +550,6 @@ function PermissionsBanner() {
 
 const PARAKEET_BANNER_DISMISS_KEY = "parrot_dismiss_parakeet_banner";
 
-/** Nudge Whisper-only installs toward Parakeet (faster + more accurate). */
 function ParakeetUpgradeBanner() {
 	const navigate = useNavigate();
 	const [show, setShow] = useState(false);
@@ -666,12 +562,11 @@ function ParakeetUpgradeBanner() {
 				return;
 			}
 		}
-		invoke<{ engine: string; can_upgrade_to_parakeet?: boolean }>("get_stt_status")
+		invoke<{ engine: string; can_upgrade_to_parakeet?: boolean }>(
+			"get_stt_status",
+		)
 			.then((s) => {
-				if (s.engine !== "parakeet" || s.can_upgrade_to_parakeet) {
-					// Show when not already on Parakeet
-					if (s.engine !== "parakeet") setShow(true);
-				}
+				if (s.engine !== "parakeet") setShow(true);
 			})
 			.catch(() => {});
 	}, []);
@@ -699,9 +594,7 @@ function ParakeetUpgradeBanner() {
 			}
 		} catch (e) {
 			console.error(e);
-			setProgress(
-				`Failed: ${e instanceof Error ? e.message : String(e)}`,
-			);
+			setProgress(`Failed: ${e instanceof Error ? e.message : String(e)}`);
 		} finally {
 			setBusy(false);
 		}
@@ -759,4 +652,3 @@ function ParakeetUpgradeBanner() {
 		</div>
 	);
 }
-

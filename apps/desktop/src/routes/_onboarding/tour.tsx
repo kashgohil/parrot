@@ -52,7 +52,7 @@ const SLIDES = [
 
 function TourPage() {
 	const navigate = useNavigate();
-	const { updateOnboarding } = useAuth();
+	const { completeOnboarding: finishOnboarding } = useAuth();
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [completing, setCompleting] = useState(false);
 
@@ -77,7 +77,7 @@ function TourPage() {
 	const completeOnboarding = async () => {
 		setCompleting(true);
 		try {
-			await updateOnboarding(true);
+			await finishOnboarding();
 			navigate({ to: "/" });
 		} catch (err) {
 			console.error("Failed to complete onboarding:", err);
