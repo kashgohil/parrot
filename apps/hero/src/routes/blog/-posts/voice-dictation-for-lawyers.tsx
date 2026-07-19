@@ -154,26 +154,6 @@ export default function VoiceDictationForLawyers() {
 				comparison if you're weighing legacy enterprise vs modern free local.
 			</p>
 
-			<h2>FAQ</h2>
-			<h3>Is voice dictation confidential enough for client work?</h3>
-			<p>
-				It depends on the tool. Local on-device dictation minimizes third-party
-				access. Cloud tools require contract review, policies, and judgment.
-				When in doubt, local is the simpler answer.
-			</p>
-			<h3>Can I use free dictation for legal email?</h3>
-			<p>
-				Yes — free local tools are viable for drafting.{" "}
-				<Link to="/download">Parrot</Link> is free for life on Mac with
-				on-device cleanup. Still review every outbound message like you would
-				typed text.
-			</p>
-			<h3>Will dictation replace associates?</h3>
-			<p>
-				No. It replaces blank-page time and typing fatigue. Judgment, research,
-				and responsibility stay human.
-			</p>
-
 			<h2>Draft faster without expanding your attack surface</h2>
 			<p>
 				Lawyers don’t need gimmicks. They need a hotkey, trustworthy privacy,

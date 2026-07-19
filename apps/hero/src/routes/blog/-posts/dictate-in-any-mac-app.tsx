@@ -166,23 +166,6 @@ export default function DictateInAnyMacApp() {
 				.
 			</p>
 
-			<h2>FAQ</h2>
-			<h3>Can I dictate in every Mac app?</h3>
-			<p>
-				Almost any app with a standard text field. Exceptions: some secure
-				inputs, canvas-only tools, and fields that don&apos;t accept paste.
-			</p>
-			<h3>Do I need a plugin for Slack or Notion?</h3>
-			<p>
-				No. Global hotkey + paste is enough. Plugins add complexity without
-				unlocking the core loop.
-			</p>
-			<h3>What&apos;s the best free system-wide dictation for Mac?</h3>
-			<p>
-				Parrot — free for life, local, built for the hotkey workflow.{" "}
-				<Link to="/download">Download here</Link>.
-			</p>
-
 			<h2>Pick three apps and practice</h2>
 			<p>
 				Today: Slack, email, and your notes app. Tomorrow it feels automatic.

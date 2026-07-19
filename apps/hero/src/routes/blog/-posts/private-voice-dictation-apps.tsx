@@ -172,27 +172,6 @@ export default function PrivateVoiceDictationApps() {
 				<li>Anyone who simply prefers ownership of their microphone</li>
 			</ul>
 
-			<h2>FAQ</h2>
-			<h3>Are cloud dictation apps ever OK?</h3>
-			<p>
-				Yes — for non-sensitive everyday text, many people accept the trade.
-				Just choose consciously. Don’t paste patient notes or M&amp;A drafts
-				into a cloud mic by accident.
-			</p>
-			<h3>Is free private dictation actually good now?</h3>
-			<p>
-				Yes. On modern Apple Silicon, on-device speech recognition and cleanup
-				are fast enough for daily email, docs, and chat — which is why{" "}
-				<Link to="/download">Parrot</Link> can ship free local mode without
-				feeling like a toy.
-			</p>
-			<h3>Does private mean lower accuracy?</h3>
-			<p>
-				Not automatically. Local accuracy has closed the gap for everyday
-				speech. Cloud may still edge noisy environments in some cases; measure
-				on your accent and vocabulary.
-			</p>
-
 			<h2>Choose private by default</h2>
 			<p>
 				You can always use cloud tools later for specific tasks. Starting local

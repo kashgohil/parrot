@@ -147,24 +147,6 @@ export default function VoiceDictationForEmail() {
 				</li>
 			</ul>
 
-			<h2>FAQ</h2>
-			<h3>Is voice email faster than typing?</h3>
-			<p>
-				For most people, yes on first-draft replies. The win is minutes per day,
-				not milliseconds per word. Measure your own afternoon.
-			</p>
-			<h3>Will cleanup make me sound robotic?</h3>
-			<p>
-				Good cleanup fixes filler and grammar while keeping your phrasing. If it
-				feels stiff, shorten what you say — concise speech produces concise
-				email.
-			</p>
-			<h3>Best free tool for dictating email on Mac?</h3>
-			<p>
-				<Link to="/download">Parrot</Link> — free, local, works in any client
-				with a text field.
-			</p>
-
 			<h2>Clear ten emails today</h2>
 			<p>
 				Don&apos;t overhaul your whole system. Dictate the next ten replies.

@@ -144,24 +144,6 @@ export default function AquaVoiceAlternatives() {
 				</li>
 			</ul>
 
-			<h2>FAQ</h2>
-			<h3>Is there a free Aqua Voice alternative for Mac?</h3>
-			<p>
-				Yes. Parrot is free for life with on-device transcription and cleanup.
-				macOS Dictation is also free, but limited for daily professional use.
-			</p>
-			<h3>Can an Aqua alternative keep audio off the cloud?</h3>
-			<p>
-				Yes — choose a local-first app. Parrot processes speech and cleanup on
-				your Mac; nothing is uploaded for dictation.
-			</p>
-			<h3>Will I lose real-time text if I switch?</h3>
-			<p>
-				Not necessarily. Parrot shows live transcript in the floating HUD while
-				you hold the hotkey, then pastes finished text at the cursor when you
-				release.
-			</p>
-
 			<h2>Next step</h2>
 			<p>
 				If Aqua’s price or privacy model isn’t a fit,{" "}

@@ -149,24 +149,6 @@ export default function VoiceinkAlternatives() {
 				</li>
 			</ul>
 
-			<h2>FAQ</h2>
-			<h3>Is there a free VoiceInk alternative?</h3>
-			<p>
-				Yes. Parrot&apos;s local mode is free for life with cleanup and custom
-				vocabulary included.
-			</p>
-			<h3>Do VoiceInk alternatives work offline?</h3>
-			<p>
-				Local apps can. After setup, Parrot dictates without internet. Cloud apps
-				cannot.
-			</p>
-			<h3>Will my accuracy drop if I switch?</h3>
-			<p>
-				Measure on your accent and jargon — not demos. Add vocabulary for names
-				and product terms; that usually closes the gap faster than switching
-				engines.
-			</p>
-
 			<h2>Try the free path</h2>
 			<p>
 				<Link to="/download">Download Parrot</Link> for Apple Silicon, press{" "}

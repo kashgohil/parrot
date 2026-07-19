@@ -37,6 +37,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Looking for a VoiceInk alternative? Compare free local Mac dictation, Superwhisper, Wispr Flow, and MacWhisper on price, privacy, cleanup, and daily workflow.",
 		date: "2026-07-18",
+		dateModified: "2026-07-19",
 		readingTime: "6 min read",
 		category: "Comparison",
 		keywords: [
@@ -47,6 +48,20 @@ export const posts: BlogPost[] = [
 			"voiceink free alternative",
 			"best local dictation app",
 		],
+		faq: [
+			{
+				q: "Is there a free VoiceInk alternative?",
+				a: "Yes. Parrot is free for life with cleanup and custom vocabulary included.",
+			},
+			{
+				q: "Do VoiceInk alternatives work offline?",
+				a: "Local apps can. After the one-time setup, Parrot dictates without internet. Cloud apps cannot.",
+			},
+			{
+				q: "Will my accuracy drop if I switch?",
+				a: "Measure on your accent and jargon — not demos. Add vocabulary for names and product terms; that usually closes the gap faster than switching engines.",
+			},
+		],
 		component: lazy(() => import("@/routes/blog/-posts/voiceink-alternatives")),
 	},
 	{
@@ -55,6 +70,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Compare Willow Voice alternatives for Mac — free local options, privacy-first apps, and cloud peers — so you can keep polished dictation without the wrong tradeoffs.",
 		date: "2026-07-18",
+		dateModified: "2026-07-19",
 		readingTime: "6 min read",
 		category: "Comparison",
 		keywords: [
@@ -64,6 +80,20 @@ export const posts: BlogPost[] = [
 			"willow voice competitors",
 			"multi platform dictation alternative",
 			"free willow alternative",
+		],
+		faq: [
+			{
+				q: "Is Parrot a free Willow Voice alternative?",
+				a: "For Mac users who want free local dictation with cleanup — yes. It doesn't match multi-platform cloud sync; that's intentional.",
+			},
+			{
+				q: "Can Willow alternatives keep audio offline?",
+				a: "Local apps like Parrot can. Verify by disconnecting Wi-Fi after setup — see our offline setup guide.",
+			},
+			{
+				q: "Which is more accurate?",
+				a: "Depends on accent, mic, and vocabulary. Test proper nouns from your real work — client names beat demo scripts.",
+			},
 		],
 		component: lazy(
 			() => import("@/routes/blog/-posts/willow-voice-alternatives"),
@@ -75,6 +105,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Set up system-wide voice dictation on Mac so one hotkey works in Slack, Notion, VS Code, Gmail, and more — plus app-specific tips when paste fails.",
 		date: "2026-07-18",
+		dateModified: "2026-07-19",
 		readingTime: "7 min read",
 		category: "Tutorial",
 		keywords: [
@@ -84,6 +115,20 @@ export const posts: BlogPost[] = [
 			"system wide dictation mac",
 			"voice typing any app",
 			"global hotkey dictation",
+		],
+		faq: [
+			{
+				q: "Can I dictate in every Mac app?",
+				a: "Almost any app with a standard text field. Exceptions: some secure inputs, canvas-only tools, and fields that don't accept paste.",
+			},
+			{
+				q: "Do I need a plugin for Slack or Notion?",
+				a: "No. Global hotkey + paste is enough. Plugins add complexity without unlocking the core loop.",
+			},
+			{
+				q: "What's the best free system-wide dictation for Mac?",
+				a: "Parrot — free for life, local, built for the hotkey workflow.",
+			},
 		],
 		howTo: {
 			name: "Dictate into any Mac app with a global hotkey",
@@ -123,6 +168,7 @@ export const posts: BlogPost[] = [
 		description:
 			"A practical Mac workflow for dictating Gmail, Outlook, and Superhuman replies — formulas, accuracy tips for names, and a free local setup.",
 		date: "2026-07-18",
+		dateModified: "2026-07-19",
 		readingTime: "6 min read",
 		category: "Guide",
 		keywords: [
@@ -132,6 +178,20 @@ export const posts: BlogPost[] = [
 			"dictate email faster",
 			"speech to text email",
 			"inbox zero dictation",
+		],
+		faq: [
+			{
+				q: "Is voice email faster than typing?",
+				a: "For most people, yes on first-draft replies. The win is minutes per day, not milliseconds per word. Measure your own afternoon.",
+			},
+			{
+				q: "Will cleanup make me sound robotic?",
+				a: "Good cleanup fixes filler and grammar while keeping your phrasing. If it feels stiff, shorten what you say — concise speech produces concise email.",
+			},
+			{
+				q: "Best free tool for dictating email on Mac?",
+				a: "Parrot — free, local, works in any client with a text field.",
+			},
 		],
 		component: lazy(
 			() => import("@/routes/blog/-posts/voice-dictation-for-email"),
@@ -143,6 +203,7 @@ export const posts: BlogPost[] = [
 		description:
 			"How students use voice dictation for essays, notes, and email — free Mac setup, essay workflow, academic integrity notes, and offline tips.",
 		date: "2026-07-18",
+		dateModified: "2026-07-19",
 		readingTime: "7 min read",
 		category: "Guide",
 		keywords: [
@@ -152,6 +213,20 @@ export const posts: BlogPost[] = [
 			"free dictation students",
 			"voice typing college",
 			"dictate essays mac",
+		],
+		faq: [
+			{
+				q: "Is free dictation good enough for college papers?",
+				a: "For drafts, yes. Expect to edit. Local apps with cleanup (like Parrot) get you closer to readable prose than bare built-in dictation.",
+			},
+			{
+				q: "Can I dictate in Google Docs on Mac?",
+				a: "Yes — put the cursor in Docs and use a global-hotkey app that pastes system-wide. You're not limited to Docs' built-in voice typing.",
+			},
+			{
+				q: "What if I don't have Apple Silicon?",
+				a: "Parrot currently targets Apple Silicon. Use macOS Dictation or Docs voice typing as interim options, or another tool that supports your hardware.",
+			},
 		],
 		component: lazy(
 			() => import("@/routes/blog/-posts/voice-dictation-for-students"),
@@ -163,6 +238,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Practical ways ADHD brains use voice dictation to start writing faster — low-friction setup, brain-dump workflows, and free Mac tools that do not add overwhelm.",
 		date: "2026-07-18",
+		dateModified: "2026-07-19",
 		readingTime: "6 min read",
 		category: "Guide",
 		keywords: [
@@ -172,6 +248,20 @@ export const posts: BlogPost[] = [
 			"adhd writing tools",
 			"voice typing focus",
 			"adhd productivity dictation",
+		],
+		faq: [
+			{
+				q: "Is voice dictation an ADHD treatment?",
+				a: "No. It's an assistive writing workflow some people find helpful alongside (not instead of) clinical care and other strategies.",
+			},
+			{
+				q: "What if I lose my train of thought mid-sentence?",
+				a: "Stop and re-start the thought as a new sentence. Cleanup and editing exist for a reason. Perfect continuity is optional.",
+			},
+			{
+				q: "Best free option on Mac?",
+				a: "Try Parrot — free, on-device, one hotkey. If it feels slow or fussy, you won't stick with any tool.",
+			},
 		],
 		component: lazy(() => import("@/routes/blog/-posts/voice-dictation-adhd")),
 	},
@@ -224,6 +314,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Compare the best Aqua Voice alternatives for Mac — free local dictation, privacy-first apps, and cloud options — so you can keep the real-time feel without the wrong tradeoffs.",
 		date: "2026-07-18",
+		dateModified: "2026-07-19",
 		readingTime: "6 min read",
 		category: "Comparison",
 		keywords: [
@@ -233,6 +324,20 @@ export const posts: BlogPost[] = [
 			"real-time voice dictation mac",
 			"voice typing mac",
 			"dictation app alternative",
+		],
+		faq: [
+			{
+				q: "Is there a free Aqua Voice alternative for Mac?",
+				a: "Yes. Parrot is free for life with on-device transcription and cleanup. macOS Dictation is also free, but limited for daily professional use.",
+			},
+			{
+				q: "Can an Aqua alternative keep audio off the cloud?",
+				a: "Yes — choose a local-first app. Parrot processes speech and cleanup on your Mac; nothing is uploaded for dictation.",
+			},
+			{
+				q: "Will I lose real-time text if I switch?",
+				a: "Not necessarily. Parrot shows live transcript in the floating HUD while you hold the hotkey, then pastes finished text at the cursor when you release.",
+			},
 		],
 		component: lazy(
 			() => import("@/routes/blog/-posts/aqua-voice-alternatives"),
@@ -244,6 +349,7 @@ export const posts: BlogPost[] = [
 		description:
 			"The best private voice dictation apps keep audio on your device. Compare local Mac options, learn how to verify offline operation, and pick a free privacy-first tool.",
 		date: "2026-07-17",
+		dateModified: "2026-07-19",
 		readingTime: "7 min read",
 		category: "Guide",
 		keywords: [
@@ -253,6 +359,20 @@ export const posts: BlogPost[] = [
 			"local dictation app",
 			"no cloud dictation",
 			"secure voice typing",
+		],
+		faq: [
+			{
+				q: "Are cloud dictation apps ever OK?",
+				a: "Yes — for non-sensitive everyday text, many people accept the trade. Just choose consciously. Don't paste patient notes or M&A drafts into a cloud mic by accident.",
+			},
+			{
+				q: "Is free private dictation actually good now?",
+				a: "Yes. On modern Apple Silicon, on-device speech recognition and cleanup are fast enough for daily email, docs, and chat — which is why Parrot can be completely free without feeling like a toy.",
+			},
+			{
+				q: "Does private mean lower accuracy?",
+				a: "Not automatically. Local accuracy has closed the gap for everyday speech. Cloud may still edge noisy environments in some cases; measure on your accent and vocabulary.",
+			},
 		],
 		component: lazy(
 			() => import("@/routes/blog/-posts/private-voice-dictation-apps"),
@@ -264,6 +384,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Is built-in macOS Dictation enough? Compare Apple Dictation to dedicated Mac voice dictation apps on accuracy, cleanup, vocabulary, privacy, and daily workflow.",
 		date: "2026-07-17",
+		dateModified: "2026-07-19",
 		readingTime: "6 min read",
 		category: "Comparison",
 		keywords: [
@@ -273,6 +394,20 @@ export const posts: BlogPost[] = [
 			"mac dictation app",
 			"improve mac dictation",
 			"apple speech to text",
+		],
+		faq: [
+			{
+				q: "Is macOS Dictation private?",
+				a: "On-device dictation keeps processing local. Still verify your system settings; behavior can depend on macOS version and language packs.",
+			},
+			{
+				q: "Is a third-party app always better?",
+				a: "No. For occasional use, Apple is rational. For professional daily dictation, dedicated apps usually win on cleanup, vocabulary, and workflow.",
+			},
+			{
+				q: "What's the best free upgrade from macOS Dictation?",
+				a: "If you want free + local + cleanup, try Parrot. Also see our guide to what's actually free in 2026.",
+			},
 		],
 		component: lazy(
 			() => import("@/routes/blog/-posts/macos-dictation-vs-apps"),
@@ -285,6 +420,7 @@ export const posts: BlogPost[] = [
 		description:
 			"How authors, bloggers, and content teams use voice dictation for first drafts — workflow tips, vocabulary setup, privacy, and the best free Mac setup.",
 		date: "2026-07-16",
+		dateModified: "2026-07-19",
 		readingTime: "7 min read",
 		category: "Guide",
 		keywords: [
@@ -294,6 +430,20 @@ export const posts: BlogPost[] = [
 			"voice typing for writing",
 			"speech to text for writers",
 			"dictation writing software",
+		],
+		faq: [
+			{
+				q: "Do professional writers really use dictation?",
+				a: "Yes — especially for first drafts and notes. Many still type revisions. The win is output volume and reduced strain, not magic prose.",
+			},
+			{
+				q: "What's the best free voice dictation for writers on Mac?",
+				a: "If you want free + private + cleanup, try Parrot. Apple Dictation works for scraps; daily writers usually outgrow it.",
+			},
+			{
+				q: "Will AI cleanup change my voice?",
+				a: "Good cleanup removes filler and fixes grammar without rewriting your personality. If it over-edits, turn cleanup down or off for creative passages.",
+			},
 		],
 		component: lazy(
 			() => import("@/routes/blog/-posts/voice-dictation-for-writers"),
@@ -305,6 +455,7 @@ export const posts: BlogPost[] = [
 		description:
 			"How lawyers use voice dictation for memos, email, and notes — what to require for client confidentiality, accuracy tips, and why local-first tools are often safer.",
 		date: "2026-07-16",
+		dateModified: "2026-07-19",
 		readingTime: "7 min read",
 		category: "Industry",
 		keywords: [
@@ -314,6 +465,20 @@ export const posts: BlogPost[] = [
 			"confidential dictation",
 			"legal voice typing",
 			"dictation for attorneys",
+		],
+		faq: [
+			{
+				q: "Is voice dictation confidential enough for client work?",
+				a: "It depends on the tool. Local on-device dictation minimizes third-party access. Cloud tools require contract review, policies, and judgment. When in doubt, local is the simpler answer.",
+			},
+			{
+				q: "Can I use free dictation for legal email?",
+				a: "Yes — free local tools are viable for drafting. Parrot is free for life on Mac with on-device cleanup. Still review every outbound message like you would typed text.",
+			},
+			{
+				q: "Will dictation replace associates?",
+				a: "No. It replaces blank-page time and typing fatigue. Judgment, research, and responsibility stay human.",
+			},
 		],
 		component: lazy(
 			() => import("@/routes/blog/-posts/voice-dictation-for-lawyers"),

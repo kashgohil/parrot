@@ -137,30 +137,6 @@ export default function WillowVoiceAlternatives() {
 				</li>
 			</ul>
 
-			<h2>FAQ</h2>
-			<h3>Is Parrot a free Willow Voice alternative?</h3>
-			<p>
-				For Mac users who want free local dictation with cleanup — yes. It
-				doesn&apos;t match multi-platform cloud sync; that&apos;s intentional.
-			</p>
-			<h3>Can Willow alternatives keep audio offline?</h3>
-			<p>
-				Local apps like Parrot can. Verify by disconnecting Wi‑Fi after setup —
-				see our{" "}
-				<Link
-					to="/blog/$slug"
-					params={{ slug: "offline-voice-dictation-setup" }}
-				>
-					offline setup guide
-				</Link>
-				.
-			</p>
-			<h3>Which is more accurate?</h3>
-			<p>
-				Depends on accent, mic, and vocabulary. Test proper nouns from your real
-				work — client names beat demo scripts.
-			</p>
-
 			<h2>Next step</h2>
 			<p>
 				If you&apos;re on Mac and tired of subscriptions,{" "}

@@ -150,31 +150,6 @@ export default function MacosDictationVsApps() {
 				into the work — not the one with the longest settings page.
 			</p>
 
-			<h2>FAQ</h2>
-			<h3>Is macOS Dictation private?</h3>
-			<p>
-				On-device dictation keeps processing local. Still verify your system
-				settings; behavior can depend on macOS version and language packs.
-			</p>
-			<h3>Is a third-party app always better?</h3>
-			<p>
-				No. For occasional use, Apple is rational. For professional daily
-				dictation, dedicated apps usually win on cleanup, vocabulary, and
-				workflow.
-			</p>
-			<h3>What’s the best free upgrade from macOS Dictation?</h3>
-			<p>
-				If you want free + local + cleanup, try{" "}
-				<Link to="/download">Parrot</Link>. Also read{" "}
-				<Link
-					to="/blog/$slug"
-					params={{ slug: "free-voice-dictation-apps-2026" }}
-				>
-					what’s actually free in 2026
-				</Link>
-				.
-			</p>
-
 			<h2>Bottom line</h2>
 			<p>
 				macOS Dictation is a great starter tool. Dedicated apps are for people

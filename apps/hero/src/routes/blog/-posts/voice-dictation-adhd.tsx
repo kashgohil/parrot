@@ -160,23 +160,6 @@ export default function VoiceDictationAdhd() {
 				also calmer when notes include personal health or work stress.
 			</p>
 
-			<h2>FAQ</h2>
-			<h3>Is voice dictation an ADHD treatment?</h3>
-			<p>
-				No. It&apos;s an assistive writing workflow some people find helpful
-				alongside (not instead of) clinical care and other strategies.
-			</p>
-			<h3>What if I lose my train of thought mid-sentence?</h3>
-			<p>
-				Stop and re-start the thought as a new sentence. Cleanup and editing
-				exist for a reason. Perfect continuity is optional.
-			</p>
-			<h3>Best free option on Mac?</h3>
-			<p>
-				Try <Link to="/download">Parrot</Link> — free, on-device, one hotkey.
-				If it feels slow or fussy, you won&apos;t stick with any tool.
-			</p>
-
 			<h2>Try a five-minute dump</h2>
 			<p>
 				Open a blank note. Dictate for five minutes about the task you&apos;ve

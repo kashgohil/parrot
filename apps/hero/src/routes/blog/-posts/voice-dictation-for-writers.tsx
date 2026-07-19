@@ -162,25 +162,6 @@ export default function VoiceDictationForWriters() {
 				</li>
 			</ul>
 
-			<h2>FAQ</h2>
-			<h3>Do professional writers really use dictation?</h3>
-			<p>
-				Yes — especially for first drafts and notes. Many still type revisions.
-				The win is output volume and reduced strain, not magic prose.
-			</p>
-			<h3>What’s the best free voice dictation for writers on Mac?</h3>
-			<p>
-				If you want free + private + cleanup, try{" "}
-				<Link to="/download">Parrot</Link>. Apple Dictation works for scraps;
-				daily writers usually outgrow it.
-			</p>
-			<h3>Will AI cleanup change my voice?</h3>
-			<p>
-				Good cleanup removes filler and fixes grammar without rewriting your
-				personality. If it over-edits, turn cleanup down or off for creative
-				passages.
-			</p>
-
 			<h2>Start with one chapter</h2>
 			<p>
 				Pick tomorrow’s draft block. Dictate it end-to-end. If you finish faster

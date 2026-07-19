@@ -169,23 +169,6 @@ export default function VoiceDictationForStudents() {
 				<em>your</em> words; generative AI invents content.
 			</p>
 
-			<h2>FAQ</h2>
-			<h3>Is free dictation good enough for college papers?</h3>
-			<p>
-				For drafts, yes. Expect to edit. Local apps with cleanup (like Parrot)
-				get you closer to readable prose than bare built-in dictation.
-			</p>
-			<h3>Can I dictate in Google Docs on Mac?</h3>
-			<p>
-				Yes — put the cursor in Docs and use a global-hotkey app that pastes
-				system-wide. You&apos;re not limited to Docs&apos; built-in voice typing.
-			</p>
-			<h3>What if I don&apos;t have Apple Silicon?</h3>
-			<p>
-				Parrot currently targets Apple Silicon. Use macOS Dictation or Docs voice
-				typing as interim options, or another tool that supports your hardware.
-			</p>
-
 			<h2>Start with one assignment</h2>
 			<p>
 				Pick the next short essay or discussion post. Dictate the first draft in
