@@ -2,7 +2,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-use crate::cleanup_engine::{BuiltinCleanupEngine, SharedCleanupEngine};
+use crate::cleanup_engine::{SidecarCleanupClient, SharedCleanupEngine};
 
 /// Request body for Ollama's native `/api/chat` endpoint.
 /// Using the native API (not OpenAI-compat) so we can pass `keep_alive` on
@@ -50,7 +50,7 @@ pub async fn cleanup_text(
     context_prompt: &str,
     writing_style: &str,
     cleanup_backend: &str,
-    builtin: Option<Arc<BuiltinCleanupEngine>>,
+    builtin: Option<Arc<SidecarCleanupClient>>,
 ) -> Result<String> {
     if raw_text.trim().is_empty() {
         return Ok(String::new());
@@ -83,7 +83,7 @@ pub async fn cleanup_text(
 }
 
 async fn cleanup_with_builtin(
-    engine: &Arc<BuiltinCleanupEngine>,
+    engine: &Arc<SidecarCleanupClient>,
     raw_text: &str,
     custom_words: &str,
     context_prompt: &str,
@@ -348,7 +348,7 @@ fn normalize_whitespace(text: &str) -> String {
 }
 
 /// Helper so callers can pass Arc without cloning the heavy model.
-pub fn peek_builtin(state: &SharedCleanupEngine) -> Option<Arc<BuiltinCleanupEngine>> {
+pub fn peek_builtin(state: &SharedCleanupEngine) -> Option<Arc<SidecarCleanupClient>> {
     state.read().ok().and_then(|g| g.clone())
 }
 

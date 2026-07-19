@@ -1,3 +1,12 @@
+# The cleanup LLM (llama.cpp) lives in a SEPARATE binary (cleanup-sidecar) so it
+# no longer statically links its own ggml into the same process as whisper-rs.
+# Two ggml copies in one binary collide at link time (duplicate symbols) and
+# llama ends up running on whisper's ggml — the root cause of the cleanup crash.
+# Isolating llama in its own process eliminates the collision by construction.
+[workspace]
+members = ["cleanup-sidecar"]
+resolver = "2"
+
 [package]
 name = "parrot"
 version = "0.2.1"
@@ -35,9 +44,9 @@ arboard = "3"
 whisper-rs = { version = "0.14", features = ["metal"] }
 # Parakeet (and other ONNX ASR) — same library Handy uses (MIT).
 transcribe-rs = { version = "0.3", default-features = false, features = ["onnx"] }
-# In-process LLM cleanup (replaces Ollama for new installs).
-llama-cpp-2 = "0.1"
-encoding_rs = "0.8"
+# LLM cleanup runs out-of-process in the `cleanup-sidecar` binary (see the
+# [workspace] note above) — llama-cpp-2 is intentionally NOT a dependency of the
+# main app so its ggml can't collide with whisper-rs's.
 flate2 = "1"
 tar = "0.4"
 
@@ -46,5 +55,3 @@ core-graphics = "0.24"
 core-foundation = "0.10"
 # CoreML EP for ONNX Parakeet on Apple Silicon (~Neural Engine).
 transcribe-rs = { version = "0.3", default-features = false, features = ["onnx", "ort-coreml"] }
-# Metal offload for in-process llama.cpp cleanup.
-llama-cpp-2 = { version = "0.1", features = ["metal"] }

@@ -3441,11 +3441,9 @@ dependencies = [
  "core-graphics 0.24.0",
  "cpal",
  "dirs 5.0.1",
- "encoding_rs",
  "enigo",
  "flate2",
  "hound",
- "llama-cpp-2",
  "reqwest",
  "rusqlite",
  "serde",
@@ -3462,6 +3460,17 @@ dependencies = [
  "transcribe-rs",
  "uuid",
  "whisper-rs",
+]
+
+[[package]]
+name = "parrot-cleanup-sidecar"
+version = "0.2.1"
+dependencies = [
+ "anyhow",
+ "encoding_rs",
+ "llama-cpp-2",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

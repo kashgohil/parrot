@@ -386,7 +386,7 @@ async fn transcribe_last(
 async fn run_cleanup(
     db: &Database,
     raw_text: &str,
-    builtin: Option<std::sync::Arc<cleanup_engine::BuiltinCleanupEngine>>,
+    builtin: Option<std::sync::Arc<cleanup_engine::SidecarCleanupClient>>,
     profile: &db::EffectiveProfile,
 ) -> String {
     let cleanup_backend = resolve_cleanup_backend(db);

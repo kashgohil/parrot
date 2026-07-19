@@ -1,240 +1,299 @@
-//! In-process cleanup LLM via llama.cpp (no Ollama daemon).
+//! Client for the out-of-process cleanup LLM (`cleanup-sidecar`).
 //!
-//! Loads a small instruct GGUF (default: Qwen2.5-0.5B-Instruct Q4_K_M) and
-//! runs the same guardrail prompt as the Ollama path.
+//! The cleanup model (llama.cpp) runs in a **separate process** so its ggml is
+//! not statically linked into the same binary as whisper-rs. Two ggml copies in
+//! one process collide at link time (duplicate symbols) and llama ends up
+//! executing whisper's ggml — the root cause of the cleanup crash. Isolating
+//! llama in its own process removes the collision by construction.
+//!
+//! Wire protocol (newline-delimited JSON, see `cleanup-sidecar/src/main.rs`):
+//!   startup  <- {"type":"ready"} | {"type":"error","error":..}
+//!   request  -> {"id":N,"system":..,"user":..,"max_tokens":N}
+//!   response <- {"type":"result","id":N,"ok":bool,"text"?:..,"error"?:..}
 
-use anyhow::{Context, Result};
-use llama_cpp_2::context::params::LlamaContextParams;
-use llama_cpp_2::llama_backend::LlamaBackend;
-use llama_cpp_2::llama_batch::LlamaBatch;
-use llama_cpp_2::model::params::LlamaModelParams;
-use llama_cpp_2::model::{AddBos, LlamaChatMessage, LlamaChatTemplate, LlamaModel};
-use llama_cpp_2::sampling::LlamaSampler;
-use std::num::NonZeroU32;
-use std::path::Path;
-use std::sync::{Arc, Mutex, OnceLock};
+use anyhow::{anyhow, Context, Result};
+use serde::{Deserialize, Serialize};
+use std::io::{BufRead, BufReader, Write};
+use std::path::{Path, PathBuf};
+use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, Mutex};
 
-/// Shared handle to the loaded cleanup model. `None` until download + load finish.
-pub type SharedCleanupEngine = Arc<std::sync::RwLock<Option<Arc<BuiltinCleanupEngine>>>>;
+/// Shared handle to the cleanup sidecar client. `None` until the sidecar is up.
+pub type SharedCleanupEngine = Arc<std::sync::RwLock<Option<Arc<SidecarCleanupClient>>>>;
 
-static LLAMA_BACKEND: OnceLock<Result<LlamaBackend, String>> = OnceLock::new();
-
-/// llama.cpp's `LLAMA_FLASH_ATTN_TYPE_DISABLED` (see llama.h — 0 is part of the
-/// stable public enum; `llama_flash_attn_type` is a transparent `c_int` alias).
-///
-/// We force flash attention off for the cleanup context. With the default AUTO
-/// policy, llama.cpp enables the fused `ggml_flash_attn_ext` kernel for Qwen2 on
-/// Metal, and that op aborts (`ggml_abort`) during graph reservation when the
-/// STT (whisper) and cleanup (llama.cpp) Metal backends contend in-process —
-/// the crash seen when cleaning up longer dictations. The unfused attention path
-/// is numerically equivalent and the perf cost is negligible on a 0.5B model.
-const FLASH_ATTN_DISABLED: i32 = 0;
-
-fn backend() -> Result<&'static LlamaBackend> {
-    match LLAMA_BACKEND.get_or_init(|| {
-        LlamaBackend::init().map_err(|e| format!("Failed to init llama.cpp backend: {e}"))
-    }) {
-        Ok(b) => Ok(b),
-        Err(e) => anyhow::bail!("{e}"),
-    }
+#[derive(Serialize)]
+struct Request<'a> {
+    id: u64,
+    system: &'a str,
+    user: &'a str,
+    max_tokens: i32,
 }
 
-/// Loaded in-process cleanup model. Inference is serialised via an internal
-/// mutex (dictation cleanup is already one-at-a-time for most users).
-pub struct BuiltinCleanupEngine {
-    model: LlamaModel,
-    #[allow(dead_code)]
-    model_label: String,
-    /// Serialise context create + generate — llama contexts are not shared.
-    lock: Mutex<()>,
+#[derive(Deserialize)]
+#[serde(tag = "type")]
+enum Message {
+    #[serde(rename = "ready")]
+    Ready,
+    #[serde(rename = "error")]
+    Error { error: String },
+    #[serde(rename = "result")]
+    Result {
+        id: u64,
+        ok: bool,
+        text: Option<String>,
+        error: Option<String>,
+    },
 }
 
-impl BuiltinCleanupEngine {
-    pub fn load(model_path: &Path) -> Result<Self> {
-        let backend = backend()?;
-        let label = model_path
-            .file_name()
-            .map(|n| n.to_string_lossy().into_owned())
-            .unwrap_or_else(|| model_path.display().to_string());
+/// A running sidecar process and its pipes.
+struct Proc {
+    child: Child,
+    stdin: ChildStdin,
+    stdout: BufReader<ChildStdout>,
+}
 
-        // Offload as many layers as the platform allows (Metal on macOS).
-        let model_params = LlamaModelParams::default().with_n_gpu_layers(999);
+/// Handle to the cleanup sidecar. `cleanup()` is safe to call from any thread;
+/// the whole request/response transaction is serialised (cleanup is
+/// one-at-a-time anyway), and a dead sidecar is restarted once per call.
+pub struct SidecarCleanupClient {
+    proc: Mutex<Proc>,
+    next_id: AtomicU64,
+    sidecar_path: PathBuf,
+    model_path: PathBuf,
+}
 
-        let model = LlamaModel::load_from_file(backend, model_path, &model_params)
-            .with_context(|| format!("Failed to load cleanup GGUF at {}", model_path.display()))?;
-
-        println!("Builtin cleanup model loaded: {}", label);
+impl SidecarCleanupClient {
+    /// Spawn the sidecar and block until it reports `ready` (model loaded).
+    pub fn spawn(sidecar_path: &Path, model_path: &Path) -> Result<Self> {
+        let proc = spawn_proc(sidecar_path, model_path)?;
         Ok(Self {
-            model,
-            model_label: label,
-            lock: Mutex::new(()),
+            proc: Mutex::new(proc),
+            next_id: AtomicU64::new(1),
+            sidecar_path: sidecar_path.to_path_buf(),
+            model_path: model_path.to_path_buf(),
         })
     }
 
-    /// Run a single cleanup completion. Returns cleaned text or error.
-    pub fn cleanup(
-        &self,
-        system_prompt: &str,
-        user_message: &str,
-        max_tokens: i32,
-    ) -> Result<String> {
-        let _guard = self
-            .lock
+    /// Run a single cleanup completion via the sidecar. Same signature as the
+    /// former in-process engine, so callers are unchanged.
+    pub fn cleanup(&self, system: &str, user: &str, max_tokens: i32) -> Result<String> {
+        let id = self.next_id.fetch_add(1, Ordering::Relaxed);
+        let mut guard = self
+            .proc
             .lock()
-            .map_err(|_| anyhow::anyhow!("cleanup engine mutex poisoned"))?;
+            .map_err(|_| anyhow!("cleanup sidecar mutex poisoned"))?;
 
-        let backend = backend()?;
-
-        // Prefer the template baked into the GGUF; fall back to ChatML.
-        let prompt = match self.build_chat_prompt(system_prompt, user_message) {
-            Ok(p) => p,
+        match transact(&mut guard, id, system, user, max_tokens) {
+            Ok(text) => Ok(text),
             Err(e) => {
-                eprintln!("chat template failed ({e}); using ChatML fallback");
-                format_chatml(system_prompt, user_message)
+                // Broken pipe / dead child: restart once and retry.
+                eprintln!("cleanup sidecar transaction failed ({e:#}); restarting");
+                *guard = spawn_proc(&self.sidecar_path, &self.model_path)
+                    .context("failed to restart cleanup sidecar")?;
+                transact(&mut guard, id, system, user, max_tokens)
             }
-        };
-
-        let tokens = self
-            .model
-            .str_to_token(&prompt, AddBos::Always)
-            .with_context(|| "Failed to tokenize cleanup prompt")?;
-
-        if tokens.is_empty() {
-            anyhow::bail!("Cleanup prompt tokenized to empty");
         }
-
-        let n_ctx = 2048u32;
-        let ctx_params = LlamaContextParams::default()
-            .with_n_ctx(NonZeroU32::new(n_ctx))
-            .with_n_threads(num_threads())
-            .with_n_threads_batch(num_threads())
-            .with_flash_attention_policy(FLASH_ATTN_DISABLED);
-
-        let mut ctx = self
-            .model
-            .new_context(backend, ctx_params)
-            .context("Failed to create llama context for cleanup")?;
-
-        let prompt_len = tokens.len() as i32;
-        let n_len = (prompt_len + max_tokens).min(n_ctx as i32);
-
-        let mut batch = LlamaBatch::new(512, 1);
-        let last = (tokens.len() - 1) as i32;
-        for (i, token) in (0_i32..).zip(tokens.into_iter()) {
-            batch.add(token, i, &[0], i == last)?;
-        }
-        ctx.decode(&mut batch)
-            .context("llama_decode failed on cleanup prompt")?;
-
-        // Greedy + low temp for deterministic cleanup (no creative rewrites).
-        let mut sampler = LlamaSampler::chain_simple([
-            LlamaSampler::temp(0.1),
-            LlamaSampler::dist(42),
-            LlamaSampler::greedy(),
-        ]);
-
-        let mut decoder = encoding_rs::UTF_8.new_decoder();
-        let mut output = String::new();
-        let mut n_cur = batch.n_tokens();
-
-        while n_cur < n_len {
-            let token = sampler.sample(&ctx, batch.n_tokens() - 1);
-            sampler.accept(token);
-
-            if self.model.is_eog_token(token) {
-                break;
-            }
-
-            let piece = self
-                .model
-                .token_to_piece(token, &mut decoder, true, None)
-                .unwrap_or_default();
-            output.push_str(&piece);
-
-            // Hard stop if the model starts chatting / labeling.
-            if output.len() > 8000 {
-                break;
-            }
-
-            batch.clear();
-            batch.add(token, n_cur, &[0], true)?;
-            ctx.decode(&mut batch)
-                .context("llama_decode failed during cleanup generation")?;
-            n_cur += 1;
-        }
-
-        Ok(sanitize_cleanup_output(&output))
-    }
-
-    fn build_chat_prompt(&self, system: &str, user: &str) -> Result<String> {
-        let template = self
-            .model
-            .chat_template(None)
-            .or_else(|_| LlamaChatTemplate::new("chatml").map_err(|e| anyhow::anyhow!("{e}")))
-            .context("model has no chat template")?;
-        let messages = vec![
-            LlamaChatMessage::new("system".into(), system.to_string())
-                .map_err(|e| anyhow::anyhow!("system message: {e}"))?,
-            LlamaChatMessage::new("user".into(), user.to_string())
-                .map_err(|e| anyhow::anyhow!("user message: {e}"))?,
-        ];
-        self.model
-            .apply_chat_template(&template, &messages, true)
-            .map_err(|e| anyhow::anyhow!("apply_chat_template: {e}"))
     }
 }
 
-fn format_chatml(system: &str, user: &str) -> String {
-    format!(
-        "<|im_start|>system\n{system}<|im_end|>\n\
-         <|im_start|>user\n{user}<|im_end|>\n\
-         <|im_start|>assistant\n"
+impl Drop for SidecarCleanupClient {
+    fn drop(&mut self) {
+        if let Ok(mut proc) = self.proc.lock() {
+            let _ = proc.child.kill();
+            let _ = proc.child.wait();
+        }
+    }
+}
+
+fn spawn_proc(sidecar: &Path, model: &Path) -> Result<Proc> {
+    let mut child = Command::new(sidecar)
+        .arg(model)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::inherit()) // llama logs flow to the app's stderr
+        .spawn()
+        .with_context(|| format!("failed to spawn cleanup sidecar at {}", sidecar.display()))?;
+
+    let stdin = child
+        .stdin
+        .take()
+        .ok_or_else(|| anyhow!("cleanup sidecar has no stdin"))?;
+    let stdout = BufReader::new(
+        child
+            .stdout
+            .take()
+            .ok_or_else(|| anyhow!("cleanup sidecar has no stdout"))?,
+    );
+    let mut proc = Proc {
+        child,
+        stdin,
+        stdout,
+    };
+
+    match read_message(&mut proc)? {
+        Message::Ready => Ok(proc),
+        Message::Error { error } => {
+            let _ = proc.child.kill();
+            anyhow::bail!("cleanup sidecar failed to start: {error}")
+        }
+        Message::Result { .. } => {
+            let _ = proc.child.kill();
+            anyhow::bail!("cleanup sidecar sent a result before ready")
+        }
+    }
+}
+
+/// Send one request and read until the matching-id result comes back.
+fn transact(
+    proc: &mut Proc,
+    id: u64,
+    system: &str,
+    user: &str,
+    max_tokens: i32,
+) -> Result<String> {
+    let req = Request {
+        id,
+        system,
+        user,
+        max_tokens,
+    };
+    let line = serde_json::to_string(&req)?;
+    proc.stdin.write_all(line.as_bytes())?;
+    proc.stdin.write_all(b"\n")?;
+    proc.stdin.flush()?;
+
+    loop {
+        match read_message(proc)? {
+            Message::Result {
+                id: rid,
+                ok,
+                text,
+                error,
+            } if rid == id => {
+                if ok {
+                    return text.ok_or_else(|| anyhow!("sidecar reported ok but sent no text"));
+                }
+                return Err(anyhow!(error
+                    .unwrap_or_else(|| "cleanup failed (no error message)".to_string())));
+            }
+            // A result for a different id (e.g. id 0 protocol error) — skip.
+            Message::Result { .. } | Message::Ready => continue,
+            Message::Error { error } => anyhow::bail!("cleanup sidecar error: {error}"),
+        }
+    }
+}
+
+/// Read one protocol message, tolerating (and discarding) any stray non-JSON
+/// line that somehow reaches stdout. Errors if the sidecar closed stdout.
+fn read_message(proc: &mut Proc) -> Result<Message> {
+    loop {
+        let mut line = String::new();
+        let n = proc
+            .stdout
+            .read_line(&mut line)
+            .context("reading cleanup sidecar stdout")?;
+        if n == 0 {
+            anyhow::bail!("cleanup sidecar closed stdout (process exited)");
+        }
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+        if let Ok(msg) = serde_json::from_str::<Message>(trimmed) {
+            return Ok(msg);
+        }
+        // Non-protocol line on stdout — ignore and keep reading.
+    }
+}
+
+/// Locate the `cleanup-sidecar` binary. Tauri's `externalBin` bundling lands it
+/// next to the main executable, which is also where `cargo`/`tauri dev` put it,
+/// so "beside the current exe" covers both. `PARROT_CLEANUP_SIDECAR` overrides.
+pub fn resolve_sidecar_path() -> Result<PathBuf> {
+    if let Ok(p) = std::env::var("PARROT_CLEANUP_SIDECAR") {
+        let p = PathBuf::from(p);
+        if p.exists() {
+            return Ok(p);
+        }
+    }
+    let exe = std::env::current_exe().context("current_exe() failed")?;
+    let dir = exe
+        .parent()
+        .ok_or_else(|| anyhow!("current exe has no parent directory"))?;
+    let name = if cfg!(windows) {
+        "cleanup-sidecar.exe"
+    } else {
+        "cleanup-sidecar"
+    };
+    let candidate = dir.join(name);
+    if candidate.exists() {
+        return Ok(candidate);
+    }
+    anyhow::bail!(
+        "cleanup sidecar binary not found (looked for {} next to {})",
+        name,
+        exe.display()
     )
 }
 
-/// Strip common model flourishes (quotes, "Cleaned:" labels).
-fn sanitize_cleanup_output(raw: &str) -> String {
-    let mut s = raw.trim().to_string();
-    for prefix in [
-        "Cleaned text:",
-        "Cleaned transcript:",
-        "Cleaned:",
-        "Here is the cleaned transcript:",
-        "Here's the cleaned text:",
-    ] {
-        if let Some(rest) = s.strip_prefix(prefix) {
-            s = rest.trim().to_string();
-        }
-    }
-    // Strip wrapping quotes if the whole output is quoted.
-    if s.len() >= 2 {
-        let bytes = s.as_bytes();
-        if (bytes[0] == b'"' && bytes[s.len() - 1] == b'"')
-            || (bytes[0] == b'\'' && bytes[s.len() - 1] == b'\'')
-        {
-            s = s[1..s.len() - 1].trim().to_string();
-        }
-    }
-    s
-}
-
-fn num_threads() -> i32 {
-    std::thread::available_parallelism()
-        .map(|n| n.get().min(8) as i32)
-        .unwrap_or(4)
-}
-
-/// Load the cleanup GGUF in a background task.
+/// Start the cleanup sidecar in the background and store the client on success.
 pub fn load_cleanup_engine(state: SharedCleanupEngine, model_path: String) {
     tauri::async_runtime::spawn(async move {
-        let path = std::path::PathBuf::from(model_path);
-        match tokio::task::spawn_blocking(move || BuiltinCleanupEngine::load(&path)).await {
-            Ok(Ok(engine)) => {
-                let mut slot = state.write().unwrap();
-                *slot = Some(Arc::new(engine));
+        let model = PathBuf::from(model_path);
+        let sidecar = match resolve_sidecar_path() {
+            Ok(p) => p,
+            Err(e) => {
+                eprintln!("Cleanup sidecar unavailable: {e:#}");
+                return;
             }
-            Ok(Err(e)) => eprintln!("Failed to load builtin cleanup model: {e}"),
-            Err(e) => eprintln!("Cleanup model load task join error: {e}"),
+        };
+        match tokio::task::spawn_blocking(move || SidecarCleanupClient::spawn(&sidecar, &model))
+            .await
+        {
+            Ok(Ok(client)) => {
+                *state.write().unwrap() = Some(Arc::new(client));
+                println!("Cleanup sidecar ready");
+            }
+            Ok(Err(e)) => eprintln!("Failed to start cleanup sidecar: {e:#}"),
+            Err(e) => eprintln!("Cleanup sidecar spawn task join error: {e}"),
         }
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// End-to-end round-trip through a spawned sidecar, exercising the real
+    /// client: spawn + `ready` handshake, request/response id correlation, and
+    /// process reuse across calls. `#[ignore]`d — needs local binaries:
+    ///   PARROT_CLEANUP_SIDECAR    = path to the built `cleanup-sidecar`
+    ///   PARROT_TEST_CLEANUP_MODEL = path to the cleanup GGUF
+    #[test]
+    #[ignore = "needs PARROT_CLEANUP_SIDECAR + PARROT_TEST_CLEANUP_MODEL"]
+    fn sidecar_round_trip() {
+        let sidecar = std::env::var("PARROT_CLEANUP_SIDECAR")
+            .expect("set PARROT_CLEANUP_SIDECAR to the built cleanup-sidecar binary");
+        let model = std::env::var("PARROT_TEST_CLEANUP_MODEL")
+            .expect("set PARROT_TEST_CLEANUP_MODEL to the cleanup GGUF");
+
+        let client = SidecarCleanupClient::spawn(Path::new(&sidecar), Path::new(&model))
+            .expect("spawn cleanup sidecar");
+
+        const SYS: &str = "You are a transcript cleanup tool. Output only the cleaned text.";
+
+        // Two sequential requests: proves id correlation and process reuse.
+        let out1 = client
+            .cleanup(SYS, "um so like i think we should uh ship it on friday you know", 128)
+            .expect("first cleanup");
+        assert!(!out1.trim().is_empty(), "first cleanup returned empty");
+
+        let out2 = client
+            .cleanup(SYS, "the the meeting is at three pm tomorrow", 128)
+            .expect("second cleanup");
+        assert!(!out2.trim().is_empty(), "second cleanup returned empty");
+
+        eprintln!("sidecar round-trip ok:\n  in : um so like i think ...\n  out: {out1:?}\n  out: {out2:?}");
+    }
 }

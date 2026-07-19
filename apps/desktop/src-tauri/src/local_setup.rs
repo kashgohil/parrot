@@ -1221,10 +1221,12 @@ pub async fn warm_up_ollama(port: u16, model: &str) {
     }
 }
 
-/// Smoke-test the in-process cleanup GGUF (load + one short generation).
+/// Smoke-test the cleanup GGUF via a one-shot sidecar run (spawn + one gen).
+/// Runs out-of-process so this test doesn't link llama into the main app.
 pub fn test_builtin_cleanup(model_path: &std::path::Path) -> Result<()> {
-    use crate::cleanup_engine::BuiltinCleanupEngine;
-    let engine = BuiltinCleanupEngine::load(model_path)?;
+    use crate::cleanup_engine::{resolve_sidecar_path, SidecarCleanupClient};
+    let sidecar = resolve_sidecar_path()?;
+    let engine = SidecarCleanupClient::spawn(&sidecar, model_path)?;
     let out = engine.cleanup(
         "You are a transcript cleanup tool. Output ONLY the cleaned text.",
         "Clean up this transcript:\n\n<transcript>\num hello world\n</transcript>",
