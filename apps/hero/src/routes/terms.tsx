@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 
 export const Route = createFileRoute("/terms")({
 	component: TermsPage,
@@ -58,7 +57,7 @@ function TermsPage() {
 							<span className="font-semibold text-foreground">
 								Last updated:
 							</span>{" "}
-							February 2026
+							July 2026
 						</p>
 					</div>
 
@@ -75,7 +74,7 @@ function TermsPage() {
 						<TermsSection
 							title="2. Description of service"
 							paragraphs={[
-								"Parrot is a voice dictation application for macOS that converts speech to text. The Software currently operates in local mode, with all processing performed on-device. A managed cloud mode is in development; additional terms will apply when it ships.",
+								"Parrot is a voice dictation application for macOS that converts speech to text. All processing is performed on-device on your Mac. Parrot does not provide cloud transcription or managed server-side accounts.",
 								"We do not guarantee uninterrupted or error-free operation. Transcription accuracy depends on audio quality, accent, background noise, and other factors.",
 							]}
 						/>
@@ -83,7 +82,7 @@ function TermsPage() {
 						<TermsSection
 							title="3. User responsibilities"
 							paragraphs={[
-								"You are responsible for all activity that occurs under any account you create.",
+								"You are responsible for how you use the Software and for content you create with it.",
 								"You agree not to use Parrot for any unlawful purpose or in any way that could damage, disable, or impair the Software or interfere with any other party's use.",
 							]}
 						/>
@@ -99,14 +98,14 @@ function TermsPage() {
 						<TermsSection
 							title="5. Privacy"
 							paragraphs={[
-								"Your privacy is important to us. Please review our Privacy Policy, which explains how we handle your data. In local mode, no data leaves your device.",
+								"Your privacy is important to us. Please review our Privacy Policy, which explains how we handle your data. No dictation data leaves your device.",
 							]}
 						/>
 
 						<TermsSection
 							title="6. Third-party software"
 							paragraphs={[
-								"Parrot's local mode runs entirely on your Mac and incorporates open-source components governed by their own licenses. Attribution and license details are bundled with the app.",
+								"Parrot runs entirely on your Mac and incorporates open-source components governed by their own licenses. Attribution and license details are bundled with the app.",
 								"We are not responsible for the availability, accuracy, or policies of third-party software. Any issues with these projects should be directed to their maintainers.",
 							]}
 						/>
@@ -128,18 +127,17 @@ function TermsPage() {
 						/>
 
 						<TermsSection
-							title="9. Subscription and payments"
+							title="9. Price"
 							paragraphs={[
-								"Parrot is currently free to use in local mode. If we offer paid features in the future (such as managed cloud transcription), payment terms, pricing, and billing cycles will be presented at the time of purchase.",
-								"Any future subscriptions will renew automatically unless cancelled before the renewal date. Refunds, if applicable, will be handled on a case-by-case basis.",
+								"Parrot is free to download and use. There is no subscription, trial, or in-app purchase required for the local product described in these terms.",
 							]}
 						/>
 
 						<TermsSection
 							title="10. Termination"
 							paragraphs={[
-								"We reserve the right to suspend or terminate your access to Parrot at any time, with or without cause, with or without notice.",
-								"Upon termination, your right to use the Software will immediately cease. Provisions that by their nature should survive termination shall survive.",
+								"You may stop using the Software at any time by uninstalling it from your Mac.",
+								"We reserve the right to discontinue distribution of the Software. Provisions of these terms that by their nature should survive shall survive.",
 							]}
 						/>
 
@@ -191,13 +189,6 @@ function TermsPage() {
 					</div>
 				</div>
 			</section>
-
-			{/* CTA */}
-			<SubscribeCTA
-				heading="Stay in the loop."
-				subheading="Subscribe for product updates and changelog notes."
-				source="terms"
-			/>
 
 			<Footer />
 		</div>

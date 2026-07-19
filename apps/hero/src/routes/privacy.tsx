@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 
 export const Route = createFileRoute("/privacy")({
 	component: PrivacyPage,
@@ -11,20 +10,20 @@ export const Route = createFileRoute("/privacy")({
 			{
 				name: "description",
 				content:
-					"Parrot's privacy policy. Local mode keeps everything on-device. No analytics, no tracking.",
+					"Parrot's privacy policy. Everything runs on-device. No cloud, no analytics, no tracking.",
 			},
 			{ property: "og:title", content: "Privacy Policy - Parrot" },
 			{
 				property: "og:description",
 				content:
-					"Parrot's privacy policy. Local mode keeps everything on-device. No analytics, no tracking.",
+					"Parrot's privacy policy. Everything runs on-device. No cloud, no analytics, no tracking.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/privacy" },
 			{ name: "twitter:title", content: "Privacy Policy - Parrot" },
 			{
 				name: "twitter:description",
 				content:
-					"Parrot's privacy policy. Local mode keeps everything on-device. No analytics, no tracking.",
+					"Parrot's privacy policy. Everything runs on-device. No cloud, no analytics, no tracking.",
 			},
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/privacy" }],
@@ -60,11 +59,10 @@ function PrivacyPage() {
 						</p>
 						<ul className="space-y-2">
 							{[
-								"Local mode: nothing leaves your Mac. Ever.",
-								"Managed cloud mode is coming soon. Its privacy details will be added here before it ships.",
+								"Everything runs on your Mac. Nothing leaves your device.",
 								"We don't track what you dictate, store your audio, or sell any data.",
 								"History, settings, and vocabulary are stored locally on your device.",
-								"If you create an account, we store your email and hashed password. That's it.",
+								"No account required. No cloud processing. No third-party transcription APIs.",
 							].map((item, i) => (
 								<li
 									key={i}
@@ -80,26 +78,18 @@ function PrivacyPage() {
 					{/* Detailed sections */}
 					<div className="space-y-12">
 						<PolicySection
-							title="Local mode"
+							title="On-device processing"
 							paragraphs={[
-								"When you use local mode, all audio capture, transcription, and AI cleanup happen entirely on your Mac. No network requests are made during the dictation process.",
+								"All audio capture, transcription, and AI cleanup happen entirely on your Mac. No network requests are made during the dictation process.",
 								"Your dictation history, custom vocabulary, writing style settings, and all preferences are stored in a SQLite database at ~/Library/Application Support/com.kash.parrot/parrot.db. This file never leaves your device.",
 							]}
 						/>
 
 						<PolicySection
-							title="Cloud mode (coming soon)"
+							title="No cloud, no accounts"
 							paragraphs={[
-								"Parrot does not currently offer cloud mode. A managed cloud option is in development. When it ships, this section will spell out exactly what is sent, where it's stored, and how long it's retained — before you opt in.",
-							]}
-						/>
-
-						<PolicySection
-							title="Accounts (optional)"
-							paragraphs={[
-								"Creating a Parrot account is optional. Local mode works without any account.",
-								"If you create an account, we store: your email address, a hashed password (Argon2id), and your session token (30-day expiry).",
-								"Google OAuth: if you sign in with Google, we receive your email and name from Google's OAuth flow. We store only the email.",
+								"Parrot does not offer cloud transcription, cloud history sync, or managed accounts. There is nothing to opt into on our servers — the product is local-only.",
+								"You do not need an email, password, or third-party login to use Parrot.",
 							]}
 						/>
 
@@ -115,21 +105,20 @@ function PrivacyPage() {
 							title="Data storage and deletion"
 							paragraphs={[
 								"All dictation data (history, audio references, transcriptions) is stored locally in your app's SQLite database. Deleting the app or the database file removes all data permanently.",
-								"If you have a Parrot account and want it deleted, email us and we'll remove it within 48 hours.",
 							]}
 						/>
 
 						<PolicySection
 							title="Third-party services"
 							paragraphs={[
-								"In local mode, all transcription and cleanup runs entirely on your Mac. No data is sent to any third party.",
+								"Transcription and cleanup run entirely on your Mac. No audio or transcripts are sent to any third party for processing.",
 							]}
 						/>
 
 						<PolicySection
 							title="Changes to this policy"
 							paragraphs={[
-								"If we change this policy, we'll update this page and note the date. For material changes, we'll mention it in the app's changelog. Last updated: January 2026.",
+								"If we change this policy, we'll update this page and note the date. For material changes, we'll mention it in the app's changelog. Last updated: July 2026.",
 							]}
 						/>
 					</div>
@@ -166,13 +155,6 @@ function PrivacyPage() {
 					</div>
 				</div>
 			</section>
-
-			{/* ── CTA ── */}
-			<SubscribeCTA
-				heading="Privacy-first dictation"
-				subheading="Subscribe for product updates and changelog notes."
-				source="privacy"
-			/>
 
 			<Footer />
 		</div>
