@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:sidecar": "bun scripts/build-sidecar.mjs --release",
+    "build:sidecar:dev": "bun scripts/build-sidecar.mjs",
     "preview": "vite preview",
     "tauri": "tauri",
     "desktop": "bun --env-file=.env run tauri",

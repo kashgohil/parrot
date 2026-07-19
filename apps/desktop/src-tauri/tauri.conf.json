@@ -4,9 +4,9 @@
 	"version": "0.2.1",
 	"identifier": "com.kash.parrot",
 	"build": {
-		"beforeDevCommand": "bun run dev",
+		"beforeDevCommand": "bun run build:sidecar:dev && bun run dev",
 		"devUrl": "http://localhost:1420",
-		"beforeBuildCommand": "bun run build",
+		"beforeBuildCommand": "bun run build:sidecar && bun run build",
 		"frontendDist": "../dist"
 	},
 	"app": {
@@ -32,6 +32,9 @@
 		"active": true,
 		"targets": "all",
 		"createUpdaterArtifacts": true,
+		"externalBin": [
+			"binaries/cleanup-sidecar"
+		],
 		"icon": [
 			"icons/32x32.png",
 			"icons/128x128.png",
