@@ -6,7 +6,7 @@
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { competitors } from "../src/lib/competitors.ts";
+import { competitors, type FaqItem } from "../src/lib/competitors.ts";
 
 const SITE_URL = "https://tryparrot.app";
 const SITE_NAME = "Parrot";
@@ -24,6 +24,7 @@ function parseBlogPosts(): {
 	date: string;
 	dateModified?: string;
 	keywords: string[];
+	faq?: FaqItem[];
 }[] {
 	const blogPath = resolve(import.meta.dir, "../src/lib/blog.ts");
 	const content = readFileSync(blogPath, "utf-8");
@@ -35,12 +36,15 @@ function parseBlogPosts(): {
 		date: string;
 		dateModified?: string;
 		keywords: string[];
+		faq?: FaqItem[];
 	}[] = [];
 
 	// `dateModified` is optional and always immediately follows `date` in blog.ts,
-	// so an optional group here stays bounded to the same post entry.
+	// so an optional group here stays bounded to the same post entry. Same for
+	// `faq`, which by convention immediately follows `keywords` (FAQ answers
+	// must not contain "]" or unescaped quotes for this to stay parseable).
 	const postRegex =
-		/\{\s*slug:\s*"([^"]+)"[\s\S]*?title:\s*"([^"]+)"[\s\S]*?description:\s*\n?\s*"([^"]+)"[\s\S]*?date:\s*"([^"]+)"\s*(?:,\s*dateModified:\s*"([^"]+)")?[\s\S]*?keywords:\s*\[([\s\S]*?)\]/g;
+		/\{\s*slug:\s*"([^"]+)"[\s\S]*?title:\s*"([^"]+)"[\s\S]*?description:\s*\n?\s*"([^"]+)"[\s\S]*?date:\s*"([^"]+)"\s*(?:,\s*dateModified:\s*"([^"]+)")?[\s\S]*?keywords:\s*\[([\s\S]*?)\](?:\s*,\s*faq:\s*\[([\s\S]*?)\])?/g;
 
 	let match: RegExpExecArray | null;
 	while ((match = postRegex.exec(content)) !== null) {
@@ -48,6 +52,15 @@ function parseBlogPosts(): {
 			.split(",")
 			.map((k) => k.trim().replace(/^"|"$/g, ""))
 			.filter(Boolean);
+		const faq: FaqItem[] = [];
+		if (match[7]) {
+			const faqRegex =
+				/\{\s*q:\s*"((?:[^"\\]|\\.)*)",\s*a:\s*"((?:[^"\\]|\\.)*)"\s*,?\s*\}/g;
+			let f: RegExpExecArray | null;
+			while ((f = faqRegex.exec(match[7])) !== null) {
+				faq.push({ q: f[1], a: f[2] });
+			}
+		}
 		posts.push({
 			slug: match[1],
 			title: match[2],
@@ -55,6 +68,7 @@ function parseBlogPosts(): {
 			date: match[4],
 			dateModified: match[5],
 			keywords,
+			...(faq.length ? { faq } : {}),
 		});
 	}
 
@@ -509,6 +523,18 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 			extracted++;
 		} else {
 			fallback++;
+		}
+		// FAQ from blog.ts metadata (visible section + FAQPage schema render
+		// from the same array, so this can't drift from the page).
+		if (post.faq?.length) {
+			sections.push("### FAQ");
+			sections.push("");
+			for (const item of post.faq) {
+				sections.push(`**Q: ${item.q}**`);
+				sections.push("");
+				sections.push(item.a);
+				sections.push("");
+			}
 		}
 	}
 

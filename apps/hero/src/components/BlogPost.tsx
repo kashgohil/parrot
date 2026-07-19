@@ -98,6 +98,29 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 				</div>
 			</section>
 
+			{/* FAQ (from post metadata — same source as FAQPage JSON-LD) */}
+			{post.faq && post.faq.length > 0 && (
+				<section className="px-6 pb-16 md:pb-24">
+					<div className="max-w-3xl mx-auto">
+						<h2 className="text-xl md:text-2xl font-bold text-foreground tracking-tight mb-8">
+							FAQ
+						</h2>
+						<div className="space-y-8">
+							{post.faq.map((item) => (
+								<div key={item.q} className="border-l-2 border-primary/30 pl-5">
+									<h3 className="text-lg font-bold text-foreground tracking-tight mb-2">
+										{item.q}
+									</h3>
+									<p className="text-[15px] text-muted-foreground leading-relaxed">
+										{item.a}
+									</p>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+			)}
+
 			{/* Related posts */}
 			{related.length > 0 && (
 				<section className="px-6 py-16 md:py-20 bg-muted/30 border-y border-border">

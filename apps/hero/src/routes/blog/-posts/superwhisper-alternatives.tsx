@@ -168,30 +168,6 @@ export default function SuperwhisperAlternatives() {
 				</li>
 			</ul>
 
-			<h2>FAQ</h2>
-			<h3>Is there a free Superwhisper alternative?</h3>
-			<p>
-				Yes. Parrot’s local mode is free for life, including AI cleanup and
-				custom vocabulary — the features Superwhisper often gates behind Pro.
-			</p>
-			<h3>Can Superwhisper alternatives run fully offline?</h3>
-			<p>
-				Local apps like Parrot can. Cloud apps cannot. After one download,
-				Parrot works without internet.
-			</p>
-			<h3>Will switching lose my vocabulary?</h3>
-			<p>
-				You’ll re-add terms once. Most people only need 20–50 high-value names
-				and jargon. See our guide on{" "}
-				<Link
-					to="/blog/$slug"
-					params={{ slug: "custom-vocabulary-voice-dictation" }}
-				>
-					custom vocabulary
-				</Link>
-				.
-			</p>
-
 			<h2>Try the free path</h2>
 			<p>
 				If you wanted Superwhisper’s local privacy without the subscription,{" "}
