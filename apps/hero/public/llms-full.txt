@@ -440,23 +440,23 @@ Great for batch audio. Weaker as a live “type with my voice in Slack” tool. 
 
 - Interviews and recordings: MacWhisper
 
-## FAQ
-
-### Is there a free VoiceInk alternative?
-
-Yes. Parrot's local mode is free for life with cleanup and custom vocabulary included.
-
-### Do VoiceInk alternatives work offline?
-
-Local apps can. After setup, Parrot dictates without internet. Cloud apps cannot.
-
-### Will my accuracy drop if I switch?
-
-Measure on your accent and jargon — not demos. Add vocabulary for names and product terms; that usually closes the gap faster than switching engines.
-
 ## Try the free path
 
 Download Parrot for Apple Silicon, press fn, and run a real workday of email and notes. That beats any feature matrix.
+
+### FAQ
+
+**Q: Is there a free VoiceInk alternative?**
+
+Yes. Parrot is free for life with cleanup and custom vocabulary included.
+
+**Q: Do VoiceInk alternatives work offline?**
+
+Local apps can. After the one-time setup, Parrot dictates without internet. Cloud apps cannot.
+
+**Q: Will my accuracy drop if I switch?**
+
+Measure on your accent and jargon — not demos. Add vocabulary for names and product terms; that usually closes the gap faster than switching engines.
 
 ## Best Willow Voice Alternatives in 2026
 
@@ -515,23 +515,23 @@ Free and private enough for short blurbs. Not a full Willow replacement for long
 
 - Barely dictate: Apple's built-in is fine
 
-## FAQ
-
-### Is Parrot a free Willow Voice alternative?
-
-For Mac users who want free local dictation with cleanup — yes. It doesn't match multi-platform cloud sync; that's intentional.
-
-### Can Willow alternatives keep audio offline?
-
-Local apps like Parrot can. Verify by disconnecting Wi‑Fi after setup — see our offline setup guide .
-
-### Which is more accurate?
-
-Depends on accent, mic, and vocabulary. Test proper nouns from your real work — client names beat demo scripts.
-
 ## Next step
 
 If you're on Mac and tired of subscriptions, try Parrot free. One week of real Slack and email will tell you if local is enough.
+
+### FAQ
+
+**Q: Is Parrot a free Willow Voice alternative?**
+
+For Mac users who want free local dictation with cleanup — yes. It doesn't match multi-platform cloud sync; that's intentional.
+
+**Q: Can Willow alternatives keep audio offline?**
+
+Local apps like Parrot can. Verify by disconnecting Wi-Fi after setup — see our offline setup guide.
+
+**Q: Which is more accurate?**
+
+Depends on accent, mic, and vocabulary. Test proper nouns from your real work — client names beat demo scripts.
 
 ## How to Dictate in Any Mac App: Slack, Notion, VS Code & More
 
@@ -618,23 +618,23 @@ Step-by-step: local setup on Mac .
 
 System-wide doesn't mean cloud-wide. Local dictation still keeps audio on your Mac whether you're in Slack or a medical EHR page. That's the point of on-device tools — compare options in private voice dictation apps .
 
-## FAQ
-
-### Can I dictate in every Mac app?
-
-Almost any app with a standard text field. Exceptions: some secure inputs, canvas-only tools, and fields that don't accept paste.
-
-### Do I need a plugin for Slack or Notion?
-
-No. Global hotkey + paste is enough. Plugins add complexity without unlocking the core loop.
-
-### What's the best free system-wide dictation for Mac?
-
-Parrot — free for life, local, built for the hotkey workflow. Download here.
-
 ## Pick three apps and practice
 
 Today: Slack, email, and your notes app. Tomorrow it feels automatic. That's when dictation sticks.
+
+### FAQ
+
+**Q: Can I dictate in every Mac app?**
+
+Almost any app with a standard text field. Exceptions: some secure inputs, canvas-only tools, and fields that don't accept paste.
+
+**Q: Do I need a plugin for Slack or Notion?**
+
+No. Global hotkey + paste is enough. Plugins add complexity without unlocking the core loop.
+
+**Q: What's the best free system-wide dictation for Mac?**
+
+Parrot — free for life, local, built for the hotkey workflow.
 
 ## Voice Dictation for Email: Clear Your Inbox Faster on Mac
 
@@ -719,23 +719,23 @@ If you discuss customers, deals, or HR topics, prefer on-device dictation so aud
 
 - Using a free cloud tier that caps you mid-inbox-zero session
 
-## FAQ
-
-### Is voice email faster than typing?
-
-For most people, yes on first-draft replies. The win is minutes per day, not milliseconds per word. Measure your own afternoon.
-
-### Will cleanup make me sound robotic?
-
-Good cleanup fixes filler and grammar while keeping your phrasing. If it feels stiff, shorten what you say — concise speech produces concise email.
-
-### Best free tool for dictating email on Mac?
-
-Parrot — free, local, works in any client with a text field.
-
 ## Clear ten emails today
 
 Don't overhaul your whole system. Dictate the next ten replies. Keep the tool if your shoulders drop and the queue shrinks. Get Parrot free.
+
+### FAQ
+
+**Q: Is voice email faster than typing?**
+
+For most people, yes on first-draft replies. The win is minutes per day, not milliseconds per word. Measure your own afternoon.
+
+**Q: Will cleanup make me sound robotic?**
+
+Good cleanup fixes filler and grammar while keeping your phrasing. If it feels stiff, shorten what you say — concise speech produces concise email.
+
+**Q: Best free tool for dictating email on Mac?**
+
+Parrot — free, local, works in any client with a text field.
 
 ## Voice Dictation for Students: Essays, Notes, and Free Tools
 
@@ -813,23 +813,23 @@ More on free tiers: what's actually free in 2026 .
 
 Dictation is a writing input method — like a keyboard. Using it is not plagiarism. Pasting AI-generated arguments without disclosure may violate your school's policy. Know the difference: speech-to-text captures your words; generative AI invents content.
 
-## FAQ
-
-### Is free dictation good enough for college papers?
-
-For drafts, yes. Expect to edit. Local apps with cleanup (like Parrot) get you closer to readable prose than bare built-in dictation.
-
-### Can I dictate in Google Docs on Mac?
-
-Yes — put the cursor in Docs and use a global-hotkey app that pastes system-wide. You're not limited to Docs' built-in voice typing.
-
-### What if I don't have Apple Silicon?
-
-Parrot currently targets Apple Silicon. Use macOS Dictation or Docs voice typing as interim options, or another tool that supports your hardware.
-
 ## Start with one assignment
 
 Pick the next short essay or discussion post. Dictate the first draft in one sitting. If you finish faster, keep the habit. Download Parrot free and write out loud.
+
+### FAQ
+
+**Q: Is free dictation good enough for college papers?**
+
+For drafts, yes. Expect to edit. Local apps with cleanup (like Parrot) get you closer to readable prose than bare built-in dictation.
+
+**Q: Can I dictate in Google Docs on Mac?**
+
+Yes — put the cursor in Docs and use a global-hotkey app that pastes system-wide. You're not limited to Docs' built-in voice typing.
+
+**Q: What if I don't have Apple Silicon?**
+
+Parrot currently targets Apple Silicon. Use macOS Dictation or Docs voice typing as interim options, or another tool that supports your hardware.
 
 ## Voice Dictation for ADHD: Lower the Friction to Start Writing
 
@@ -907,23 +907,23 @@ Writers and students hit similar patterns — see dictation for writers and dict
 
 Fewer accounts and fewer dashboards help. A local app that doesn't demand login removes one more tab from your brain. Private by default is also calmer when notes include personal health or work stress.
 
-## FAQ
-
-### Is voice dictation an ADHD treatment?
-
-No. It's an assistive writing workflow some people find helpful alongside (not instead of) clinical care and other strategies.
-
-### What if I lose my train of thought mid-sentence?
-
-Stop and re-start the thought as a new sentence. Cleanup and editing exist for a reason. Perfect continuity is optional.
-
-### Best free option on Mac?
-
-Try Parrot — free, on-device, one hotkey. If it feels slow or fussy, you won't stick with any tool.
-
 ## Try a five-minute dump
 
 Open a blank note. Dictate for five minutes about the task you've been avoiding. Don't edit. If the page is fuller than it was, the tool earned another day.
+
+### FAQ
+
+**Q: Is voice dictation an ADHD treatment?**
+
+No. It's an assistive writing workflow some people find helpful alongside (not instead of) clinical care and other strategies.
+
+**Q: What if I lose my train of thought mid-sentence?**
+
+Stop and re-start the thought as a new sentence. Cleanup and editing exist for a reason. Perfect continuity is optional.
+
+**Q: Best free option on Mac?**
+
+Try Parrot — free, on-device, one hotkey. If it feels slow or fussy, you won't stick with any tool.
 
 ## Best Superwhisper Alternatives in 2026 (Free & Local Options)
 
@@ -990,23 +990,31 @@ MacWhisper shines when you drop in interviews or recordings. Live hotkey-to-curs
 
 - Mostly batch files? MacWhisper remains strong.
 
-## FAQ
-
-### Is there a free Superwhisper alternative?
-
-Yes. Parrot’s local mode is free for life, including AI cleanup and custom vocabulary — the features Superwhisper often gates behind Pro.
-
-### Can Superwhisper alternatives run fully offline?
-
-Local apps like Parrot can. Cloud apps cannot. After one download, Parrot works without internet.
-
-### Will switching lose my vocabulary?
-
-You’ll re-add terms once. Most people only need 20–50 high-value names and jargon. See our guide on custom vocabulary .
-
 ## Try the free path
 
 If you wanted Superwhisper’s local privacy without the subscription, download Parrot for Mac (Apple Silicon). Press fn, talk, and see whether the daily loop is enough — for most people, it is.
+
+### FAQ
+
+**Q: Is there a free Superwhisper alternative?**
+
+Yes. Parrot is free for life, including AI cleanup and custom vocabulary — features Superwhisper gates behind its $8.49/mo Pro plan (pricing checked July 2026). Local transcription and cleanup are included with no paid tier.
+
+**Q: Does Superwhisper work offline?**
+
+Yes. Superwhisper runs local Whisper models, so it works without internet. Parrot does the same — after a one-time model download, dictation and cleanup run fully offline. Cloud apps like Wispr Flow cannot.
+
+**Q: What do you lose switching from Superwhisper to Parrot?**
+
+Superwhisper's voice commands for app control are the main gap — Parrot focuses on the dictate-clean-paste loop. If voice-driven app actions are core to your workflow, Superwhisper keeps the edge there.
+
+**Q: Will switching lose my custom vocabulary?**
+
+You will re-add terms once. Most people only need 20–50 high-value names and jargon, and Parrot's custom vocabulary plus writing context covers the same use cases.
+
+**Q: Is Parrot's cleanup as good as Superwhisper Pro's?**
+
+Both fix grammar and remove filler words on-device. Parrot's cleanup is free; Superwhisper's requires Pro. For the daily hotkey loop — email, chat, notes — most users find the results comparable.
 
 ## Best Aqua Voice Alternatives for Mac in 2026
 
@@ -1069,23 +1077,23 @@ Apple’s dictation is free and private enough for many people — until you nee
 
 - Accuracy first: measure proper nouns and jargon, not demo scripts.
 
-## FAQ
-
-### Is there a free Aqua Voice alternative for Mac?
-
-Yes. Parrot is free for life with on-device transcription and cleanup. macOS Dictation is also free, but limited for daily professional use.
-
-### Can an Aqua alternative keep audio off the cloud?
-
-Yes — choose a local-first app. Parrot processes speech and cleanup on your Mac; nothing is uploaded for dictation.
-
-### Will I lose real-time text if I switch?
-
-Not necessarily. Parrot shows live transcript in the floating HUD while you hold the hotkey, then pastes finished text at the cursor when you release.
-
 ## Next step
 
 If Aqua’s price or privacy model isn’t a fit, try Parrot free on Apple Silicon. One afternoon of real work — email, notes, docs — will tell you more than any feature matrix.
+
+### FAQ
+
+**Q: Is there a free Aqua Voice alternative for Mac?**
+
+Yes. Parrot is free for life with on-device transcription and cleanup. macOS Dictation is also free, but limited for daily professional use.
+
+**Q: Can an Aqua alternative keep audio off the cloud?**
+
+Yes — choose a local-first app. Parrot processes speech and cleanup on your Mac; nothing is uploaded for dictation.
+
+**Q: Will I lose real-time text if I switch?**
+
+Not necessarily. Parrot shows live transcript in the floating HUD while you hold the hotkey, then pastes finished text at the cursor when you release.
 
 ## Best Private Voice Dictation Apps in 2026 (No Cloud Required)
 
@@ -1161,23 +1169,23 @@ We walk through a full offline proof in the offline setup guide .
 
 - Anyone who simply prefers ownership of their microphone
 
-## FAQ
-
-### Are cloud dictation apps ever OK?
-
-Yes — for non-sensitive everyday text, many people accept the trade. Just choose consciously. Don’t paste patient notes or M&A drafts into a cloud mic by accident.
-
-### Is free private dictation actually good now?
-
-Yes. On modern Apple Silicon, on-device speech recognition and cleanup are fast enough for daily email, docs, and chat — which is why Parrot can ship free local mode without feeling like a toy.
-
-### Does private mean lower accuracy?
-
-Not automatically. Local accuracy has closed the gap for everyday speech. Cloud may still edge noisy environments in some cases; measure on your accent and vocabulary.
-
 ## Choose private by default
 
 You can always use cloud tools later for specific tasks. Starting local means your default path never uploads a meeting note you meant to keep. Download Parrot and keep dictation on your Mac.
+
+### FAQ
+
+**Q: Are cloud dictation apps ever OK?**
+
+Yes — for non-sensitive everyday text, many people accept the trade. Just choose consciously. Don't paste patient notes or M&A drafts into a cloud mic by accident.
+
+**Q: Is free private dictation actually good now?**
+
+Yes. On modern Apple Silicon, on-device speech recognition and cleanup are fast enough for daily email, docs, and chat — which is why Parrot can be completely free without feeling like a toy.
+
+**Q: Does private mean lower accuracy?**
+
+Not automatically. Local accuracy has closed the gap for everyday speech. Cloud may still edge noisy environments in some cases; measure on your accent and vocabulary.
 
 ## macOS Dictation vs Third-Party Apps: When to Upgrade
 
@@ -1260,23 +1268,23 @@ That’s the gap products like Parrot are built for: local transcription, option
 
 Most people decide within a week. The winner is the tool that disappears into the work — not the one with the longest settings page.
 
-## FAQ
-
-### Is macOS Dictation private?
-
-On-device dictation keeps processing local. Still verify your system settings; behavior can depend on macOS version and language packs.
-
-### Is a third-party app always better?
-
-No. For occasional use, Apple is rational. For professional daily dictation, dedicated apps usually win on cleanup, vocabulary, and workflow.
-
-### What’s the best free upgrade from macOS Dictation?
-
-If you want free + local + cleanup, try Parrot. Also read what’s actually free in 2026 .
-
 ## Bottom line
 
 macOS Dictation is a great starter tool. Dedicated apps are for people who write with their voice — not just dabble. If that’s you, graduate before you blame your microphone.
+
+### FAQ
+
+**Q: Is macOS Dictation private?**
+
+On-device dictation keeps processing local. Still verify your system settings; behavior can depend on macOS version and language packs.
+
+**Q: Is a third-party app always better?**
+
+No. For occasional use, Apple is rational. For professional daily dictation, dedicated apps usually win on cleanup, vocabulary, and workflow.
+
+**Q: What's the best free upgrade from macOS Dictation?**
+
+If you want free + local + cleanup, try Parrot. Also see our guide to what's actually free in 2026.
 
 ## Voice Dictation for Writers: Draft Faster Without Fighting the Tool
 
@@ -1359,23 +1367,23 @@ With Parrot, that stack is free, on-device, and offline-capable after the first 
 
 - Using a free tier with word caps if you write daily (you’ll hit the wall mid-chapter).
 
-## FAQ
-
-### Do professional writers really use dictation?
-
-Yes — especially for first drafts and notes. Many still type revisions. The win is output volume and reduced strain, not magic prose.
-
-### What’s the best free voice dictation for writers on Mac?
-
-If you want free + private + cleanup, try Parrot. Apple Dictation works for scraps; daily writers usually outgrow it.
-
-### Will AI cleanup change my voice?
-
-Good cleanup removes filler and fixes grammar without rewriting your personality. If it over-edits, turn cleanup down or off for creative passages.
-
 ## Start with one chapter
 
 Pick tomorrow’s draft block. Dictate it end-to-end. If you finish faster and your wrists hurt less, keep going. Download Parrot and write out loud.
+
+### FAQ
+
+**Q: Do professional writers really use dictation?**
+
+Yes — especially for first drafts and notes. Many still type revisions. The win is output volume and reduced strain, not magic prose.
+
+**Q: What's the best free voice dictation for writers on Mac?**
+
+If you want free + private + cleanup, try Parrot. Apple Dictation works for scraps; daily writers usually outgrow it.
+
+**Q: Will AI cleanup change my voice?**
+
+Good cleanup removes filler and fixes grammar without rewriting your personality. If it over-edits, turn cleanup down or off for creative passages.
 
 ## Voice Dictation for Lawyers: Privacy, Accuracy, and Speed
 
@@ -1444,23 +1452,23 @@ Dragon remains a serious option in legal, especially for high-volume professiona
 
 See our Parrot vs Dragon comparison if you're weighing legacy enterprise vs modern free local.
 
-## FAQ
-
-### Is voice dictation confidential enough for client work?
-
-It depends on the tool. Local on-device dictation minimizes third-party access. Cloud tools require contract review, policies, and judgment. When in doubt, local is the simpler answer.
-
-### Can I use free dictation for legal email?
-
-Yes — free local tools are viable for drafting. Parrot is free for life on Mac with on-device cleanup. Still review every outbound message like you would typed text.
-
-### Will dictation replace associates?
-
-No. It replaces blank-page time and typing fatigue. Judgment, research, and responsibility stay human.
-
 ## Draft faster without expanding your attack surface
 
 Lawyers don’t need gimmicks. They need a hotkey, trustworthy privacy, and fewer wasted minutes on “um” and misspelled captions. Try Parrot free for local Mac dictation — then put your saved time into the analysis that actually wins matters.
+
+### FAQ
+
+**Q: Is voice dictation confidential enough for client work?**
+
+It depends on the tool. Local on-device dictation minimizes third-party access. Cloud tools require contract review, policies, and judgment. When in doubt, local is the simpler answer.
+
+**Q: Can I use free dictation for legal email?**
+
+Yes — free local tools are viable for drafting. Parrot is free for life on Mac with on-device cleanup. Still review every outbound message like you would typed text.
+
+**Q: Will dictation replace associates?**
+
+No. It replaces blank-page time and typing fatigue. Judgment, research, and responsibility stay human.
 
 ## Wispr Flow Alternatives: 5 Voice Dictation Apps Worth Trying in 2026
 
@@ -1546,6 +1554,28 @@ Worth disambiguating: Whisper Flow (open source CLI) and Wispr Flow (the commerc
 Wispr Flow proved that AI-cleaned dictation is a workflow worth paying for. The good news: you don't actually have to pay monthly to get it. Parrot delivers the same core experience - hotkey, dictate, AI cleanup, paste - with a local-first option and no word caps, for free.
 
 Download Parrot and see how it compares on your own workflow.
+
+### FAQ
+
+**Q: Is Wispr Flow free?**
+
+Wispr Flow has a free tier, but it caps your weekly word count — daily dictators typically hit the cap mid-week. Unlimited use requires Pro at $15/mo (pricing checked July 2026). Parrot is free for life with no word caps.
+
+**Q: What is the best free Wispr Flow alternative?**
+
+Parrot is the closest free alternative: the same global-hotkey, AI-cleaned dictation workflow, running locally on your Mac, with no subscription and no weekly word cap. Superwhisper ($8.49/mo Pro) and MacWhisper (€59 one-time) are strong paid options.
+
+**Q: Does Wispr Flow work offline?**
+
+No. Wispr Flow processes audio in the cloud, so dictation requires an internet connection. If offline dictation matters, Parrot and Superwhisper both run locally on Mac — Parrot works fully offline after a one-time model download.
+
+**Q: Is there a Wispr Flow alternative for Windows?**
+
+Wispr Flow itself is the cross-platform option — most alternatives, including Parrot and Superwhisper, are Mac-only. If you are on Windows, staying on Wispr Flow is the practical choice today.
+
+**Q: Is Whisper Flow the same as Wispr Flow?**
+
+No. Wispr Flow is the commercial app; Whisper Flow is a free, open-source command-line tool that wraps OpenAI's Whisper model. Whisper Flow costs nothing and runs locally, but you wire up your own hotkey and clipboard plumbing.
 
 ## How to Use Voice Dictation Offline: A Complete Setup Guide
 
@@ -1754,6 +1784,28 @@ The catch: it's a command-line tool. To turn it into a real dictation workflow y
 The most truly free voice dictation in 2026 is the kind that runs locally on your Mac - because there's no per-minute cost to subsidize. Parrot gives you that experience with a real UI, AI cleanup, and custom vocabulary, without ever asking for a credit card.
 
 Download Parrot and start dictating for free today.
+
+### FAQ
+
+**Q: What is the best free dictation app for Mac?**
+
+Parrot is the best fully free dictation app for Mac in 2026: global hotkey, on-device transcription, AI cleanup, and custom vocabulary with no word caps and no account. For occasional short notes, built-in macOS Dictation is also genuinely free.
+
+**Q: Are free dictation apps really free?**
+
+Usually not fully. Free typically means one of four things: truly free (usually local apps), freemium with weekly or monthly caps, a time-limited trial, or a free app that bills you per minute through your own API key.
+
+**Q: Which free dictation apps have no word limit?**
+
+Parrot and macOS Dictation both have no word caps. Wispr Flow's free tier caps weekly words, and Otter.ai's free tier caps at 300 minutes per month.
+
+**Q: Do free dictation apps work offline?**
+
+Local ones do — Parrot, macOS Dictation, and whisper.cpp all work without internet. Cloud-based free tiers like Wispr Flow and Otter.ai require a connection.
+
+**Q: Is whisper.cpp good enough for daily dictation?**
+
+The transcription quality is excellent, but it is a command-line tool with no dictation UI — you would have to script audio capture, a global hotkey, and paste yourself. Apps like Parrot wrap the same local-model approach in a ready-made workflow.
 
 ## Local-First Voice Dictation Explained: Why Your Audio Should Never Leave Your Mac
 
@@ -2007,6 +2059,28 @@ For most Mac users in 2026, Parrot offers the best balance of accuracy, ease of 
 If you're just getting started with voice dictation, try the built-in macOS Dictation first. It's free and gives you a baseline to compare against. Once you find yourself wanting better accuracy, cleanup, or customization, that's when it's time to upgrade.
 
 Ready to try Parrot? Download it free and see the difference modern voice dictation can make.
+
+### FAQ
+
+**Q: What is the best voice dictation app for Mac in 2026?**
+
+For most people, Parrot: free for life, fully local, with AI cleanup and custom vocabulary. macOS Dictation is fine for casual notes, Otter.ai leads for meeting transcription, and Superwhisper or Wispr Flow suit users who prefer their specific workflows.
+
+**Q: What is the best free dictation app for Mac?**
+
+Parrot is the most complete free option — unlimited local dictation with cleanup and no word caps. macOS Dictation is the best zero-install option for occasional use.
+
+**Q: Does Dragon Professional work on Mac?**
+
+No. Nuance discontinued Dragon for Mac in 2018; Dragon Professional is Windows-only in 2026. Running it on a Mac requires a Windows virtual machine, so Mac users typically pick a native app like Parrot or Superwhisper instead.
+
+**Q: Which Mac dictation apps work offline?**
+
+Parrot, macOS Dictation, Superwhisper, MacWhisper, and Whisper Flow all process audio on-device and work offline. Otter.ai and Wispr Flow are cloud-based and need an internet connection.
+
+**Q: Is cloud dictation safe for sensitive work?**
+
+Cloud apps upload your audio for processing, which is a non-starter for many medical, legal, and financial workflows. Local apps like Parrot keep audio on your Mac, so nothing leaves the device.
 
 ## Speech to Text: The Complete Guide
 
@@ -2387,6 +2461,28 @@ Three reasons people choose local mode:
 For most daily dictation on a modern Mac, no. Local is what Parrot ships — free for life, private by default, and fast enough for email, docs, and chat. Cloud APIs still make sense for specialized server-side pipelines, batch jobs, or apps that can't run models on-device.
 
 If you're comparing API vendors for a product you're building, see our comparison of transcription APIs . If you just want to dictate on your Mac, stay local.
+
+### FAQ
+
+**Q: How do I set up offline voice dictation on a Mac?**
+
+Install Parrot, run the built-in setup wizard (it downloads the local dictation and cleanup models once), pick a hotkey, and dictate. The whole setup takes under 5 minutes, and everything runs offline afterward.
+
+**Q: Does Parrot work without internet?**
+
+Yes. After the one-time model download (~4 GB), transcription and AI cleanup run entirely on your Mac. No internet, no account, no API keys.
+
+**Q: What permissions does Parrot need?**
+
+Microphone access to hear you, and Accessibility access to paste text at your cursor. Both are standard macOS permissions granted in System Settings → Privacy & Security.
+
+**Q: Does local dictation work on Intel Macs?**
+
+Not with Parrot — it is built for Apple Silicon (M1 and later), where on-device performance makes transcription fast enough for daily use.
+
+**Q: How much disk space do local dictation models need?**
+
+Budget a few GB once for the dictation and cleanup models. After the download, no network or additional space is needed.
 
 ## Whisper vs. Deepgram vs. ElevenLabs: Transcription APIs Compared
 
