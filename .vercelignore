@@ -1,0 +1,41 @@
+# Vercel CLI upload limit is 10MB. This monorepo is huge (desktop Rust
+# artifacts alone are tens of GB). The parrot project Root Directory is
+# apps/hero — only that app needs to be on Vercel.
+
+# Desktop app (Tauri / Rust) — never deploy to Vercel
+apps/desktop
+
+# API is a separate Vercel project (parrot-api)
+apps/api
+
+# Local / tooling / docs not needed for hero build
+docs
+scripts
+.github
+.agents
+.agent
+.claude
+.cursor
+.vscode
+
+# Locks / env / OS
+**/.DS_Store
+**/*.local
+.env
+.env.*
+!.env.example
+
+# Build outputs & deps (reinstalled on Vercel)
+**/node_modules
+**/dist
+**/target
+**/.output
+**/.turbo
+**/.nitro
+
+# Large / irrelevant root files
+*.md
+!apps/hero/**/*.md
+bun.lock
+package.json
+CLAUDE.md
