@@ -1,0 +1,69 @@
+# Parrot
+
+> Parrot is a free, local-first voice dictation app for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud required, no API keys for local mode.
+
+Parrot runs fully offline when you choose local mode (Whisper.cpp + optional Ollama cleanup). It supports custom vocabulary, writing style, and context so names and jargon land correctly. Built with Tauri 2 (Rust + React). Website: https://tryparrot.app
+
+Key facts:
+- Free for life (local mode)
+- macOS only; Apple Silicon (M1/M2/M3/M4)
+- On-device transcription and optional AI cleanup
+- Works system-wide (Slack, Notion, VS Code, email, browsers, etc.)
+- Custom vocabulary, writing style, and dictation history
+- Optional cloud mode with provider APIs (OpenAI, Deepgram, ElevenLabs)
+
+## Core pages
+
+- [Home](https://tryparrot.app/): Product overview — free local-first Mac voice dictation
+- [Download](https://tryparrot.app/download): Get Parrot for Mac
+- [About](https://tryparrot.app/about): Mission, story, and product principles
+- [Changelog](https://tryparrot.app/changelog): Release notes and product updates
+- [Pricing](https://tryparrot.app/pricing): Pricing (local mode is free)
+- [Contact](https://tryparrot.app/contact): Support and contact
+- [Privacy](https://tryparrot.app/privacy): Privacy policy
+- [Terms](https://tryparrot.app/terms): Terms of service
+- [Blog](https://tryparrot.app/blog): Guides, comparisons, and tutorials
+- [Compare](https://tryparrot.app/compare): Side-by-side comparisons with other dictation apps
+
+## Comparisons
+
+- [Parrot vs Wispr Flow](https://tryparrot.app/compare/wispr-flow): Free local Mac dictation vs Wispr Flow subscription
+- [Parrot vs Superwhisper](https://tryparrot.app/compare/superwhisper): Free local alternative to Superwhisper
+- [Parrot vs MacWhisper](https://tryparrot.app/compare/macwhisper): Dictation workflow vs MacWhisper transcription
+- [Parrot vs Dragon](https://tryparrot.app/compare/dragon-professional): Modern free local option vs Dragon Professional
+
+## Guides and comparisons (blog)
+
+- [Best free voice dictation apps 2026](https://tryparrot.app/blog/free-voice-dictation-apps-2026): Free Mac dictation options compared
+- [Best voice dictation apps for Mac 2026](https://tryparrot.app/blog/best-voice-dictation-apps-mac-2026): Top Mac dictation apps ranked
+- [Wispr Flow alternatives](https://tryparrot.app/blog/wispr-flow-alternatives): Best alternatives to Wispr Flow
+- [Superwhisper alternatives](https://tryparrot.app/blog/superwhisper-alternatives): Best alternatives to Superwhisper
+- [VoiceInk alternatives](https://tryparrot.app/blog/voiceink-alternatives): Free local VoiceInk alternatives
+- [Willow Voice alternatives](https://tryparrot.app/blog/willow-voice-alternatives): Alternatives to Willow Voice
+- [Aqua Voice alternatives](https://tryparrot.app/blog/aqua-voice-alternatives): Alternatives to Aqua Voice
+- [Local voice dictation on Mac](https://tryparrot.app/blog/local-voice-dictation-mac): On-device Mac dictation setup
+- [Local-first voice dictation explained](https://tryparrot.app/blog/local-first-voice-dictation-explained): What local-first dictation means
+- [Offline voice dictation setup](https://tryparrot.app/blog/offline-voice-dictation-setup): Fully offline Mac dictation
+- [Private voice dictation apps](https://tryparrot.app/blog/private-voice-dictation-apps): Privacy-first dictation options
+- [macOS dictation vs apps](https://tryparrot.app/blog/macos-dictation-vs-apps): Built-in macOS dictation vs third-party apps
+- [Dictate in any Mac app](https://tryparrot.app/blog/dictate-in-any-mac-app): System-wide hotkey dictation for Slack, Notion, VS Code, and more
+- [Voice dictation for email](https://tryparrot.app/blog/voice-dictation-for-email): Faster Gmail/Outlook replies by voice
+- [Voice dictation for students](https://tryparrot.app/blog/voice-dictation-for-students): Essays, notes, and free tools
+- [Voice dictation for writers](https://tryparrot.app/blog/voice-dictation-for-writers): Drafting and editing by voice
+- [Voice dictation for lawyers](https://tryparrot.app/blog/voice-dictation-for-lawyers): Legal workflow and accuracy tips
+- [Voice dictation for ADHD](https://tryparrot.app/blog/voice-dictation-adhd): Dictation as a focus and output tool
+- [Voice dictation vs typing](https://tryparrot.app/blog/voice-dictation-vs-typing): Speed and ergonomics comparison
+- [Speech-to-text complete guide](https://tryparrot.app/blog/speech-to-text-complete-guide): End-to-end STT overview
+- [Custom vocabulary for voice dictation](https://tryparrot.app/blog/custom-vocabulary-voice-dictation): Names, jargon, and brand terms
+- [Transcription APIs compared](https://tryparrot.app/blog/transcription-apis-compared): Whisper, Deepgram, ElevenLabs, and more
+- [Voice dictation medical / HIPAA](https://tryparrot.app/blog/voice-dictation-medical-hipaa): Privacy considerations for clinical use
+- [RSI and developer voice dictation](https://tryparrot.app/blog/rsi-developer-voice-dictation): Dictation for developers with RSI
+- [Why Tauri not Electron](https://tryparrot.app/blog/why-tauri-not-electron): Why Parrot is built with Tauri
+- [Voice apps that boost productivity](https://tryparrot.app/blog/voice-apps-boost-productivity): Productivity gains from voice tools
+
+## Optional
+
+- [llms-full.txt](https://tryparrot.app/llms-full.txt): Full product + compare + blog text dump for offline LLM context (generated at build)
+- [Sitemap](https://tryparrot.app/sitemap.xml): Full URL list for crawlers
+- [RSS feed](https://tryparrot.app/rss.xml): Blog feed
+- [robots.txt](https://tryparrot.app/robots.txt): Crawl rules (AI bots allowed)

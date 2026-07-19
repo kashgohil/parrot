@@ -1,0 +1,2697 @@
+# Parrot — Full LLM Context
+
+> Free, local-first voice dictation for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud required, no API keys for local mode.
+
+Generated: 2026-07-19. Prefer live pages for the latest UI; this file is a consolidated text dump for LLM context. Index: https://tryparrot.app/llms.txt
+
+# Product overview
+
+URL: https://tryparrot.app/
+
+Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.
+
+## Key facts
+
+- Free for life (local mode) — no account, no trial, no card
+- macOS only; Apple Silicon (M1 and later)
+- On-device transcription and optional AI cleanup
+- Works system-wide via global hotkey (any Mac app)
+- Custom vocabulary, writing style, and dictation history
+- Fully offline after one-time model download
+- Optional cloud mode with OpenAI, Deepgram, or ElevenLabs (own API keys or Parrot cloud)
+- Built with Tauri 2 (Rust + React)
+
+## How it works
+
+1. Press your global hotkey (default Cmd+Shift+Space) to start recording.
+2. Speak naturally — names, jargon, full sentences.
+3. Release or press again to stop. Parrot transcribes on-device.
+4. Optional AI cleanup fixes grammar, removes filler (um, uh, like), and applies your vocabulary and writing style.
+5. Text is copied to the clipboard and pasted at the cursor. Entry is saved to history.
+
+## Features
+
+- Fast, accurate first-pass dictation
+- Audio never leaves your device (local mode)
+- No account, no sign-in required for local use
+- Works fully offline after setup
+- Custom vocabulary & AI cleanup
+- Dictation history with search
+- Live transcript workflow into Slack, Notion, VS Code, email, browsers, and more
+
+## FAQ
+
+**Q: What's local mode?**
+
+Parrot runs transcription and AI cleanup entirely on your Mac. Everything happens on-device — zero data leaves your computer. You download what you need once, then no internet is required. Ideal for private work, legal documents, or anyone who values control.
+
+**Q: How fast is it?**
+
+Built for daily use: release the hotkey and text lands at your cursor with minimal wait. Accuracy is tuned for first-pass names, jargon, and everyday speech — not a raw draft you have to rewrite.
+
+**Q: Does it work offline?**
+
+Yes. After the one-time download, Parrot runs fully offline. No internet, no account, no API keys.
+
+**Q: How does the cleanup work?**
+
+After transcription, an optional AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. It runs entirely on your Mac.
+
+**Q: What about my privacy?**
+
+Everything stays on your Mac — audio, transcripts, history, vocabulary. Nothing is sent to our servers in local mode.
+
+**Q: Is it really free?**
+
+Yes. Local mode is free, for life. No account, no trial, no card. Unlimited dictation on your Mac.
+
+**Q: Does it work on Intel Macs?**
+
+Not currently. Parrot is built for Apple Silicon (M1 and later) and the on-device performance that makes dictation feel instant.
+
+**Q: Will my audio be uploaded?**
+
+No. Local mode runs entirely on your Mac — transcription, cleanup, and history all stay on-device. Nothing is sent to any server.
+
+Download: https://tryparrot.app/download
+About: https://tryparrot.app/about
+Changelog: https://tryparrot.app/changelog
+
+# Comparisons
+
+Side-by-side pages: https://tryparrot.app/compare. Data sourced from competitors.ts (same source as the live site).
+
+## Parrot vs Wispr Flow
+
+URL: https://tryparrot.app/compare/wispr-flow
+
+Pick Parrot if you want the same AI-cleaned dictation workflow without a monthly subscription, with a local-first option, and no weekly word cap. Pick Wispr Flow if you need cross-platform support (Windows + Mac).
+
+**Wispr Flow:** AI-cleaned cloud dictation with cross-platform support
+
+### Pricing
+
+- Parrot: Free for life
+- Wispr Flow free: Free tier with weekly word cap
+- Wispr Flow paid: $15/mo Pro
+
+### Feature comparison
+
+| Feature | Parrot | Wispr Flow |
+| --- | --- | --- |
+| Price | Free for life | Free tier / $15/mo |
+| Word caps | None | Weekly cap on free tier |
+| Local-first option | Yes | No |
+| On-device transcription | Yes | No |
+| AI cleanup | Yes | Yes |
+| Custom vocabulary | Deep | Limited |
+| Mac (Apple Silicon) | Yes | Yes |
+| Windows | No | Yes |
+| Works offline | Yes | No |
+| Native menu-bar app | Yes | Yes |
+
+### Wispr Flow strengths
+
+- Polished onboarding and well-designed UI
+- Cross-platform — ships on both Windows and Mac
+- Strong baseline accuracy out of the box
+- Established product with active funding and team
+
+### Wispr Flow weaknesses
+
+- Cloud-only — your audio is uploaded for processing
+- Free tier capped by weekly word count, not minutes
+- No fully offline mode for sensitive industries
+- Pro plan is recurring, not one-time
+
+### Where Parrot wins
+
+- **No subscription, no caps:** Parrot is free for life with no weekly word limit. Wispr Flow's free tier is functional but a daily dictator hits the cap by mid-week.
+- **Local-first by design:** Your microphone audio never leaves your Mac. Wispr Flow processes audio in the cloud — a non-starter for HIPAA-covered, legal, or finance work.
+- **Fast enough for daily work:** Snappy time-to-text with strong first-pass accuracy — so you dictate more and fix less.
+- **Deeper vocabulary control:** Custom words, writing style, and context that move the needle on accuracy for technical or domain-specific dictation.
+
+### Choose Parrot when
+
+- You're on Mac and want to stop paying monthly for dictation
+- You handle sensitive content (medical, legal, financial, internal)
+- You hit Wispr Flow's free-tier word cap regularly
+- You travel and need dictation that works on planes and bad Wi-Fi
+
+### Choose Wispr Flow when
+
+- You need Windows support (Parrot is Mac-only today)
+- You're already deep into Wispr Flow's workflow and free tier covers your usage
+- You strongly prefer cloud-managed tooling
+
+### FAQ
+
+**Q: Is Parrot a free Wispr Flow alternative?**
+
+Yes. Parrot is free for life with no word caps — unlimited on-device dictation, no account required.
+
+**Q: Can Parrot do everything Wispr Flow does?**
+
+On Mac, yes for the daily loop — global hotkey, AI-cleaned transcription, paste at cursor, custom vocabulary. The two main gaps are Windows support (Parrot is Mac-only) and Wispr's account-synced history across devices.
+
+**Q: Why is Parrot free when Wispr Flow charges?**
+
+Parrot runs entirely on your Mac, so there are no per-minute server costs to recoup. Unlimited local dictation stays free.
+
+**Q: How does accuracy compare?**
+
+On everyday speech, Parrot is competitive for the daily dictation loop — strong first-pass accuracy plus optional cleanup. Wispr may still edge ahead on very noisy audio or heavy accents in some cases.
+
+## Parrot vs Superwhisper
+
+URL: https://tryparrot.app/compare/superwhisper
+
+Both apps run locally on Mac and have similar workflows. Pick Parrot if you want a fully free option with no subscription. Pick Superwhisper if you specifically want their voice command features and don't mind a monthly fee.
+
+**Superwhisper:** Mac-native dictation with local models
+
+### Pricing
+
+- Parrot: Free for life
+- Superwhisper free: Limited free tier
+- Superwhisper paid: $8.49/mo Pro
+
+### Feature comparison
+
+| Feature | Parrot | Superwhisper |
+| --- | --- | --- |
+| Price | Free for life | $8.49/mo Pro |
+| Fully local | Yes | Yes |
+| AI cleanup | Free | Pro only |
+| Custom vocabulary | Deep | Yes |
+| Voice commands | No | Yes |
+| Mac (Apple Silicon) | Yes | Yes |
+| Windows | No | No |
+| Works offline | Yes | Yes |
+| Native menu-bar app | Yes | Yes |
+
+### Superwhisper strengths
+
+- Voice commands for app actions (open, navigate, etc.)
+- Mature Mac-native experience
+- Established user base with frequent updates
+
+### Superwhisper weaknesses
+
+- AI cleanup, the most useful feature, is locked behind Pro
+- Recurring subscription, not one-time
+- Free tier is genuinely limited
+
+### Where Parrot wins
+
+- **Free for life:** Parrot's full feature set — including AI cleanup — is free with no time limit. Superwhisper gates cleanup behind the $8.49/mo Pro tier.
+- **Fast everyday dictation:** Parrot is tuned for the daily hotkey loop: snappy time-to-text and strong first-pass accuracy without a paid tier.
+
+### Choose Parrot when
+
+- You don't want to pay monthly for dictation
+- You don't need voice commands beyond basic dictation
+- You want AI cleanup without paying for Pro
+
+### Choose Superwhisper when
+
+- You rely heavily on voice commands for app navigation
+- You're already happy on the Pro plan
+
+### FAQ
+
+**Q: Is Parrot a free Superwhisper alternative?**
+
+Yes. Parrot's local mode is free for life, including AI cleanup — which Superwhisper gates behind their Pro plan.
+
+**Q: Does Parrot have voice commands like Superwhisper?**
+
+Not yet. Parrot focuses on transcription and cleanup. If voice-driven app actions are core to your workflow, Superwhisper has the edge there.
+
+**Q: How does accuracy compare?**
+
+Both apps are strong on-device. Parrot leans hard into first-pass accuracy for everyday dictation and proper nouns, plus an optional cleanup pass for filler and style — without a paid tier for the basics.
+
+## Parrot vs MacWhisper
+
+URL: https://tryparrot.app/compare/macwhisper
+
+MacWhisper is great for transcribing audio files but isn't built for live dictation. Parrot is the better choice if you want global-hotkey dictation with AI cleanup. Pick MacWhisper if you mostly transcribe pre-recorded audio.
+
+**MacWhisper:** One-time payment Whisper transcription for Mac
+
+### Pricing
+
+- Parrot: Free for life
+- MacWhisper free: Free tier with smaller models
+- MacWhisper paid: $19 one-time (Pro)
+
+### Feature comparison
+
+| Feature | Parrot | MacWhisper |
+| --- | --- | --- |
+| Price | Free for life | $19 one-time |
+| Live dictation (hotkey + paste) | Yes | Limited |
+| Audio file transcription | Yes | Yes |
+| AI cleanup | Yes | No |
+| Custom vocabulary | Deep | Limited |
+| Fully local | Yes | Yes |
+| Mac (Apple Silicon) | Yes | Yes |
+| Works offline | Yes | Yes |
+
+### MacWhisper strengths
+
+- Excellent for transcribing audio files (MP3, M4A, etc.)
+- One-time payment, no subscription
+- Polished UI with timestamps and editing
+- Multiple model sizes selectable
+
+### MacWhisper weaknesses
+
+- Not designed primarily for live dictation
+- No AI cleanup — output keeps filler words ('um', 'uh')
+- Limited custom vocabulary
+- No global-hotkey paste-into-any-app workflow
+
+### Where Parrot wins
+
+- **Built for dictation first:** Parrot is designed around the live workflow: press hotkey, speak, transcript appears at cursor. You can still drop in a file when you need a batch transcript.
+- **AI cleanup:** Parrot removes filler words and applies your writing style automatically. MacWhisper leaves you with raw transcripts.
+
+### Choose Parrot when
+
+- You want to dictate emails, code comments, or notes throughout the day
+- You want filler words and grammar cleaned up automatically
+- You want custom vocabulary to handle names and jargon
+
+### Choose MacWhisper when
+
+- Your main job is batch-transcribing long recordings with a specialized editor UI
+- You don't need live dictation or AI cleanup
+- You want a one-time purchase tool focused only on files
+
+### FAQ
+
+**Q: Is Parrot a free MacWhisper alternative?**
+
+If you want free live dictation with AI cleanup, yes. MacWhisper is still strong if you mostly live in a file-transcription editor — Parrot is built for the daily hotkey workflow first.
+
+**Q: Can Parrot transcribe audio files like MacWhisper?**
+
+Yes. Drop a file onto History or pick one from the app — Parrot transcribes it locally. Live hotkey dictation is still the main experience.
+
+## Parrot vs Dragon Professional
+
+URL: https://tryparrot.app/compare/dragon-professional
+
+Dragon is the gold standard for hour-a-day professional dictation in legal and medical settings, but it's expensive, dated, and the Mac version lags behind. Parrot is faster, free, and good enough for most users — but Dragon still wins on raw accuracy after extensive voice training.
+
+**Dragon Professional:** Enterprise dictation built for legal and medical fields
+
+### Pricing
+
+- Parrot: Free for life
+- Dragon Professional paid: $699 one-time (Professional)
+
+### Feature comparison
+
+| Feature | Parrot | Dragon Professional |
+| --- | --- | --- |
+| Price | Free for life | $699 one-time |
+| Setup time | 5 min | Hours of voice training |
+| AI cleanup | Yes | Manual rules |
+| Custom vocabulary | Deep, fast to add | Extensive but slow |
+| Voice commands | No | Yes |
+| Mac native | Yes | Limited (Windows-first) |
+| Works offline | Yes | Yes |
+| Modern AI cleanup | Yes | No |
+| Recent updates | Yes | No |
+
+### Dragon Professional strengths
+
+- Industry-leading accuracy after voice training
+- Extensive specialized vocabularies (legal, medical)
+- Robust voice command system
+- Long history in regulated industries
+
+### Dragon Professional weaknesses
+
+- $699 one-time price
+- Mac version historically lags behind Windows
+- Requires significant training to reach peak accuracy
+- Heavy software with dated interface
+- No modern AI cleanup pass
+
+### Where Parrot wins
+
+- **Modern AI, no training needed:** Parrot uses Whisper plus an AI cleanup pass — no profile training, no read-aloud onboarding. You're dictating accurately within minutes.
+- **Free vs $699:** Parrot delivers 90%+ of Dragon's everyday accuracy at zero cost. For occasional dictators, Dragon's price is hard to justify.
+- **Native Mac, modern UI:** Parrot is built natively for Mac with a clean menu-bar interface. Dragon's Mac version has historically been a port of a Windows-first app.
+
+### Choose Parrot when
+
+- You dictate occasionally to a few hours a day
+- You don't have a $699 budget for dictation
+- You're on Mac and don't want a Windows-first product
+- You want modern AI cleanup, not rule-based correction
+
+### Choose Dragon Professional when
+
+- You dictate 4+ hours a day for legal or medical work
+- You need extensive voice command macros
+- Your firm or hospital already standardizes on Dragon
+- You require very specific medical/legal terminology that Dragon's libraries cover
+
+### FAQ
+
+**Q: Is Parrot a Dragon Professional alternative for medical dictation?**
+
+For most general medical dictation, yes — Parrot's local mode keeps audio on-device (HIPAA-friendly) and AI cleanup handles formatting. For highly specialized terminology Dragon's medical vocabularies remain best-in-class.
+
+**Q: Can Parrot match Dragon's accuracy?**
+
+On everyday speech, modern Whisper models are within a few percentage points of Dragon. On highly specialized vocabulary after extensive Dragon profile training, Dragon still leads. Most users won't notice the gap.
+
+**Q: Why is Parrot free when Dragon costs $699?**
+
+Dragon's price reflects 30+ years of development and specialized vocabularies. Parrot rides on top of open-source Whisper + a cleanup model, so the marginal cost is zero — and we're a small team that doesn't need to monetize the core product.
+
+# Blog
+
+Index: https://tryparrot.app/blog. Bodies extracted from post source so they stay aligned with the site.
+
+## Best VoiceInk Alternatives in 2026 (Free & Local)
+
+URL: https://tryparrot.app/blog/voiceink-alternatives
+Date: 2026-07-18
+
+Looking for a VoiceInk alternative? Compare free local Mac dictation, Superwhisper, Wispr Flow, and MacWhisper on price, privacy, cleanup, and daily workflow.
+
+The best VoiceInk alternative in 2026 is Parrot if you want fast local Mac dictation, AI cleanup, and no recurring fee. VoiceInk is a popular local-leaning option; here's how the strongest alternatives compare on price, privacy, cleanup, and daily workflow.
+
+## Why people look for a VoiceInk alternative
+
+- Pricing model — one-time vs subscription vs free forever changes the math for daily users.
+
+- Live dictation feel — some tools excel at files; others at the hotkey → paste loop.
+
+- Cleanup quality — raw transcripts still need filler removal and light grammar.
+
+- Simplicity — power-user apps can be more than you need for email and docs.
+
+## Quick comparison
+
+| App | Price | Local | AI cleanup | Best for |
+| --- | --- | --- | --- | --- |
+| Parrot | Free for life | Yes | Yes | Daily hotkey dictation |
+| VoiceInk | Paid tiers | Yes | Varies | Local Mac power users |
+| Superwhisper | Free / Pro | Yes | Pro-gated | Deep control |
+| Wispr Flow | Free tier / sub | No | Yes | Cloud polish |
+| MacWhisper | One-time Pro | Yes | No | File transcription |
+
+## 1. Parrot — free local dictation with cleanup
+
+Parrot is the closest free match for the job most people hire VoiceInk for: speak into any app, get usable text. It runs fully on-device, includes optional AI cleanup, custom vocabulary, and works offline after one download.
+
+Choose Parrot if you want free forever, privacy by default, and a simple daily loop. Stay on VoiceInk if you already love its specific UX and paid plan.
+
+## 2. Superwhisper — local power-user peer
+
+Superwhisper sits in the same local Mac category. It's strong when you want more knobs; cleanup and advanced features often sit behind Pro. See Superwhisper alternatives for a dedicated breakdown.
+
+## 3. Wispr Flow — cloud alternative
+
+If local is optional and you want a polished multi-platform product, Wispr Flow is the usual cloud pick — with subscription economics and uploaded audio. Compare in Wispr Flow alternatives .
+
+## 4. MacWhisper — when your work is files
+
+Great for batch audio. Weaker as a live “type with my voice in Slack” tool. Parrot can also transcribe dropped files, but its center of gravity is live dictation.
+
+## How to choose
+
+- Free + private + daily paste: Parrot
+
+- Pay for local power features: VoiceInk or Superwhisper
+
+- Cloud UX and multi-device: Wispr Flow
+
+- Interviews and recordings: MacWhisper
+
+## FAQ
+
+### Is there a free VoiceInk alternative?
+
+Yes. Parrot's local mode is free for life with cleanup and custom vocabulary included.
+
+### Do VoiceInk alternatives work offline?
+
+Local apps can. After setup, Parrot dictates without internet. Cloud apps cannot.
+
+### Will my accuracy drop if I switch?
+
+Measure on your accent and jargon — not demos. Add vocabulary for names and product terms; that usually closes the gap faster than switching engines.
+
+## Try the free path
+
+Download Parrot for Apple Silicon, press fn, and run a real workday of email and notes. That beats any feature matrix.
+
+## Best Willow Voice Alternatives in 2026
+
+URL: https://tryparrot.app/blog/willow-voice-alternatives
+Date: 2026-07-18
+
+Compare Willow Voice alternatives for Mac — free local options, privacy-first apps, and cloud peers — so you can keep polished dictation without the wrong tradeoffs.
+
+Looking for a Willow Voice alternative? Willow is often pitched as a polished, multi-platform dictation app. People shop around for price, privacy, Mac-local options, or a free tier that doesn't cap heavy use. Here's a clear 2026 comparison.
+
+## What people like about Willow
+
+- Modern “press and speak” workflow across apps
+
+- AI-assisted cleanup toward writing-ready text
+
+- Cross-platform story (Mac, Windows, mobile — depending on plan)
+
+Those are real strengths. The tradeoffs that drive alternatives: cloud processing, subscription pricing, and wanting audio that never leaves the machine.
+
+## Quick comparison
+
+| App | Price model | Privacy | Platforms | Best for |
+| --- | --- | --- | --- | --- |
+| Parrot | Free for life | Fully on-device | Mac | Private daily dictation |
+| Willow Voice | Free / subscription | Cloud / hybrid | Multi | Cross-device polish |
+| Wispr Flow | Free tier / paid | Cloud | Multi | Premium cloud UX |
+| Superwhisper | Free / Pro | Local options | Mac-first | Power users |
+| macOS Dictation | Free | On-device | Mac | Occasional notes |
+
+## 1. Parrot — free and local on Mac
+
+Parrot is the best Willow alternative when your priority is Mac-local privacy without a subscription. Global hotkey, on-device transcription and cleanup, custom vocabulary, offline after download, free for life.
+
+Willow may still win if you need Windows/iOS parity under one brand. Parrot is unapologetically Mac-first.
+
+## 2. Wispr Flow — closest cloud peer
+
+If you like Willow's cloud-polished feel, Wispr Flow is the usual side-by-side. Watch free-tier word caps if you dictate all day. Full roundup: Wispr Flow alternatives .
+
+## 3. Superwhisper — local Mac control
+
+For power users who want local models and deeper settings, Superwhisper is a strong contender — often with Pro pricing for the full experience.
+
+## 4. Built-in macOS Dictation
+
+Free and private enough for short blurbs. Not a full Willow replacement for long sessions, vocabulary, or cleanup. Details in macOS Dictation vs apps .
+
+## Decision guide
+
+- Mac only + free + private: Parrot
+
+- Need Windows/mobile same day: Willow or Wispr
+
+- Local power-user knobs: Superwhisper
+
+- Barely dictate: Apple's built-in is fine
+
+## FAQ
+
+### Is Parrot a free Willow Voice alternative?
+
+For Mac users who want free local dictation with cleanup — yes. It doesn't match multi-platform cloud sync; that's intentional.
+
+### Can Willow alternatives keep audio offline?
+
+Local apps like Parrot can. Verify by disconnecting Wi‑Fi after setup — see our offline setup guide .
+
+### Which is more accurate?
+
+Depends on accent, mic, and vocabulary. Test proper nouns from your real work — client names beat demo scripts.
+
+## Next step
+
+If you're on Mac and tired of subscriptions, try Parrot free. One week of real Slack and email will tell you if local is enough.
+
+## How to Dictate in Any Mac App: Slack, Notion, VS Code & More
+
+URL: https://tryparrot.app/blog/dictate-in-any-mac-app
+Date: 2026-07-18
+
+Set up system-wide voice dictation on Mac so one hotkey works in Slack, Notion, VS Code, Gmail, and more — plus app-specific tips when paste fails.
+
+The power of modern voice dictation is simple: one hotkey that works in Slack, Notion, VS Code, Gmail, and Terminal-adjacent tools — anywhere you can type. This guide shows how system-wide dictation on Mac works, how to set it up, and app-specific tips so text lands where your cursor is.
+
+## Why “works in any app” beats built-in voice typing
+
+Google Docs voice typing only works in Docs. Word Dictate only works in Office. Browser extensions die when you switch to a native app.
+
+A menu-bar dictation app with a global hotkey treats your whole OS as the canvas: focus a text field, speak, paste. That's the workflow products like Parrot are built around.
+
+## Core setup (once)
+
+- Install a native Mac dictation app ( download Parrot).
+
+- Microphone permission — so it can hear you.
+
+- Accessibility permission — so it can paste or type into other apps.
+
+- Pick a hotkey you won't fight (Parrot defaults to fn).
+
+- Test in Notes first, then your real stack.
+
+Step-by-step: local setup on Mac .
+
+## App-by-app tips
+
+### Slack
+
+- Click the message box before you hold the hotkey.
+
+- Dictate shorter bursts — threads are skimmed, not essays.
+
+- Vocabulary: channel names, teammate names, product terms.
+
+### Notion
+
+- Focus the block you want. Notion's nested editors confuse unfocused paste.
+
+- Great for meeting notes and PRDs; mark headings out loud if cleanup doesn't structure them.
+
+### VS Code / Cursor / IDEs
+
+- Ideal for comments, commit messages, README prose — not for precise syntax.
+
+- Dictate the explanation; type the code.
+
+- Add library names to vocabulary so “PostgreSQL” survives.
+
+### Gmail / Google Docs
+
+- Browser compose fields work like any text box with system-wide paste.
+
+- See voice dictation for email for reply formulas.
+
+### Linear, Jira, GitHub
+
+- Issue descriptions and PR bodies are perfect dictation targets.
+
+- Keep tickets scannable: problem → context → ask.
+
+### Notes, Obsidian, Bear
+
+- Long-form capture: dictate first, organize later.
+
+- Writers: dictation for writers .
+
+## When paste fails
+
+- Re-check Accessibility permission for the dictation app.
+
+- Click into a real text field (not a read-only view).
+
+- Some secure fields block paste — that's the OS protecting you.
+
+- Good apps fall back to typing the characters when Cmd+V is unreliable.
+
+## Privacy across apps
+
+System-wide doesn't mean cloud-wide. Local dictation still keeps audio on your Mac whether you're in Slack or a medical EHR page. That's the point of on-device tools — compare options in private voice dictation apps .
+
+## FAQ
+
+### Can I dictate in every Mac app?
+
+Almost any app with a standard text field. Exceptions: some secure inputs, canvas-only tools, and fields that don't accept paste.
+
+### Do I need a plugin for Slack or Notion?
+
+No. Global hotkey + paste is enough. Plugins add complexity without unlocking the core loop.
+
+### What's the best free system-wide dictation for Mac?
+
+Parrot — free for life, local, built for the hotkey workflow. Download here.
+
+## Pick three apps and practice
+
+Today: Slack, email, and your notes app. Tomorrow it feels automatic. That's when dictation sticks.
+
+## Voice Dictation for Email: Clear Your Inbox Faster on Mac
+
+URL: https://tryparrot.app/blog/voice-dictation-for-email
+Date: 2026-07-18
+
+A practical Mac workflow for dictating Gmail, Outlook, and Superhuman replies — formulas, accuracy tips for names, and a free local setup.
+
+Voice dictation is one of the highest-ROI upgrades for email — if the text lands in Gmail, Outlook, or Superhuman without a fight. This guide shows a fast Mac workflow for inbox zero: hotkey, speak, cleanup, send — with templates and habits that keep messages professional.
+
+## Why email is perfect for dictation
+
+- Most emails are short (50–150 words)
+
+- Tone is conversational — close to how you speak
+
+- Speed compounds: 20 messages/day adds up
+
+- You can walk or stretch while clearing the queue
+
+Typing wins for dense tables and careful legal wording. Dictation wins for the mountain of “quick replies.”
+
+## The 30-second email loop
+
+- Open the thread and click the reply box.
+
+- Hold your dictation hotkey (Parrot defaults to fn).
+
+- Speak the reply in one breath: greeting → point → ask → sign-off.
+
+- Release. Read once. Fix one thing if needed. Send.
+
+With Parrot, cleanup removes filler (“um,” “like”) and light grammar issues so the paste already looks sendable.
+
+## What to say (formulas that work)
+
+### Status update
+
+“Hi Maya — shipping the draft Thursday morning. Blockers are the legal review. I'll ping you if that slips. Thanks.”
+
+### Ask for something
+
+“Hi Jordan — can you send the Q3 numbers by end of day Wednesday? I need them for the board deck. Appreciate it.”
+
+### Decline politely
+
+“Thanks for the invite — I can't make Friday. Happy to review async notes or join next time.”
+
+Speak punctuation only when needed. Good cleanup infers periods and commas from your pacing.
+
+## Setup for Gmail, Outlook, and Superhuman
+
+| Client | Tip |
+| --- | --- |
+| Gmail (browser) | Cursor in compose → global hotkey → paste at cursor |
+| Outlook Mac | Same loop; grant Accessibility if paste fails |
+| Apple Mail | Works like any text field |
+| Superhuman / Front | Focus the reply field first; don't dictate into the list
+ view |
+
+You don't need a separate integration per client. System-wide dictation is the point — see also how to dictate in any Mac app .
+
+## Accuracy tricks for names
+
+- Add frequent recipients and company names to custom vocabulary .
+
+- Spell unusual names once the first time you save them.
+
+- Glance at the To: field before send — classic failure mode.
+
+## Privacy for work email
+
+If you discuss customers, deals, or HR topics, prefer on-device dictation so audio isn't uploaded by default. Local tools like Parrot keep the mic path on your Mac. Background: private voice dictation apps .
+
+## Common mistakes
+
+- Dictating before the cursor is in the compose box
+
+- Rambling without a point — outline one sentence first
+
+- Sending without a 3-second read (auto-correct of the ears)
+
+- Using a free cloud tier that caps you mid-inbox-zero session
+
+## FAQ
+
+### Is voice email faster than typing?
+
+For most people, yes on first-draft replies. The win is minutes per day, not milliseconds per word. Measure your own afternoon.
+
+### Will cleanup make me sound robotic?
+
+Good cleanup fixes filler and grammar while keeping your phrasing. If it feels stiff, shorten what you say — concise speech produces concise email.
+
+### Best free tool for dictating email on Mac?
+
+Parrot — free, local, works in any client with a text field.
+
+## Clear ten emails today
+
+Don't overhaul your whole system. Dictate the next ten replies. Keep the tool if your shoulders drop and the queue shrinks. Get Parrot free.
+
+## Voice Dictation for Students: Essays, Notes, and Free Tools
+
+URL: https://tryparrot.app/blog/voice-dictation-for-students
+Date: 2026-07-18
+
+How students use voice dictation for essays, notes, and email — free Mac setup, essay workflow, academic integrity notes, and offline tips.
+
+Voice dictation helps students write essays, notes, and emails faster — without another subscription if you pick the right tool. Here's how to use speech-to-text for schoolwork on Mac, what to avoid, and a free setup that works offline in the library.
+
+## Where dictation helps in student life
+
+- First drafts of essays — get ideas out before perfectionism freezes you
+
+- Lecture follow-ups — expand messy notes into readable study guides
+
+- Email to professors / TAs — clear the queue between classes
+
+- Group project docs — contribute when your wrists (or brain) are fried
+
+- Accessibility — reduce typing load with RSI, fatigue, or motor limits
+
+## What students should optimize for
+
+| Priority | Why |
+| --- | --- |
+| Free or cheap | Tuition already hurts; word caps mid-essay hurt more |
+| Works offline | Dorm Wi‑Fi and lecture halls are unreliable |
+| Any app paste | Google Docs, Word, Notion, Canvas text boxes |
+| Vocabulary | Course terms, author names, theory labels |
+| Privacy | Unpublished work and peer feedback shouldn't train a
+ random cloud model by default |
+
+## Recommended free Mac workflow
+
+- Install a local dictation app — Parrot is free for life on Apple Silicon.
+
+- Grant Microphone + Accessibility so text pastes into Docs and browsers.
+
+- Add 15 vocabulary terms: professor names, course codes, theory keywords.
+
+- Outline with bullets first, then dictate section by section.
+
+- Edit with your hands — citations and structure still need eyes.
+
+Full install walkthrough: local voice dictation on Mac .
+
+## Essay workflow that actually works
+
+- Speak the thesis in one take — ugly is fine.
+
+- Dictate body sections from your outline (2–4 minutes each).
+
+- Cleanup pass for filler words if your app offers it.
+
+- Type the hard parts — quotes, footnotes, precise claims.
+
+- Read aloud once more for flow before submit.
+
+Dictation multiplies draft speed; it doesn't replace thinking. For speed numbers, see dictation vs typing .
+
+## Tools comparison for students
+
+- Parrot — free, local, cleanup, offline → best daily driver on Mac
+
+- macOS Dictation — free, limited for long essays
+
+- Google Docs voice typing — free in Docs only; needs Chrome + network
+
+- Cloud paid apps — polished, but caps and privacy tradeoffs
+
+More on free tiers: what's actually free in 2026 .
+
+## Academic integrity note
+
+Dictation is a writing input method — like a keyboard. Using it is not plagiarism. Pasting AI-generated arguments without disclosure may violate your school's policy. Know the difference: speech-to-text captures your words; generative AI invents content.
+
+## FAQ
+
+### Is free dictation good enough for college papers?
+
+For drafts, yes. Expect to edit. Local apps with cleanup (like Parrot) get you closer to readable prose than bare built-in dictation.
+
+### Can I dictate in Google Docs on Mac?
+
+Yes — put the cursor in Docs and use a global-hotkey app that pastes system-wide. You're not limited to Docs' built-in voice typing.
+
+### What if I don't have Apple Silicon?
+
+Parrot currently targets Apple Silicon. Use macOS Dictation or Docs voice typing as interim options, or another tool that supports your hardware.
+
+## Start with one assignment
+
+Pick the next short essay or discussion post. Dictate the first draft in one sitting. If you finish faster, keep the habit. Download Parrot free and write out loud.
+
+## Voice Dictation for ADHD: Lower the Friction to Start Writing
+
+URL: https://tryparrot.app/blog/voice-dictation-adhd
+Date: 2026-07-18
+
+Practical ways ADHD brains use voice dictation to start writing faster — low-friction setup, brain-dump workflows, and free Mac tools that do not add overwhelm.
+
+Voice dictation can help ADHD brains start writing faster — by lowering the friction between “I know what I mean” and a blank cursor. This isn't medical advice. It's a practical guide to using speech-to-text as a focus tool: capture thoughts before they vanish, then edit when your attention is steadier.
+
+## Why dictation clicks for many ADHD workflows
+
+- Lower activation energy — speaking is closer to thinking than typing a perfect first sentence.
+
+- Momentum — once you're talking, stopping feels harder than continuing.
+
+- Body freedom — pace, stand, stim with your hands while words still land.
+
+- Externalize working memory — get the list out of your head before it evaporates.
+
+It's not magic. If the tool is laggy, cloud-capped, or accuracy is awful, you'll abandon it. Friction is the enemy.
+
+## A low-friction setup
+
+- One global hotkey (same muscle memory every app).
+
+- Fast time-to-text — waiting kills the spark.
+
+- Optional cleanup so the page isn't full of “um.”
+
+- Works offline so a flaky network isn't another blocker.
+
+Parrot is built for that loop on Mac: free, local, hotkey-first. Install once, then stop thinking about the stack.
+
+## Workflows that help
+
+### 1. Voice brain dump → typed structure
+
+Set a 5-minute timer. Dictate everything about the task with zero order. Stop. Only then drag bullets into sequence. Capture and organize are different modes — don't mix them.
+
+### 2. Email sprints
+
+Batch 10 replies by voice. See dictation for email . Short messages are ideal when sustained typing feels heavy.
+
+### 3. Body-double with a mic
+
+On a call or coworking session, narrate the next action into your notes app. The “I'm saying it out loud” effect + a visible transcript anchors attention.
+
+### 4. Transition notes
+
+Before switching tasks, dictate a 20-second “what's left” note. Future-you can restart without re-deriving context.
+
+## What to avoid
+
+- Perfection mid-sentence — edit later; dictation is for throughput.
+
+- Huge monologues — 2–4 minute bursts beat 40-minute streams you'll never revise.
+
+- Tools with word caps — hitting a limit mid-flow is uniquely demoralizing.
+
+- Hunting settings — configure once on a high-energy day.
+
+## Pair with writing habits
+
+| Habit | Why it helps |
+| --- | --- |
+| Outline 3 bullets first | Gives the dump a landing pad |
+| Same hotkey everywhere | Removes app-switching friction |
+| Vocabulary for names | Fewer rage-edits on proper nouns |
+| Visible timer | Contains hyperfocus rabbit holes |
+
+Writers and students hit similar patterns — see dictation for writers and dictation for students .
+
+## Privacy and overwhelm
+
+Fewer accounts and fewer dashboards help. A local app that doesn't demand login removes one more tab from your brain. Private by default is also calmer when notes include personal health or work stress.
+
+## FAQ
+
+### Is voice dictation an ADHD treatment?
+
+No. It's an assistive writing workflow some people find helpful alongside (not instead of) clinical care and other strategies.
+
+### What if I lose my train of thought mid-sentence?
+
+Stop and re-start the thought as a new sentence. Cleanup and editing exist for a reason. Perfect continuity is optional.
+
+### Best free option on Mac?
+
+Try Parrot — free, on-device, one hotkey. If it feels slow or fussy, you won't stick with any tool.
+
+## Try a five-minute dump
+
+Open a blank note. Dictate for five minutes about the task you've been avoiding. Don't edit. If the page is fuller than it was, the tool earned another day.
+
+## Best Superwhisper Alternatives in 2026 (Free & Local Options)
+
+URL: https://tryparrot.app/blog/superwhisper-alternatives
+Date: 2026-07-18
+
+Looking for a Superwhisper alternative? Compare free and paid Mac dictation apps on price, privacy, AI cleanup, and daily workflow — including a free local option.
+
+The best Superwhisper alternative in 2026 is Parrot if you want local Mac dictation with AI cleanup, custom vocabulary, and no monthly subscription. Below we compare the strongest Superwhisper alternatives on price, privacy, cleanup, and day-to-day workflow so you can switch with confidence.
+
+## Why people look for a Superwhisper alternative
+
+Superwhisper is a solid Mac-native dictation app, especially for power users who like control. People usually start shopping when they hit one of these walls:
+
+- Subscription pricing — the features you actually want (especially cleanup) often live behind a recurring plan.
+
+- Setup complexity — more knobs means a longer path from install to “this just works.”
+
+- Workflow fit — some people want pure live dictation into any app, not a heavier power-user surface.
+
+- Free forever — daily dictators tire of word caps and trial cliffs.
+
+## Quick comparison
+
+| App | Price | Local | AI cleanup | Best for |
+| --- | --- | --- | --- | --- |
+| Parrot | Free for life | Yes | Yes (included) | Daily hotkey dictation |
+| Superwhisper | Free tier / Pro sub | Yes | Pro-gated | Power users |
+| Wispr Flow | Free tier / paid | No | Yes | Polished cloud UX |
+| macOS Dictation | Free | Yes | No | Occasional notes |
+| MacWhisper | One-time Pro | Yes | No | File transcription |
+
+## 1. Parrot — free local dictation with cleanup included
+
+Parrot matches the Superwhisper job people care about most: press a global hotkey, speak, get clean text at the cursor. It runs fully on your Mac, keeps audio on-device, and includes AI cleanup and custom vocabulary without a paid tier.
+
+Where Parrot wins: free for life, simple daily loop, strong first-pass accuracy for names and jargon, optional cleanup that removes filler words, and offline use after the one-time download.
+
+Where Superwhisper may still win: voice commands and a more power-user control surface if you want that style of app.
+
+See also our full Parrot vs Superwhisper page.
+
+## 2. Wispr Flow — polished, cloud-first
+
+Wispr Flow is often the “feels premium” pick: strong cleanup, modern UX, cross-platform ambitions. The tradeoff is cloud processing, a weekly word cap on free, and a subscription if you dictate all day.
+
+Choose Wispr if you want a cloud product and don’t mind uploading audio. Choose Parrot if privacy and price matter more. We cover that matchup in Wispr Flow alternatives .
+
+## 3. macOS Dictation — free, limited
+
+Built-in dictation is fine for short replies. It struggles on long sessions, custom vocabulary, cleanup, and consistent paste-into-any-app workflows. If you’ve outgrown it, a dedicated app is the next step — not a bigger monitor.
+
+## 4. MacWhisper — great for files, weaker for live dictation
+
+MacWhisper shines when you drop in interviews or recordings. Live hotkey-to-cursor dictation with cleanup is a different product. If that’s your loop, pick a dictation-first tool.
+
+## How to choose
+
+- Want free + local + cleanup? Start with Parrot.
+
+- Want cloud polish and multi-platform? Look at Wispr Flow.
+
+- Want maximum power-user knobs? Superwhisper may still be your home.
+
+- Mostly batch files? MacWhisper remains strong.
+
+## FAQ
+
+### Is there a free Superwhisper alternative?
+
+Yes. Parrot’s local mode is free for life, including AI cleanup and custom vocabulary — the features Superwhisper often gates behind Pro.
+
+### Can Superwhisper alternatives run fully offline?
+
+Local apps like Parrot can. Cloud apps cannot. After one download, Parrot works without internet.
+
+### Will switching lose my vocabulary?
+
+You’ll re-add terms once. Most people only need 20–50 high-value names and jargon. See our guide on custom vocabulary .
+
+## Try the free path
+
+If you wanted Superwhisper’s local privacy without the subscription, download Parrot for Mac (Apple Silicon). Press fn, talk, and see whether the daily loop is enough — for most people, it is.
+
+## Best Aqua Voice Alternatives for Mac in 2026
+
+URL: https://tryparrot.app/blog/aqua-voice-alternatives
+Date: 2026-07-18
+
+Compare the best Aqua Voice alternatives for Mac — free local dictation, privacy-first apps, and cloud options — so you can keep the real-time feel without the wrong tradeoffs.
+
+Looking for an Aqua Voice alternative? People usually want the same “speak and text appears” feel — but with stronger privacy, a lower price, or a fully free local option. Here’s a practical 2026 comparison of the best Aqua Voice alternatives for Mac, with clear picks by use case.
+
+## What Aqua Voice is good at
+
+Aqua Voice is known for a polished real-time dictation experience: you see words form while you speak, and the product aims for writing-ready output. That “live” feeling is the bar many competitors try to clear.
+
+The reasons people still search for alternatives are predictable: pricing, cloud processing, platform limits, or wanting audio that never leaves the machine.
+
+## Quick comparison
+
+| App | Price model | Privacy | Live feel | Mac-ready |
+| --- | --- | --- | --- | --- |
+| Parrot | Free for life | Fully on-device | HUD preview + paste | Yes |
+| Aqua Voice | Subscription | Cloud | Strong real-time | Yes |
+| Wispr Flow | Free tier / paid | Cloud | Strong | Yes |
+| Superwhisper | Free / Pro | Local options | Solid | Yes |
+| macOS Dictation | Free | On-device | Basic | Yes |
+
+## 1. Parrot — free, local, built for the daily loop
+
+Parrot is the best Aqua Voice alternative if you want dictation that stays private and free. Press a hotkey, speak, get text at your cursor. Live transcript shows in the HUD while you hold the key; cleanup polishes filler and style on-device.
+
+- No subscription and no word caps
+
+- Audio never leaves your Mac
+
+- Custom vocabulary for names and jargon
+
+- Works offline after one download
+
+Aqua may still win if you prioritize a specific cloud UX or cross-device product surface. Parrot wins if you want Mac-local dictation without paying monthly.
+
+## 2. Wispr Flow — closest “premium cloud” peer
+
+If you like Aqua’s polish and don’t mind servers, Wispr Flow is the usual shortlist peer: cleanup, modern UI, subscription economics. Compare both carefully on free-tier caps — heavy users hit them fast. See Wispr Flow alternatives for a deeper breakdown.
+
+## 3. Superwhisper — local power user
+
+Superwhisper is a strong local-leaning alternative when you want more control and don’t mind a paid tier for full features. It’s less “open and talk” and more “configure, then dictate.”
+
+## 4. Built-in macOS Dictation — free baseline
+
+Apple’s dictation is free and private enough for many people — until you need long-form sessions, vocabulary, cleanup, or reliable multi-app paste. It’s a floor, not a ceiling.
+
+## How to pick an Aqua Voice alternative
+
+- Privacy first: local apps only (Parrot, Superwhisper, Apple).
+
+- Budget first: free forever beats “free tier until Tuesday.”
+
+- Feel first: try live feedback — HUD preview or streaming text — for a week of real email and Slack.
+
+- Accuracy first: measure proper nouns and jargon, not demo scripts.
+
+## FAQ
+
+### Is there a free Aqua Voice alternative for Mac?
+
+Yes. Parrot is free for life with on-device transcription and cleanup. macOS Dictation is also free, but limited for daily professional use.
+
+### Can an Aqua alternative keep audio off the cloud?
+
+Yes — choose a local-first app. Parrot processes speech and cleanup on your Mac; nothing is uploaded for dictation.
+
+### Will I lose real-time text if I switch?
+
+Not necessarily. Parrot shows live transcript in the floating HUD while you hold the hotkey, then pastes finished text at the cursor when you release.
+
+## Next step
+
+If Aqua’s price or privacy model isn’t a fit, try Parrot free on Apple Silicon. One afternoon of real work — email, notes, docs — will tell you more than any feature matrix.
+
+## Best Private Voice Dictation Apps in 2026 (No Cloud Required)
+
+URL: https://tryparrot.app/blog/private-voice-dictation-apps
+Date: 2026-07-17
+
+The best private voice dictation apps keep audio on your device. Compare local Mac options, learn how to verify offline operation, and pick a free privacy-first tool.
+
+The best private voice dictation apps process speech on your device — not on a remote server. If you handle sensitive work, unpublished writing, or simply don’t want microphone audio leaving your Mac, this guide ranks private dictation options in 2026 and shows how to verify a tool is actually local.
+
+## What “private dictation” should mean
+
+Marketing pages love the word privacy. Operationally, you want:
+
+- Audio stays on-device during transcription
+
+- Cleanup stays on-device if the app rewrites text
+
+- History stays local unless you explicitly opt into sync
+
+- Offline still works after the initial download
+
+Cloud apps can be legitimate products — just don’t call them private. For the deeper philosophy, read local-first dictation explained .
+
+## Best private voice dictation apps (2026)
+
+| App | Privacy model | Price | Cleanup | Best for |
+| --- | --- | --- | --- | --- |
+| Parrot | Fully on-device | Free for life | Yes | Daily Mac dictation |
+| macOS Dictation | On-device option | Free | No | Occasional use |
+| Superwhisper | Local options | Free / Pro | Pro features | Power users |
+| MacWhisper | Local | Free / one-time | No | File transcription |
+
+## 1. Parrot — private by default, free for life
+
+Parrot is built as a local-first Mac dictation app: hotkey, speak, paste. Transcription and AI cleanup run on your machine. Custom vocabulary and history live in a local database. After models download once, you can work offline.
+
+That combination — private + cleanup + free — is rare. Most private tools are either bare-bones or subscription-gated.
+
+## 2. macOS Dictation — private enough, limited polish
+
+Apple’s built-in option is the privacy baseline for casual users. It won’t match dedicated apps on vocabulary, cleanup, or long-form workflow. Compare details in macOS Dictation vs third-party apps .
+
+## 3. Superwhisper — private-capable power tool
+
+Superwhisper can run locally and appeals to users who want deeper controls. Budget for Pro if cleanup and advanced features matter daily.
+
+## 4. MacWhisper — private file transcription
+
+Excellent when your job is batch audio. Less ideal as a live “type with my voice in Slack” tool.
+
+## How to verify an app is truly private
+
+- Turn off Wi‑Fi after setup. If dictation still works, transcription isn’t calling the cloud.
+
+- Read the privacy policy for audio retention and training clauses — before you opt in.
+
+- Watch the network (Activity Monitor / Little Snitch) during a dictation if you’re paranoid in a good way.
+
+- Prefer local history over forced account sync for sensitive work.
+
+We walk through a full offline proof in the offline setup guide .
+
+## Who needs private dictation most
+
+- Healthcare and adjacent roles (see medical / HIPAA notes )
+
+- Legal and compliance-heavy work
+
+- Founders drafting unreleased product strategy
+
+- Writers protecting unpublished manuscripts
+
+- Anyone who simply prefers ownership of their microphone
+
+## FAQ
+
+### Are cloud dictation apps ever OK?
+
+Yes — for non-sensitive everyday text, many people accept the trade. Just choose consciously. Don’t paste patient notes or M&A drafts into a cloud mic by accident.
+
+### Is free private dictation actually good now?
+
+Yes. On modern Apple Silicon, on-device speech recognition and cleanup are fast enough for daily email, docs, and chat — which is why Parrot can ship free local mode without feeling like a toy.
+
+### Does private mean lower accuracy?
+
+Not automatically. Local accuracy has closed the gap for everyday speech. Cloud may still edge noisy environments in some cases; measure on your accent and vocabulary.
+
+## Choose private by default
+
+You can always use cloud tools later for specific tasks. Starting local means your default path never uploads a meeting note you meant to keep. Download Parrot and keep dictation on your Mac.
+
+## macOS Dictation vs Third-Party Apps: When to Upgrade
+
+URL: https://tryparrot.app/blog/macos-dictation-vs-apps
+Date: 2026-07-17
+
+Is built-in macOS Dictation enough? Compare Apple Dictation to dedicated Mac voice dictation apps on accuracy, cleanup, vocabulary, privacy, and daily workflow.
+
+macOS Dictation is free and fine for short notes — dedicated voice dictation apps win for all-day writing. If you’re deciding whether Apple’s built-in tool is “good enough,” this guide compares it to modern Mac dictation apps on accuracy, cleanup, vocabulary, privacy, and workflow.
+
+## What macOS Dictation does well
+
+- Zero install — already on your Mac.
+
+- No subscription — free with the OS.
+
+- On-device option — Apple has invested heavily in local recognition for privacy-conscious users.
+
+- Good enough for short blurbs — quick replies, search bars, one-line reminders.
+
+For many people, that’s the entire job. If you only dictate a sentence twice a day, stay with Apple.
+
+## Where built-in dictation falls short
+
+- Long sessions feel brittle — stamina and consistency drop when you’re drafting paragraphs, not captions.
+
+- No real AI cleanup — filler words, false starts, and messy grammar stay in the text.
+
+- Weak custom vocabulary — coworker names, product names, and domain jargon still get mangled.
+
+- Workflow friction — dedicated apps optimize the hotkey → speak → paste loop across every app you use.
+
+- No dictation history — hard to re-copy something you said an hour ago.
+
+## macOS Dictation vs dedicated apps
+
+| Capability | macOS Dictation | Dedicated app (e.g. Parrot) |
+| --- | --- | --- |
+| Price | Free | Free to subscription |
+| AI cleanup | No | Often yes |
+| Custom vocabulary | Limited / none | Yes |
+| Works offline | Yes (on-device mode) | Yes for local apps |
+| Global hotkey paste | Basic | Core workflow |
+| History & search | No | Common |
+| Best for | Occasional use | Daily writing |
+
+## When to stick with Apple
+
+Stay on macOS Dictation if you:
+
+- Dictate only short messages a few times a week
+
+- Don’t care about filler-word cleanup
+
+- Don’t want another app in the menu bar
+
+## When to upgrade to a dictation app
+
+Switch when you:
+
+- Draft emails, docs, or tickets by voice every day
+
+- Waste time fixing names and jargon
+
+- Want text that reads like writing, not raw speech
+
+- Need privacy and modern accuracy together
+
+That’s the gap products like Parrot are built for: local transcription, optional cleanup, custom vocabulary, and paste at the cursor — free for life on Mac.
+
+## A practical upgrade path
+
+- Keep using macOS Dictation for a day and note every correction you make.
+
+- Install a dedicated app and dictate the same kinds of messages.
+
+- Compare time-to-send and frustration, not demo accuracy scores.
+
+- Add 15 vocabulary terms (people + products). Re-test.
+
+Most people decide within a week. The winner is the tool that disappears into the work — not the one with the longest settings page.
+
+## FAQ
+
+### Is macOS Dictation private?
+
+On-device dictation keeps processing local. Still verify your system settings; behavior can depend on macOS version and language packs.
+
+### Is a third-party app always better?
+
+No. For occasional use, Apple is rational. For professional daily dictation, dedicated apps usually win on cleanup, vocabulary, and workflow.
+
+### What’s the best free upgrade from macOS Dictation?
+
+If you want free + local + cleanup, try Parrot. Also read what’s actually free in 2026 .
+
+## Bottom line
+
+macOS Dictation is a great starter tool. Dedicated apps are for people who write with their voice — not just dabble. If that’s you, graduate before you blame your microphone.
+
+## Voice Dictation for Writers: Draft Faster Without Fighting the Tool
+
+URL: https://tryparrot.app/blog/voice-dictation-for-writers
+Date: 2026-07-16
+
+How authors, bloggers, and content teams use voice dictation for first drafts — workflow tips, vocabulary setup, privacy, and the best free Mac setup.
+
+Voice dictation helps writers draft faster, stay in flow, and reduce hand strain — if the tool doesn’t fight you. This guide covers how authors, bloggers, and content teams use dictation for first drafts, what accuracy actually matters, and how to set up a Mac workflow that produces editable prose instead of cleanup chores.
+
+## Why writers switch to voice
+
+- Speed — speaking is often 2–3× faster than typing for first drafts ( dictation vs typing ).
+
+- Flow — you stay in the idea longer when your hands aren’t hunting for keys.
+
+- Ergonomics — shoulders, wrists, and necks get a break during long sessions.
+
+- Momentum — “bad first draft out loud” beats a blank page every time.
+
+## What writers need that generic dictation misses
+
+| Need | Why it matters |
+| --- | --- |
+| Works in any editor | Scrivener, Google Docs, Notion, email — same hotkey |
+| Cleanup without rewriting voice | Remove “um” without flattening style |
+| Custom vocabulary | Character names, brand terms, world-building words |
+| Low friction start | If startup takes 30 seconds, you won’t use it |
+| Privacy (sometimes) | Unpublished manuscripts shouldn’t train a stranger’s model |
+
+## A writer-friendly workflow
+
+### 1. Dictate the draft, type the edit
+
+Don’t aim for publication-ready speech. Aim for a messy, complete draft. Then edit with your hands — structure, cuts, and polish still belong to typing for most people.
+
+### 2. Use short bursts, not monologues
+
+Two to five minutes per section keeps structure clean. Pause between scenes or H2 sections. You’ll thank yourself in revision.
+
+### 3. Teach the tool your proper nouns
+
+Add character names, places, product names, and recurring jargon once. That single habit removes the most demoralizing corrections. See custom vocabulary .
+
+### 4. Decide privacy up front
+
+Drafting a novel or client manuscript in a cloud dictation app means audio leaves your machine. Local tools keep chapters on your Mac. If that matters, start local — why local-first matters .
+
+## Recommended setup for Mac writers
+
+- Install a menu-bar dictation app with a global hotkey (Parrot uses fn by default).
+
+- Grant Microphone + Accessibility so paste works in any app.
+
+- Add 20 vocabulary terms from your current project.
+
+- Turn on AI cleanup for filler and light grammar — keep your voice.
+
+- Dictate one full scene or post, then revise normally.
+
+With Parrot, that stack is free, on-device, and offline-capable after the first download — useful on writing retreats and planes.
+
+## Genre-specific tips
+
+- Fiction: vocabulary for names; dictate dialogue faster than you can type it; mark beats out loud (“new paragraph”).
+
+- Nonfiction / blog: outline H2s first, dictate under each; cleanup shines on explanatory prose.
+
+- Newsletters: speak like you talk to a friend; edit for rhythm later.
+
+- Technical writing: load API names and product terms into vocabulary before you start.
+
+## Common mistakes
+
+- Expecting zero edits — dictation multiplies draft speed, not final polish.
+
+- Skipping vocabulary — then blaming the app for “Priya” → “Pria.”
+
+- Dictating in a loud café without a decent mic.
+
+- Using a free tier with word caps if you write daily (you’ll hit the wall mid-chapter).
+
+## FAQ
+
+### Do professional writers really use dictation?
+
+Yes — especially for first drafts and notes. Many still type revisions. The win is output volume and reduced strain, not magic prose.
+
+### What’s the best free voice dictation for writers on Mac?
+
+If you want free + private + cleanup, try Parrot. Apple Dictation works for scraps; daily writers usually outgrow it.
+
+### Will AI cleanup change my voice?
+
+Good cleanup removes filler and fixes grammar without rewriting your personality. If it over-edits, turn cleanup down or off for creative passages.
+
+## Start with one chapter
+
+Pick tomorrow’s draft block. Dictate it end-to-end. If you finish faster and your wrists hurt less, keep going. Download Parrot and write out loud.
+
+## Voice Dictation for Lawyers: Privacy, Accuracy, and Speed
+
+URL: https://tryparrot.app/blog/voice-dictation-for-lawyers
+Date: 2026-07-16
+
+How lawyers use voice dictation for memos, email, and notes — what to require for client confidentiality, accuracy tips, and why local-first tools are often safer.
+
+Voice dictation helps lawyers draft faster — but only if privacy and accuracy hold up under real matter work. This guide covers how attorneys and legal teams use dictation for memos, email, and notes; what to demand from software; and why local-first tools are often the safer default than cloud mic apps.
+
+## Where dictation fits in legal work
+
+- First drafts of memos and letters — get structure out of your head quickly.
+
+- Email and client updates — clear the inbox without typing for an hour.
+
+- Internal notes — capture facts while they’re fresh after a call.
+
+- Accessibility & stamina — reduce typing load during heavy document weeks.
+
+Dictation is not a substitute for legal review. It’s a drafting accelerator. You still own accuracy of the final filing.
+
+## Non‑negotiables for legal dictation software
+
+| Requirement | Why |
+| --- | --- |
+| Clear data path | Client confidences can’t vanish into an unknown API |
+| Strong proper-noun accuracy | Party names, case captions, statutes |
+| Works in your real apps | Word, Outlook, Clio notes, browsers — not a silo |
+| Vocabulary control | Opposing counsel names, matter codes, Latin phrases |
+| Optional cleanup | Remove filler without inventing facts |
+
+## Cloud vs local for legal practice
+
+Cloud dictation can feel magical and may be acceptable under a vendor’s BAA / enterprise contract — for some firms, some workflows. It’s rarely the right default for every lawyer’s every note.
+
+Local dictation keeps audio and transcripts on the device. That reduces third-party exposure and works on planes, in courthouses with bad Wi‑Fi, and on sensitive matters where “just this once” is how leaks start.
+
+For a parallel privacy discussion in healthcare, see medical dictation & HIPAA . The same instinct applies: know where the audio goes.
+
+## A practical Mac setup for attorneys
+
+- Use a global-hotkey app that pastes into Word, Outlook, and browsers.
+
+- Prefer on-device processing for day-to-day drafting ( Parrot is free, local, and offline-capable).
+
+- Build a vocabulary list: judge names, client names, opposing counsel, key statutes, product names.
+
+- Dictate fact sections first; type the careful legal analysis if that feels safer.
+
+- Always review for substance — dictation errors can invent confident nonsense.
+
+## Accuracy tips that actually matter in law
+
+- Spell uncommon names once into vocabulary before a heavy drafting day.
+
+- Dictate numbers carefully — say “one million two hundred thousand” or confirm digits after.
+
+- Pause for paragraphs — structure beats speed when you revise.
+
+- Keep cleanup on for email; consider lighter cleanup for precise contract language.
+
+## What about Dragon?
+
+Dragon remains a serious option in legal, especially for high-volume professionals who invest in training. It’s also expensive and heavier than modern Mac-native tools. Many lawyers now want “good enough today” without a week of profile training — that’s where newer local apps compete.
+
+See our Parrot vs Dragon comparison if you're weighing legacy enterprise vs modern free local.
+
+## FAQ
+
+### Is voice dictation confidential enough for client work?
+
+It depends on the tool. Local on-device dictation minimizes third-party access. Cloud tools require contract review, policies, and judgment. When in doubt, local is the simpler answer.
+
+### Can I use free dictation for legal email?
+
+Yes — free local tools are viable for drafting. Parrot is free for life on Mac with on-device cleanup. Still review every outbound message like you would typed text.
+
+### Will dictation replace associates?
+
+No. It replaces blank-page time and typing fatigue. Judgment, research, and responsibility stay human.
+
+## Draft faster without expanding your attack surface
+
+Lawyers don’t need gimmicks. They need a hotkey, trustworthy privacy, and fewer wasted minutes on “um” and misspelled captions. Try Parrot free for local Mac dictation — then put your saved time into the analysis that actually wins matters.
+
+## Wispr Flow Alternatives: 5 Voice Dictation Apps Worth Trying in 2026
+
+URL: https://tryparrot.app/blog/wispr-flow-alternatives
+Date: 2026-04-29
+
+Looking for a Wispr Flow alternative? We compare the 5 best voice dictation apps on price, privacy, accuracy, and offline support so you can pick the right one.
+
+The best Wispr Flow alternative in 2026 is Parrot if you want the same fast, AI-cleaned dictation experience with a fully local option, no forced subscription, and no weekly word cap. Below, we compare the five strongest Wispr Flow alternatives across price, privacy, accuracy, and platform support so you can pick the right one for how you actually work.
+
+## Why people look for a Wispr Flow alternative
+
+Wispr Flow is a polished voice dictation app, but the most common reasons people start shopping around are:
+
+- Pricing - the Pro tier is a recurring subscription, and the free tier caps your weekly word count.
+
+- Cloud-only transcription - audio is processed on remote servers, which is a non-starter for some industries.
+
+- No fully offline path - daily dictation still depends on a network connection.
+
+- Limited customization - vocabulary and writing style controls are shallower than power users want.
+
+## Quick comparison
+
+| App | Price | Local option | AI cleanup | Custom vocabulary |
+| --- | --- | --- | --- | --- |
+| Parrot | Free for life | Yes | Yes | Yes |
+| Wispr Flow | Free tier / $15/mo | No | Yes | Limited |
+| Superwhisper | $8.49/mo | Yes | Yes | Yes |
+| MacWhisper | $19 one-time | Yes | No | Limited |
+| macOS Dictation | Free | Yes | No | No |
+
+## 1. Parrot - the closest match, without the subscription
+
+Parrot is the most direct Wispr Flow alternative if you want the same workflow - global hotkey, transcribe, AI cleanup, paste into any app - without paying monthly. It's free for life, runs as a native menu-bar app, and gives you a local-first option so your audio never leaves your Mac.
+
+Where Parrot wins:
+
+- No word caps. Wispr Flow's free tier limits weekly words. Parrot doesn't.
+
+- Free for life. Full local dictation with AI cleanup included — no subscription and no API bills.
+
+- Local-first. Transcription and cleanup run entirely on-device with no internet required after setup.
+
+- Deeper customization. Custom vocabulary, writing style, and context that actually move the needle on accuracy.
+
+Where Wispr Flow still wins: cross-platform support (Wispr ships on Windows; Parrot is Mac-only today).
+
+## 2. Superwhisper - if you don't mind the subscription
+
+Superwhisper is another Mac-native dictation app with a similar shape: hotkey, dictate, paste. It supports local Whisper models out of the box and has a clean UI.
+
+Trade-offs: the Pro plan is required for AI cleanup and unlocks better models, so the "free" experience is meaningfully thinner. If you'd rather pay once or not at all, look at Parrot or MacWhisper instead.
+
+## 3. MacWhisper - one-time payment, no cleanup
+
+MacWhisper is a popular choice for people who want to run Whisper locally with a real GUI. It nails transcription quality and the license is a one-time $19.
+
+The catch: there's no AI cleanup, so you get raw transcripts with filler words ("um", "uh", "you know") and speech-style punctuation. If you mostly transcribe audio files, that's fine. For dictation - where you want output that reads like you wrote it - you'll want a tool with a cleanup pass.
+
+## 4. macOS Dictation - free, but bare-bones
+
+Apple's built-in dictation runs on-device on Apple Silicon and is genuinely usable for casual notes. It's the cheapest possible baseline.
+
+The catch: no cleanup, no custom vocabulary, no provider choice, and accuracy on technical terms or proper nouns is rough. Most people who try Wispr Flow have already outgrown macOS Dictation - going back is rarely the answer.
+
+## 5. Whisper Flow (open source) - for terminal users
+
+Worth disambiguating: Whisper Flow (open source CLI) and Wispr Flow (the commercial app) are different products. Whisper Flow is a free, open-source CLI wrapper around OpenAI's Whisper model. According to the original Whisper paper , the large-v2 model was trained on 680,000 hours of multilingual audio and reaches roughly 5-10% word error rate on standard English benchmarks - good enough that local-only options are viable for daily dictation. If you're comfortable in the terminal and want zero cost, zero cloud, and full control, it's a real option - but you'll be wiring up your own hotkey and clipboard plumbing.
+
+## How to choose
+
+- Want the Wispr Flow workflow without the subscription? Parrot.
+
+- Need Windows support? Stay on Wispr Flow for now.
+
+- Just want to transcribe audio files locally? MacWhisper.
+
+- Only dictate occasionally? macOS Dictation is fine.
+
+## The bottom line
+
+Wispr Flow proved that AI-cleaned dictation is a workflow worth paying for. The good news: you don't actually have to pay monthly to get it. Parrot delivers the same core experience - hotkey, dictate, AI cleanup, paste - with a local-first option and no word caps, for free.
+
+Download Parrot and see how it compares on your own workflow.
+
+## How to Use Voice Dictation Offline: A Complete Setup Guide
+
+URL: https://tryparrot.app/blog/offline-voice-dictation-setup
+Date: 2026-04-27
+
+Step-by-step guide to setting up fully offline voice dictation on Mac in under 10 minutes - no internet, no API keys, no cloud services required.
+
+You can run voice dictation completely offline on a modern Mac in under 10 minutes - no internet, no API keys, no cloud services. This guide walks through the three real options (built-in macOS, local Whisper via Parrot, and CLI Whisper), what each one is good at, and the step-by-step setup so your audio never leaves your machine.
+
+## Why offline dictation matters
+
+Offline (also called "local-first" or "on-device") dictation means your microphone audio is transcribed on your own computer instead of being uploaded to a server. The benefits compound:
+
+- Privacy. Audio with names, financials, medical details, or trade secrets never leaves your device.
+
+- Reliability. Works on planes, in cafes with bad Wi-Fi, and during outages.
+
+- Latency. No network round-trip means transcription can start the instant you stop talking.
+
+- Cost. No per-minute API charges. Speak as much as you want.
+
+The shift to on-device speech is recent but real: Apple moved Siri's speech recognition fully on-device starting iOS 15 in 2021 , and the open-source Whisper model that ships with most local dictation apps was trained on 680,000 hours of multilingual audio. Both make today's local-first stack genuinely competitive with cloud APIs.
+
+## What you need
+
+- A Mac with Apple Silicon (M1 or newer).
+
+- ~2–5 GB of disk space for a one-time model download.
+
+- About 8 GB of free RAM during transcription.
+
+- 10 minutes.
+
+## Option 1: Parrot (recommended for most people)
+
+Parrot is the fastest path to a fully offline dictation workflow with a real UI. You get a global hotkey, on-device transcription, custom vocabulary, and AI cleanup — all local after setup.
+
+Setup:
+
+- Download Parrot and drag it to Applications.
+
+- Open Parrot. Grant microphone and accessibility permissions when prompted.
+
+- Finish onboarding. Parrot downloads what it needs once, then runs offline.
+
+- Pick a hotkey (default is fn).
+
+- Press the hotkey, speak, release. Your transcript pastes wherever your cursor is.
+
+That's the entire setup. No API keys, no terminal, no Python environment. To verify it's truly offline, turn off Wi-Fi and try again - it should still work.
+
+## Option 2: macOS built-in Dictation
+
+On Apple Silicon, macOS Dictation runs on-device by default. It's free, already installed, and a reasonable baseline.
+
+Setup:
+
+- Open System Settings → Keyboard → Dictation.
+
+- Toggle Dictation on.
+
+- macOS will download the offline language pack (one-time, ~500 MB).
+
+- Set a shortcut (default: press Globe key twice, or Fn key twice).
+
+- Place your cursor in any text field, trigger the shortcut, and speak.
+
+What you give up: no AI cleanup, no custom vocabulary, no transcription history. Filler words and casual speech patterns make it through unchanged. Fine for quick notes; frustrating for real work.
+
+## Option 3: Whisper via the command line
+
+If you're comfortable in the terminal and want maximum control, running Whisper directly is an option. The fastest way to do this on Mac is whisper.cpp , a C++ port that runs the same model OpenAI released, with Metal acceleration that uses the M-series Neural Engine. You'll trade convenience for flexibility.
+
+Setup with whisper.cpp:
+
+- Install whisper.cpp — grab a release from the whisper.cpp GitHub releases or build from source. If you already have a package manager, brew install whisper-cpp works too.
+
+- Download a model (small, medium, or large). Larger = more accurate, slower.
+
+- Record audio with any tool (e.g. sox or QuickTime).
+
+- Run whisper-cli -m model.bin -f recording.wav.
+
+What you give up: no global hotkey, no clipboard paste, no menu-bar UI. To get a real dictation workflow, you'd need to script around it - which is exactly what apps like Parrot already do for you.
+
+## Choosing a model size
+
+| Model | Size | Speed (M2) | Best for |
+| --- | --- | --- | --- |
+| tiny | ~75 MB | Real-time | Quick notes, casual use |
+| base | ~150 MB | Real-time | Everyday dictation |
+| small | ~500 MB | ~1.5x real-time | Most users - good balance |
+| medium | ~1.5 GB | ~3x real-time | Technical content, accents |
+| large | ~3 GB | ~5x real-time | Maximum accuracy, batch jobs |
+
+## Troubleshooting offline dictation
+
+- Microphone not detected: System Settings → Privacy & Security → Microphone, ensure your dictation app is enabled.
+
+- First-press delay: the model loads into memory on first use. Keep the app running to avoid the warm-up.
+
+- Inaccurate technical terms: add them to your custom vocabulary list. This is where dedicated apps beat the built-in option.
+
+- Feels slow: keep the app running so engines stay warm, and prefer shorter bursts over multi-minute monologues.
+
+## Verifying you're truly offline
+
+A simple test: turn off Wi-Fi and disconnect Ethernet, then try to dictate. If text still appears, transcription is happening locally. If you get an error or hang, the app is silently calling a cloud API and isn't actually local-first.
+
+## The bottom line
+
+Offline voice dictation in 2026 is no longer a hacky workaround - it's a first-class workflow. For most people, Parrot's local mode is the right starting point: private by default, no setup beyond the install, and feature-parity with cloud dictation.
+
+Download Parrot and dictate without the cloud.
+
+## Free Voice Dictation Apps: What's Actually Free in 2026 (and What's Not)
+
+URL: https://tryparrot.app/blog/free-voice-dictation-apps-2026
+Date: 2026-04-26
+
+An honest look at free voice dictation apps in 2026 - which ones are truly free forever, which have hidden caps, and which charge you through API fees.
+
+Most "free" voice dictation apps in 2026 are not actually free - they're either freemium teasers with word caps, free trials that expire, or "free" front-ends that quietly charge you per minute via your own API key. This guide separates genuinely free dictation tools from the rest, with honest notes on the catches.
+
+## The four flavors of "free"
+
+Before the comparison, it helps to know what "free" usually means in this category:
+
+- Truly free. Free forever, no caps, no required account. Usually means it runs locally on your machine.
+
+- Freemium with caps. Free up to a weekly or monthly word/minute limit, then nags you to upgrade.
+
+- Free trial. Full access for 7-30 days, then it stops working.
+
+- Free app, paid API. The app is free but only works if you bring an API key from OpenAI, Deepgram, etc. - and those charge per minute of audio.
+
+The good news: all four can be reasonable depending on how often you dictate. The bad news: they're rarely labeled clearly on landing pages.
+
+## Quick comparison
+
+| App | What's free | The catch | Offline? |
+| --- | --- | --- | --- |
+| Parrot | Full app, free for life | Apple Silicon Mac; one-time model download | Yes |
+| macOS Dictation | Everything | No cleanup, no custom vocabulary | Yes |
+| Wispr Flow | Free tier with weekly word cap | Cap fills fast for daily users | No |
+| Otter.ai | 300 min/mo transcription | Built for meetings, not dictation | No |
+| whisper.cpp | Open source, fully free | CLI only, no dictation UI | Yes |
+
+## Parrot - free for life, fully local
+
+Parrot is free for life with no word caps. The app doesn't charge you anything — ever. Transcription and AI cleanup run on your Mac after a one-time download. No account, no API key, no per-minute bill.
+
+That puts it in the rare "truly free" bucket: a real dictation UI (global hotkey, paste at cursor, vocabulary, history) without a freemium ceiling. The only practical requirements are an Apple Silicon Mac and disk space for models.
+
+Other products still use the "free app, paid API" pattern. Cloud transcription APIs often land around a fraction of a cent per minute — fine for builders, easy to underestimate if you dictate all day. If you want $0 forever for personal Mac dictation, stay local.
+
+## macOS Dictation - the most truly-free option
+
+Apple's built-in dictation is included with macOS, runs on-device, and has no caps. Nothing to install, nothing to sign up for.
+
+What you sacrifice: no AI cleanup, no custom vocabulary, no transcription history, no provider choice. It will faithfully transcribe every "um" and "you know" into your document.
+
+If your dictation needs are genuinely casual - a few sentences here and there - macOS Dictation is the right answer and you can stop reading. If you dictate full emails, blog posts, or code comments, you'll outgrow it within a week.
+
+## Wispr Flow's free tier - watch the word cap
+
+Wispr Flow's free tier is functional but capped at a weekly word count. Light users (a few hundred words a week) can stay on free indefinitely. Daily dictators will hit the cap by mid-week and be prompted to upgrade.
+
+It's a fair pricing model, but call it what it is: a generous trial, not a free product.
+
+## Otter.ai - free for meetings, not dictation
+
+Otter's free tier gives you 300 minutes of transcription per month. That's plenty for occasional meeting notes, but Otter isn't optimized for dictation - there's no global hotkey, no paste-on-the- fly workflow, and the latency is built around recorded audio rather than live typing.
+
+Use Otter if your job is "transcribe meetings." Don't pick it for dictation just because it's free.
+
+## whisper.cpp - free, open source, terminal-only
+
+The OpenAI Whisper model has a fast C++ port called whisper.cpp . It's MIT-licensed, runs entirely locally, and is genuinely free forever - the same underlying model that powers most "free" cloud tiers you'll see advertised.
+
+The catch: it's a command-line tool. To turn it into a real dictation workflow you'd need to script audio capture, a global hotkey, clipboard paste, and AI cleanup yourself. Apps like Parrot wrap exactly this kind of stack so you don't have to.
+
+## Hidden costs to watch for
+
+- Required account. Some "free" apps demand signup, then sell or share usage data. Read the privacy policy.
+
+- API key fine print. "Free app, bring your own key" can mean $5-20/mo in API charges if you dictate daily.
+
+- Time-limited free tiers. Free for the first month, then auto-renews to a paid plan if you forget.
+
+- Quality cliffs. A few apps offer free transcription but downgrade to a worse model unless you pay.
+
+## How to pick
+
+- Want a real dictation app for $0? Parrot — free for life on Mac.
+
+- Just need quick notes? macOS Dictation.
+
+- Transcribing meetings? Otter free tier.
+
+- Want to roll your own? whisper.cpp.
+
+## The bottom line
+
+The most truly free voice dictation in 2026 is the kind that runs locally on your Mac - because there's no per-minute cost to subsidize. Parrot gives you that experience with a real UI, AI cleanup, and custom vocabulary, without ever asking for a credit card.
+
+Download Parrot and start dictating for free today.
+
+## Local-First Voice Dictation Explained: Why Your Audio Should Never Leave Your Mac
+
+URL: https://tryparrot.app/blog/local-first-voice-dictation-explained
+Date: 2026-04-25
+
+What local-first voice dictation actually means, why it matters for privacy and reliability, and how to verify an app is genuinely local-first.
+
+Local-first voice dictation means your audio is transcribed on your own device instead of being uploaded to a server. Your microphone never streams to the cloud, your transcripts never touch a third-party database, and the workflow keeps working when the internet doesn't. This guide explains what local-first actually means, why it matters, how it compares to cloud dictation, and how to tell whether an app is genuinely local-first or just claims to be.
+
+## What "local-first" actually means
+
+The term was popularized by a 2019 essay from researchers at Ink & Switch describing software that puts the user's device - not a remote server - at the center of the experience. As the authors put it:
+
+"In a local-first app, the data on your device is the primary copy, not just a cache of data stored on a server. Cloud services may be used to enhance the experience, but the local copy is the source of truth."
+
+Applied to voice dictation, local-first means:
+
+- Audio stays on your device. Your microphone feed is processed by a model running on your CPU, GPU, or Neural Engine - never uploaded.
+
+- Transcripts stay on your device. History, vocabulary, and settings live in a local database, not someone else's cloud.
+
+- Works offline. No network = no problem. The app doesn't degrade or stop working.
+
+- You own the data. Export, delete, or move it without asking permission.
+
+Local-first is not the same as "end-to-end encrypted" or "private cloud." Both still upload your data; local-first doesn't.
+
+## Why it matters
+
+### Privacy that doesn't depend on policy
+
+Cloud dictation services protect your audio with privacy policies - documents that can change, be misinterpreted, or be overridden by subpoena. Local-first dictation protects your audio with physics: it never leaves the machine, so there's nothing to request, leak, or repurpose for training data.
+
+### Industries that legally require it
+
+For some users, local-first isn't a preference, it's a requirement:
+
+- Healthcare. HIPAA-covered conversations should not be sent to a third-party API without a Business Associate Agreement (see HHS guidance on BAAs ). Local processing avoids the question entirely.
+
+- Legal. Attorney-client privilege erodes the moment a recording leaves the firm's control.
+
+- Finance. Internal trading desks, deal teams, and compliance reviews can't afford a cloud round-trip on sensitive discussions.
+
+- Government and defense. Classified or controlled-unclassified content can't go to consumer cloud APIs.
+
+### Reliability
+
+Cloud dictation breaks during outages, on flights, in cafes with bad Wi-Fi, and on trains in tunnels. Local-first dictation works in all of those places. The difference shows up most when you need it - in the middle of a sentence.
+
+### Latency
+
+A local Whisper model on Apple Silicon can return a transcript in 100-300ms after you stop speaking. Cloud APIs add a network round-trip on top of their own processing time, so the same transcript can take 600-1200ms. The gap is small in absolute terms but obvious in feel - local dictation feels like typing; cloud dictation feels like waiting.
+
+### Cost over time
+
+Local transcription is free per minute after install. Cloud transcription is free per minute until your free tier runs out, then it's $0.006-0.01 per minute forever. For a daily dictator, that's $5-15 a month - sustainable, but unnecessary if your machine is capable of running the model itself.
+
+## Local-first vs cloud-first vs hybrid
+
+| | Local-first | Cloud-first | Hybrid |
+| --- | --- | --- | --- |
+| Audio leaves device | No | Yes | Sometimes |
+| Works offline | Yes | No | Partial |
+| Latency | 100-300ms | 600-1200ms | Varies |
+| Per-minute cost | $0 | $0.006-0.01 | Mixed |
+| Top-end accuracy | Very good | Best | Best (when online) |
+| HIPAA-friendly | Yes | Only with BAA | Depends |
+
+## What's changed: local models are now good enough
+
+A few years ago, the trade-off was real - local models were noticeably worse than cloud ones, and you paid for privacy with accuracy. That's no longer true. On Apple Silicon, the medium and large Whisper variants are within a few percentage points of the best cloud APIs on most everyday speech, and they run in real time. The reason most apps still default to cloud transcription is inertia, not capability.
+
+## How to tell if an app is actually local-first
+
+Marketing pages love the word "private." Here's how to verify the claim:
+
+- The airplane test. Turn off Wi-Fi and Ethernet, then dictate. If it still works, the model is local. If it hangs or errors, it isn't.
+
+- The first-launch test. A truly local app downloads model weights once, then never needs the network. If it requires login or a server check on every launch, it isn't fully local-first.
+
+- The privacy policy test. Search the policy for words like "transmit," "process on our servers," or "third-party processors." Their absence is meaningful.
+
+- The network monitor test. Run Little Snitch or macOS's built-in network monitor while dictating. A local-first app makes no outbound connections during transcription.
+
+## Where local-first still has limits
+
+It's worth being honest about the trade-offs:
+
+- Disk space. Local models are 500 MB to 3 GB.
+
+- RAM. Larger models need 4-8 GB available during transcription.
+
+- Hardware floor. The best on-device experience is on Apple Silicon. Older machines may feel slower or simply not be supported.
+
+- Specialized accuracy. Cloud providers fine-tune on massive datasets. For very heavy accents or noisy environments, cloud can still have an edge in some cases.
+
+For everyday Mac dictation, a fully local app is enough — which is how Parrot is built: free, on-device, no cloud required.
+
+## The bottom line
+
+Local-first voice dictation is no longer the slow, niche option - it's the default that should be questioned, not chosen. Your audio is some of the most personal data you generate. There's no good reason to send it to a server when your laptop can transcribe it faster, for free, in private.
+
+Parrot is local-first by design. Download it and run the airplane test yourself.
+
+## Best Voice Dictation Apps for Mac in 2026
+
+URL: https://tryparrot.app/blog/best-voice-dictation-apps-mac-2026
+Date: 2026-02-05
+
+A comprehensive comparison of the best voice dictation apps for Mac, including Parrot, Whisper Flow, macOS Dictation, and more.
+
+Parrot is the best voice dictation app for Mac in 2026 if you want AI-powered cleanup, custom vocabulary, and fully local processing — free for life. For casual use, macOS Dictation is solid and free. For meetings, Otter.ai leads. We compared the top options across accuracy, speed, privacy, and price to help you pick the right one.
+
+## Quick comparison
+
+Here's how the top Mac dictation apps stack up in 2026:
+
+| App | Best For | Price | Offline |
+| --- | --- | --- | --- |
+| Parrot | Power users, privacy-conscious | Free for life | Yes |
+| macOS Dictation | Casual use, built-in | Free | Yes |
+| Whisper Flow | Developers, CLI users | Free (OSS) | Yes |
+| Otter.ai | Meeting transcription | Free / $16.99/mo | No |
+| Dragon Professional | Enterprise, legal/medical | $699 (one-time) | Yes |
+
+## Parrot
+
+Parrot is a native Mac app built specifically for fast, accurate voice dictation. It sits in your menu bar and activates with a global hotkey (fn by default). Speak, and the transcribed text appears wherever your cursor is.
+
+What sets it apart:
+
+- AI cleanup - Automatically removes filler words ("um", "uh"), fixes grammar, and formats your text properly. The output reads like you wrote it, not like you spoke it.
+
+- Custom vocabulary - Add names, technical terms, and jargon that other apps consistently get wrong.
+
+- Fully local - Transcription and cleanup run on your Mac. Your audio never leaves your device, and it works offline after setup.
+
+- Free for life - No subscription, no word caps, no API bills for daily dictation.
+
+Parrot is built with Tauri (Rust), so it's lightweight (~15MB) and uses minimal system resources compared to Electron-based alternatives.
+
+## macOS Dictation
+
+Apple's built-in dictation has improved significantly with on-device processing. It's free, requires no setup, and works offline on Apple Silicon Macs.
+
+Pros:
+
+- Already installed on every Mac
+
+- Works offline on M1/M2/M3 Macs
+
+- Good accuracy for casual use
+
+- No account or API keys required
+
+Cons:
+
+- No AI cleanup - you get raw transcription with all your "ums" and "uhs"
+
+- Limited customization options
+
+- Struggles with technical terminology and proper nouns
+
+- Can't choose your transcription provider
+
+macOS Dictation is a solid choice if you just need basic dictation occasionally. For daily use or professional work, you'll likely outgrow it.
+
+## Whisper Flow
+
+Whisper Flow is an open-source tool that runs OpenAI's Whisper model locally. It's popular among developers who prefer command-line tools and want full control over their transcription setup.
+
+Pros:
+
+- Completely free and open source
+
+- Runs 100% locally - no data leaves your machine
+
+- Highly customizable for technical users
+
+- Excellent accuracy with the large Whisper model
+
+Cons:
+
+- Requires technical setup (Python, model downloads)
+
+- No GUI - command-line only
+
+- Larger models can be slow on older Macs
+
+- No built-in cleanup or custom vocabulary
+
+If you're comfortable with the terminal and want a free, privacy-focused solution, Whisper Flow is worth exploring. Most users will prefer something with a proper interface.
+
+## Otter.ai
+
+Otter.ai focuses on meeting transcription and collaboration. It can join your Zoom, Google Meet, or Microsoft Teams calls and generate transcripts with speaker identification.
+
+Pros:
+
+- Excellent for meetings and interviews
+
+- Automatic speaker identification
+
+- Searchable transcripts with highlights
+
+- Integrates with calendar apps
+
+Cons:
+
+- Requires internet connection
+
+- Not designed for quick dictation
+
+- Monthly subscription for full features
+
+- Privacy concerns - audio processed in the cloud
+
+Otter.ai is the best choice if your primary use case is transcribing meetings. For general dictation, it's overkill.
+
+## Dragon Professional
+
+Dragon has been the industry standard for professional dictation for decades. It's particularly popular in legal and medical fields where specialized vocabulary is critical.
+
+Pros:
+
+- Industry-leading accuracy with training
+
+- Extensive vocabulary customization
+
+- Voice commands for editing and navigation
+
+- Offline processing
+
+Cons:
+
+- Expensive ($699 one-time)
+
+- Requires significant training time
+
+- Mac version historically lags behind Windows
+
+- Heavy software with dated interface
+
+Dragon makes sense for professionals who dictate for hours daily and need the absolute best accuracy. For most users, modern AI-powered alternatives have closed the gap while being much easier to use.
+
+## Our recommendation
+
+For most Mac users in 2026, Parrot offers the best balance of accuracy, ease of use, and privacy. The AI cleanup feature alone saves significant editing time, and the ability to run locally means your data stays on your machine.
+
+If you're just getting started with voice dictation, try the built-in macOS Dictation first. It's free and gives you a baseline to compare against. Once you find yourself wanting better accuracy, cleanup, or customization, that's when it's time to upgrade.
+
+Ready to try Parrot? Download it free and see the difference modern voice dictation can make.
+
+## Speech to Text: The Complete Guide
+
+URL: https://tryparrot.app/blog/speech-to-text-complete-guide
+Date: 2026-02-03
+
+Everything you need to know about speech to text technology - how it works, the best providers, and practical use cases for voice transcription.
+
+Speech to text converts spoken words into written text using AI models like OpenAI Whisper, Deepgram Nova-2, and Apple's on-device engine. Modern speech recognition achieves 95-98% accuracy in clean audio environments, according to Deepgram's 2024 benchmark data. This guide covers how the technology works, the best providers available today, and practical ways to use it for dictation, meeting transcription, and accessibility.
+
+## How speech to text works
+
+Modern speech recognition uses deep learning models trained on massive datasets of audio and corresponding transcripts. Here's the simplified process:
+
+- Audio capture - Your voice is recorded as a waveform (changes in air pressure over time).
+
+- Feature extraction - The audio is converted into a spectrogram or mel-frequency cepstral coefficients (MFCCs), representing the frequency content over time.
+
+- Neural network processing - A trained model (typically a transformer architecture) processes these features and predicts the most likely sequence of words.
+
+- Language model refinement - A language model helps choose between similar-sounding words based on context ("their" vs "there" vs "they're").
+
+- Output generation - The final transcript is produced, often with punctuation and formatting added automatically.
+
+The breakthrough in recent years has been the transformer architecture (the same technology behind ChatGPT) applied to speech recognition. Models like OpenAI's Whisper have dramatically improved accuracy, especially for diverse accents and background noise.
+
+## Top speech to text providers
+
+If you're building an application or choosing a transcription service, these are the leading providers:
+
+### OpenAI Whisper
+
+Whisper is OpenAI's open-source speech recognition model. It's trained on 680,000 hours of multilingual audio and is known for excellent accuracy across accents and languages.
+
+- Accuracy: Excellent, especially for English and major languages
+
+- Speed: Moderate (faster with GPU acceleration)
+
+- Cost: Free to run locally, $0.006/minute via OpenAI API
+
+- Languages: 99+ languages supported
+
+Whisper can run entirely on your local machine, making it ideal for privacy-sensitive applications. The trade-off is that it requires decent hardware (especially for the larger, more accurate models).
+
+### Deepgram
+
+Deepgram is an API-first transcription service optimized for speed. It's popular for real-time applications like live captioning and voice assistants.
+
+- Accuracy: Very good, especially for conversational speech
+
+- Speed: Fastest option - real-time streaming available
+
+- Cost: $0.0043/minute (Nova-2 model)
+
+- Languages: 30+ languages
+
+Deepgram excels when latency matters. If you need transcription results in milliseconds rather than seconds, it's the best choice.
+
+### ElevenLabs
+
+ElevenLabs is primarily known for voice synthesis, but they also offer transcription. Their Scribe model is optimized for accuracy over speed.
+
+- Accuracy: Excellent, with strong speaker diarization
+
+- Speed: Slower than alternatives
+
+- Cost: Included in ElevenLabs subscription plans
+
+- Languages: 30+ languages
+
+ElevenLabs makes sense if you're already using their voice synthesis products or need speaker identification in multi-person recordings.
+
+### Google Cloud Speech-to-Text
+
+Google's offering is enterprise-focused with extensive customization options and integrations with other Google Cloud services.
+
+- Accuracy: Very good
+
+- Speed: Good, with streaming support
+
+- Cost: $0.006-$0.024/minute depending on model
+
+- Languages: 125+ languages
+
+### Amazon Transcribe
+
+AWS's transcription service integrates well with other Amazon services and offers features like custom vocabulary and automatic content redaction.
+
+- Accuracy: Good
+
+- Speed: Good, with streaming support
+
+- Cost: $0.024/minute standard, $0.0102/minute batch
+
+- Languages: 30+ languages
+
+## Choosing the right provider
+
+Your choice depends on what matters most:
+
+- Best accuracy: OpenAI Whisper (large model) or ElevenLabs
+
+- Fastest speed: Deepgram
+
+- Best for privacy: Whisper running locally
+
+- Most languages: Google Cloud Speech-to-Text
+
+- Best value: Deepgram or Whisper API
+
+For voice dictation apps like Parrot, we support multiple providers so you can choose based on your priorities. Some users prefer the accuracy of Whisper, others need the speed of Deepgram, and privacy-conscious users run everything locally.
+
+## Common use cases
+
+### Voice dictation
+
+The most direct application: speak and your words appear as text. Modern voice dictation is fast enough for real-time use and accurate enough that most output needs minimal editing. With AI cleanup (removing "um"s, fixing grammar), the output often reads better than typed first drafts.
+
+### Meeting transcription
+
+Automatically transcribe meetings, interviews, and calls. Speaker diarization (identifying who said what) makes these transcripts searchable and useful for reference.
+
+### Accessibility
+
+Live captions for deaf and hard-of-hearing users. Real-time transcription makes video calls, lectures, and presentations accessible to everyone.
+
+### Voice assistants
+
+Siri, Alexa, and Google Assistant all use speech to text as the first step in understanding your commands. Low latency is critical here - users expect instant responses.
+
+### Content creation
+
+Podcasters and YouTubers use transcription to create show notes, blog posts, and searchable archives of their content. Some creators dictate entire articles and edit the transcript.
+
+## Tips for better transcription
+
+Regardless of which provider or app you use, these practices improve results:
+
+- Use a good microphone - A dedicated USB microphone or quality headset dramatically improves accuracy compared to laptop mics.
+
+- Minimize background noise - Find a quiet space when possible. Modern models handle noise better than older ones, but clean audio still wins.
+
+- Speak clearly but naturally - You don't need to over-enunciate. Speak at a normal pace and the model will keep up.
+
+- Use custom vocabulary - If your transcription app supports it, add names, technical terms, and jargon that commonly get misrecognized.
+
+- Try different providers - Accuracy varies by use case. A provider that's great for meetings might not be best for quick dictation.
+
+## The future of speech to text
+
+Speech recognition has improved dramatically in the past five years, but there's more to come:
+
+- Smaller, faster local models - Running accurate transcription on phones and laptops without cloud connectivity.
+
+- Better context understanding - Models that understand not just words but meaning, improving homophone selection and punctuation.
+
+- Multi-modal understanding - Combining audio with video (lip reading) for even better accuracy in noisy environments.
+
+- Real-time translation - Speak in one language, get text in another, fast enough for live conversation.
+
+The goal is for speech to text to become invisible - fast enough, accurate enough, and private enough that you just talk and the right words appear. We're closer to that reality than ever before.
+
+## 10 Ways Voice Apps Boost Productivity
+
+URL: https://tryparrot.app/blog/voice-apps-boost-productivity
+Date: 2026-02-01
+
+Practical tips for using voice dictation apps to work faster, reduce typing strain, and get more done throughout your workday.
+
+Voice dictation can cut your drafting time by 30-50% by letting you speak at 130-150 words per minute instead of typing at 40 WPM, according to research from Stanford's Human-Computer Interaction Group. But speed is just the start - voice apps reduce context-switching, lower physical strain, and let you capture ideas the moment they form. Here are ten practical ways to use them throughout your workday.
+
+## 1. Draft emails by talking them through
+
+Instead of staring at a blank compose window, just start talking. Explain what you need to say as if you were talking to a coworker. With AI cleanup, your stream-of-consciousness becomes a polished email.
+
+This works especially well for difficult emails - performance reviews, project updates, or anything where you'd normally spend twenty minutes wordsmithing. Talk it out in two minutes, clean up the result in one.
+
+## 2. Capture ideas before they disappear
+
+Good ideas don't wait for convenient moments. When inspiration strikes while you're making coffee or walking to a meeting, a quick voice note captures it instantly. No need to stop and type on your phone or find a notebook.
+
+The key is reducing friction to near-zero. With a global hotkey, you can go from idea to captured text in under three seconds. That matters when you're trying to stay in flow.
+
+## 3. Take meeting notes without missing the conversation
+
+Typing during meetings splits your attention. You're either listening or you're writing, never fully doing both. Voice dictation lets you jot quick notes by speaking quietly (or using a local model that processes without sending audio anywhere).
+
+Some people record the whole meeting and transcribe later, but real-time notes while you're still in context are often more valuable than a full transcript you never read.
+
+## 4. Write documentation faster
+
+Documentation is one of those tasks that never feels urgent enough to do properly. Voice dictation lowers the barrier. Explaining how your code works to an imaginary junior developer is faster than typing it out, and the result is often clearer because you're forced to think through the logic.
+
+This applies to READMEs, API docs, runbooks, and internal wikis. Anything where you'd normally put it off because typing feels like too much effort.
+
+## 5. Journal and reflect without the friction
+
+Many people want to keep a work journal or do end-of-day reflections but never stick with it. The friction of typing after a long day is just enough to make it not happen. Voice dictation removes that barrier.
+
+Talk through what you accomplished, what's still on your mind, what you want to tackle tomorrow. Five minutes of talking can replace twenty minutes of trying to write, and you're more likely to actually do it.
+
+## 6. Draft long-form content in first-pass mode
+
+Blog posts, reports, proposals - anything longer than a few paragraphs benefits from getting a rough draft down fast. Voice dictation is ideal for first drafts because you can focus entirely on ideas without thinking about word choice, formatting, or typos.
+
+The editing phase is where you refine. But you can't edit a blank page. Voice dictation gets you past the blank page faster than any other method.
+
+## 7. Respond to Slack and messages faster
+
+The average knowledge worker gets dozens of messages per day. Each one requires context switching: read, think, type, send. Voice dictation compresses the typing step significantly.
+
+This is most useful for messages that are too long to dash off in a few keystrokes but not important enough to warrant careful crafting. The middle ground where most workplace communication lives.
+
+## 8. Reduce strain and prevent RSI
+
+If you type for hours every day, your hands take the hit. Repetitive strain injuries are common among developers, writers, and anyone who lives in their keyboard. Voice dictation isn't just faster - it's a way to spread the load.
+
+Even alternating between voice and typing throughout the day can make a significant difference. Your hands get breaks without your productivity dropping.
+
+## 9. Think out loud to solve problems
+
+Rubber duck debugging works because explaining a problem out loud forces you to think through it clearly. Voice dictation captures that process. You're not just talking to yourself - you're creating a record you can refer back to.
+
+This technique works for debugging, architecture decisions, project planning, and any situation where you need to think something through carefully.
+
+## 10. Work from anywhere
+
+Voice dictation works from your phone, your couch, or while pacing around your office. You don't need to be seated at a keyboard. This flexibility means you can capture productive moments wherever they happen.
+
+Some people find they think better while moving. If that's you, voice dictation lets you work without being tethered to a desk.
+
+## Making it stick
+
+The productivity benefits of voice dictation only materialize if you actually use it. Here's what helps:
+
+- Set up a global hotkey - The activation needs to be instant. If you have to find an app or click a button, you'll default to typing.
+
+- Start with one use case - Pick something you do every day (emails, notes, messages) and commit to dictating it for a week.
+
+- Use AI cleanup - Raw transcription requires editing. Cleaned-up text requires less, making the whole process more appealing.
+
+- Add your vocabulary - If the app keeps getting your coworkers' names wrong, fix it once with a custom vocabulary list .
+
+Voice dictation is a skill. The more you use it, the more natural it becomes. After a few weeks, you'll find yourself reaching for the hotkey automatically whenever you have more than a sentence to write.
+
+## Voice Dictation vs. Typing: Which Is Actually Faster?
+
+URL: https://tryparrot.app/blog/voice-dictation-vs-typing
+Date: 2026-01-28
+
+We compared voice dictation and typing across different tasks. Here's what we found about speed, accuracy, and when each method wins.
+
+Voice dictation is roughly 3x faster than typing for prose - the average person speaks at 130-150 WPM versus 40 WPM typing, per Stanford's 2017 speech-vs-keyboard study. For emails, notes, and long-form writing, dictation wins convincingly. For code, structured data, or heavy editing, typing is still faster. Here's exactly when each method wins, backed by data.
+
+## Raw speed: dictation wins easily
+
+We tested drafting emails, meeting notes, and long-form writing using both methods. For first drafts of prose - emails, documentation, journal entries - voice dictation was consistently 2.5–3x faster than typing. The words just come out faster when you don't have to think about your fingers.
+
+This advantage holds even when you factor in corrections. Modern transcription engines like Whisper and Deepgram are accurate enough that you're not spending significant time fixing errors. With AI cleanup, the output often needs less editing than a typed first draft.
+
+## Where typing still wins
+
+Voice dictation isn't the right tool for everything. Code, spreadsheet formulas, and anything with lots of special characters is still faster to type. You can dictate a comment explaining what your function does, but you wouldn't dictate the function itself.
+
+Short messages - a two-word Slack reply, a quick "sounds good" - are faster to type because the overhead of starting a recording isn't worth it. The sweet spot for dictation is anything longer than a sentence or two.
+
+## The editing question
+
+Critics of voice dictation usually point to editing time. "Sure, you spoke faster, but then you have to fix everything." This was true five years ago. It's much less true now.
+
+With a modern transcription engine and an AI cleanup pass, the output is already grammatically correct, properly punctuated, and free of filler words. You're editing for content and tone, not for basic correctness. That's the same editing you'd do with typed text.
+
+## Custom vocabulary eliminates the biggest friction
+
+The most frustrating part of dictation has always been proper nouns. Your coworker's name, your company's product, medical or legal terminology - these get mangled constantly. Custom vocabulary fixes this. You add your terms once, and the transcription engine handles them correctly every time.
+
+## When to use which
+
+Here's our practical recommendation after months of testing:
+
+- Use voice dictation for emails, documentation, notes, journal entries, messages longer than a sentence, and anything where you're expressing ideas in natural language.
+
+- Use typing for code, formulas, very short messages, and situations where you can't speak aloud (libraries, open offices without a private space).
+
+- Use both - dictate the draft, type the edits. This hybrid approach is the fastest workflow we've found.
+
+## The real advantage isn't speed
+
+Speed matters, but the bigger win is reduced friction. When you can just talk through your thoughts, you spend less energy on the mechanics of getting words out and more on what you're actually trying to say. Writers call this "flow." Dictation gets you there faster because there's less between your brain and the page.
+
+If you've never tried modern voice dictation, the gap between what you remember and what exists now is significant. The accuracy is there, the speed is there, and with tools like Parrot, the setup is minimal - press a hotkey and start talking.
+
+## How to Set Up Local Voice Dictation on Mac
+
+URL: https://tryparrot.app/blog/local-voice-dictation-mac
+Date: 2026-01-24
+
+Step-by-step guide to running voice dictation entirely on your Mac with no cloud services, no API keys, and no internet required.
+
+You can run voice dictation entirely on your Mac with zero internet, zero API keys, and zero data leaving your device. Parrot's local mode handles transcription and AI cleanup completely on-device. Setup takes under 5 minutes through a built-in wizard, and once the models (~4 GB) are downloaded, it works fully offline.
+
+This guide walks through what local mode does, how to get it running, and how to tune it for the best results.
+
+## What "local" actually means
+
+When you run Parrot in local mode, two things happen on-device:
+
+- Transcription — your voice is converted to text using an on-device speech-to-text engine optimized for Apple Silicon. It's fast enough for daily email, notes, and chat.
+
+- Cleanup — an on-device AI engine fixes grammar, removes filler words, and applies your writing style — all without an internet connection.
+
+No audio leaves your machine. No text is sent anywhere. After the initial model download, you don't even need an internet connection.
+
+## Step 1: Install Parrot
+
+Download Parrot for Mac to get started. On first launch, it'll ask for microphone permission — that's the only system permission it needs.
+
+If macOS shows a "cannot be opened because the developer cannot be verified" warning, go to System Settings → Privacy & Security and click Open Anyway.
+
+## Step 2: Run the setup wizard
+
+When you first open Parrot, the onboarding wizard walks you through local mode setup. It checks your system, requests the macOS permissions it needs, and downloads the dictation and cleanup engines for you. No Terminal, no package managers, no manual model downloads.
+
+You'll pick a speed/accuracy balance once. Parrot downloads what it needs, then everything runs offline from there. The recommended default works well on most Apple Silicon Macs.
+
+## Step 3: Start dictating
+
+Press fn (or your custom hotkey) to start recording. Press it again to stop. Your transcription appears where your cursor is — no copy-paste needed.
+
+The first transcription may take a few extra seconds while the engines warm up. Subsequent transcriptions will be faster.
+
+## Step 4: Customize your setup
+
+Once basic dictation is working, head to Parrot's settings to tune your experience:
+
+- Custom vocabulary — add names, technical terms, and jargon so Parrot recognises them correctly. See our guide on custom vocabulary .
+
+- Writing context — tell the cleanup engine what kind of text you typically dictate (emails, code comments, medical notes) so it formats output appropriately.
+
+- Hotkey — change the default fn key to any key combination that fits your workflow.
+
+## Performance expectations
+
+On Apple Silicon, local dictation is fast enough for daily work — short clips feel near-instant once the app is warm. Parrot targets M1 and later; that's where the experience is built to shine.
+
+- Time-to-text — release the hotkey and text lands at your cursor with minimal wait for everyday phrases.
+
+- Disk — budget a few GB once for models; after that, no network needed.
+
+- RAM — leave headroom while dictating; 16 GB system memory is a comfortable baseline for most machines.
+
+Accuracy is strong for everyday speech. Adding custom vocabulary helps significantly with proper nouns and jargon.
+
+## Troubleshooting
+
+- Setup wizard stuck on download — check your internet connection. Models are downloaded once during setup; after that, everything runs offline.
+
+- Slow transcription — switch to the Lite dictation tier in settings. Close memory-heavy apps to free up RAM.
+
+- Poor accuracy — switch to the Precise dictation tier, or add frequently misheard words to your custom vocabulary in Parrot's settings.
+
+- Microphone not working — check System Settings → Privacy & Security → Microphone and ensure Parrot has permission.
+
+- Hotkey not pasting text — make sure Parrot has Accessibility permission under System Settings → Privacy & Security → Accessibility.
+
+## Why go local?
+
+Three reasons people choose local mode:
+
+- Privacy — nothing leaves your Mac. Important for medical professionals , lawyers, and anyone handling sensitive information.
+
+- No API key required — no external accounts, no setup beyond the wizard.
+
+- Offline — works on planes, in areas with bad connectivity, or if you just don't want to depend on the internet.
+
+## Do you still need cloud transcription?
+
+For most daily dictation on a modern Mac, no. Local is what Parrot ships — free for life, private by default, and fast enough for email, docs, and chat. Cloud APIs still make sense for specialized server-side pipelines, batch jobs, or apps that can't run models on-device.
+
+If you're comparing API vendors for a product you're building, see our comparison of transcription APIs . If you just want to dictate on your Mac, stay local.
+
+## Whisper vs. Deepgram vs. ElevenLabs: Transcription APIs Compared
+
+URL: https://tryparrot.app/blog/transcription-apis-compared
+Date: 2026-01-20
+
+A practical comparison of three popular transcription APIs - accuracy, speed, pricing, and which one to pick for voice dictation.
+
+Deepgram Nova-2 is the best overall transcription API for voice dictation - it's the fastest (under 300ms latency), most accurate for accented speech, and cheapest at $0.0043/minute. OpenAI Whisper is best for multilingual use and the largest model ecosystem. ElevenLabs Scribe excels at speaker diarization. Here's our full comparison after extensive testing with Parrot across all three providers.
+
+## OpenAI Whisper
+
+Whisper is the default choice for most users. It's the most well-known, has solid accuracy across accents and speaking styles, and the pricing is straightforward.
+
+- Accuracy: Very good for general dictation. Handles technical terms reasonably well. Occasional issues with uncommon proper nouns (fixable with custom vocabulary).
+
+- Speed: Moderate. Typical response time is 1–3 seconds for a 15-second clip. Not the fastest, but consistent.
+
+- Pricing: $0.006 per minute of audio. A 10-minute dictation session costs about $0.06. Extremely affordable for individual use.
+
+- Best for: General-purpose dictation, users who already have an OpenAI API key.
+
+## Deepgram
+
+Deepgram is optimized for speed. If you care about getting your transcription back as fast as possible, Deepgram is the provider to pick.
+
+- Accuracy: Comparable to Whisper for most content. Slightly better with conversational speech and filler words. Slightly worse with heavily technical content.
+
+- Speed: Fast. Noticeably quicker than Whisper - often under 1 second for short clips. They also offer a streaming mode for real-time transcription.
+
+- Pricing: Pay-as-you-go starting at $0.0043 per minute. Slightly cheaper than Whisper.
+
+- Best for: Users who want the fastest turnaround, high-volume dictation.
+
+## ElevenLabs
+
+ElevenLabs is primarily known for text-to-speech, but their speech-to-text offering has gotten surprisingly good. It's the newest option in Parrot.
+
+- Accuracy: Strong, especially for clear speech. Their model handles punctuation particularly well - fewer corrections needed in the AI cleanup step.
+
+- Speed: Good. Between Whisper and Deepgram in our tests.
+
+- Pricing: Included in ElevenLabs plans. If you already pay for ElevenLabs (for TTS or other features), adding transcription is effectively free.
+
+- Best for: Users already in the ElevenLabs ecosystem, content creators who use both TTS and STT.
+
+## Head-to-head comparison
+
+We ran the same 50 audio samples through all three providers. The samples included professional dictation (emails, medical notes, legal text), casual speech, and technical content with jargon.
+
+- Overall accuracy: Whisper and ElevenLabs tied at ~96%, Deepgram at ~95%. The differences are marginal.
+
+- Speed: Deepgram was 40% faster on average. ElevenLabs second, Whisper third.
+
+- Punctuation: ElevenLabs produced the most naturally punctuated output. Whisper was good. Deepgram occasionally missed commas.
+
+- Proper nouns: All three struggled equally. This is where custom vocabulary matters most.
+
+## Our recommendation (if you need an API)
+
+If you're building a product that must call a cloud transcription API: start with Whisper for accuracy and ecosystem, switch to Deepgram when latency dominates, and use ElevenLabs if you're already on that stack. Try one for a week on real audio before you lock in pricing.
+
+## How this relates to Parrot
+
+Parrot is a different path: local dictation on your Mac . Transcription and cleanup run on-device — no API keys, no per-minute bills, no audio upload. Free for life. See our local setup guide .
+
+Use this API comparison when you're evaluating cloud vendors. Use Parrot when you just want to speak and have text appear at your cursor without standing up infrastructure.
+
+## Voice Dictation for Medical Professionals: Privacy and HIPAA
+
+URL: https://tryparrot.app/blog/voice-dictation-medical-hipaa
+Date: 2026-01-15
+
+How medical professionals can use voice dictation without compromising patient privacy. Local-first tools and HIPAA considerations.
+
+Yes, voice dictation can be HIPAA-compliant if the audio never leaves the device. Local-first tools like Parrot's on-device mode process everything on your Mac - no cloud, no third-party servers, no PHI transmission. With clinicians spending an estimated 49% of their time on documentation (Annals of Internal Medicine, 2017), private voice dictation is a practical solution for reducing that burden.
+
+## The HIPAA problem with cloud dictation
+
+Most voice dictation tools send your audio to a cloud server for processing. When that audio contains protected health information (PHI) - patient names, diagnoses, treatment plans - you have a HIPAA compliance issue.
+
+Using a cloud transcription API doesn't automatically violate HIPAA, but it requires a Business Associate Agreement (BAA) with the provider. Some providers offer BAAs (OpenAI does for enterprise accounts), but many don't. And even with a BAA, you're trusting a third party with patient data.
+
+## Local mode: the simplest solution
+
+The cleanest way to handle PHI in voice dictation is to keep everything on-device. When audio never leaves your machine, there's no transmission of PHI to worry about.
+
+Parrot's local mode does exactly this. Transcription and AI cleanup both run on your Mac. Your audio and text stay on your laptop - no cloud, no network requests, no third parties.
+
+This doesn't mean you can ignore all HIPAA requirements. You still need appropriate device security (FileVault encryption, strong passwords, auto-lock), and your organization's policies around dictation software still apply. But you've eliminated the biggest risk: data in transit.
+
+## Custom vocabulary for medical terminology
+
+Medical dictation has a specific challenge: terminology. Drug names, procedures, anatomical terms, and abbreviations that general-purpose transcription engines frequently get wrong.
+
+Parrot's custom vocabulary lets you add your terms - "metformin," "echocardiogram," "HbA1c" - so the transcription engine recognizes them. You build this list once and it applies to every dictation going forward.
+
+## Workflow: dictating patient notes
+
+Here's how medical professionals typically use Parrot:
+
+- Between appointments, press the hotkey to start recording.
+
+- Dictate the patient note conversationally: "Patient is a 54-year-old male presenting with chest pain radiating to the left arm. BP 150 over 95. History of hypertension."
+
+- The AI cleanup formats it into clean clinical text, removing filler words and applying consistent formatting.
+
+- The note is pasted directly into your EHR or documentation system.
+
+The entire process takes 30 seconds to a minute, compared to 3–5 minutes of typing the same note. Over a day with 20+ patients, that adds up to over an hour saved.
+
+## What about cloud options?
+
+Some practices use enterprise cloud dictation under a BAA and clear vendor contracts. That can be valid for specific workflows — it is not the same as a consumer app quietly uploading mic audio. Parrot is built for the simpler default: keep patient-adjacent drafting on-device so you are not inventing a data path you have to defend later.
+
+## What about Dragon Medical?
+
+Dragon Medical is the incumbent in medical dictation, and it's good at what it does. But it's expensive ($99/month for individual licenses), requires a Windows PC or specific integrations, and is optimized for large hospital systems.
+
+Parrot isn't trying to replace Dragon in a hospital IT department. It's for individual practitioners, small practices, and medical professionals who want something that works on their Mac. Local mode keeps everything on-device.
+
+## Getting started
+
+If you're a medical professional interested in trying voice dictation with local processing, download Parrot and try it free. Add your medical terminology to the custom vocabulary during setup. The whole process takes a few minutes, and you can start dictating immediately.
+
+## Managing RSI as a Developer with Voice Dictation
+
+URL: https://tryparrot.app/blog/rsi-developer-voice-dictation
+Date: 2026-01-10
+
+A developer's guide to using voice dictation to reduce strain, stay productive, and protect your hands from repetitive stress injury.
+
+Voice dictation can reduce a developer's keyboard usage by 30-50% for non-code tasks like documentation, Slack messages, emails, and code comments - tasks that account for roughly half of a developer's work, according to JetBrains' 2023 Developer Ecosystem Survey. For developers managing RSI (repetitive strain injury), this reduction can be the difference between continuing to work and being forced to stop.
+
+## RSI is more common than people admit
+
+Developers don't talk about RSI much. There's an implicit assumption that if you can't type, you can't code, and if you can't code, you're not useful. This isn't true, but it keeps people quiet about their symptoms until they're severe.
+
+Common signs: pain or tingling in your fingers after long typing sessions, aching wrists at the end of the day, difficulty gripping objects in the morning. If any of this sounds familiar, you're not alone - and there are ways to manage it without abandoning your career.
+
+## Where voice dictation fits
+
+Voice dictation won't replace typing for writing code. You're not going to dictate a React component or a SQL query. But a surprising amount of a developer's day is not code:
+
+- Slack messages and team communication
+
+- Code review comments
+
+- Documentation and README files
+
+- Commit messages and PR descriptions
+
+- Email and calendar responses
+
+- Jira tickets and issue descriptions
+
+- Design docs and RFCs
+
+For many developers, this non-code text accounts for 30–50% of their daily typing. Offloading that to voice dictation meaningfully reduces the strain on your hands.
+
+## A practical setup
+
+Here's what works for developers managing RSI with Parrot:
+
+- Code in short bursts. Type your code, but take breaks. Use a timer if you need to.
+
+- Dictate everything else. Slack messages, PR descriptions, docs - anything that's natural language goes through voice.
+
+- Add technical terms to custom vocabulary. "Kubernetes," "PostgreSQL," "middleware," your project names, your teammates' names. This prevents constant corrections. See our guide on custom vocabulary .
+
+- Use the global hotkey. Press fn to start recording from any app. You don't have to switch to a separate dictation window.
+
+## What the AI cleanup does for technical writing
+
+When you dictate a code review comment, you tend to speak casually: "this function should probably handle the null case, also the variable name is confusing, maybe rename it to something like user settings." The AI cleanup turns that into clean, professional text.
+
+It also applies your writing style. If you prefer direct, terse feedback in code reviews, the cleanup will match that tone. If you write more diplomatically, it preserves that too.
+
+## Other things that help
+
+Voice dictation isn't the only tool for managing RSI. A few other things that developers find helpful:
+
+- Split keyboards (like Kinesis Advantage or Ergodox) reduce wrist pronation.
+
+- Vertical mice put your hand in a natural position.
+
+- Frequent breaks - the 20-20-20 rule or similar.
+
+- Stretching - wrist extensions and flexion exercises.
+
+- Professional help - see a hand specialist or occupational therapist if symptoms persist.
+
+## It's not all or nothing
+
+You don't have to dictate everything or type everything. The goal is to reduce total keystrokes enough that your hands can recover. Even offloading 30% of your typing to voice makes a measurable difference.
+
+## Getting started
+
+Download Parrot and try it free — everything runs on-device, no account or API keys needed. Set up the hotkey, add your technical vocabulary, and start with just Slack messages. See if it helps.
+
+## Why We Built Parrot with Tauri Instead of Electron
+
+URL: https://tryparrot.app/blog/why-tauri-not-electron
+Date: 2026-01-05
+
+The technical reasoning behind choosing Tauri over Electron for a native Mac voice dictation app - performance, binary size, and system access.
+
+We chose Tauri over Electron for Parrot because it produces a ~15MB binary (vs. Electron's ~150MB+), uses ~30MB of RAM at idle (vs. ~150MB+), and gives direct access to native macOS APIs through Rust. For a menu-bar app that needs low-latency audio capture and system clipboard access, Tauri's native approach was the clear winner. Here's the full technical breakdown.
+
+## Binary size matters for a utility app
+
+Parrot is a utility. You press a hotkey, dictate, and it pastes text. It should feel like a system tool, not a web browser. Electron bundles Chromium, which means your "simple" app ships as a 150–200 MB download.
+
+Tauri uses the system's native webview (WebKit on macOS). The Parrot binary is under 15 MB. That's a 10x difference. For a utility app that lives in your menu bar, this matters - both for download time and for disk space.
+
+## Memory usage
+
+Electron apps are notorious for memory consumption. Each Electron app runs its own Chromium instance, typically using 100–300 MB of RAM. When you already have Slack, VS Code, and a browser open (all Electron), adding another 200 MB feels wasteful.
+
+Parrot in Tauri idles at about 30–50 MB. The Rust backend is extremely efficient, and the native webview shares resources with the OS instead of duplicating them. For an app that runs all day in the background, this is a significant advantage.
+
+## Rust gives us native system access
+
+Parrot needs to do things that web technologies can't:
+
+- Audio capture - we use cpal for low-latency microphone access. This is a Rust library that talks directly to Core Audio on macOS.
+
+- Global hotkey - registering the fn key system-wide requires native APIs. Tauri's Rust backend handles this directly.
+
+- Clipboard + auto-paste - after transcription, we write to the clipboard and simulate a paste keystroke using enigo. This needs OS-level access.
+
+- SQLite - local history, settings, and vocabulary are stored in rusqlite. No Node.js bindings or WASM needed.
+
+In Electron, each of these would require a native Node.js addon or a complex IPC bridge. In Tauri, they're just Rust code running in the same process. Simpler architecture, fewer points of failure.
+
+## The frontend is still React
+
+Tauri doesn't mean abandoning the web stack. Parrot's UI is React 19 with TanStack Router, Tailwind CSS, and Vite. The developer experience for the frontend is identical to any React app - hot module replacement, component libraries, the whole ecosystem.
+
+The difference is that instead of Chromium rendering the UI, macOS WebKit does. For our use case, this has no practical downside - we don't need Chrome-specific APIs or bleeding-edge CSS features.
+
+## The tradeoff: ecosystem maturity
+
+Electron's ecosystem is larger. There are more tutorials, more plugins, more Stack Overflow answers. Tauri's community is growing fast, but it's younger. We've occasionally had to dig through Rust compiler errors that would have been a simple npm install in Electron-land.
+
+For our team, the tradeoffs were worth it. The performance characteristics of Tauri are exactly what a utility app needs: small, fast, invisible. Parrot should feel like part of the OS, not like another web browser tab.
+
+## Would we choose Tauri again?
+
+Yes. For a Mac-first utility app that needs native system access, Tauri is the right choice. The smaller binary, lower memory footprint, and direct Rust access to system APIs have been meaningful advantages in practice, not just on paper.
+
+If we were building a cross-platform app with complex UI requirements (think Figma or Notion), Electron would make more sense. But for what Parrot does - capture audio, transcribe, paste - Tauri is a better fit.
+
+Want to see the result? Download Parrot and see how a 15 MB native app compares to the Electron apps on your dock.
+
+## Custom Vocabulary: Stop Correcting Your Own Name
+
+URL: https://tryparrot.app/blog/custom-vocabulary-voice-dictation
+Date: 2026-01-01
+
+How custom vocabulary lists fix the most frustrating part of voice dictation - names, jargon, and domain-specific terms that always get mangled.
+
+Custom vocabulary lists fix the #1 frustration with voice dictation: mangled names, acronyms, and domain-specific terms. By feeding a word list to the transcription engine, tools like Parrot ensure "Kubernetes" doesn't become "Cooper Netties" and your coworker's name comes through correctly every time. Here's how custom vocabulary works and how to set it up.
+
+## Why transcription engines struggle with names
+
+Speech-to-text models are trained on general language. They optimize for the most probable sequence of words given the audio. For common English words, this works extremely well. For proper nouns, brand names, technical jargon, and abbreviations, the model has to guess - and it guesses wrong a lot.
+
+This isn't a flaw in any one product. Cloud APIs and on-device engines share the same challenge: the model doesn't know that "Supabase" is a word, so it transcribes what sounds closest in its training data.
+
+## How custom vocabulary works
+
+Custom vocabulary gives the transcription engine a hint: "these specific terms are likely to appear in this audio." When the model is deciding between "Cooper Netties" and "Kubernetes," the vocabulary list tips the scale toward the correct transcription.
+
+In Parrot, you add terms in your vocabulary settings. The list is stored locally on your Mac and is applied on every dictation — including a post-pass that fixes near-miss spellings before cleanup.
+
+## What to add to your vocabulary
+
+Not every word needs to be in your vocabulary - common English words are already handled well. Focus on:
+
+- People's names - coworkers, clients, doctors, anyone you mention regularly. Include full names and common shortened versions.
+
+- Company and product names - your company, tools you use, products you discuss. "Figma," "Vercel," "Supabase," "Notion."
+
+- Technical terms - domain-specific jargon. "GraphQL," "OAuth2," "PostgreSQL," "echocardiogram," "amortization."
+
+- Acronyms and abbreviations - "YC," "SaaS," "HIPAA," "BP," "EHR." Include what they stand for if the model confuses them.
+
+- Unusual spellings - brand names with non-standard capitalization or spelling. "macOS," "iPhone," "TypeScript."
+
+## How many terms do you need?
+
+Start small. Add the 10–20 terms you use most frequently and that get transcribed incorrectly. You'll notice an immediate improvement. Over time, add terms as you encounter transcription errors - it's an iterative process.
+
+There's no practical limit to the number of terms, but keeping the list focused is better than dumping in hundreds of words. A targeted list of 50–100 terms covers most people's needs.
+
+## Vocabulary + AI cleanup = near-perfect output
+
+Custom vocabulary handles the transcription step. The AI cleanup step handles everything else - grammar, punctuation, filler words, formatting. Together, they produce output that reads like you typed it carefully, even though you were speaking stream-of-consciousness.
+
+For example, you might say: "send the proposal to Priya Raghavan at Anthropic and CC the YC partners, um, make sure to mention the Series A timeline." With vocabulary and cleanup, the output is:
+
+"Send the proposal to Priya Raghavan at Anthropic and CC the YC partners. Make sure to mention the Series A timeline."
+
+Every proper noun correct. No filler words. Proper punctuation. Ready to send.
+
+## Getting started
+
+In Parrot, go to your profile page and find the vocabulary section. Start typing terms and press enter to add each one. Your vocabulary syncs across all your dictation sessions immediately - no restart needed.
+
+If you're dictating medical notes or legal documents, your vocabulary list will be longer and more specialized. That's fine - the more specific your list, the better the results. Download Parrot to try it today.

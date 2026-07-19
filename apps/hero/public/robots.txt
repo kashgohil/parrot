@@ -31,3 +31,5 @@ Allow: /
 
 Sitemap: https://tryparrot.app/sitemap.xml
 RSS: https://tryparrot.app/rss.xml
+
+# LLM context: https://tryparrot.app/llms.txt
