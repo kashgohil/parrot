@@ -1,11 +1,9 @@
 mod audio;
 mod cleanup;
 mod cleanup_engine;
-mod cloud_api;
 mod db;
 mod hotkey;
 mod local_setup;
-mod migration;
 mod streaming;
 mod transcription;
 mod vocab;
@@ -32,7 +30,7 @@ pub struct RecorderState {
     recorder: Mutex<AudioRecorder>,
     recording_start: Mutex<Option<Instant>>,
     /// Raw f32 samples from the last capture. Encoded to WAV only when
-    /// needed (cloud upload / save-audio), never for the local whisper path.
+    /// needed for save-audio, never for the local STT path.
     last_audio: Mutex<Option<RecordedSamples>>,
     last_duration_ms: Mutex<u64>,
 }
@@ -141,57 +139,31 @@ async fn transcribe_last(
         .ok_or_else(|| "No audio data available".to_string())?;
     let duration_ms = *recorder_state.last_duration_ms.lock().unwrap();
 
-    let setup_mode = db
-        .get_setting("setup_mode")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "local".to_string());
-    let session_token = db.get_setting("session_token").map_err(|e| e.to_string())?;
-    let api_key = db.get_setting("api_key").map_err(|e| e.to_string())?;
-
-    // Step 1: Transcribe
+    // Step 1: Transcribe (local-only)
     let _ = app.emit("transcription-started", ());
     let pipeline_start = Instant::now();
-    let local_engine = if setup_mode == "local" {
-        wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(30)).await
-    } else {
-        None
-    };
+    let local_engine =
+        wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(30)).await;
 
-    // Bias Whisper toward the user's vocabulary. Parakeet ignores the prompt;
-    // cloud mode injects vocab server-side.
-    let initial_prompt = if setup_mode == "local" {
-        match db.get_profile() {
-            Ok(profile) => {
-                let entries = vocab::parse(&profile.custom_words);
-                vocab::whisper_initial_prompt(&entries)
-            }
-            Err(_) => None,
+    // Bias Whisper toward the user's vocabulary. Parakeet ignores the prompt.
+    let initial_prompt = match db.get_profile() {
+        Ok(profile) => {
+            let entries = vocab::parse(&profile.custom_words);
+            vocab::whisper_initial_prompt(&entries)
         }
-    } else {
-        None
+        Err(_) => None,
     };
     let language = db
         .get_setting("stt_language")
         .map_err(|e| e.to_string())?
         .filter(|s| !s.trim().is_empty());
 
-    // Encode WAV only when cloud mode needs it for the HTTP multipart body.
-    // Local mode feeds f32 samples straight into the engine.
-    let wav_data = if setup_mode == "cloud" {
-        Some(audio.encode_wav().map_err(|e| e.to_string())?)
-    } else {
-        None
-    };
-
+    // Local STT feeds f32 samples straight into the engine.
     let transcription_start = Instant::now();
     let raw_text = transcription::transcribe_audio(
         &audio.samples,
         audio.sample_rate,
-        wav_data.as_deref(),
-        &setup_mode,
         local_engine.as_deref(),
-        session_token.as_deref(),
-        api_key.as_deref(),
         TranscribeOpts {
             language,
             initial_prompt,
@@ -211,19 +183,11 @@ async fn transcribe_last(
     };
 
     let transcription_ms = transcription_start.elapsed().as_millis() as i64;
-    let engine_name = if setup_mode == "local" {
-        local_engine
-            .as_ref()
-            .map(|e| e.engine_id())
-            .unwrap_or("local")
-    } else {
-        "cloud"
-    };
-    let model_name = if setup_mode == "local" {
-        local_engine.as_ref().map(|e| e.model_label())
-    } else {
-        None
-    };
+    let engine_name = local_engine
+        .as_ref()
+        .map(|e| e.engine_id())
+        .unwrap_or("local");
+    let model_name = local_engine.as_ref().map(|e| e.model_label());
 
     // Skip empty transcriptions (e.g. silence / accidental hotkey tap) — don't
     // save, clean up, or paste.
@@ -239,21 +203,8 @@ async fn transcribe_last(
 
     // Save initial entry
     let id = uuid::Uuid::new_v4().to_string();
-    match setup_mode.as_str() {
-        "local" => {
-            db.insert_dictation(&id, &raw_text, "", "local", duration_ms as i64)
-                .map_err(|e| e.to_string())?;
-        }
-        "cloud" => {
-            let token = session_token
-                .as_deref()
-                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
-            cloud_api::insert_dictation(token, &id, &raw_text, "", "cloud", duration_ms as i64)
-                .await
-                .map_err(|e| e.to_string())?;
-        }
-        _ => return Err(format!("Unknown setup mode: {}", setup_mode)),
-    }
+    db.insert_dictation(&id, &raw_text, "", "local", duration_ms as i64)
+        .map_err(|e| e.to_string())?;
 
     // Save audio if enabled
     let save_audio = db
@@ -262,35 +213,12 @@ async fn transcribe_last(
         .unwrap_or_else(|| "false".to_string());
 
     if save_audio == "true" {
-        match setup_mode.as_str() {
-            "local" => {
-                let wav_bytes = audio.encode_wav().map_err(|e| e.to_string())?;
-                let audio_dir = Database::audio_dir().map_err(|e| e.to_string())?;
-                std::fs::create_dir_all(&audio_dir).map_err(|e| e.to_string())?;
-                let audio_path = audio_dir.join(format!("{}.wav", id));
-                std::fs::write(&audio_path, &wav_bytes).map_err(|e| e.to_string())?;
-                let _ = db.update_dictation_audio_path(&id, &audio_path.to_string_lossy());
-            }
-            "cloud" => {
-                if let Some(token) = session_token.as_deref() {
-                    let wav_clone = match &wav_data {
-                        Some(w) => w.clone(),
-                        None => audio.encode_wav().map_err(|e| e.to_string())?,
-                    };
-                    let token_owned = token.to_string();
-                    let id_clone = id.clone();
-                    // Upload in background to not block transcription flow
-                    tokio::spawn(async move {
-                        if let Err(e) =
-                            cloud_api::upload_audio(&token_owned, &id_clone, &wav_clone).await
-                        {
-                            eprintln!("Audio upload failed: {}", e);
-                        }
-                    });
-                }
-            }
-            _ => {}
-        }
+        let wav_bytes = audio.encode_wav().map_err(|e| e.to_string())?;
+        let audio_dir = Database::audio_dir().map_err(|e| e.to_string())?;
+        std::fs::create_dir_all(&audio_dir).map_err(|e| e.to_string())?;
+        let audio_path = audio_dir.join(format!("{}.wav", id));
+        std::fs::write(&audio_path, &wav_bytes).map_err(|e| e.to_string())?;
+        let _ = db.update_dictation_audio_path(&id, &audio_path.to_string_lossy());
     }
 
     // Per-app profile (bundle ID at paste time — same as focused app).
@@ -321,16 +249,14 @@ async fn transcribe_last(
         let paste_start = Instant::now();
         let pasted = copy_and_paste_safely(&app, raw_text.clone()).await;
         let paste_ms = paste_start.elapsed().as_millis() as i64;
-        if setup_mode == "local" {
-            let _ = db.update_dictation_timings(
-                &id,
-                Some(transcription_ms),
-                None,
-                Some(paste_ms),
-                Some(engine_name),
-                model_name.as_deref(),
-            );
-        }
+        let _ = db.update_dictation_timings(
+            &id,
+            Some(transcription_ms),
+            None,
+            Some(paste_ms),
+            Some(engine_name),
+            model_name.as_deref(),
+        );
         eprintln!(
             "dictation timings id={} audio={}ms transcription={}ms paste={}ms total={}ms (cleanup skipped)",
             id,
@@ -352,28 +278,10 @@ async fn transcribe_last(
         let _ = app.emit("cleanup-started", ());
         let cleanup_start = Instant::now();
         let builtin = cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner());
-        let cleaned_text = run_cleanup(
-            &db,
-            &setup_mode,
-            &raw_text,
-            session_token.as_deref(),
-            builtin,
-            &effective,
-        )
-        .await;
+        let cleaned_text = run_cleanup(&db, &raw_text, builtin, &effective).await;
         let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
         if !cleaned_text.is_empty() && cleaned_text != raw_text {
-            match setup_mode.as_str() {
-                "local" => {
-                    let _ = db.update_dictation_cleaned(&id, &cleaned_text);
-                }
-                "cloud" => {
-                    if let Some(token) = session_token.as_deref() {
-                        let _ = cloud_api::update_dictation_cleaned(token, &id, &cleaned_text).await;
-                    }
-                }
-                _ => {}
-            }
+            let _ = db.update_dictation_cleaned(&id, &cleaned_text);
         }
         let output_text = if cleaned_text.is_empty() {
             raw_text.clone()
@@ -383,16 +291,14 @@ async fn transcribe_last(
         let paste_start = Instant::now();
         let pasted = copy_and_paste_safely(&app, output_text).await;
         let paste_ms = paste_start.elapsed().as_millis() as i64;
-        if setup_mode == "local" {
-            let _ = db.update_dictation_timings(
-                &id,
-                Some(transcription_ms),
-                Some(cleanup_ms),
-                Some(paste_ms),
-                Some(engine_name),
-                model_name.as_deref(),
-            );
-        }
+        let _ = db.update_dictation_timings(
+            &id,
+            Some(transcription_ms),
+            Some(cleanup_ms),
+            Some(paste_ms),
+            Some(engine_name),
+            model_name.as_deref(),
+        );
         eprintln!(
             "dictation timings id={} audio={}ms transcription={}ms cleanup={}ms paste={}ms total={}ms (blocking)",
             id,
@@ -416,16 +322,14 @@ async fn transcribe_last(
     let paste_start = Instant::now();
     let pasted = copy_and_paste_safely(&app, raw_text.clone()).await;
     let paste_ms = paste_start.elapsed().as_millis() as i64;
-    if setup_mode == "local" {
-        let _ = db.update_dictation_timings(
-            &id,
-            Some(transcription_ms),
-            None,
-            Some(paste_ms),
-            Some(engine_name),
-            model_name.as_deref(),
-        );
-    }
+    let _ = db.update_dictation_timings(
+        &id,
+        Some(transcription_ms),
+        None,
+        Some(paste_ms),
+        Some(engine_name),
+        model_name.as_deref(),
+    );
     eprintln!(
         "dictation timings id={} audio={}ms transcription={}ms paste={}ms time_to_paste={}ms (background cleanup)",
         id,
@@ -444,33 +348,14 @@ async fn transcribe_last(
     let app_handle = app.clone();
     let id_bg = id.clone();
     let raw_bg = raw_text.clone();
-    let mode_bg = setup_mode.clone();
-    let token_bg = session_token.clone();
     let effective_bg = effective.clone();
     tokio::spawn(async move {
         let db = app_handle.state::<Database>();
         let builtin = cleanup::peek_builtin(app_handle.state::<SharedCleanupEngine>().inner());
         let cleanup_start = Instant::now();
-        let cleaned = run_cleanup(
-            &db,
-            &mode_bg,
-            &raw_bg,
-            token_bg.as_deref(),
-            builtin,
-            &effective_bg,
-        )
-        .await;
+        let cleaned = run_cleanup(&db, &raw_bg, builtin, &effective_bg).await;
         let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
-        if mode_bg == "local" {
-            let _ = db.update_dictation_timings(
-                &id_bg,
-                None,
-                Some(cleanup_ms),
-                None,
-                None,
-                None,
-            );
-        }
+        let _ = db.update_dictation_timings(&id_bg, None, Some(cleanup_ms), None, None, None);
         eprintln!(
             "dictation cleanup timings id={} cleanup={}ms",
             id_bg, cleanup_ms
@@ -478,22 +363,8 @@ async fn transcribe_last(
         if cleaned.is_empty() || cleaned.trim() == raw_bg.trim() {
             return;
         }
-        match mode_bg.as_str() {
-            "local" => {
-                if let Err(e) = db.update_dictation_cleaned(&id_bg, &cleaned) {
-                    eprintln!("Failed to save cleaned text: {}", e);
-                }
-            }
-            "cloud" => {
-                if let Some(token) = token_bg.as_deref() {
-                    if let Err(e) =
-                        cloud_api::update_dictation_cleaned(token, &id_bg, &cleaned).await
-                    {
-                        eprintln!("Failed to save cleaned text (cloud): {}", e);
-                    }
-                }
-            }
-            _ => {}
+        if let Err(e) = db.update_dictation_cleaned(&id_bg, &cleaned) {
+            eprintln!("Failed to save cleaned text: {}", e);
         }
         app_handle
             .state::<PendingCleanup>()
@@ -510,69 +381,32 @@ async fn transcribe_last(
     Ok(result)
 }
 
-/// Run LLM cleanup for the given mode. Returns empty string on failure so
-/// callers can fall back to the raw transcript.
+/// Run local LLM cleanup. Returns empty string on failure so callers can fall
+/// back to the raw transcript.
 async fn run_cleanup(
     db: &Database,
-    setup_mode: &str,
     raw_text: &str,
-    session_token: Option<&str>,
     builtin: Option<std::sync::Arc<cleanup_engine::BuiltinCleanupEngine>>,
     profile: &db::EffectiveProfile,
 ) -> String {
     let cleanup_backend = resolve_cleanup_backend(db);
-
-    match setup_mode {
-        "local" => {
-            let llm_model = db.get_setting("llm_model").ok().flatten();
-            match cleanup::cleanup_text(
-                raw_text,
-                "local",
-                None,
-                None,
-                llm_model.as_deref(),
-                &profile.custom_words,
-                &profile.context_prompt,
-                &profile.writing_style,
-                &cleanup_backend,
-                builtin,
-            )
-            .await
-            {
-                Ok(cleaned) => cleaned,
-                Err(e) => {
-                    eprintln!("LLM cleanup failed: {}", e);
-                    String::new()
-                }
-            }
+    let llm_model = db.get_setting("llm_model").ok().flatten();
+    match cleanup::cleanup_text(
+        raw_text,
+        llm_model.as_deref(),
+        &profile.custom_words,
+        &profile.context_prompt,
+        &profile.writing_style,
+        &cleanup_backend,
+        builtin,
+    )
+    .await
+    {
+        Ok(cleaned) => cleaned,
+        Err(e) => {
+            eprintln!("LLM cleanup failed: {}", e);
+            String::new()
         }
-        "cloud" => {
-            let Some(token) = session_token else {
-                return String::new();
-            };
-            let llm_api_key = db.get_setting("llm_api_key").ok().flatten();
-            match cleanup::cleanup_text(
-                raw_text,
-                "cloud",
-                Some(token),
-                llm_api_key.as_deref(),
-                None,
-                "",
-                "",
-                "",
-                "builtin",
-                None,
-            )
-            .await
-            {
-                Ok(cleaned) => cleaned,
-                Err(e) => {
-                    eprintln!("LLM cleanup failed: {}", e);
-                    String::new()
-                }
-            }
-        }
-        _ => String::new(),
     }
 }
 
@@ -606,51 +440,27 @@ async fn transcribe_audio_file(
     }
     let duration_ms = (samples.len() as f64 / sample_rate as f64 * 1000.0) as u64;
 
-    let setup_mode = db
-        .get_setting("setup_mode")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "local".to_string());
-    let session_token = db.get_setting("session_token").map_err(|e| e.to_string())?;
-    let api_key = db.get_setting("api_key").map_err(|e| e.to_string())?;
-
     let _ = app.emit("transcription-started", ());
-    let local_engine = if setup_mode == "local" {
-        wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(60)).await
-    } else {
-        None
-    };
+    let local_engine =
+        wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(60)).await;
 
-    let initial_prompt = if setup_mode == "local" {
-        match db.get_profile() {
-            Ok(profile) => {
-                let entries = vocab::parse(&profile.custom_words);
-                vocab::whisper_initial_prompt(&entries)
-            }
-            Err(_) => None,
+    let initial_prompt = match db.get_profile() {
+        Ok(profile) => {
+            let entries = vocab::parse(&profile.custom_words);
+            vocab::whisper_initial_prompt(&entries)
         }
-    } else {
-        None
+        Err(_) => None,
     };
     let language = db
         .get_setting("stt_language")
         .map_err(|e| e.to_string())?
         .filter(|s| !s.trim().is_empty());
 
-    let wav_for_cloud = if setup_mode == "cloud" {
-        Some(data.clone())
-    } else {
-        None
-    };
-
     let transcription_start = Instant::now();
     let raw_text = transcription::transcribe_audio(
         &samples,
         sample_rate,
-        wav_for_cloud.as_deref(),
-        &setup_mode,
         local_engine.as_deref(),
-        session_token.as_deref(),
-        api_key.as_deref(),
         TranscribeOpts {
             language,
             initial_prompt,
@@ -679,46 +489,22 @@ async fn transcribe_audio_file(
     }
 
     let id = uuid::Uuid::new_v4().to_string();
-    let provider = if setup_mode == "local" {
-        "local-file"
-    } else {
-        "cloud-file"
-    };
-    match setup_mode.as_str() {
-        "local" => {
-            db.insert_dictation(&id, &raw_text, "", provider, duration_ms as i64)
-                .map_err(|e| e.to_string())?;
-        }
-        "cloud" => {
-            let token = session_token
-                .as_deref()
-                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
-            cloud_api::insert_dictation(token, &id, &raw_text, "", provider, duration_ms as i64)
-                .await
-                .map_err(|e| e.to_string())?;
-        }
-        _ => return Err(format!("Unknown setup mode: {}", setup_mode)),
-    }
+    db.insert_dictation(&id, &raw_text, "", "local-file", duration_ms as i64)
+        .map_err(|e| e.to_string())?;
 
     let engine_name = local_engine
         .as_ref()
         .map(|e| e.engine_id())
-        .unwrap_or(if setup_mode == "local" {
-            "local"
-        } else {
-            "cloud"
-        });
+        .unwrap_or("local");
     let model_name = local_engine.as_ref().map(|e| e.model_label());
-    if setup_mode == "local" {
-        let _ = db.update_dictation_timings(
-            &id,
-            Some(transcription_ms),
-            None,
-            None,
-            Some(engine_name),
-            model_name.as_deref(),
-        );
-    }
+    let _ = db.update_dictation_timings(
+        &id,
+        Some(transcription_ms),
+        None,
+        None,
+        Some(engine_name),
+        model_name.as_deref(),
+    );
 
     let effective = db
         .effective_profile_for_app(None)
@@ -737,15 +523,7 @@ async fn transcribe_audio_file(
         // Default / blocking: wait for polish. Only explicit "background"
         // uses the fire-and-forget path below.
         let builtin = cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner());
-        let cleaned = run_cleanup(
-            &db,
-            &setup_mode,
-            &raw_text,
-            session_token.as_deref(),
-            builtin,
-            &effective,
-        )
-        .await;
+        let cleaned = run_cleanup(&db, &raw_text, builtin, &effective).await;
         if !cleaned.is_empty() && cleaned != raw_text {
             let _ = db.update_dictation_cleaned(&id, &cleaned);
         }
@@ -755,21 +533,11 @@ async fn transcribe_audio_file(
         let app_handle = app.clone();
         let id_bg = id.clone();
         let raw_bg = raw_text.clone();
-        let mode_bg = setup_mode.clone();
-        let token_bg = session_token.clone();
         let effective_bg = effective.clone();
         tokio::spawn(async move {
             let db = app_handle.state::<Database>();
             let builtin = cleanup::peek_builtin(app_handle.state::<SharedCleanupEngine>().inner());
-            let cleaned = run_cleanup(
-                &db,
-                &mode_bg,
-                &raw_bg,
-                token_bg.as_deref(),
-                builtin,
-                &effective_bg,
-            )
-            .await;
+            let cleaned = run_cleanup(&db, &raw_bg, builtin, &effective_bg).await;
             if !cleaned.is_empty() && cleaned.trim() != raw_bg.trim() {
                 let _ = db.update_dictation_cleaned(&id_bg, &cleaned);
                 let _ = app_handle.emit(
@@ -1483,7 +1251,7 @@ async fn switch_stt_model(
     }))
 }
 
-/// DictationEntry type used by both local and cloud modes in command responses
+/// Dictation history entry returned to the frontend.
 #[derive(serde::Serialize, serde::Deserialize, Clone)]
 struct DictationEntry {
     id: String,
@@ -1498,50 +1266,19 @@ struct DictationEntry {
 
 #[tauri::command]
 async fn get_history(db: tauri::State<'_, Database>) -> Result<Vec<DictationEntry>, String> {
-    let setup_mode = db
-        .get_setting("setup_mode")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "local".to_string());
-
-    match setup_mode.as_str() {
-        "local" => {
-            let entries = db.get_history().map_err(|e| e.to_string())?;
-            Ok(entries
-                .into_iter()
-                .map(|e| DictationEntry {
-                    id: e.id,
-                    raw_text: e.raw_text,
-                    cleaned_text: e.cleaned_text,
-                    provider: e.provider,
-                    duration_ms: e.duration_ms,
-                    created_at: e.created_at,
-                    audio_path: e.audio_path,
-                })
-                .collect())
-        }
-        "cloud" => {
-            let session_token = db
-                .get_setting("session_token")
-                .map_err(|e| e.to_string())?
-                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
-            let entries = cloud_api::get_history(&session_token)
-                .await
-                .map_err(|e| e.to_string())?;
-            Ok(entries
-                .into_iter()
-                .map(|e| DictationEntry {
-                    id: e.id,
-                    raw_text: e.raw_text,
-                    cleaned_text: e.cleaned_text,
-                    provider: e.provider,
-                    duration_ms: e.duration_ms,
-                    created_at: e.created_at,
-                    audio_path: e.audio_path,
-                })
-                .collect())
-        }
-        _ => Err(format!("Unknown setup mode: {}", setup_mode)),
-    }
+    let entries = db.get_history().map_err(|e| e.to_string())?;
+    Ok(entries
+        .into_iter()
+        .map(|e| DictationEntry {
+            id: e.id,
+            raw_text: e.raw_text,
+            cleaned_text: e.cleaned_text,
+            provider: e.provider,
+            duration_ms: e.duration_ms,
+            created_at: e.created_at,
+            audio_path: e.audio_path,
+        })
+        .collect())
 }
 
 #[tauri::command]
@@ -1549,50 +1286,19 @@ async fn search_history(
     query: &str,
     db: tauri::State<'_, Database>,
 ) -> Result<Vec<DictationEntry>, String> {
-    let setup_mode = db
-        .get_setting("setup_mode")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "local".to_string());
-
-    match setup_mode.as_str() {
-        "local" => {
-            let entries = db.search_history(query).map_err(|e| e.to_string())?;
-            Ok(entries
-                .into_iter()
-                .map(|e| DictationEntry {
-                    id: e.id,
-                    raw_text: e.raw_text,
-                    cleaned_text: e.cleaned_text,
-                    provider: e.provider,
-                    duration_ms: e.duration_ms,
-                    created_at: e.created_at,
-                    audio_path: e.audio_path,
-                })
-                .collect())
-        }
-        "cloud" => {
-            let session_token = db
-                .get_setting("session_token")
-                .map_err(|e| e.to_string())?
-                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
-            let entries = cloud_api::search_history(&session_token, query)
-                .await
-                .map_err(|e| e.to_string())?;
-            Ok(entries
-                .into_iter()
-                .map(|e| DictationEntry {
-                    id: e.id,
-                    raw_text: e.raw_text,
-                    cleaned_text: e.cleaned_text,
-                    provider: e.provider,
-                    duration_ms: e.duration_ms,
-                    created_at: e.created_at,
-                    audio_path: e.audio_path,
-                })
-                .collect())
-        }
-        _ => Err(format!("Unknown setup mode: {}", setup_mode)),
-    }
+    let entries = db.search_history(query).map_err(|e| e.to_string())?;
+    Ok(entries
+        .into_iter()
+        .map(|e| DictationEntry {
+            id: e.id,
+            raw_text: e.raw_text,
+            cleaned_text: e.cleaned_text,
+            provider: e.provider,
+            duration_ms: e.duration_ms,
+            created_at: e.created_at,
+            audio_path: e.audio_path,
+        })
+        .collect())
 }
 
 #[tauri::command]
@@ -1600,31 +1306,11 @@ async fn delete_dictation(
     id: String,
     db: tauri::State<'_, Database>,
 ) -> Result<(), String> {
-    let setup_mode = db
-        .get_setting("setup_mode")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "local".to_string());
-
-    match setup_mode.as_str() {
-        "local" => {
-            let audio_path = db.delete_dictation(&id).map_err(|e| e.to_string())?;
-            if let Some(path) = audio_path {
-                let _ = std::fs::remove_file(&path);
-            }
-            Ok(())
-        }
-        "cloud" => {
-            let session_token = db
-                .get_setting("session_token")
-                .map_err(|e| e.to_string())?
-                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
-            cloud_api::delete_dictation(&session_token, &id)
-                .await
-                .map_err(|e| e.to_string())?;
-            Ok(())
-        }
-        _ => Err(format!("Unknown setup mode: {}", setup_mode)),
+    let audio_path = db.delete_dictation(&id).map_err(|e| e.to_string())?;
+    if let Some(path) = audio_path {
+        let _ = std::fs::remove_file(&path);
     }
+    Ok(())
 }
 
 #[tauri::command]
@@ -1646,36 +1332,12 @@ struct ProfileData {
 
 #[tauri::command]
 async fn get_profile(db: tauri::State<'_, Database>) -> Result<ProfileData, String> {
-    let setup_mode = db
-        .get_setting("setup_mode")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "local".to_string());
-
-    match setup_mode.as_str() {
-        "local" => {
-            let p = db.get_profile().map_err(|e| e.to_string())?;
-            Ok(ProfileData {
-                custom_words: p.custom_words,
-                context_prompt: p.context_prompt,
-                writing_style: p.writing_style,
-            })
-        }
-        "cloud" => {
-            let session_token = db
-                .get_setting("session_token")
-                .map_err(|e| e.to_string())?
-                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
-            let p = cloud_api::get_profile(&session_token)
-                .await
-                .map_err(|e| e.to_string())?;
-            Ok(ProfileData {
-                custom_words: p.custom_words,
-                context_prompt: p.context_prompt,
-                writing_style: p.writing_style,
-            })
-        }
-        _ => Err(format!("Unknown setup mode: {}", setup_mode)),
-    }
+    let p = db.get_profile().map_err(|e| e.to_string())?;
+    Ok(ProfileData {
+        custom_words: p.custom_words,
+        context_prompt: p.context_prompt,
+        writing_style: p.writing_style,
+    })
 }
 
 /// Suggest dictionary terms mined from raw→cleaned history pairs.
@@ -1750,26 +1412,8 @@ async fn update_profile(
     writing_style: &str,
     db: tauri::State<'_, Database>,
 ) -> Result<(), String> {
-    let setup_mode = db
-        .get_setting("setup_mode")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "local".to_string());
-
-    match setup_mode.as_str() {
-        "local" => db
-            .update_profile(custom_words, context_prompt, writing_style)
-            .map_err(|e| e.to_string()),
-        "cloud" => {
-            let session_token = db
-                .get_setting("session_token")
-                .map_err(|e| e.to_string())?
-                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
-            cloud_api::update_profile(&session_token, custom_words, context_prompt, writing_style)
-                .await
-                .map_err(|e| e.to_string())
-        }
-        _ => Err(format!("Unknown setup mode: {}", setup_mode)),
-    }
+    db.update_profile(custom_words, context_prompt, writing_style)
+        .map_err(|e| e.to_string())
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Clone)]
@@ -1815,31 +1459,7 @@ async fn get_audio_url(
     id: &str,
     db: tauri::State<'_, Database>,
 ) -> Result<Option<String>, String> {
-    let setup_mode = db
-        .get_setting("setup_mode")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| "local".to_string());
-
-    match setup_mode.as_str() {
-        "local" => {
-            let path = db.get_audio_path(id).map_err(|e| e.to_string())?;
-            Ok(path)
-        }
-        "cloud" => {
-            let session_token = db
-                .get_setting("session_token")
-                .map_err(|e| e.to_string())?
-                .ok_or_else(|| "Session token required for cloud mode".to_string())?;
-            match cloud_api::get_audio_url(&session_token, id).await {
-                Ok(url) => Ok(Some(url)),
-                Err(e) => {
-                    eprintln!("Failed to get audio URL: {}", e);
-                    Ok(None)
-                }
-            }
-        }
-        _ => Ok(None),
-    }
+    db.get_audio_path(id).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -2416,12 +2036,6 @@ pub fn run() {
             check_accessibility_permission,
             check_microphone_permission,
             request_microphone_permission,
-            migration::get_migration_status,
-            migration::get_migration_checkout_url,
-            migration::get_migration_snapshot,
-            migration::migrate_local_to_cloud,
-            migration::retry_failed_audio,
-            migration::revert_to_local,
         ])
         .setup(|app| {
             setup_tray(app.handle())?;
@@ -2480,85 +2094,94 @@ pub fn run() {
                 }
             }
 
-            // Auto-start local services if in local mode.
+            // Local-only: force setup_mode to local if it was cloud (or other).
             let db = app.state::<Database>();
-            let setup_mode = db.get_setting("setup_mode").ok().flatten();
-            if setup_mode == Some("local".to_string()) {
-                let config = db.get_local_setup_config();
-                if let Ok(config) = config {
-                    if config.setup_completed {
-                        // 1. Load the local STT engine in-process (eager async).
-                        let engine_state = app.state::<SharedLocalEngine>();
-                        kick_off_engine_load(&db, engine_state.inner().clone(), &config);
+            if let Ok(Some(mode)) = db.get_setting("setup_mode") {
+                if mode != "local" {
+                    let _ = db.set_setting("setup_mode", "local");
+                    println!("Forced setup_mode from '{}' to 'local'", mode);
+                }
+            }
 
-                        // 2. Load in-process cleanup GGUF (or warm Ollama if
-                        //    the user still uses the legacy backend).
-                        kick_off_cleanup_load(&db, app.state::<SharedCleanupEngine>().inner().clone(), &config);
+            // Always start local engines when setup is complete (regardless of
+            // any prior setup_mode value that may have been "cloud" or missing).
+            let config = db.get_local_setup_config();
+            if let Ok(config) = config {
+                if config.setup_completed {
+                    // 1. Load the local STT engine in-process (eager async).
+                    let engine_state = app.state::<SharedLocalEngine>();
+                    kick_off_engine_load(&db, engine_state.inner().clone(), &config);
 
-                        // 3. Pre-open the mic stream so Bluetooth headsets
-                        //    finish codec negotiation before the first press.
-                        {
-                            let state = app.state::<RecorderState>();
-                            let warm_result = state.recorder.lock().map(|mut rec| rec.warm_up());
-                            match warm_result {
-                                Ok(Ok(())) => println!("Mic input stream warmed"),
-                                Ok(Err(e)) => eprintln!("Mic warm-up skipped: {}", e),
-                                Err(e) => eprintln!("Mic warm-up lock error: {}", e),
-                            }
+                    // 2. Load in-process cleanup GGUF (or warm Ollama if
+                    //    the user still uses the legacy backend).
+                    kick_off_cleanup_load(
+                        &db,
+                        app.state::<SharedCleanupEngine>().inner().clone(),
+                        &config,
+                    );
+
+                    // 3. Pre-open the mic stream so Bluetooth headsets
+                    //    finish codec negotiation before the first press.
+                    {
+                        let state = app.state::<RecorderState>();
+                        let warm_result = state.recorder.lock().map(|mut rec| rec.warm_up());
+                        match warm_result {
+                            Ok(Ok(())) => println!("Mic input stream warmed"),
+                            Ok(Err(e)) => eprintln!("Mic warm-up skipped: {}", e),
+                            Err(e) => eprintln!("Mic warm-up lock error: {}", e),
                         }
-
-                        // Persist resolved backend so upgrades don't flip-flop
-                        // between ollama/builtin on every launch.
-                        let resolved_backend = resolve_cleanup_backend(&db);
-                        let _ = db.set_setting("cleanup_backend", &resolved_backend);
-
-                        let app_handle = app.handle().clone();
-                        let ollama_model = config.ollama_model.clone();
-                        tauri::async_runtime::spawn(async move {
-                            // Must use the same migration-aware resolver as cleanup
-                            // itself — a bare default of "builtin" skipped Ollama
-                            // start for legacy installs and broke cleanup on update.
-                            let backend = {
-                                let db = app_handle.state::<Database>();
-                                resolve_cleanup_backend(&db)
-                            };
-                            if backend != "ollama" {
-                                println!("Using builtin cleanup (no Ollama daemon)");
-                                return;
-                            }
-                            match start_local_servers(
-                                app_handle.state::<Database>(),
-                                app_handle.state::<SharedServerProcesses>(),
-                                app_handle.state::<SharedWhisperProvider>(),
-                            )
-                            .await
-                            {
-                                Ok(_) => {
-                                    println!("Local services started (Ollama compat)");
-                                    let port = {
-                                        let servers =
-                                            app_handle.state::<SharedServerProcesses>();
-                                        let guard = servers.read().await;
-                                        guard.ollama_port
-                                    };
-                                    if let Some(port) = port {
-                                        // Prefer the configured Ollama model; ignore
-                                        // qwen/gguf ids that may have been written later.
-                                        let model = if ollama_model.is_empty()
-                                            || ollama_model.contains("qwen")
-                                            || ollama_model.ends_with(".gguf")
-                                        {
-                                            "llama3.2".to_string()
-                                        } else {
-                                            ollama_model
-                                        };
-                                        local_setup::warm_up_ollama(port, &model).await;
-                                    }
-                                }
-                                Err(e) => eprintln!("Failed to auto-start local services: {}", e),
-                            }
-                        });
                     }
+
+                    // Persist resolved backend so upgrades don't flip-flop
+                    // between ollama/builtin on every launch.
+                    let resolved_backend = resolve_cleanup_backend(&db);
+                    let _ = db.set_setting("cleanup_backend", &resolved_backend);
+
+                    let app_handle = app.handle().clone();
+                    let ollama_model = config.ollama_model.clone();
+                    tauri::async_runtime::spawn(async move {
+                        // Must use the same migration-aware resolver as cleanup
+                        // itself — a bare default of "builtin" skipped Ollama
+                        // start for legacy installs and broke cleanup on update.
+                        let backend = {
+                            let db = app_handle.state::<Database>();
+                            resolve_cleanup_backend(&db)
+                        };
+                        if backend != "ollama" {
+                            println!("Using builtin cleanup (no Ollama daemon)");
+                            return;
+                        }
+                        match start_local_servers(
+                            app_handle.state::<Database>(),
+                            app_handle.state::<SharedServerProcesses>(),
+                            app_handle.state::<SharedWhisperProvider>(),
+                        )
+                        .await
+                        {
+                            Ok(_) => {
+                                println!("Local services started (Ollama compat)");
+                                let port = {
+                                    let servers = app_handle.state::<SharedServerProcesses>();
+                                    let guard = servers.read().await;
+                                    guard.ollama_port
+                                };
+                                if let Some(port) = port {
+                                    // Prefer the configured Ollama model; ignore
+                                    // qwen/gguf ids that may have been written later.
+                                    let model = if ollama_model.is_empty()
+                                        || ollama_model.contains("qwen")
+                                        || ollama_model.ends_with(".gguf")
+                                    {
+                                        "llama3.2".to_string()
+                                    } else {
+                                        ollama_model
+                                    };
+                                    local_setup::warm_up_ollama(port, &model).await;
+                                }
+                            }
+                            Err(e) => eprintln!("Failed to auto-start local services: {}", e),
+                        }
+                    });
                 }
             }
 

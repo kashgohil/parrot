@@ -99,7 +99,7 @@ impl AudioRecorder {
     /// Stop capturing and return raw mono `f32` samples plus the device
     /// sample rate. **Keeps the input stream open** so the next dictation
     /// (especially Bluetooth mics) does not re-pay codec negotiation.
-    /// Callers that need WAV (cloud upload, save-audio) should encode via
+    /// Callers that need WAV (save-audio) should encode via
     /// [`encode_wav`]; local whisper takes the floats directly so we avoid
     /// an f32 → i16 → f32 round trip on the hot path.
     pub fn stop(&mut self) -> Result<RecordedSamples> {

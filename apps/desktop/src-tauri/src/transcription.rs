@@ -1,6 +1,4 @@
 use anyhow::{Context, Result};
-use reqwest::multipart;
-use serde::Deserialize;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 use whisper_rs::{FullParams, SamplingStrategy, WhisperContext, WhisperContextParameters};
@@ -15,12 +13,6 @@ pub struct TranscribeOpts {
     pub language: Option<String>,
     /// Whisper-only initial prompt for custom vocabulary biasing.
     pub initial_prompt: Option<String>,
-}
-
-/// Response from the backend transcription API
-#[derive(Deserialize)]
-struct BackendTranscribeResponse {
-    text: String,
 }
 
 /// Local transcription engines available to the app.
@@ -367,77 +359,18 @@ fn resample_linear(input: &[f32], from_rate: u32, to_rate: u32) -> Vec<f32> {
     out
 }
 
-/// Top-level dispatcher used by the Tauri command layer.
+/// Top-level transcription entry used by the Tauri command layer.
 ///
-/// Local mode requires a preloaded `LocalEngine` and feeds it the raw f32
-/// samples from the recorder. Cloud mode needs WAV bytes for the multipart
-/// upload (`wav_data`).
+/// Requires a preloaded `LocalEngine` and feeds it the raw f32 samples from
+/// the recorder (or a decoded WAV file).
 pub async fn transcribe_audio(
     samples: &[f32],
     sample_rate: u32,
-    wav_data: Option<&[u8]>,
-    mode: &str,
     local: Option<&LocalEngine>,
-    session_token: Option<&str>,
-    api_key: Option<&str>,
     opts: TranscribeOpts,
 ) -> Result<String> {
-    match mode {
-        "local" => {
-            let engine = local.ok_or_else(|| {
-                anyhow::anyhow!(
-                    "Parrot is still warming up the local model. Try again in a moment."
-                )
-            })?;
-            engine.transcribe_samples(samples, sample_rate, opts).await
-        }
-        "cloud" => {
-            let wav = wav_data.ok_or_else(|| {
-                anyhow::anyhow!("WAV data required for cloud transcription")
-            })?;
-            transcribe_with_backend(wav, session_token, api_key, opts.initial_prompt.as_deref())
-                .await
-        }
-        _ => anyhow::bail!("Unknown transcription mode: {}", mode),
-    }
-}
-
-/// Use our backend API for transcription (proxies to OpenAI/Deepgram/ElevenLabs).
-async fn transcribe_with_backend(
-    wav_data: &[u8],
-    session_token: Option<&str>,
-    api_key: Option<&str>,
-    initial_prompt: Option<&str>,
-) -> Result<String> {
-    let session_token = session_token
-        .ok_or_else(|| anyhow::anyhow!("Session token required for cloud mode"))?;
-
-    let part = multipart::Part::bytes(wav_data.to_vec())
-        .file_name("audio.wav")
-        .mime_str("audio/wav")?;
-    let mut form = multipart::Form::new().part("file", part);
-    if let Some(prompt) = initial_prompt.filter(|p| !p.is_empty()) {
-        form = form.text("prompt", prompt.to_string());
-    }
-
-    let client = reqwest::Client::new();
-    let mut req_builder = client
-        .post("http://localhost:8030/api/transcribe")
-        .header("Authorization", format!("Bearer {}", session_token))
-        .multipart(form);
-
-    if let Some(key) = api_key {
-        req_builder = req_builder.header("X-API-Key", key);
-    }
-
-    let resp = req_builder.send().await?;
-
-    if !resp.status().is_success() {
-        let status = resp.status();
-        let body = resp.text().await.unwrap_or_default();
-        anyhow::bail!("Backend transcribe API error {}: {}", status, body);
-    }
-
-    let result: BackendTranscribeResponse = resp.json().await?;
-    Ok(result.text)
+    let engine = local.ok_or_else(|| {
+        anyhow::anyhow!("Parrot is still warming up the local model. Try again in a moment.")
+    })?;
+    engine.transcribe_samples(samples, sample_rate, opts).await
 }

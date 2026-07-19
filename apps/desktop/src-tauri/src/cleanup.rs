@@ -34,24 +34,9 @@ struct OllamaChatResponse {
     message: ChatMessage,
 }
 
-/// Request body for our backend API (profile data is stored server-side)
-#[derive(Serialize)]
-struct BackendCleanupRequest {
-    text: String,
-}
-
-/// Response from our backend API
-#[derive(Deserialize)]
-struct BackendCleanupResponse {
-    text: String,
-}
-
-/// Local cleanup backend: in-process llama.cpp (default) or legacy Ollama.
+/// Local cleanup: in-process llama.cpp (default) or legacy Ollama.
 pub async fn cleanup_text(
     raw_text: &str,
-    mode: &str,
-    session_token: Option<&str>,
-    api_key: Option<&str>,
     model: Option<&str>,
     custom_words: &str,
     context_prompt: &str,
@@ -63,42 +48,29 @@ pub async fn cleanup_text(
         return Ok(String::new());
     }
 
-    match mode {
-        "local" => match cleanup_backend {
-            "ollama" => {
+    match cleanup_backend {
+        "ollama" => {
+            cleanup_with_ollama(raw_text, model, custom_words, context_prompt, writing_style).await
+        }
+        // Default: builtin. Fall back to ollama if builtin isn't loaded yet
+        // and the user still has a daemon (migration window).
+        _ => {
+            if let Some(engine) = builtin {
+                cleanup_with_builtin(
+                    &engine,
+                    raw_text,
+                    custom_words,
+                    context_prompt,
+                    writing_style,
+                )
+                .await
+            } else {
+                // Soft fallback so existing installs don't break mid-upgrade.
+                eprintln!("Builtin cleanup model not loaded; falling back to Ollama if available");
                 cleanup_with_ollama(raw_text, model, custom_words, context_prompt, writing_style)
                     .await
             }
-            // Default: builtin. Fall back to ollama if builtin isn't loaded yet
-            // and the user still has a daemon (migration window).
-            _ => {
-                if let Some(engine) = builtin {
-                    cleanup_with_builtin(
-                        &engine,
-                        raw_text,
-                        custom_words,
-                        context_prompt,
-                        writing_style,
-                    )
-                    .await
-                } else {
-                    // Soft fallback so existing installs don't break mid-upgrade.
-                    eprintln!(
-                        "Builtin cleanup model not loaded; falling back to Ollama if available"
-                    );
-                    cleanup_with_ollama(
-                        raw_text,
-                        model,
-                        custom_words,
-                        context_prompt,
-                        writing_style,
-                    )
-                    .await
-                }
-            }
-        },
-        "cloud" => cleanup_with_backend(raw_text, session_token, api_key).await,
-        _ => anyhow::bail!("Unknown cleanup mode: {}", mode),
+        }
     }
 }
 
@@ -185,41 +157,6 @@ async fn cleanup_with_ollama(
     }
 
     Ok(cleaned)
-}
-
-/// Use our backend API for text cleanup (proxies to OpenAI/Anthropic)
-async fn cleanup_with_backend(
-    raw_text: &str,
-    session_token: Option<&str>,
-    api_key: Option<&str>,
-) -> Result<String> {
-    let session_token = session_token
-        .ok_or_else(|| anyhow::anyhow!("Session token required for cloud mode"))?;
-
-    let request = BackendCleanupRequest {
-        text: raw_text.to_string(),
-    };
-
-    let client = reqwest::Client::new();
-    let mut req_builder = client
-        .post("http://localhost:8030/api/cleanup")
-        .header("Authorization", format!("Bearer {}", session_token))
-        .json(&request);
-
-    if let Some(key) = api_key {
-        req_builder = req_builder.header("X-API-Key", key);
-    }
-
-    let resp = req_builder.send().await?;
-
-    if !resp.status().is_success() {
-        let status = resp.status();
-        let body = resp.text().await.unwrap_or_default();
-        anyhow::bail!("Backend cleanup API error {}: {}", status, body);
-    }
-
-    let cleanup_resp: BackendCleanupResponse = resp.json().await?;
-    Ok(cleanup_resp.text)
 }
 
 pub fn build_system_prompt(custom_words: &str, context_prompt: &str, writing_style: &str) -> String {
