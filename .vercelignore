@@ -5,9 +5,6 @@
 # Desktop app (Tauri / Rust) — never deploy to Vercel
 apps/desktop
 
-# API is a separate Vercel project (parrot-api)
-apps/api
-
 # Local / tooling / docs not needed for hero build
 docs
 scripts

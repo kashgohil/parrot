@@ -2,11 +2,11 @@
 /**
  * Development orchestrator (repo root).
  *
- * Default: API + desktop (Tauri).
+ * Default: desktop (Tauri).
  *   bun run dev
- *   bun run dev -- --api-only
  *   bun run dev -- --desktop-only
  *   bun run dev -- --with-hero
+ *   bun run dev -- --hero-only
  *
  * Desktop is spawned from apps/desktop with its .env so Tauri signing
  * keys and Vite vars load correctly.
@@ -30,8 +30,8 @@ const desktopDir = `${root}/apps/desktop`;
 function parseArgs(argv: string[]) {
 	const flags = new Set(argv);
 	return {
-		apiOnly: flags.has("--api-only"),
 		desktopOnly: flags.has("--desktop-only"),
+		heroOnly: flags.has("--hero-only"),
 		withHero: flags.has("--with-hero"),
 	};
 }
@@ -190,13 +190,8 @@ process.on("unhandledRejection", (reason) => {
 });
 
 const args = parseArgs(process.argv.slice(2));
-const startApi = !args.desktopOnly;
-const startDesktop = !args.apiOnly;
-const startHero = args.withHero;
-
-if (startApi) {
-	spawnProcess("API", ["bun", "run", "dev:api"], { cwd: root });
-}
+const startDesktop = !args.heroOnly;
+const startHero = args.withHero || args.heroOnly;
 
 if (startDesktop) {
 	const desktopEnv = await loadDesktopEnv();
@@ -212,7 +207,6 @@ if (startHero) {
 }
 
 const parts = [
-	startApi && "API :8030",
 	startDesktop && "Desktop (Tauri)",
 	startHero && "Hero :3002",
 ]
