@@ -70,8 +70,8 @@ export default function BestVoiceDictationAppsMac2026() {
 			<p>
 				<Link to="/">Parrot</Link> is a native Mac app built specifically for
 				fast, accurate voice dictation. It sits in your menu bar and activates
-				with a global hotkey (fn by default). Speak, and the
-				transcribed text appears wherever your cursor is.
+				with a global hotkey (fn by default). Speak, and the transcribed text
+				appears wherever your cursor is.
 			</p>
 			<p>
 				<strong>What sets it apart:</strong>
@@ -92,8 +92,8 @@ export default function BestVoiceDictationAppsMac2026() {
 					setup.
 				</li>
 				<li>
-					<strong>Free for life</strong> - No subscription, no word caps, no
-					API bills for daily dictation.
+					<strong>Free for life</strong> - No subscription, no word caps, no API
+					bills for daily dictation.
 				</li>
 			</ul>
 			<p>
@@ -197,7 +197,9 @@ export default function BestVoiceDictationAppsMac2026() {
 			<p>
 				Dragon has been the industry standard for professional dictation for
 				decades. It's particularly popular in legal and medical fields where
-				specialized vocabulary is critical.
+				specialized vocabulary is critical. One important caveat for Mac users:
+				Dragon is Windows-only in 2026 — Nuance discontinued Dragon for Mac in
+				2018, so running it on a Mac means a Windows virtual machine.
 			</p>
 			<p>
 				<strong>Pros:</strong>
@@ -214,7 +216,7 @@ export default function BestVoiceDictationAppsMac2026() {
 			<ul>
 				<li>Expensive ($699 one-time)</li>
 				<li>Requires significant training time</li>
-				<li>Mac version historically lags behind Windows</li>
+				<li>No Mac version — Windows-only since 2018</li>
 				<li>Heavy software with dated interface</li>
 			</ul>
 			<p>

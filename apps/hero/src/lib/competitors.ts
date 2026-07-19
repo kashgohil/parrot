@@ -288,9 +288,9 @@ export const competitors: Competitor[] = [
 		shortName: "Dragon",
 		tagline: "Enterprise dictation built for legal and medical fields",
 		description:
-			"Parrot vs Dragon Professional — modern AI-powered dictation versus the long-standing enterprise standard for legal and medical transcription.",
+			"Parrot vs Dragon Professional — free, Mac-native AI dictation versus the Windows-only enterprise standard for legal and medical transcription. Dragon no longer ships a Mac version.",
 		heroVerdict:
-			"Dragon is the gold standard for hour-a-day professional dictation in legal and medical settings, but it's expensive, dated, and the Mac version lags behind. Parrot is faster, free, and good enough for most users — but Dragon still wins on raw accuracy after extensive voice training.",
+			"Dragon is the gold standard for hour-a-day professional dictation in legal and medical settings, but it's expensive and Windows-only — Nuance discontinued Dragon for Mac in 2018, so there's no current Mac version at any price. On a Mac, Parrot is the practical choice: free, fast, and good enough for most work. Dragon still wins on raw accuracy after extensive voice training, but only if you're on Windows.",
 		pricing: {
 			theirFree: null,
 			theirPaid: "$699 one-time (Professional)",
@@ -307,7 +307,7 @@ export const competitors: Competitor[] = [
 				them: "Extensive but slow",
 			},
 			{ name: "Voice commands", parrot: false, them: true },
-			{ name: "Mac native", parrot: true, them: "Limited (Windows-first)" },
+			{ name: "Runs on Mac", parrot: true, them: "No (Windows only)" },
 			{ name: "Works offline", parrot: true, them: true },
 			{ name: "Modern AI cleanup", parrot: true, them: false },
 			{ name: "Recent updates", parrot: true, them: false },
@@ -320,7 +320,7 @@ export const competitors: Competitor[] = [
 		],
 		theirWeaknesses: [
 			"$699 one-time price",
-			"Mac version historically lags behind Windows",
+			"No Mac version — Windows-only since Dragon for Mac was discontinued in 2018",
 			"Requires significant training to reach peak accuracy",
 			"Heavy software with dated interface",
 			"No modern AI cleanup pass",
@@ -335,18 +335,18 @@ export const competitors: Competitor[] = [
 				body: "Parrot delivers 90%+ of Dragon's everyday accuracy at zero cost. For occasional dictators, Dragon's price is hard to justify.",
 			},
 			{
-				title: "Native Mac, modern UI",
-				body: "Parrot is built natively for Mac with a clean menu-bar interface. Dragon's Mac version has historically been a port of a Windows-first app.",
+				title: "Actually runs on Mac",
+				body: "Parrot is built natively for Mac with a clean menu-bar interface. Dragon has no Mac version at all — Nuance discontinued Dragon for Mac in 2018, so Mac users would need Windows or a virtual machine to run it.",
 			},
 		],
 		chooseParrotWhen: [
+			"You're on a Mac — Dragon no longer ships a Mac version at all",
 			"You dictate occasionally to a few hours a day",
 			"You don't have a $699 budget for dictation",
-			"You're on Mac and don't want a Windows-first product",
 			"You want modern AI cleanup, not rule-based correction",
 		],
 		chooseThemWhen: [
-			"You dictate 4+ hours a day for legal or medical work",
+			"You're on Windows (Dragon is Windows-only) and dictate 4+ hours a day for legal or medical work",
 			"You need extensive voice command macros",
 			"Your firm or hospital already standardizes on Dragon",
 			"You require very specific medical/legal terminology that Dragon's libraries cover",
@@ -360,8 +360,12 @@ export const competitors: Competitor[] = [
 		],
 		faq: [
 			{
+				q: "Does Dragon Professional work on Mac?",
+				a: "No. Nuance discontinued Dragon for Mac in 2018, and the current Dragon Professional (v16) is Windows-only. On a Mac your realistic options are a Mac-native dictation app like Parrot, or running Dragon inside a Windows virtual machine.",
+			},
+			{
 				q: "Is Parrot a Dragon Professional alternative for medical dictation?",
-				a: "For most general medical dictation, yes — Parrot's local mode keeps audio on-device (HIPAA-friendly) and AI cleanup handles formatting. For highly specialized terminology Dragon's medical vocabularies remain best-in-class.",
+				a: "For most general medical dictation, yes — Parrot's local mode keeps audio on-device (HIPAA-friendly) and AI cleanup handles formatting. For highly specialized terminology Dragon's medical vocabularies remain best-in-class. Note Dragon is Windows-only, so on a Mac Parrot is the native option.",
 			},
 			{
 				q: "Can Parrot match Dragon's accuracy?",

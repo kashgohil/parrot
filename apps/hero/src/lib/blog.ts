@@ -413,7 +413,7 @@ export const posts: BlogPost[] = [
 		description:
 			"A comprehensive comparison of the best voice dictation apps for Mac, including Parrot, Whisper Flow, macOS Dictation, and more.",
 		date: "2026-02-05",
-		dateModified: "2026-07-18",
+		dateModified: "2026-07-19",
 		readingTime: "8 min read",
 		category: "Comparison",
 		keywords: [

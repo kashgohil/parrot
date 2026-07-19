@@ -303,7 +303,7 @@ Yes. Drop a file onto History or pick one from the app — Parrot transcribes it
 
 URL: https://tryparrot.app/compare/dragon-professional
 
-Dragon is the gold standard for hour-a-day professional dictation in legal and medical settings, but it's expensive, dated, and the Mac version lags behind. Parrot is faster, free, and good enough for most users — but Dragon still wins on raw accuracy after extensive voice training.
+Dragon is the gold standard for hour-a-day professional dictation in legal and medical settings, but it's expensive and Windows-only — Nuance discontinued Dragon for Mac in 2018, so there's no current Mac version at any price. On a Mac, Parrot is the practical choice: free, fast, and good enough for most work. Dragon still wins on raw accuracy after extensive voice training, but only if you're on Windows.
 
 **Dragon Professional:** Enterprise dictation built for legal and medical fields
 
@@ -321,7 +321,7 @@ Dragon is the gold standard for hour-a-day professional dictation in legal and m
 | AI cleanup | Yes | Manual rules |
 | Custom vocabulary | Deep, fast to add | Extensive but slow |
 | Voice commands | No | Yes |
-| Mac native | Yes | Limited (Windows-first) |
+| Runs on Mac | Yes | No (Windows only) |
 | Works offline | Yes | Yes |
 | Modern AI cleanup | Yes | No |
 | Recent updates | Yes | No |
@@ -336,7 +336,7 @@ Dragon is the gold standard for hour-a-day professional dictation in legal and m
 ### Dragon Professional weaknesses
 
 - $699 one-time price
-- Mac version historically lags behind Windows
+- No Mac version — Windows-only since Dragon for Mac was discontinued in 2018
 - Requires significant training to reach peak accuracy
 - Heavy software with dated interface
 - No modern AI cleanup pass
@@ -345,27 +345,31 @@ Dragon is the gold standard for hour-a-day professional dictation in legal and m
 
 - **Modern AI, no training needed:** Parrot uses Whisper plus an AI cleanup pass — no profile training, no read-aloud onboarding. You're dictating accurately within minutes.
 - **Free vs $699:** Parrot delivers 90%+ of Dragon's everyday accuracy at zero cost. For occasional dictators, Dragon's price is hard to justify.
-- **Native Mac, modern UI:** Parrot is built natively for Mac with a clean menu-bar interface. Dragon's Mac version has historically been a port of a Windows-first app.
+- **Actually runs on Mac:** Parrot is built natively for Mac with a clean menu-bar interface. Dragon has no Mac version at all — Nuance discontinued Dragon for Mac in 2018, so Mac users would need Windows or a virtual machine to run it.
 
 ### Choose Parrot when
 
+- You're on a Mac — Dragon no longer ships a Mac version at all
 - You dictate occasionally to a few hours a day
 - You don't have a $699 budget for dictation
-- You're on Mac and don't want a Windows-first product
 - You want modern AI cleanup, not rule-based correction
 
 ### Choose Dragon Professional when
 
-- You dictate 4+ hours a day for legal or medical work
+- You're on Windows (Dragon is Windows-only) and dictate 4+ hours a day for legal or medical work
 - You need extensive voice command macros
 - Your firm or hospital already standardizes on Dragon
 - You require very specific medical/legal terminology that Dragon's libraries cover
 
 ### FAQ
 
+**Q: Does Dragon Professional work on Mac?**
+
+No. Nuance discontinued Dragon for Mac in 2018, and the current Dragon Professional (v16) is Windows-only. On a Mac your realistic options are a Mac-native dictation app like Parrot, or running Dragon inside a Windows virtual machine.
+
 **Q: Is Parrot a Dragon Professional alternative for medical dictation?**
 
-For most general medical dictation, yes — Parrot's local mode keeps audio on-device (HIPAA-friendly) and AI cleanup handles formatting. For highly specialized terminology Dragon's medical vocabularies remain best-in-class.
+For most general medical dictation, yes — Parrot's local mode keeps audio on-device (HIPAA-friendly) and AI cleanup handles formatting. For highly specialized terminology Dragon's medical vocabularies remain best-in-class. Note Dragon is Windows-only, so on a Mac Parrot is the native option.
 
 **Q: Can Parrot match Dragon's accuracy?**
 
@@ -1972,7 +1976,7 @@ Otter.ai is the best choice if your primary use case is transcribing meetings. F
 
 ## Dragon Professional
 
-Dragon has been the industry standard for professional dictation for decades. It's particularly popular in legal and medical fields where specialized vocabulary is critical.
+Dragon has been the industry standard for professional dictation for decades. It's particularly popular in legal and medical fields where specialized vocabulary is critical. One important caveat for Mac users: Dragon is Windows-only in 2026 — Nuance discontinued Dragon for Mac in 2018, so running it on a Mac means a Windows virtual machine.
 
 Pros:
 
@@ -1990,7 +1994,7 @@ Cons:
 
 - Requires significant training time
 
-- Mac version historically lags behind Windows
+- No Mac version — Windows-only since 2018
 
 - Heavy software with dated interface
 
