@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 
 export const Route = createFileRoute("/contact")({
 	component: ContactPage,
@@ -184,13 +183,6 @@ function ContactPage() {
 					</div>
 				</div>
 			</section>
-
-			{/* CTA */}
-			<SubscribeCTA
-				heading="Stay in the loop."
-				subheading="Subscribe for product updates and changelog notes."
-				source="contact"
-			/>
 
 			<Footer />
 		</div>

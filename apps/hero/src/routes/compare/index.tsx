@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { competitors } from "@/lib/competitors";
 
 export const Route = createFileRoute("/compare/")({
@@ -150,12 +149,6 @@ function CompareIndexPage() {
 					</div>
 				</div>
 			</section>
-
-			<SubscribeCTA
-				heading="Try Parrot"
-				subheading="Free for life. Local-first. No account."
-				source="compare-index"
-			/>
 
 			<Footer />
 		</div>

@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { posts } from "@/lib/blog";
 
 export const Route = createFileRoute("/blog/")({
@@ -158,13 +157,6 @@ function BlogIndex() {
 					</div>
 				</div>
 			</section>
-
-			{/* ── CTA ── */}
-			<SubscribeCTA
-				heading="Try Parrot"
-				subheading="Subscribe for product updates and changelog notes."
-				source="blog"
-			/>
 
 			<Footer />
 		</div>

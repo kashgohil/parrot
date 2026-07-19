@@ -1,5 +1,4 @@
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/changelog")({
@@ -416,13 +415,6 @@ function ChangelogPage() {
 					</p>
 				</div>
 			</section>
-
-			{/* ── CTA ── */}
-			<SubscribeCTA
-				heading="Always improving"
-				subheading="Subscribe for product updates and changelog notes."
-				source="changelog"
-			/>
 
 			<Footer />
 		</div>

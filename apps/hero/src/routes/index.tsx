@@ -31,7 +31,6 @@ import {
 	VSCodeIcon,
 } from "@/components/app-icons";
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 import {
 	Accordion,
 	AccordionContent,
@@ -1733,17 +1732,16 @@ function FinalCTA() {
 					</Link>
 				</div>
 
-				<p className="text-background/40 text-xs mt-8 mb-3">
-					Or subscribe for product updates.
+				<p className="text-background/40 text-xs mt-8">
+					Want product updates?{" "}
+					<a
+						href="/rss.xml"
+						className="text-background/60 underline underline-offset-2 hover:text-background/80 transition-colors"
+					>
+						Subscribe to the RSS feed
+					</a>
+					.
 				</p>
-				<div className="max-w-md mx-auto">
-					<SubscribeCTA
-						variant="inline"
-						source="homepage-cta"
-						heading=""
-						subheading=""
-					/>
-				</div>
 			</div>
 		</section>
 	);

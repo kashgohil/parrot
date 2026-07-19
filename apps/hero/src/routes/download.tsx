@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 
 const DOWNLOAD_FAQ = [
 	{
@@ -224,15 +223,21 @@ function DownloadPage() {
 
 						{release.status === "no-release" && (
 							<p className="mt-4 text-sm text-muted-foreground max-w-xl">
-								No public release yet. Subscribe below and we&apos;ll let you
-								know the moment it ships, or check the{" "}
+								No public release yet. Check the{" "}
 								<a
 									href={RELEASES_PAGE}
 									className="underline hover:text-foreground"
 								>
 									releases page
 								</a>{" "}
-								on GitHub.
+								on GitHub, or follow{" "}
+								<a
+									href="/rss.xml"
+									className="underline hover:text-foreground"
+								>
+									RSS
+								</a>{" "}
+								for product updates.
 							</p>
 						)}
 
@@ -458,13 +463,6 @@ function DownloadPage() {
 					</div>
 				</div>
 			</section>
-
-			{/* ── CTA ── */}
-			<SubscribeCTA
-				heading="Stay in the loop."
-				subheading="Get notified about new releases and product updates."
-				source="download"
-			/>
 
 			{/* ── Footer ── */}
 			<Footer />

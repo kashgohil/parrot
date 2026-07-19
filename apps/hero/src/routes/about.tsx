@@ -1,5 +1,4 @@
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/about")({
@@ -400,13 +399,6 @@ function AboutPage() {
 					</div>
 				</div>
 			</section>
-
-			{/* ── CTA ── */}
-			<SubscribeCTA
-				heading="Stay in the loop."
-				subheading="Local mode is available today — download free, for life. Subscribe for product updates."
-				source="about"
-			/>
 
 			{/* ── Footer ── */}
 			<Footer />

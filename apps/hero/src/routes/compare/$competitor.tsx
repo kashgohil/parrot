@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Download, X } from "lucide-react";
 import Footer from "@/components/Footer";
-import { SubscribeCTA } from "@/components/SubscribeCTA";
 import { competitors, getCompetitor } from "@/lib/competitors";
 
 export const Route = createFileRoute("/compare/$competitor")({
@@ -450,12 +449,6 @@ function CompareCompetitorPage() {
 					</div>
 				</div>
 			</section>
-
-			<SubscribeCTA
-				heading="Stay in the loop."
-				subheading="Get notified about new releases and product updates."
-				source="compare"
-			/>
 
 			<Footer />
 		</div>

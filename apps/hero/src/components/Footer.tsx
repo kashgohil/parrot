@@ -64,11 +64,24 @@ export default function Footer() {
 						>
 							Contact
 						</Link>
+						<a
+							href="/rss.xml"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							RSS
+						</a>
 					</nav>
 				</div>
 				<p className="text-center text-muted-foreground/50 text-xs mt-8">
 					&copy; {new Date().getFullYear()} Parrot. Voice dictation that just
-					works.
+					works.{" "}
+					<a
+						href="/rss.xml"
+						className="text-muted-foreground/70 hover:text-muted-foreground underline underline-offset-2"
+					>
+						Updates via RSS
+					</a>
+					.
 				</p>
 			</div>
 		</footer>
