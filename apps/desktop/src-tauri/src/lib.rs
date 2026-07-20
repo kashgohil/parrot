@@ -392,12 +392,19 @@ async fn run_cleanup(
 ) -> String {
     let cleanup_backend = resolve_cleanup_backend(db);
     let llm_model = db.get_setting("llm_model").ok().flatten();
+    let formality = cleanup::Formality::from_setting(
+        &db.get_setting("cleanup_formality")
+            .ok()
+            .flatten()
+            .unwrap_or_default(),
+    );
     match cleanup::cleanup_text(
         raw_text,
         llm_model.as_deref(),
         &profile.custom_words,
         &profile.context_prompt,
         &profile.writing_style,
+        formality,
         &cleanup_backend,
         builtin,
     )
