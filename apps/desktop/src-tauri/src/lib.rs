@@ -67,9 +67,10 @@ impl PendingCleanup {
     }
 }
 
-/// Utterances shorter than this are already well-formed by Whisper
-/// (punctuation + casing) — skip the LLM cleanup round-trip.
-const SHORT_UTTERANCE_WORD_LIMIT: usize = 15;
+/// Very short utterances (a word or two — "yes", "on it", a name) don't gain
+/// much from LLM cleanup and aren't worth the round-trip. Anything longer runs
+/// through cleanup so fillers, punctuation, and tone are actually handled.
+const SHORT_UTTERANCE_WORD_LIMIT: usize = 3;
 
 fn word_count(text: &str) -> usize {
     text.split_whitespace().count()

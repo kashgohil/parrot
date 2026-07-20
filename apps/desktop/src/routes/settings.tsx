@@ -665,8 +665,8 @@ function SettingsPage() {
 							})}
 						</div>
 						<p className="text-xs text-muted-foreground">
-							Short utterances (under ~15 words) always skip cleanup — Whisper
-							already handles punctuation.
+							Only very short utterances (a word or two) skip cleanup; everything
+							longer is punctuated and polished.
 						</p>
 					</div>
 
