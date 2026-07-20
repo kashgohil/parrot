@@ -77,7 +77,19 @@ fn main() {
         }
     };
 
-    // Signal readiness only after the model is fully loaded.
+    // Open the warm inference session (allocates the reusable context) before
+    // signalling readiness, so the first request doesn't pay for it.
+    let mut session = match engine.new_session() {
+        Ok(s) => s,
+        Err(e) => {
+            emit(&Message::Error {
+                error: format!("failed to start cleanup session: {e:#}"),
+            });
+            std::process::exit(1);
+        }
+    };
+
+    // Signal readiness only after the model and session are fully initialised.
     emit(&Message::Ready);
 
     let stdin = std::io::stdin();
@@ -104,7 +116,7 @@ fn main() {
             }
         };
 
-        let msg = match engine.cleanup(&req.system, &req.user, req.max_tokens) {
+        let msg = match session.cleanup(&req.system, &req.user, req.max_tokens) {
             Ok(text) => Message::Result {
                 id: req.id,
                 ok: true,
