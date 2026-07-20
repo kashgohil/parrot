@@ -364,6 +364,18 @@ const CLEANUP_QWEN25_05B_FILE: &str = "qwen2.5-0.5b-instruct-q4_k_m.gguf";
 const CLEANUP_QWEN25_05B_URL: &str =
     "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf";
 
+/// Larger cleanup tiers users can opt into from Settings for noticeably better
+/// punctuation, filler removal, and formalization than the 0.5B default.
+pub const CLEANUP_QWEN25_15B: &str = "qwen2.5-1.5b-instruct-q4_k_m";
+const CLEANUP_QWEN25_15B_FILE: &str = "qwen2.5-1.5b-instruct-q4_k_m.gguf";
+const CLEANUP_QWEN25_15B_URL: &str =
+    "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf";
+
+pub const CLEANUP_QWEN25_3B: &str = "qwen2.5-3b-instruct-q4_k_m";
+const CLEANUP_QWEN25_3B_FILE: &str = "qwen2.5-3b-instruct-q4_k_m.gguf";
+const CLEANUP_QWEN25_3B_URL: &str =
+    "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q4_k_m.gguf";
+
 /// Pre-built int8 ONNX bundle hosted by Handy (MIT, same stack we run).
 const PARAKEET_V3_URL: &str = "https://blob.handy.computer/parakeet-v3-int8.tar.gz";
 
@@ -704,13 +716,10 @@ where
 
 pub fn get_cleanup_model_path(model_id: &str) -> Result<PathBuf> {
     let file = match model_id {
-        id if id == CLEANUP_QWEN25_05B || id.ends_with(".gguf") => {
-            if id.ends_with(".gguf") {
-                id.to_string()
-            } else {
-                CLEANUP_QWEN25_05B_FILE.to_string()
-            }
-        }
+        id if id == CLEANUP_QWEN25_05B => CLEANUP_QWEN25_05B_FILE.to_string(),
+        id if id == CLEANUP_QWEN25_15B => CLEANUP_QWEN25_15B_FILE.to_string(),
+        id if id == CLEANUP_QWEN25_3B => CLEANUP_QWEN25_3B_FILE.to_string(),
+        id if id.ends_with(".gguf") => id.to_string(),
         _ => CLEANUP_QWEN25_05B_FILE.to_string(),
     };
     Ok(get_models_dir()?.join(file))
@@ -718,7 +727,9 @@ pub fn get_cleanup_model_path(model_id: &str) -> Result<PathBuf> {
 
 pub fn get_cleanup_model_url(model_id: &str) -> String {
     match model_id {
-        id if id == CLEANUP_QWEN25_05B => CLEANUP_QWEN25_05B_URL.to_string(),
+        id if id == CLEANUP_QWEN25_15B => CLEANUP_QWEN25_15B_URL.to_string(),
+        id if id == CLEANUP_QWEN25_3B => CLEANUP_QWEN25_3B_URL.to_string(),
+        // 0.5B default (and the safety net for unknown ids).
         _ => CLEANUP_QWEN25_05B_URL.to_string(),
     }
 }
@@ -1574,4 +1585,39 @@ where
         setup_completed: true,
         setup_version: CURRENT_SETUP_VERSION.to_string(),
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn cleanup_tiers_resolve_to_distinct_files() {
+        let name = |id: &str| {
+            get_cleanup_model_path(id)
+                .unwrap()
+                .file_name()
+                .unwrap()
+                .to_string_lossy()
+                .into_owned()
+        };
+        assert_eq!(name(CLEANUP_QWEN25_05B), CLEANUP_QWEN25_05B_FILE);
+        assert_eq!(name(CLEANUP_QWEN25_15B), CLEANUP_QWEN25_15B_FILE);
+        assert_eq!(name(CLEANUP_QWEN25_3B), CLEANUP_QWEN25_3B_FILE);
+        // Each tier maps to its own file — the larger tiers must NOT silently
+        // fall back to the 0.5B gguf.
+        assert_ne!(name(CLEANUP_QWEN25_15B), CLEANUP_QWEN25_05B_FILE);
+        assert_ne!(name(CLEANUP_QWEN25_3B), CLEANUP_QWEN25_05B_FILE);
+        // A raw .gguf path passes through; unknown ids fall back to 0.5B.
+        assert_eq!(name("custom.gguf"), "custom.gguf");
+        assert_eq!(name("bogus-id"), CLEANUP_QWEN25_05B_FILE);
+    }
+
+    #[test]
+    fn cleanup_tiers_resolve_to_distinct_urls() {
+        assert_eq!(get_cleanup_model_url(CLEANUP_QWEN25_05B), CLEANUP_QWEN25_05B_URL);
+        assert_eq!(get_cleanup_model_url(CLEANUP_QWEN25_15B), CLEANUP_QWEN25_15B_URL);
+        assert_eq!(get_cleanup_model_url(CLEANUP_QWEN25_3B), CLEANUP_QWEN25_3B_URL);
+        assert_ne!(get_cleanup_model_url(CLEANUP_QWEN25_3B), CLEANUP_QWEN25_05B_URL);
+    }
 }

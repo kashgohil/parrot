@@ -1123,10 +1123,19 @@ fn get_cleanup_status(
         .map(|p| std::path::Path::new(p).exists())
         .unwrap_or(false);
     let loaded = cleanup::peek_builtin(cleanup_engine.inner()).is_some();
+    // The active cleanup tier (0.5B / 1.5B / 3B). Defaults to the 0.5B id for
+    // existing installs that predate the tier setting.
+    let active_model_id = db
+        .get_setting("cleanup_model_id")
+        .ok()
+        .flatten()
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| local_setup::CLEANUP_QWEN25_05B.to_string());
     Ok(serde_json::json!({
         "backend": backend,
         "can_upgrade_to_builtin": backend == "ollama",
         "builtin_model_id": local_setup::CLEANUP_QWEN25_05B,
+        "active_model_id": active_model_id,
         "builtin_model_path": gguf_path,
         "builtin_on_disk": gguf_on_disk,
         "builtin_loaded": loaded,
@@ -1253,6 +1262,75 @@ async fn switch_stt_model(
 
     Ok(serde_json::json!({
         "engine": engine,
+        "model_id": model_id,
+        "model_path": path_str,
+        "ready": ready,
+    }))
+}
+
+/// Download (if needed) and switch to a specific built-in cleanup tier
+/// (0.5B / 1.5B / 3B). Mirrors `switch_stt_model`: download with a progress
+/// event, persist the selection, and respawn the sidecar on the new GGUF.
+/// Switching from Ollama migrates to the built-in engine along the way.
+#[tauri::command]
+async fn switch_cleanup_model(
+    model_id: String,
+    app: tauri::AppHandle,
+    db: tauri::State<'_, Database>,
+    cleanup_engine: tauri::State<'_, SharedCleanupEngine>,
+) -> Result<serde_json::Value, String> {
+    let app_for_progress = app.clone();
+    let model_for_cb = model_id.clone();
+    let path = local_setup::download_cleanup_model(&model_id, move |msg, progress| {
+        let _ = app_for_progress.emit(
+            "cleanup-model-download-progress",
+            serde_json::json!({
+                "model": model_for_cb,
+                "message": msg,
+                "progress": progress,
+            }),
+        );
+    })
+    .await
+    .map_err(|e| e.to_string())?;
+
+    let path_str = path.to_string_lossy().to_string();
+    let _ = db.set_setting("cleanup_backend", "builtin");
+    let _ = db.set_setting("cleanup_model_id", &model_id);
+    let _ = db.set_setting("cleanup_model_path", &path_str);
+
+    // Drop the old sidecar and respawn with the selected GGUF.
+    {
+        let mut slot = cleanup_engine
+            .write()
+            .map_err(|e| format!("cleanup engine lock: {e}"))?;
+        *slot = None;
+    }
+    load_cleanup_engine(cleanup_engine.inner().clone(), path_str.clone());
+
+    // Wait briefly for the sidecar to load so Settings can show ready state.
+    let ready = {
+        let deadline = Instant::now() + std::time::Duration::from_secs(180);
+        loop {
+            if cleanup::peek_builtin(cleanup_engine.inner()).is_some() {
+                break true;
+            }
+            if Instant::now() >= deadline {
+                break false;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+        }
+    };
+
+    // If we were on Ollama, stop it (best-effort) — built-in now owns cleanup.
+    {
+        let servers = app.state::<SharedServerProcesses>();
+        let mut guard = servers.write().await;
+        guard.stop_all().await;
+    }
+
+    Ok(serde_json::json!({
+        "backend": "builtin",
         "model_id": model_id,
         "model_path": path_str,
         "ready": ready,
@@ -2013,6 +2091,7 @@ pub fn run() {
             get_cleanup_status,
             upgrade_cleanup_to_builtin,
             switch_stt_model,
+            switch_cleanup_model,
             get_history,
             search_history,
             delete_dictation,
