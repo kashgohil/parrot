@@ -69,6 +69,9 @@ function SettingsPage() {
 	const [canUpgradeCleanup, setCanUpgradeCleanup] = useState(false);
 	const [cleanupUpgrading, setCleanupUpgrading] = useState(false);
 	const [cleanupProgress, setCleanupProgress] = useState<string | null>(null);
+	const [cleanupModel, setCleanupModel] = useState(
+		"qwen2.5-0.5b-instruct-q4_k_m",
+	);
 
 	const keysRef = useRef<Set<string>>(new Set());
 	const recorderRef = useRef<HTMLDivElement>(null);
@@ -88,6 +91,24 @@ function SettingsPage() {
 			id: "small.en",
 			name: "Low RAM (Whisper small.en)",
 			desc: "Fallback for older machines with limited memory.",
+		},
+	] as const;
+
+	const CLEANUP_TIERS = [
+		{
+			id: "qwen2.5-0.5b-instruct-q4_k_m",
+			name: "Basic",
+			desc: "Smallest & fastest. ~0.5 GB. Light touch-up only.",
+		},
+		{
+			id: "qwen2.5-1.5b-instruct-q4_k_m",
+			name: "Fast (recommended)",
+			desc: "Much better punctuation, filler removal & tone. ~1 GB download.",
+		},
+		{
+			id: "qwen2.5-3b-instruct-q4_k_m",
+			name: "Best",
+			desc: "Highest quality, including formal rewrites. ~2 GB, a bit slower.",
 		},
 	] as const;
 
@@ -218,11 +239,13 @@ function SettingsPage() {
 			const cleanup = await invoke<{
 				backend: string;
 				can_upgrade_to_builtin: boolean;
+				active_model_id: string;
 			}>("get_cleanup_status");
 			setCleanupBackend(
 				cleanup.backend === "ollama" ? "ollama" : "builtin",
 			);
 			setCanUpgradeCleanup(!!cleanup.can_upgrade_to_builtin);
+			if (cleanup.active_model_id) setCleanupModel(cleanup.active_model_id);
 		} catch (e) {
 			console.error("Failed to load settings:", e);
 		}
@@ -560,63 +583,81 @@ function SettingsPage() {
 						</p>
 					</div>
 
-					{canUpgradeCleanup && (
-						<div className="p-4 rounded-xl border border-primary/25 bg-primary/5 space-y-3">
-							<p className="text-sm text-foreground">
-								<strong>Upgrade available:</strong> switch to built-in cleanup
-								(~490&nbsp;MB download). After that you no longer need Ollama for
-								Parrot.
-							</p>
-							<Button
-								type="button"
-								disabled={cleanupUpgrading}
-								onClick={async () => {
-									setCleanupUpgrading(true);
-									setCleanupProgress("Starting download…");
-									try {
-										const { listen } = await import("@tauri-apps/api/event");
-										const unsub = await listen<{
-											message: string;
-											progress: number;
-										}>("cleanup-model-download-progress", (e) => {
+					<div className="space-y-2">
+						<Label className="text-sm font-medium">Cleanup quality</Label>
+						<p className="text-xs text-muted-foreground">
+							Bigger models punctuate, de-fill, and formalize better, at the cost
+							of size and a little speed. Picking one downloads it and switches
+							cleanup over{canUpgradeCleanup ? " (and drops Ollama)" : ""}.
+						</p>
+						{CLEANUP_TIERS.map((tier) => {
+							const selected = cleanupModel === tier.id;
+							return (
+								<button
+									key={tier.id}
+									type="button"
+									disabled={cleanupUpgrading}
+									onClick={async () => {
+										if (cleanupModel === tier.id || cleanupUpgrading) return;
+										setCleanupUpgrading(true);
+										setCleanupProgress("Starting download…");
+										try {
+											const { listen } = await import("@tauri-apps/api/event");
+											const unsub = await listen<{
+												message: string;
+												progress: number;
+											}>("cleanup-model-download-progress", (e) => {
+												setCleanupProgress(
+													`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
+												);
+											});
+											const res = await invoke<{
+												model_id: string;
+												ready: boolean;
+											}>("switch_cleanup_model", { modelId: tier.id });
+											unsub();
+											setCleanupModel(res.model_id);
+											setCleanupBackend("builtin");
+											setCanUpgradeCleanup(false);
 											setCleanupProgress(
-												`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
+												res.ready ? "Ready" : "Downloaded — loading model…",
 											);
-										});
-										const res = await invoke<{
-											backend: string;
-											ready: boolean;
-										}>("upgrade_cleanup_to_builtin");
-										unsub();
-										setCleanupBackend("builtin");
-										setCanUpgradeCleanup(false);
-										setCleanupProgress(
-											res.ready
-												? "Built-in cleanup ready — Ollama no longer required"
-												: "Downloaded — loading model…",
-										);
-										setTimeout(() => setCleanupProgress(null), 4000);
-									} catch (e) {
-										console.error(e);
-										setCleanupProgress(
-											`Failed: ${e instanceof Error ? e.message : String(e)}`,
-										);
-									} finally {
-										setCleanupUpgrading(false);
-									}
-								}}
-							>
-								{cleanupUpgrading
-									? "Upgrading…"
-									: "Upgrade to built-in cleanup"}
-							</Button>
-							{cleanupProgress && (
-								<p className="text-xs text-primary font-medium">
-									{cleanupProgress}
-								</p>
-							)}
-						</div>
-					)}
+											setTimeout(() => setCleanupProgress(null), 3000);
+										} catch (e) {
+											console.error(e);
+											setCleanupProgress(
+												`Failed: ${e instanceof Error ? e.message : String(e)}`,
+											);
+										} finally {
+											setCleanupUpgrading(false);
+										}
+									}}
+									className={`text-left p-3 rounded-xl border transition-colors w-full disabled:opacity-60 ${
+										selected
+											? "border-primary bg-primary/5"
+											: "border-border bg-muted/30 hover:bg-muted/50"
+									}`}
+								>
+									<p className="text-sm font-medium text-foreground flex items-center gap-2">
+										{tier.name}
+										{selected && (
+											<span className="text-[10px] uppercase tracking-wide font-semibold text-emerald-700 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+												Active
+											</span>
+										)}
+									</p>
+									<p className="text-xs text-muted-foreground mt-0.5">
+										{tier.desc}
+									</p>
+								</button>
+							);
+						})}
+						{cleanupProgress && (
+							<p className="text-xs text-primary font-medium">
+								{cleanupProgress}
+							</p>
+						)}
+					</div>
 				</div>
 			</section>
 
