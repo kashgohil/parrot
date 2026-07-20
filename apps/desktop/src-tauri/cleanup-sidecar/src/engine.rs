@@ -17,14 +17,16 @@ use std::sync::{Mutex, OnceLock};
 
 static LLAMA_BACKEND: OnceLock<Result<LlamaBackend, String>> = OnceLock::new();
 
-/// llama.cpp's `LLAMA_FLASH_ATTN_TYPE_DISABLED` (llama.h — 0 is the stable enum
-/// value; `llama_flash_attn_type` is a transparent `c_int` alias).
+/// llama.cpp `llama_flash_attn_type` values (llama.h — `llama_flash_attn_type`
+/// is a transparent `c_int` alias): AUTO = -1, DISABLED = 0, ENABLED = 1.
 ///
-/// Kept disabled for now: it's the proven-safe config carried over from the
-/// in-process engine. Now that llama owns its ggml in this isolated process the
-/// original flash-attn abort cause is gone, so this can be revisited (re-enable
-/// + verify) once isolation is confirmed end-to-end.
-const FLASH_ATTN_DISABLED: i32 = 0;
+/// AUTO lets llama.cpp turn flash attention on where the backend supports it
+/// (Metal does) and fall back otherwise. It was previously forced DISABLED to
+/// dodge a ggml symbol collision with whisper-rs; now that llama owns its own
+/// ggml in this isolated sidecar process, that abort cause is gone and we let
+/// llama pick the fast path. (Force ENABLED = 1 if profiling shows AUTO isn't
+/// engaging flash attention.)
+const FLASH_ATTN_AUTO: i32 = -1;
 
 fn backend() -> Result<&'static LlamaBackend> {
     match LLAMA_BACKEND.get_or_init(|| {
@@ -103,7 +105,7 @@ impl CleanupEngine {
             .with_n_ctx(NonZeroU32::new(n_ctx))
             .with_n_threads(num_threads())
             .with_n_threads_batch(num_threads())
-            .with_flash_attention_policy(FLASH_ATTN_DISABLED);
+            .with_flash_attention_policy(FLASH_ATTN_AUTO);
 
         let mut ctx = self
             .model
