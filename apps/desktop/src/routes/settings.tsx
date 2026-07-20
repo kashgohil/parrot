@@ -55,6 +55,9 @@ function SettingsPage() {
 	const [cleanupMode, setCleanupMode] = useState<
 		"off" | "background" | "blocking"
 	>("blocking");
+	const [formality, setFormality] = useState<"casual" | "neutral" | "formal">(
+		"neutral",
+	);
 	const [sttEngine, setSttEngine] = useState("whisper");
 	const [sttModel, setSttModel] = useState("");
 	const [sttLanguage, setSttLanguage] = useState("auto");
@@ -196,6 +199,14 @@ function SettingsPage() {
 			} else {
 				setCleanupMode("blocking");
 			}
+			const fm = await invoke<string | null>("get_setting", {
+				key: "cleanup_formality",
+			});
+			if (fm === "casual" || fm === "neutral" || fm === "formal") {
+				setFormality(fm);
+			} else {
+				setFormality("neutral");
+			}
 			const stt = await invoke<{
 				engine: string;
 				model_id: string;
@@ -237,6 +248,10 @@ function SettingsPage() {
 			await invoke("set_setting", {
 				key: "cleanup_mode",
 				value: cleanupMode,
+			});
+			await invoke("set_setting", {
+				key: "cleanup_formality",
+				value: formality,
 			});
 			await invoke("set_setting", {
 				key: "stt_language",
@@ -688,6 +703,56 @@ function SettingsPage() {
 					</div>
 
 					<div className="space-y-2">
+						<Label className="text-sm font-medium">Formality</Label>
+						<div className="grid grid-cols-3 gap-2">
+							{(
+								[
+									{
+										value: "casual" as const,
+										title: "Casual",
+										desc: "Keep your voice",
+									},
+									{
+										value: "neutral" as const,
+										title: "Neutral",
+										desc: "Clean & natural",
+									},
+									{
+										value: "formal" as const,
+										title: "Formal",
+										desc: "Professional prose",
+									},
+								] as const
+							).map((opt) => {
+								const selected = formality === opt.value;
+								return (
+									<button
+										key={opt.value}
+										type="button"
+										onClick={() => setFormality(opt.value)}
+										className={`text-left p-3 rounded-xl border transition-colors ${
+											selected
+												? "border-primary bg-primary/5"
+												: "border-border bg-muted/30 hover:bg-muted/50"
+										}`}
+									>
+										<p className="text-sm font-medium text-foreground">
+											{opt.title}
+										</p>
+										<p className="text-xs text-muted-foreground mt-0.5">
+											{opt.desc}
+										</p>
+									</button>
+								);
+							})}
+						</div>
+						<p className="text-xs text-muted-foreground">
+							How much should cleanup reshape your tone? Formal rewrites into
+							polished, professional writing.
+						</p>
+					</div>
+
+					<div className="space-y-2">
 						<Label htmlFor="writingStyle" className="text-sm font-medium">
 							Writing Style
 						</Label>
@@ -700,7 +765,8 @@ function SettingsPage() {
 							className="resize-none"
 						/>
 						<p className="text-xs text-muted-foreground">
-							How should the cleaned text sound?
+							Optional extra notes to fine-tune how the cleaned text sounds, on
+							top of the formality preset.
 						</p>
 					</div>
 				</div>
