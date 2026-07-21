@@ -24,6 +24,8 @@ import {
 	AppWindow,
 	Plus,
 	Trash2,
+	PenLine,
+	AlertTriangle,
 } from "lucide-react";
 import {
 	isMissing,
@@ -42,6 +44,63 @@ interface Profile {
 	writing_style: string;
 }
 
+const SECTIONS = [
+	{ id: "shortcut", label: "Shortcut" },
+	{ id: "permissions", label: "Permissions" },
+	{ id: "speech", label: "Speech" },
+	{ id: "cleanup", label: "Cleanup" },
+	{ id: "writing", label: "Writing" },
+	{ id: "apps", label: "Per-app" },
+	{ id: "data", label: "Data" },
+] as const;
+
+// Selection-card styling shared across every "pick one" list on the page.
+function cardCls(selected: boolean) {
+	return `text-left p-3 rounded-xl border transition-all w-full disabled:opacity-60 ${
+		selected
+			? "border-primary bg-primary/5 ring-1 ring-primary/30 shadow-sm"
+			: "border-border bg-muted/30 hover:bg-muted/50 hover:shadow-sm"
+	}`;
+}
+
+function RadioDot({ selected }: { selected: boolean }) {
+	return (
+		<span
+			className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+				selected
+					? "border-primary bg-primary text-white"
+					: "border-border bg-background"
+			}`}
+		>
+			{selected && <Check className="w-3 h-3" strokeWidth={3} />}
+		</span>
+	);
+}
+
+type PillTone = "muted" | "primary" | "accent" | "emerald";
+
+function Pill({
+	children,
+	tone = "muted",
+}: {
+	children: React.ReactNode;
+	tone?: PillTone;
+}) {
+	const tones: Record<PillTone, string> = {
+		muted: "bg-muted text-muted-foreground",
+		primary: "bg-primary/10 text-primary",
+		accent: "bg-pk-accent/10 text-pk-accent",
+		emerald: "bg-emerald-500/10 text-emerald-700",
+	};
+	return (
+		<span
+			className={`text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${tones[tone]}`}
+		>
+			{children}
+		</span>
+	);
+}
+
 function SettingsPage() {
 	const [hotkey, setHotkey] = useState("");
 	const [defaultHotkey, setDefaultHotkey] = useState("");
@@ -50,6 +109,8 @@ function SettingsPage() {
 	const [hotkeyDirty, setHotkeyDirty] = useState(false);
 	const [saveAudio, setSaveAudio] = useState(false);
 	const [saved, setSaved] = useState(false);
+	const [dirty, setDirty] = useState(false);
+	const [activeSection, setActiveSection] = useState<string>("shortcut");
 	const [contextPrompt, setContextPrompt] = useState("");
 	const [writingStyle, setWritingStyle] = useState("");
 	const [cleanupMode, setCleanupMode] = useState<
@@ -81,16 +142,22 @@ function SettingsPage() {
 			id: "parakeet-v3",
 			name: "Fast (Parakeet)",
 			desc: "Default. More accurate than models 10× its size. ~80–150ms.",
+			pill: "Fastest",
+			recommended: true,
 		},
 		{
 			id: "large-v3-turbo",
 			name: "Multilingual (Whisper turbo)",
 			desc: "99 languages. Quantized large-v3-turbo on Metal.",
+			pill: "99 languages",
+			recommended: false,
 		},
 		{
 			id: "small.en",
 			name: "Low RAM (Whisper small.en)",
 			desc: "Fallback for older machines with limited memory.",
+			pill: "Low RAM",
+			recommended: false,
 		},
 	] as const;
 
@@ -98,17 +165,23 @@ function SettingsPage() {
 		{
 			id: "qwen2.5-0.5b-instruct-q4_k_m",
 			name: "Basic",
-			desc: "Smallest & fastest. ~0.5 GB. Light touch-up only.",
+			desc: "Smallest & fastest. Light touch-up only.",
+			pill: "~0.5 GB",
+			recommended: false,
 		},
 		{
 			id: "qwen2.5-1.5b-instruct-q4_k_m",
-			name: "Fast (recommended)",
-			desc: "Much better punctuation, filler removal & tone. ~1 GB download.",
+			name: "Fast",
+			desc: "Much better punctuation, filler removal & tone.",
+			pill: "~1 GB",
+			recommended: true,
 		},
 		{
 			id: "qwen2.5-3b-instruct-q4_k_m",
 			name: "Best",
-			desc: "Highest quality, including formal rewrites. ~2 GB, a bit slower.",
+			desc: "Highest quality, including formal rewrites. A bit slower.",
+			pill: "~2 GB",
+			recommended: false,
 		},
 	] as const;
 
@@ -163,6 +236,7 @@ function SettingsPage() {
 				const next = parts.join("+");
 				setHotkey(next);
 				setHotkeyDirty(true);
+				setDirty(true);
 				setRecording(false);
 			}
 
@@ -198,6 +272,38 @@ function SettingsPage() {
 		loadSettings();
 		loadProfile();
 	}, []);
+
+	// Scroll-spy: highlight the nav pill for whichever section is near the top
+	// of the scroll container (the app shell's <main>).
+	useEffect(() => {
+		const scroller = document.querySelector("main");
+		if (!scroller) return;
+		const els = SECTIONS.map((s) => document.getElementById(`sec-${s.id}`)).filter(
+			(el): el is HTMLElement => el !== null,
+		);
+		if (els.length === 0) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const visible = entries
+					.filter((e) => e.isIntersecting)
+					.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+				if (visible[0]) {
+					setActiveSection(visible[0].target.id.replace("sec-", ""));
+				}
+			},
+			{ root: scroller, rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+		);
+		els.forEach((el) => observer.observe(el));
+		return () => observer.disconnect();
+	}, []);
+
+	function scrollToSection(id: string) {
+		setActiveSection(id);
+		document
+			.getElementById(`sec-${id}`)
+			?.scrollIntoView({ behavior: "smooth", block: "start" });
+	}
 
 	async function loadSettings() {
 		try {
@@ -241,9 +347,7 @@ function SettingsPage() {
 				can_upgrade_to_builtin: boolean;
 				active_model_id: string;
 			}>("get_cleanup_status");
-			setCleanupBackend(
-				cleanup.backend === "ollama" ? "ollama" : "builtin",
-			);
+			setCleanupBackend(cleanup.backend === "ollama" ? "ollama" : "builtin");
 			setCanUpgradeCleanup(!!cleanup.can_upgrade_to_builtin);
 			if (cleanup.active_model_id) setCleanupModel(cleanup.active_model_id);
 		} catch (e) {
@@ -288,6 +392,7 @@ function SettingsPage() {
 				writingStyle,
 			});
 
+			setDirty(false);
 			setSaved(true);
 			setTimeout(() => setSaved(false), 2000);
 		} catch (e) {
@@ -309,576 +414,657 @@ function SettingsPage() {
 	function setFnHotkey() {
 		setHotkey("fn");
 		setHotkeyDirty(true);
+		setDirty(true);
 		setRecording(false);
 	}
 
 	function resetHotkey() {
 		setHotkey(defaultHotkey);
 		setHotkeyDirty(true);
+		setDirty(true);
 	}
 
 	return (
-		<div className="space-y-8">
-			{/* Page header */}
-			<div>
-				<h1 className="text-2xl font-bold text-foreground tracking-tight">
-					Settings
-				</h1>
-				<p className="text-sm text-muted-foreground mt-1">
-					Customize how Parrot works for you
-				</p>
-			</div>
-
-			{/* Hotkey Section */}
-			<section className="bg-card rounded-2xl border border-border p-5">
-				<div className="flex items-start gap-4 mb-4">
-					<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-						<Keyboard className="w-5 h-5 text-primary" />
-					</div>
-					<div className="flex-1">
-						<h2 className="text-base font-semibold text-foreground">
-							Dictation shortcut
-						</h2>
-						<p className="text-sm text-muted-foreground">
-							Hold to record, release to transcribe.
-						</p>
-					</div>
-				</div>
-
-				<div className="space-y-3">
-					{recording ? (
-						<div
-							ref={recorderRef}
-							className="flex items-center justify-center h-14 rounded-xl border-2 border-primary bg-primary/5 text-base font-semibold text-primary animate-pulse"
-						>
-							Press your key combination...
-						</div>
-					) : (
-						<div className="flex gap-3 items-center">
-							<div className="flex-1 flex items-center justify-center h-14 rounded-xl border border-border bg-muted">
-								<kbd className="text-lg font-mono font-semibold tracking-wider text-foreground">
-									{formatHotkey(hotkey)}
-								</kbd>
-							</div>
-							<Button
-								variant="outline"
-								onClick={startRecording}
-								className="h-14 px-5"
-							>
-								Record
-							</Button>
-						</div>
-					)}
-
-					<div className="flex flex-wrap items-center gap-2 text-xs">
-						{platform === "macos" && hotkey.toLowerCase() !== "fn" && (
-							<button
-								type="button"
-								onClick={setFnHotkey}
-								className="text-primary hover:underline"
-							>
-								Use fn key instead
-							</button>
-						)}
-						{hotkey !== defaultHotkey && defaultHotkey && (
-							<button
-								type="button"
-								onClick={resetHotkey}
-								className="text-muted-foreground hover:text-foreground hover:underline"
-							>
-								Reset to default ({formatHotkey(defaultHotkey)})
-							</button>
-						)}
-					</div>
-
-					<p className="text-xs text-muted-foreground">
-						{recording
-							? "Press the key or combination you want to use, or click outside to cancel."
-							: platform === "macos"
-								? "Click Record to capture a custom combination, or use the fn key for one-press dictation."
-								: "Click Record, then press your desired key combination."}
+		<div className="pb-4">
+			{/* Branded header — echoes the sidebar's green wash + soft blobs */}
+			<header className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-card to-card px-6 py-6 shadow-sm">
+				<div className="absolute -top-16 -right-8 w-48 h-48 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+				<div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-pk-accent/5 blur-3xl pointer-events-none" />
+				<div className="relative">
+					<h1 className="text-2xl font-bold text-foreground tracking-tight">
+						Settings
+					</h1>
+					<p className="text-sm text-muted-foreground mt-1">
+						Customize how Parrot works for you
 					</p>
-
-					{hotkeyDirty && (
-						<div className="flex items-start gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs">
-							<span className="font-semibold">Restart required.</span>
-							<span>
-								Save your changes and restart Parrot for the new shortcut to
-								take effect.
-							</span>
-						</div>
-					)}
 				</div>
-			</section>
+			</header>
 
-			{/* Permissions Section */}
-			<PermissionsSection />
-
-			{/* Transcription engine */}
-			<section className="bg-card rounded-2xl border border-border p-5">
-				<div className="flex items-start gap-4 mb-5">
-					<div className="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center shrink-0">
-						<Mic className="w-5 h-5 text-sky-600" />
-					</div>
-					<div className="flex-1">
-						<h2 className="text-base font-semibold text-foreground">
-							Speech model
-						</h2>
-						<p className="text-sm text-muted-foreground">
-							Local transcription engine. Parakeet is faster and more accurate
-							for English; Whisper covers 99 languages.
-						</p>
-					</div>
-				</div>
-
-				<div className="space-y-3">
-					{STT_TIERS.map((tier) => {
-						const selected = sttModel === tier.id || (!sttModel && tier.id === "parakeet-v3" && sttEngine === "parakeet");
-						const isLegacyWhisper =
-							sttEngine === "whisper" &&
-							!STT_TIERS.some((t) => t.id === sttModel) &&
-							tier.id === "parakeet-v3";
+			{/* Sticky section nav with scroll-spy */}
+			<div className="sticky top-0 z-20 -mx-5 mt-4 mb-2 border-b border-border/60 bg-background/80 backdrop-blur-md">
+				<nav className="flex flex-wrap gap-1 px-5 py-2">
+					{SECTIONS.map((s) => {
+						const active = activeSection === s.id;
 						return (
 							<button
-								key={tier.id}
+								key={s.id}
 								type="button"
-								disabled={sttSwitching}
-								onClick={async () => {
-									if (sttModel === tier.id || sttSwitching) return;
-									setSttSwitching(true);
-									setSttProgress("Starting download…");
-									try {
-										const { listen } = await import("@tauri-apps/api/event");
-										const unsub = await listen<{
-											message: string;
-											progress: number;
-										}>("stt-model-download-progress", (e) => {
-											setSttProgress(
-												`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
-											);
-										});
-										const res = await invoke<{
-											engine: string;
-											model_id: string;
-											ready: boolean;
-										}>("switch_stt_model", { modelId: tier.id });
-										unsub();
-										setSttEngine(res.engine);
-										setSttModel(res.model_id);
-										setSttProgress(
-											res.ready ? "Ready" : "Loaded — warming up…",
-										);
-										setTimeout(() => setSttProgress(null), 2500);
-									} catch (e) {
-										console.error(e);
-										setSttProgress(
-											`Failed: ${e instanceof Error ? e.message : String(e)}`,
-										);
-									} finally {
-										setSttSwitching(false);
-									}
-								}}
-								className={`text-left p-3 rounded-xl border transition-colors w-full disabled:opacity-60 ${
-									selected || isLegacyWhisper
-										? "border-primary bg-primary/5"
-										: "border-border bg-muted/30 hover:bg-muted/50"
+								onClick={() => scrollToSection(s.id)}
+								className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+									active
+										? "bg-primary/10 text-primary"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
 								}`}
 							>
-								<p className="text-sm font-medium text-foreground flex items-center gap-2">
-									{tier.name}
-									{isLegacyWhisper && (
-										<span className="text-[10px] uppercase tracking-wide font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-											Upgrade available
-										</span>
-									)}
-									{selected && !isLegacyWhisper && (
-										<span className="text-[10px] uppercase tracking-wide font-semibold text-emerald-700 bg-emerald-500/10 px-1.5 py-0.5 rounded">
-											Active
-										</span>
-									)}
-								</p>
-								<p className="text-xs text-muted-foreground mt-0.5">
-									{tier.desc}
-								</p>
+								{s.label}
 							</button>
 						);
 					})}
-
-					{sttEngine === "whisper" &&
-						sttModel &&
-						!STT_TIERS.some((t) => t.id === sttModel) && (
-							<p className="text-xs text-muted-foreground">
-								Currently using your existing Whisper model (
-								<span className="font-mono">{sttModel || "custom"}</span>
-								). Switch to Fast (Parakeet) for a large speed + accuracy jump.
-							</p>
-						)}
-
-					{sttProgress && (
-						<p className="text-xs text-primary font-medium">{sttProgress}</p>
-					)}
-
-					<div className="space-y-2 pt-2">
-						<Label htmlFor="sttLanguage" className="text-sm font-medium">
-							Language
-						</Label>
-						<Select value={sttLanguage} onValueChange={setSttLanguage}>
-							<SelectTrigger
-								id="sttLanguage"
-								className="w-full h-10 rounded-xl border-border bg-muted/50"
-							>
-								<SelectValue placeholder="Select language" />
-							</SelectTrigger>
-							<SelectContent position="popper" className="rounded-xl">
-								<SelectItem value="auto">Auto-detect</SelectItem>
-								<SelectItem value="en">English</SelectItem>
-								<SelectItem value="es">Spanish</SelectItem>
-								<SelectItem value="fr">French</SelectItem>
-								<SelectItem value="de">German</SelectItem>
-								<SelectItem value="it">Italian</SelectItem>
-								<SelectItem value="pt">Portuguese</SelectItem>
-								<SelectItem value="nl">Dutch</SelectItem>
-								<SelectItem value="pl">Polish</SelectItem>
-								<SelectItem value="ru">Russian</SelectItem>
-								<SelectItem value="ja">Japanese</SelectItem>
-								<SelectItem value="zh">Chinese</SelectItem>
-								<SelectItem value="ko">Korean</SelectItem>
-							</SelectContent>
-						</Select>
-						<p className="text-xs text-muted-foreground">
-							Whisper uses this for decoding; Parakeet auto-detects. Prefer Auto
-							unless you always dictate in one language.
-						</p>
-					</div>
-				</div>
-			</section>
-
-			{/* Cleanup backend */}
-			<section className="bg-card rounded-2xl border border-border p-5">
-				<div className="flex items-start gap-4 mb-4">
-					<div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
-						<Wand2 className="w-5 h-5 text-emerald-600" />
-					</div>
-					<div className="flex-1">
-						<h2 className="text-base font-semibold text-foreground">
-							Cleanup engine
-						</h2>
-						<p className="text-sm text-muted-foreground">
-							How Parrot polishes grammar and filler words after dictation.
-						</p>
-					</div>
-				</div>
-
-				<div className="space-y-3">
-					<div className="p-3 rounded-xl border border-border bg-muted/30">
-						<p className="text-sm font-medium text-foreground">
-							{cleanupBackend === "builtin"
-								? "Built-in (on-device)"
-								: "Ollama (legacy)"}
-						</p>
-						<p className="text-xs text-muted-foreground mt-0.5">
-							{cleanupBackend === "builtin"
-								? "Runs a small model inside Parrot — no third-party apps or admin password."
-								: "Uses the Ollama daemon you installed earlier. You can switch to the built-in engine and drop Ollama."}
-						</p>
-					</div>
-
-					<div className="space-y-2">
-						<Label className="text-sm font-medium">Cleanup quality</Label>
-						<p className="text-xs text-muted-foreground">
-							Bigger models punctuate, de-fill, and formalize better, at the cost
-							of size and a little speed. Picking one downloads it and switches
-							cleanup over{canUpgradeCleanup ? " (and drops Ollama)" : ""}.
-						</p>
-						{CLEANUP_TIERS.map((tier) => {
-							const selected = cleanupModel === tier.id;
-							return (
-								<button
-									key={tier.id}
-									type="button"
-									disabled={cleanupUpgrading}
-									onClick={async () => {
-										if (cleanupModel === tier.id || cleanupUpgrading) return;
-										setCleanupUpgrading(true);
-										setCleanupProgress("Starting download…");
-										try {
-											const { listen } = await import("@tauri-apps/api/event");
-											const unsub = await listen<{
-												message: string;
-												progress: number;
-											}>("cleanup-model-download-progress", (e) => {
-												setCleanupProgress(
-													`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
-												);
-											});
-											const res = await invoke<{
-												model_id: string;
-												ready: boolean;
-											}>("switch_cleanup_model", { modelId: tier.id });
-											unsub();
-											setCleanupModel(res.model_id);
-											setCleanupBackend("builtin");
-											setCanUpgradeCleanup(false);
-											setCleanupProgress(
-												res.ready ? "Ready" : "Downloaded — loading model…",
-											);
-											setTimeout(() => setCleanupProgress(null), 3000);
-										} catch (e) {
-											console.error(e);
-											setCleanupProgress(
-												`Failed: ${e instanceof Error ? e.message : String(e)}`,
-											);
-										} finally {
-											setCleanupUpgrading(false);
-										}
-									}}
-									className={`text-left p-3 rounded-xl border transition-colors w-full disabled:opacity-60 ${
-										selected
-											? "border-primary bg-primary/5"
-											: "border-border bg-muted/30 hover:bg-muted/50"
-									}`}
-								>
-									<p className="text-sm font-medium text-foreground flex items-center gap-2">
-										{tier.name}
-										{selected && (
-											<span className="text-[10px] uppercase tracking-wide font-semibold text-emerald-700 bg-emerald-500/10 px-1.5 py-0.5 rounded">
-												Active
-											</span>
-										)}
-									</p>
-									<p className="text-xs text-muted-foreground mt-0.5">
-										{tier.desc}
-									</p>
-								</button>
-							);
-						})}
-						{cleanupProgress && (
-							<p className="text-xs text-primary font-medium">
-								{cleanupProgress}
-							</p>
-						)}
-					</div>
-				</div>
-			</section>
-
-			{/* Writing Preferences Section */}
-			<section className="bg-card rounded-2xl border border-border p-5">
-				<div className="flex items-start gap-4 mb-5">
-					<div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
-						<Wand2 className="w-5 h-5 text-purple-500" />
-					</div>
-					<div className="flex-1">
-						<h2 className="text-base font-semibold text-foreground">Writing Preferences</h2>
-						<p className="text-sm text-muted-foreground">
-							Configure how the AI cleans up your dictations
-						</p>
-					</div>
-				</div>
-
-				<div className="space-y-5">
-					<div className="space-y-2">
-						<Label className="text-sm font-medium">Cleanup timing</Label>
-						<div className="grid gap-2">
-							{(
-								[
-									{
-										value: "blocking" as const,
-										title: "Wait for polish (recommended)",
-										desc: "Always paste the cleaned text into the focused field. Slight wait after each dictation.",
-									},
-									{
-										value: "background" as const,
-										title: "Background",
-										desc: "Paste immediately, polish in the background. Press ⌘⇧C if the cleaned version differs.",
-									},
-									{
-										value: "off" as const,
-										title: "Off",
-										desc: "Paste the raw transcript only. No LLM cleanup.",
-									},
-								] as const
-							).map((opt) => {
-								const selected = cleanupMode === opt.value;
-								return (
-									<button
-										key={opt.value}
-										type="button"
-										onClick={() => setCleanupMode(opt.value)}
-										className={`text-left p-3 rounded-xl border transition-colors ${
-											selected
-												? "border-primary bg-primary/5"
-												: "border-border bg-muted/30 hover:bg-muted/50"
-										}`}
-									>
-										<p className="text-sm font-medium text-foreground">
-											{opt.title}
-										</p>
-										<p className="text-xs text-muted-foreground mt-0.5">
-											{opt.desc}
-										</p>
-									</button>
-								);
-							})}
-						</div>
-						<p className="text-xs text-muted-foreground">
-							Only very short utterances (a word or two) skip cleanup; everything
-							longer is punctuated and polished.
-						</p>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="contextPrompt" className="text-sm font-medium">
-							Context / Instructions
-						</Label>
-						<Textarea
-							id="contextPrompt"
-							value={contextPrompt}
-							onChange={(e) => setContextPrompt(e.target.value)}
-							placeholder="e.g. I'm a software engineer writing technical docs. Use American English."
-							rows={3}
-							className="resize-none"
-						/>
-						<p className="text-xs text-muted-foreground">
-							Tell the AI about yourself so it can better clean up your dictations
-						</p>
-					</div>
-
-					<div className="space-y-2">
-						<Label className="text-sm font-medium">Formality</Label>
-						<div className="grid grid-cols-3 gap-2">
-							{(
-								[
-									{
-										value: "casual" as const,
-										title: "Casual",
-										desc: "Keep your voice",
-									},
-									{
-										value: "neutral" as const,
-										title: "Neutral",
-										desc: "Clean & natural",
-									},
-									{
-										value: "formal" as const,
-										title: "Formal",
-										desc: "Professional prose",
-									},
-								] as const
-							).map((opt) => {
-								const selected = formality === opt.value;
-								return (
-									<button
-										key={opt.value}
-										type="button"
-										onClick={() => setFormality(opt.value)}
-										className={`text-left p-3 rounded-xl border transition-colors ${
-											selected
-												? "border-primary bg-primary/5"
-												: "border-border bg-muted/30 hover:bg-muted/50"
-										}`}
-									>
-										<p className="text-sm font-medium text-foreground">
-											{opt.title}
-										</p>
-										<p className="text-xs text-muted-foreground mt-0.5">
-											{opt.desc}
-										</p>
-									</button>
-								);
-							})}
-						</div>
-						<p className="text-xs text-muted-foreground">
-							How much should cleanup reshape your tone? Formal rewrites into
-							polished, professional writing.
-						</p>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="writingStyle" className="text-sm font-medium">
-							Writing Style
-						</Label>
-						<Textarea
-							id="writingStyle"
-							value={writingStyle}
-							onChange={(e) => setWritingStyle(e.target.value)}
-							placeholder="e.g. Concise and direct. No fluff. Use lowercase for casual messages."
-							rows={3}
-							className="resize-none"
-						/>
-						<p className="text-xs text-muted-foreground">
-							Optional extra notes to fine-tune how the cleaned text sounds, on
-							top of the formality preset.
-						</p>
-					</div>
-				</div>
-			</section>
-
-			<AppProfilesSection />
-
-			{/* Data Section */}
-			<section className="bg-card rounded-2xl border border-border p-5">
-				<div className="flex items-start gap-4 mb-4">
-					<div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
-						<Database className="w-5 h-5 text-amber-500" />
-					</div>
-					<div className="flex-1">
-						<h2 className="text-base font-semibold text-foreground">Data Storage</h2>
-						<p className="text-sm text-muted-foreground">
-							Control how your recordings are stored
-						</p>
-					</div>
-				</div>
-
-				<div className="flex items-center justify-between p-4 rounded-xl bg-muted/50">
-					<div>
-						<p className="text-sm font-medium text-foreground">Save audio recordings</p>
-						<p className="text-xs text-muted-foreground mt-0.5">
-							Keep WAV files after transcription on your device
-						</p>
-					</div>
-					<button
-						type="button"
-						role="switch"
-						aria-checked={saveAudio}
-						onClick={() => setSaveAudio(!saveAudio)}
-						className={`
-							relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent
-							transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
-							${saveAudio ? "bg-primary" : "bg-muted-foreground/30"}
-						`}
-					>
-						<span
-							className={`
-								pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg ring-0
-								transition-transform duration-200 ease-in-out
-								${saveAudio ? "translate-x-5" : "translate-x-0"}
-							`}
-						/>
-					</button>
-				</div>
-			</section>
-
-
-			{/* Save button */}
-			<div className="pt-4">
-				<Button 
-					onClick={saveAll}
-					size="lg"
-					className="w-full sm:w-auto px-8"
-				>
-					{saved ? (
-						<>
-							<Check className="w-4 h-4 mr-2" />
-							Saved!
-						</>
-					) : (
-						<>
-							<Save className="w-4 h-4 mr-2" />
-							Save Changes
-						</>
-					)}
-				</Button>
+				</nav>
 			</div>
+
+			<div className="space-y-8 pt-4">
+				{/* Hotkey Section */}
+				<div id="sec-shortcut" className="scroll-mt-24">
+					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+						<div className="flex items-start gap-4 mb-4">
+							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+								<Keyboard className="w-5 h-5 text-primary" />
+							</div>
+							<div className="flex-1">
+								<h2 className="text-base font-semibold text-foreground">
+									Dictation shortcut
+								</h2>
+								<p className="text-sm text-muted-foreground">
+									Hold to record, release to transcribe.
+								</p>
+							</div>
+						</div>
+
+						<div className="space-y-3">
+							{recording ? (
+								<div
+									ref={recorderRef}
+									className="flex items-center justify-center h-14 rounded-xl border-2 border-primary bg-primary/5 text-base font-semibold text-primary animate-pulse"
+								>
+									Press your key combination...
+								</div>
+							) : (
+								<div className="flex gap-3 items-center">
+									<div className="flex-1 flex items-center justify-center h-14 rounded-xl border border-border bg-muted">
+										<kbd className="text-lg font-mono font-semibold tracking-wider text-foreground">
+											{formatHotkey(hotkey)}
+										</kbd>
+									</div>
+									<Button
+										variant="outline"
+										onClick={startRecording}
+										className="h-14 px-5"
+									>
+										Record
+									</Button>
+								</div>
+							)}
+
+							<div className="flex flex-wrap items-center gap-2 text-xs">
+								{platform === "macos" && hotkey.toLowerCase() !== "fn" && (
+									<button
+										type="button"
+										onClick={setFnHotkey}
+										className="text-primary hover:underline"
+									>
+										Use fn key instead
+									</button>
+								)}
+								{hotkey !== defaultHotkey && defaultHotkey && (
+									<button
+										type="button"
+										onClick={resetHotkey}
+										className="text-muted-foreground hover:text-foreground hover:underline"
+									>
+										Reset to default ({formatHotkey(defaultHotkey)})
+									</button>
+								)}
+							</div>
+
+							<p className="text-xs text-muted-foreground">
+								{recording
+									? "Press the key or combination you want to use, or click outside to cancel."
+									: platform === "macos"
+										? "Click Record to capture a custom combination, or use the fn key for one-press dictation."
+										: "Click Record, then press your desired key combination."}
+							</p>
+						</div>
+					</section>
+				</div>
+
+				{/* Permissions Section */}
+				<div id="sec-permissions" className="scroll-mt-24">
+					<PermissionsSection />
+				</div>
+
+				{/* Transcription engine */}
+				<div id="sec-speech" className="scroll-mt-24">
+					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+						<div className="flex items-start gap-4 mb-5">
+							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+								<Mic className="w-5 h-5 text-primary" />
+							</div>
+							<div className="flex-1">
+								<h2 className="text-base font-semibold text-foreground">
+									Speech model
+								</h2>
+								<p className="text-sm text-muted-foreground">
+									Local transcription engine. Parakeet is faster and more
+									accurate for English; Whisper covers 99 languages.
+								</p>
+							</div>
+						</div>
+
+						<div className="space-y-3">
+							{STT_TIERS.map((tier) => {
+								const selected =
+									sttModel === tier.id ||
+									(!sttModel &&
+										tier.id === "parakeet-v3" &&
+										sttEngine === "parakeet");
+								const isLegacyWhisper =
+									sttEngine === "whisper" &&
+									!STT_TIERS.some((t) => t.id === sttModel) &&
+									tier.id === "parakeet-v3";
+								const highlight = selected || isLegacyWhisper;
+								return (
+									<button
+										key={tier.id}
+										type="button"
+										disabled={sttSwitching}
+										onClick={async () => {
+											if (sttModel === tier.id || sttSwitching) return;
+											setSttSwitching(true);
+											setSttProgress("Starting download…");
+											try {
+												const { listen } = await import("@tauri-apps/api/event");
+												const unsub = await listen<{
+													message: string;
+													progress: number;
+												}>("stt-model-download-progress", (e) => {
+													setSttProgress(
+														`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
+													);
+												});
+												const res = await invoke<{
+													engine: string;
+													model_id: string;
+													ready: boolean;
+												}>("switch_stt_model", { modelId: tier.id });
+												unsub();
+												setSttEngine(res.engine);
+												setSttModel(res.model_id);
+												setSttProgress(res.ready ? "Ready" : "Loaded — warming up…");
+												setTimeout(() => setSttProgress(null), 2500);
+											} catch (e) {
+												console.error(e);
+												setSttProgress(
+													`Failed: ${e instanceof Error ? e.message : String(e)}`,
+												);
+											} finally {
+												setSttSwitching(false);
+											}
+										}}
+										className={cardCls(highlight)}
+									>
+										<div className="flex items-center gap-3">
+											<div className="flex-1 min-w-0">
+												<p className="text-sm font-medium text-foreground flex items-center gap-2 flex-wrap">
+													{tier.name}
+													{isLegacyWhisper ? (
+														<Pill tone="primary">Upgrade available</Pill>
+													) : selected ? (
+														<Pill tone="emerald">Active</Pill>
+													) : tier.recommended ? (
+														<Pill tone="primary">Recommended</Pill>
+													) : null}
+													<Pill tone="muted">{tier.pill}</Pill>
+												</p>
+												<p className="text-xs text-muted-foreground mt-0.5">
+													{tier.desc}
+												</p>
+											</div>
+											<RadioDot selected={highlight} />
+										</div>
+									</button>
+								);
+							})}
+
+							{sttEngine === "whisper" &&
+								sttModel &&
+								!STT_TIERS.some((t) => t.id === sttModel) && (
+									<p className="text-xs text-muted-foreground">
+										Currently using your existing Whisper model (
+										<span className="font-mono">{sttModel || "custom"}</span>
+										). Switch to Fast (Parakeet) for a large speed + accuracy
+										jump.
+									</p>
+								)}
+
+							{sttProgress && (
+								<p className="text-xs text-primary font-medium">{sttProgress}</p>
+							)}
+
+							<div className="space-y-2 pt-2">
+								<Label htmlFor="sttLanguage" className="text-sm font-medium">
+									Language
+								</Label>
+								<Select
+									value={sttLanguage}
+									onValueChange={(v) => {
+										setSttLanguage(v);
+										setDirty(true);
+									}}
+								>
+									<SelectTrigger
+										id="sttLanguage"
+										className="w-full h-10 rounded-xl border-border bg-muted/50"
+									>
+										<SelectValue placeholder="Select language" />
+									</SelectTrigger>
+									<SelectContent position="popper" className="rounded-xl">
+										<SelectItem value="auto">Auto-detect</SelectItem>
+										<SelectItem value="en">English</SelectItem>
+										<SelectItem value="es">Spanish</SelectItem>
+										<SelectItem value="fr">French</SelectItem>
+										<SelectItem value="de">German</SelectItem>
+										<SelectItem value="it">Italian</SelectItem>
+										<SelectItem value="pt">Portuguese</SelectItem>
+										<SelectItem value="nl">Dutch</SelectItem>
+										<SelectItem value="pl">Polish</SelectItem>
+										<SelectItem value="ru">Russian</SelectItem>
+										<SelectItem value="ja">Japanese</SelectItem>
+										<SelectItem value="zh">Chinese</SelectItem>
+										<SelectItem value="ko">Korean</SelectItem>
+									</SelectContent>
+								</Select>
+								<p className="text-xs text-muted-foreground">
+									Whisper uses this for decoding; Parakeet auto-detects. Prefer
+									Auto unless you always dictate in one language.
+								</p>
+							</div>
+						</div>
+					</section>
+				</div>
+
+				{/* Cleanup backend */}
+				<div id="sec-cleanup" className="scroll-mt-24">
+					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+						<div className="flex items-start gap-4 mb-4">
+							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+								<Wand2 className="w-5 h-5 text-primary" />
+							</div>
+							<div className="flex-1">
+								<h2 className="text-base font-semibold text-foreground">
+									Cleanup engine
+								</h2>
+								<p className="text-sm text-muted-foreground">
+									How Parrot polishes grammar and filler words after dictation.
+								</p>
+							</div>
+						</div>
+
+						<div className="space-y-3">
+							<div className="p-3 rounded-xl border border-border bg-muted/30">
+								<p className="text-sm font-medium text-foreground">
+									{cleanupBackend === "builtin"
+										? "Built-in (on-device)"
+										: "Ollama (legacy)"}
+								</p>
+								<p className="text-xs text-muted-foreground mt-0.5">
+									{cleanupBackend === "builtin"
+										? "Runs a small model inside Parrot — no third-party apps or admin password."
+										: "Uses the Ollama daemon you installed earlier. You can switch to the built-in engine and drop Ollama."}
+								</p>
+							</div>
+
+							<div className="space-y-2">
+								<Label className="text-sm font-medium">Cleanup quality</Label>
+								<p className="text-xs text-muted-foreground">
+									Bigger models punctuate, de-fill, and formalize better, at the
+									cost of size and a little speed. Picking one downloads it and
+									switches cleanup over
+									{canUpgradeCleanup ? " (and drops Ollama)" : ""}.
+								</p>
+								{CLEANUP_TIERS.map((tier) => {
+									const selected = cleanupModel === tier.id;
+									return (
+										<button
+											key={tier.id}
+											type="button"
+											disabled={cleanupUpgrading}
+											onClick={async () => {
+												if (cleanupModel === tier.id || cleanupUpgrading) return;
+												setCleanupUpgrading(true);
+												setCleanupProgress("Starting download…");
+												try {
+													const { listen } = await import(
+														"@tauri-apps/api/event"
+													);
+													const unsub = await listen<{
+														message: string;
+														progress: number;
+													}>("cleanup-model-download-progress", (e) => {
+														setCleanupProgress(
+															`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
+														);
+													});
+													const res = await invoke<{
+														model_id: string;
+														ready: boolean;
+													}>("switch_cleanup_model", { modelId: tier.id });
+													unsub();
+													setCleanupModel(res.model_id);
+													setCleanupBackend("builtin");
+													setCanUpgradeCleanup(false);
+													setCleanupProgress(
+														res.ready ? "Ready" : "Downloaded — loading model…",
+													);
+													setTimeout(() => setCleanupProgress(null), 3000);
+												} catch (e) {
+													console.error(e);
+													setCleanupProgress(
+														`Failed: ${e instanceof Error ? e.message : String(e)}`,
+													);
+												} finally {
+													setCleanupUpgrading(false);
+												}
+											}}
+											className={cardCls(selected)}
+										>
+											<div className="flex items-center gap-3">
+												<div className="flex-1 min-w-0">
+													<p className="text-sm font-medium text-foreground flex items-center gap-2 flex-wrap">
+														{tier.name}
+														{selected ? (
+															<Pill tone="emerald">Active</Pill>
+														) : tier.recommended ? (
+															<Pill tone="primary">Recommended</Pill>
+														) : null}
+														<Pill tone="muted">{tier.pill}</Pill>
+													</p>
+													<p className="text-xs text-muted-foreground mt-0.5">
+														{tier.desc}
+													</p>
+												</div>
+												<RadioDot selected={selected} />
+											</div>
+										</button>
+									);
+								})}
+								{cleanupProgress && (
+									<p className="text-xs text-primary font-medium">
+										{cleanupProgress}
+									</p>
+								)}
+							</div>
+						</div>
+					</section>
+				</div>
+
+				{/* Writing Preferences Section */}
+				<div id="sec-writing" className="scroll-mt-24">
+					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+						<div className="flex items-start gap-4 mb-5">
+							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+								<PenLine className="w-5 h-5 text-primary" />
+							</div>
+							<div className="flex-1">
+								<h2 className="text-base font-semibold text-foreground">
+									Writing Preferences
+								</h2>
+								<p className="text-sm text-muted-foreground">
+									Configure how the AI cleans up your dictations
+								</p>
+							</div>
+						</div>
+
+						<div className="space-y-5">
+							<div className="space-y-2">
+								<Label className="text-sm font-medium">Cleanup timing</Label>
+								<div className="grid gap-2">
+									{(
+										[
+											{
+												value: "blocking" as const,
+												title: "Wait for polish (recommended)",
+												desc: "Always paste the cleaned text into the focused field. Slight wait after each dictation.",
+											},
+											{
+												value: "background" as const,
+												title: "Background",
+												desc: "Paste immediately, polish in the background. Press ⌘⇧C if the cleaned version differs.",
+											},
+											{
+												value: "off" as const,
+												title: "Off",
+												desc: "Paste the raw transcript only. No LLM cleanup.",
+											},
+										] as const
+									).map((opt) => {
+										const selected = cleanupMode === opt.value;
+										return (
+											<button
+												key={opt.value}
+												type="button"
+												onClick={() => {
+													setCleanupMode(opt.value);
+													setDirty(true);
+												}}
+												className={cardCls(selected)}
+											>
+												<div className="flex items-center gap-3">
+													<div className="flex-1 min-w-0">
+														<p className="text-sm font-medium text-foreground">
+															{opt.title}
+														</p>
+														<p className="text-xs text-muted-foreground mt-0.5">
+															{opt.desc}
+														</p>
+													</div>
+													<RadioDot selected={selected} />
+												</div>
+											</button>
+										);
+									})}
+								</div>
+								<p className="text-xs text-muted-foreground">
+									Only very short utterances (a word or two) skip cleanup;
+									everything longer is punctuated and polished.
+								</p>
+							</div>
+
+							<div className="space-y-2">
+								<Label htmlFor="contextPrompt" className="text-sm font-medium">
+									Context / Instructions
+								</Label>
+								<Textarea
+									id="contextPrompt"
+									value={contextPrompt}
+									onChange={(e) => {
+										setContextPrompt(e.target.value);
+										setDirty(true);
+									}}
+									placeholder="e.g. I'm a software engineer writing technical docs. Use American English."
+									rows={3}
+									className="resize-none"
+								/>
+								<p className="text-xs text-muted-foreground">
+									Tell the AI about yourself so it can better clean up your
+									dictations
+								</p>
+							</div>
+
+							<div className="space-y-2">
+								<Label className="text-sm font-medium">Formality</Label>
+								<div className="grid grid-cols-3 gap-2">
+									{(
+										[
+											{
+												value: "casual" as const,
+												title: "Casual",
+												desc: "Keep your voice",
+											},
+											{
+												value: "neutral" as const,
+												title: "Neutral",
+												desc: "Clean & natural",
+											},
+											{
+												value: "formal" as const,
+												title: "Formal",
+												desc: "Professional prose",
+											},
+										] as const
+									).map((opt) => {
+										const selected = formality === opt.value;
+										return (
+											<button
+												key={opt.value}
+												type="button"
+												onClick={() => {
+													setFormality(opt.value);
+													setDirty(true);
+												}}
+												className={`relative ${cardCls(selected)}`}
+											>
+												{selected && (
+													<Check
+														className="absolute top-2 right-2 w-3.5 h-3.5 text-primary"
+														strokeWidth={3}
+													/>
+												)}
+												<p className="text-sm font-medium text-foreground">
+													{opt.title}
+												</p>
+												<p className="text-xs text-muted-foreground mt-0.5">
+													{opt.desc}
+												</p>
+											</button>
+										);
+									})}
+								</div>
+								<p className="text-xs text-muted-foreground">
+									How much should cleanup reshape your tone? Formal rewrites into
+									polished, professional writing.
+								</p>
+							</div>
+
+							<div className="space-y-2">
+								<Label htmlFor="writingStyle" className="text-sm font-medium">
+									Writing Style
+								</Label>
+								<Textarea
+									id="writingStyle"
+									value={writingStyle}
+									onChange={(e) => {
+										setWritingStyle(e.target.value);
+										setDirty(true);
+									}}
+									placeholder="e.g. Concise and direct. No fluff. Use lowercase for casual messages."
+									rows={3}
+									className="resize-none"
+								/>
+								<p className="text-xs text-muted-foreground">
+									Optional extra notes to fine-tune how the cleaned text sounds,
+									on top of the formality preset.
+								</p>
+							</div>
+						</div>
+					</section>
+				</div>
+
+				{/* Per-app modes */}
+				<div id="sec-apps" className="scroll-mt-24">
+					<AppProfilesSection />
+				</div>
+
+				{/* Data Section */}
+				<div id="sec-data" className="scroll-mt-24">
+					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+						<div className="flex items-start gap-4 mb-4">
+							<div className="w-10 h-10 rounded-xl bg-pk-accent/10 flex items-center justify-center shrink-0">
+								<Database className="w-5 h-5 text-pk-accent" />
+							</div>
+							<div className="flex-1">
+								<h2 className="text-base font-semibold text-foreground">
+									Data Storage
+								</h2>
+								<p className="text-sm text-muted-foreground">
+									Control how your recordings are stored
+								</p>
+							</div>
+						</div>
+
+						<div className="flex items-center justify-between p-4 rounded-xl bg-muted/50">
+							<div>
+								<p className="text-sm font-medium text-foreground">
+									Save audio recordings
+								</p>
+								<p className="text-xs text-muted-foreground mt-0.5">
+									Keep WAV files after transcription on your device
+								</p>
+							</div>
+							<button
+								type="button"
+								role="switch"
+								aria-checked={saveAudio}
+								onClick={() => {
+									setSaveAudio(!saveAudio);
+									setDirty(true);
+								}}
+								className={`
+									relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent
+									transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+									${saveAudio ? "bg-primary" : "bg-muted-foreground/30"}
+								`}
+							>
+								<span
+									className={`
+										pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg ring-0
+										transition-transform duration-200 ease-in-out
+										${saveAudio ? "translate-x-5" : "translate-x-0"}
+									`}
+								/>
+							</button>
+						</div>
+					</section>
+				</div>
+			</div>
+
+			{/* Sticky save bar — appears only when there are unsaved changes */}
+			{(dirty || saved) && (
+				<div className="sticky bottom-0 z-20 -mx-5 mt-6 border-t border-border/60 bg-background/85 backdrop-blur-md px-5 py-3 animate-fade-in-up">
+					<div className="flex items-center gap-3">
+						{hotkeyDirty && (
+							<span className="flex items-center gap-1.5 text-xs font-medium text-pk-accent">
+								<AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+								Restart Parrot after saving for the new shortcut to take effect.
+							</span>
+						)}
+						<div className="flex-1" />
+						<Button onClick={saveAll} size="lg" className="px-6 shrink-0">
+							{saved ? (
+								<>
+									<Check className="w-4 h-4 mr-2" />
+									Saved!
+								</>
+							) : (
+								<>
+									<Save className="w-4 h-4 mr-2" />
+									Save changes
+								</>
+							)}
+						</Button>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
@@ -887,15 +1073,16 @@ function PermissionsSection() {
 	const status = usePermissions();
 
 	return (
-		<section className="bg-card rounded-2xl border border-border p-5">
+		<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 			<div className="flex items-start gap-4 mb-4">
-				<div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
-					<ShieldCheck className="w-5 h-5 text-emerald-600" />
+				<div className="w-10 h-10 rounded-xl bg-pk-accent/10 flex items-center justify-center shrink-0">
+					<ShieldCheck className="w-5 h-5 text-pk-accent" />
 				</div>
 				<div className="flex-1">
 					<h2 className="text-base font-semibold text-foreground">Permissions</h2>
 					<p className="text-sm text-muted-foreground">
-						Parrot needs these macOS permissions to record and paste your dictation.
+						Parrot needs these macOS permissions to record and paste your
+						dictation.
 					</p>
 				</div>
 			</div>
@@ -1007,10 +1194,10 @@ function AppProfilesSection() {
 	}
 
 	return (
-		<section className="bg-card rounded-2xl border border-border p-5">
+		<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 			<div className="flex items-start gap-4 mb-5">
-				<div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center shrink-0">
-					<AppWindow className="w-5 h-5 text-indigo-600" />
+				<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+					<AppWindow className="w-5 h-5 text-primary" />
 				</div>
 				<div className="flex-1">
 					<h2 className="text-base font-semibold text-foreground">
