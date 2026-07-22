@@ -1,15 +1,16 @@
 /**
- * Generate blog OG images (1200×630) with Satori + resvg.
+ * Generate blog + compare OG images (1200×630) with Satori + resvg.
  *
  * Usage:
- *   bun run scripts/generate-og.ts              # all posts
- *   bun run scripts/generate-og.ts slug-a slug-b  # specific slugs
+ *   bun run scripts/generate-og.ts              # all posts + compare pages
+ *   bun run scripts/generate-og.ts slug-a slug-b  # specific post slugs
+ *   bun run scripts/generate-og.ts compare compare-wispr-flow  # compare images
  */
 
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
+import satori from "satori";
 
 const ROOT = resolve(import.meta.dir, "..");
 const OG_DIR = resolve(ROOT, "public/og");
@@ -428,15 +429,402 @@ function pngToDataUrl(path: string): string {
 	return `data:image/png;base64,${buf.toString("base64")}`;
 }
 
+interface CompareTarget {
+	/** Output filename stem, e.g. "compare" or "compare-wispr-flow". */
+	id: string;
+	/** Competitor display name; null = generic /compare index card. */
+	name: string | null;
+	subtitle: string;
+}
+
+function parseCompetitors(): { slug: string; name: string; tagline: string }[] {
+	const content = readFileSync(resolve(ROOT, "src/lib/competitors.ts"), "utf-8");
+	const out: { slug: string; name: string; tagline: string }[] = [];
+
+	// Same convention as parseBlogPosts: each entry's slug comes first,
+	// then name/tagline within the next few lines.
+	const slugRe = /slug:\s*"([^"]+)"/g;
+	let m: RegExpExecArray | null;
+	while ((m = slugRe.exec(content)) !== null) {
+		const slice = content.slice(m.index, m.index + 600);
+		const name = slice.match(/\n\s*name:\s*"([^"]+)"/);
+		const tagline = slice.match(/tagline:\s*"([^"]+)"/);
+		if (name && tagline) {
+			out.push({ slug: m[1], name: name[1], tagline: tagline[1] });
+		}
+	}
+	return out;
+}
+
+function compareTargets(): CompareTarget[] {
+	return [
+		{
+			id: "compare",
+			name: null,
+			subtitle: "Side-by-side comparisons of the leading Mac voice dictation apps.",
+		},
+		...parseCompetitors().map((c) => ({
+			id: `compare-${c.slug}`,
+			name: c.name,
+			subtitle: c.tagline,
+		})),
+	];
+}
+
+async function renderCompareOg(
+	target: CompareTarget,
+	fonts: { regular: Buffer; medium: Buffer; bold: Buffer },
+	iconDataUrl: string,
+): Promise<Buffer> {
+	const title = target.name ? `Parrot vs ${target.name}` : "Parrot vs the rest";
+	const size = titleFontSize(title);
+	const maxChars = size >= 52 ? 26 : size >= 46 ? 30 : 34;
+	const lines = wrapTitle(title, maxChars);
+
+	// Waveform bars on the right (same motif as blog cards)
+	const barHeights = [90, 140, 70, 200, 110, 250, 80, 170, 130, 220, 60, 180, 100, 240, 90];
+	const bars = barHeights.map((h, i) => {
+		const x = 56 + i * 20;
+		const y = (360 - h) / 2;
+		const fill = i % 4 === 0 ? PK.primaryDark : PK.primary;
+		const opacity = 0.35 + (i % 3) * 0.08;
+		return {
+			type: "div",
+			props: {
+				style: {
+					position: "absolute",
+					left: x,
+					top: y,
+					width: 12,
+					height: h,
+					borderRadius: 6,
+					background: fill,
+					opacity,
+				},
+			},
+		};
+	});
+
+	const element = {
+		type: "div",
+		props: {
+			style: {
+				width: "100%",
+				height: "100%",
+				display: "flex",
+				flexDirection: "column",
+				position: "relative",
+				background: `linear-gradient(180deg, ${PK.bg} 0%, ${PK.bgSecondary} 100%)`,
+				fontFamily: "Fira Sans",
+				color: PK.text,
+				overflow: "hidden",
+			},
+			children: [
+				// corner frame
+				{
+					type: "div",
+					props: {
+						style: {
+							position: "absolute",
+							top: 24,
+							left: 24,
+							right: 24,
+							bottom: 24,
+							border: `1px solid ${PK.border}`,
+							borderRadius: 18,
+							opacity: 0.7,
+						},
+					},
+				},
+				// waveform area
+				{
+					type: "div",
+					props: {
+						style: {
+							position: "absolute",
+							right: 40,
+							top: 135,
+							width: 360,
+							height: 360,
+							display: "flex",
+							opacity: 0.5,
+						},
+						children: bars,
+					},
+				},
+				// header
+				{
+					type: "div",
+					props: {
+						style: {
+							display: "flex",
+							alignItems: "center",
+							padding: "56px 64px 0 64px",
+							position: "relative",
+						},
+						children: [
+							{
+								type: "div",
+								props: {
+									style: {
+										display: "flex",
+										alignItems: "center",
+										gap: 14,
+									},
+									children: [
+										{
+											type: "div",
+											props: {
+												style: {
+													width: 60,
+													height: 60,
+													borderRadius: 14,
+													background: PK.mark,
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+												},
+												children: [
+													{
+														type: "img",
+														props: {
+															src: iconDataUrl,
+															width: 42,
+															height: 42,
+															style: {
+																width: 42,
+																height: 42,
+																borderRadius: 9,
+															},
+														},
+													},
+												],
+											},
+										},
+										{
+											type: "div",
+											props: {
+												style: {
+													display: "flex",
+													flexDirection: "column",
+												},
+												children: [
+													{
+														type: "div",
+														props: {
+															style: {
+																fontSize: 28,
+																fontWeight: 800,
+																letterSpacing: -0.4,
+																lineHeight: 1.05,
+															},
+															children: "Parrot",
+														},
+													},
+													{
+														type: "div",
+														props: {
+															style: {
+																fontSize: 13,
+																fontWeight: 600,
+																color: PK.textMuted,
+																marginTop: 2,
+															},
+															children: "Voice dictation for Mac",
+														},
+													},
+												],
+											},
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+				// body
+				{
+					type: "div",
+					props: {
+						style: {
+							display: "flex",
+							flexDirection: "column",
+							padding: "48px 64px 0 64px",
+							flex: 1,
+							position: "relative",
+							maxWidth: 780,
+						},
+						children: [
+							{
+								type: "div",
+								props: {
+									style: {
+										display: "flex",
+										alignItems: "center",
+										gap: 8,
+										fontSize: 14,
+										fontWeight: 700,
+										color: PK.primaryDark,
+										letterSpacing: 0.6,
+										textTransform: "uppercase",
+										marginBottom: 20,
+									},
+									children: [
+										{
+											type: "div",
+											props: {
+												style: {
+													width: 8,
+													height: 8,
+													borderRadius: 4,
+													background: PK.primary,
+												},
+											},
+										},
+										"Side-by-side comparison",
+									],
+								},
+							},
+							{
+								type: "div",
+								props: {
+									style: {
+										display: "flex",
+										flexDirection: "column",
+										gap: 4,
+									},
+									children: lines.map((line) => ({
+										type: "div",
+										props: {
+											style: {
+												fontSize: size,
+												fontWeight: 800,
+												lineHeight: 1.15,
+												letterSpacing: -1,
+												color: PK.text,
+											},
+											children: line,
+										},
+									})),
+								},
+							},
+							{
+								type: "div",
+								props: {
+									style: {
+										fontSize: 21,
+										fontWeight: 600,
+										lineHeight: 1.4,
+										color: PK.textMuted,
+										marginTop: 18,
+										maxWidth: 700,
+									},
+									children: target.subtitle,
+								},
+							},
+						],
+					},
+				},
+				// footer
+				{
+					type: "div",
+					props: {
+						style: {
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "center",
+							padding: "0 64px 52px 64px",
+							position: "relative",
+							fontSize: 16,
+							color: PK.textMuted,
+							fontWeight: 600,
+						},
+						children: [
+							{
+								type: "div",
+								props: {
+									style: { display: "flex", alignItems: "center", gap: 12 },
+									children: [
+										{
+											type: "div",
+											props: {
+												style: {
+													fontWeight: 800,
+													color: PK.text,
+													fontSize: 16,
+												},
+												children: "Free for life",
+											},
+										},
+										{
+											type: "div",
+											props: {
+												style: {
+													width: 4,
+													height: 4,
+													borderRadius: 2,
+													background: PK.border,
+												},
+											},
+										},
+										{
+											type: "div",
+											props: {
+												style: { fontSize: 15 },
+												children: "Local & offline",
+											},
+										},
+									],
+								},
+							},
+							{
+								type: "div",
+								props: {
+									style: { fontSize: 15 },
+									children: "tryparrot.app/compare",
+								},
+							},
+						],
+					},
+				},
+			],
+		},
+	};
+
+	const svg = await satori(element as Parameters<typeof satori>[0], {
+		width: 1200,
+		height: 630,
+		fonts: [
+			{ name: "Fira Sans", data: fonts.regular, weight: 400, style: "normal" },
+			{ name: "Fira Sans", data: fonts.medium, weight: 600, style: "normal" },
+			{ name: "Fira Sans", data: fonts.bold, weight: 800, style: "normal" },
+		],
+	});
+
+	const resvg = new Resvg(svg, {
+		fitTo: { mode: "width", value: 2400 }, // 2x retina like html-to-image
+	});
+	return Buffer.from(resvg.render().asPng());
+}
+
 async function main() {
 	const filter = process.argv.slice(2);
 	const posts = parseBlogPosts();
-	const targets = filter.length
+	const compares = compareTargets();
+	const postTargets = filter.length
 		? posts.filter((p) => filter.includes(p.slug))
 		: posts;
+	const compareFiltered = filter.length
+		? compares.filter((c) => filter.includes(c.id))
+		: compares;
 
-	if (targets.length === 0) {
-		console.error("No matching posts. Available:", posts.map((p) => p.slug).join(", "));
+	if (postTargets.length === 0 && compareFiltered.length === 0) {
+		console.error(
+			"No matching targets. Posts:",
+			posts.map((p) => p.slug).join(", "),
+			"| Compare:",
+			compares.map((c) => c.id).join(", "),
+		);
 		process.exit(1);
 	}
 
@@ -452,14 +840,25 @@ async function main() {
 	}
 	const iconDataUrl = pngToDataUrl(iconPath);
 
-	console.log(`Generating ${targets.length} OG image(s)…`);
-	for (const post of targets) {
+	const total = postTargets.length + compareFiltered.length;
+	console.log(`Generating ${total} OG image(s)…`);
+	for (const post of postTargets) {
 		const t0 = performance.now();
 		const png = await renderBlogOg(post, fonts, iconDataUrl);
 		const out = resolve(OG_DIR, `${post.slug}.png`);
 		writeFileSync(out, png);
 		console.log(
 			`  ✓ ${post.slug}.png  (${Math.round(png.length / 1024)}KB, ${Math.round(performance.now() - t0)}ms) — ${post.title.slice(0, 50)}…`,
+		);
+	}
+	for (const target of compareFiltered) {
+		const t0 = performance.now();
+		const png = await renderCompareOg(target, fonts, iconDataUrl);
+		const out = resolve(OG_DIR, `${target.id}.png`);
+		writeFileSync(out, png);
+		const label = target.name ? `Parrot vs ${target.name}` : "Parrot vs the rest";
+		console.log(
+			`  ✓ ${target.id}.png  (${Math.round(png.length / 1024)}KB, ${Math.round(performance.now() - t0)}ms) — ${label}`,
 		);
 	}
 	console.log("Done.");

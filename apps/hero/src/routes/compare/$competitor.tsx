@@ -25,7 +25,7 @@ export const Route = createFileRoute("/compare/$competitor")({
 				{ property: "og:type", content: "article" },
 				{
 					property: "og:image",
-					content: "https://tryparrot.app/og/compare.png",
+					content: `https://tryparrot.app/og/compare-${c.slug}.png`,
 				},
 				{ property: "og:image:width", content: "1200" },
 				{ property: "og:image:height", content: "630" },
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/compare/$competitor")({
 				},
 				{
 					name: "twitter:image",
-					content: "https://tryparrot.app/og/compare.png",
+					content: `https://tryparrot.app/og/compare-${c.slug}.png`,
 				},
 				{
 					name: "twitter:image:alt",
@@ -70,7 +70,7 @@ export const Route = createFileRoute("/compare/$competitor")({
 								url: "https://tryparrot.app/parrot-transparent.png",
 							},
 						},
-						image: "https://tryparrot.app/og/compare.png",
+						image: `https://tryparrot.app/og/compare-${c.slug}.png`,
 						about: [
 							{
 								"@type": "SoftwareApplication",
