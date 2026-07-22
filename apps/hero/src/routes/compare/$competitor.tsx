@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight, Check, Download, X } from "lucide-react";
 import Footer from "@/components/Footer";
 import { competitors, getCompetitor } from "@/lib/competitors";
@@ -6,7 +6,7 @@ import { competitors, getCompetitor } from "@/lib/competitors";
 export const Route = createFileRoute("/compare/$competitor")({
 	loader: ({ params }) => {
 		const c = getCompetitor(params.competitor);
-		if (!c) throw new Error("Competitor not found");
+		if (!c) throw notFound();
 		return c;
 	},
 	component: CompareCompetitorPage,
