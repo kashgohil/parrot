@@ -60,9 +60,50 @@ export const Route = createFileRoute("/changelog")({
 
 const RELEASES = [
 	{
+		version: "v0.2.3",
+		date: "July 20, 2026",
+		tag: "Latest",
+		changes: [
+			{
+				type: "added",
+				items: [
+					"Cleanup quality tiers — pick a faster, lighter model or a higher-quality 1.5B / 3B tier so you can trade speed for polish",
+					"Formality presets in cleanup settings — dial the tone of cleaned-up text to match how you write",
+				],
+			},
+			{
+				type: "improved",
+				items: [
+					"Faster on-device cleanup — warm model context, cached system prompt, and flash attention for lower latency",
+					"Short dictations get cleaned too — brief utterances are no longer skipped by cleanup",
+				],
+			},
+		],
+	},
+	{
+		version: "v0.2.2",
+		date: "July 19, 2026",
+		changes: [
+			{
+				type: "improved",
+				items: [
+					"More stable AI cleanup — the cleanup model runs in its own isolated process, so it no longer conflicts with the transcription engine",
+					"Better cleanup output — improved handling of filler words, disfluencies, and formatting",
+					"Cleaner recording HUD — the chip shows only the listening timer while you’re recording",
+				],
+			},
+			{
+				type: "fixed",
+				items: [
+					"Cleanup no longer crashes — resolved a memory-corruption issue in the cleanup engine",
+					"More reliable Bluetooth mic — the always-open input stream is scoped to Bluetooth devices only",
+				],
+			},
+		],
+	},
+	{
 		version: "v0.2.1",
 		date: "July 19, 2026",
-		tag: "Latest",
 		changes: [
 			{
 				type: "improved",
