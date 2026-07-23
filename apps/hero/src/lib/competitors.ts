@@ -150,13 +150,13 @@ export const competitors: Competitor[] = [
 			{ name: "Custom vocabulary", parrot: "Deep", them: "Yes" },
 			{ name: "Voice commands", parrot: false, them: true },
 			{ name: "Mac (Apple Silicon)", parrot: true, them: true },
-			{ name: "Windows", parrot: false, them: false },
+			{ name: "Windows", parrot: false, them: true },
 			{ name: "Works offline", parrot: true, them: true },
 			{ name: "Native menu-bar app", parrot: true, them: true },
 		],
 		theirStrengths: [
 			"Voice commands for app actions (open, navigate, etc.)",
-			"Mature Mac-native experience",
+			"Mature Mac-native experience, now also on Windows and iOS",
 			"Established user base with frequent updates",
 		],
 		theirWeaknesses: [
@@ -181,6 +181,7 @@ export const competitors: Competitor[] = [
 		],
 		chooseThemWhen: [
 			"You rely heavily on voice commands for app navigation",
+			"You're on Windows or iOS (Parrot is Mac-only)",
 			"You're already happy on the Pro plan",
 		],
 		keywords: [
@@ -192,7 +193,7 @@ export const competitors: Competitor[] = [
 		faq: [
 			{
 				q: "Is Parrot a free Superwhisper alternative?",
-				a: "Yes. Parrot's local mode is free for life, including AI cleanup — which Superwhisper gates behind their Pro plan.",
+				a: "Yes. Parrot is free for life, including AI cleanup — which Superwhisper gates behind their Pro plan.",
 			},
 			{
 				q: "Does Parrot have voice commands like Superwhisper?",
@@ -212,22 +213,22 @@ export const competitors: Competitor[] = [
 		description:
 			"Parrot vs MacWhisper — comparing dictation workflow, AI cleanup, and pricing model for Mac voice transcription.",
 		heroVerdict:
-			"MacWhisper is great for transcribing audio files but isn't built for live dictation. Parrot is the better choice if you want global-hotkey dictation with AI cleanup. Pick MacWhisper if you mostly transcribe pre-recorded audio.",
+			"MacWhisper is a transcription-first app that later added dictation — its editor for files and meetings is still the core product. Parrot is built dictation-first: global hotkey, clean paste at the cursor, and AI cleanup included free. Pick MacWhisper if your main job is transcribing recordings in a dedicated editor and you prefer a one-time license.",
 		pricing: {
 			theirFree: "Free tier with smaller models",
-			theirPaid: "€59 one-time (Pro)",
+			theirPaid: "€64 one-time",
 			parrotPrice: "Free for life",
 		},
 		pricesCheckedOn: "July 2026",
 		features: [
-			{ name: "Price", parrot: "Free for life", them: "€59 one-time" },
+			{ name: "Price", parrot: "Free for life", them: "€64 one-time" },
 			{
 				name: "Live dictation (hotkey + paste)",
 				parrot: true,
-				them: "Limited",
+				them: true,
 			},
 			{ name: "Audio file transcription", parrot: true, them: true },
-			{ name: "AI cleanup", parrot: true, them: false },
+			{ name: "AI cleanup", parrot: "Free", them: "Pro only" },
 			{ name: "Custom vocabulary", parrot: "Deep", them: "Limited" },
 			{ name: "Fully local", parrot: true, them: true },
 			{ name: "Mac (Apple Silicon)", parrot: true, them: true },
@@ -237,13 +238,12 @@ export const competitors: Competitor[] = [
 			"Excellent for transcribing audio files (MP3, M4A, etc.)",
 			"One-time payment, no subscription",
 			"Polished UI with timestamps and editing",
-			"Multiple model sizes selectable",
+			"Now includes system-wide dictation and grammar cleanup (Pro)",
 		],
 		theirWeaknesses: [
-			"Not designed primarily for live dictation",
-			"No AI cleanup — output keeps filler words ('um', 'uh')",
+			"Best dictation features — high-quality dictation, grammar cleanup, AI prompts — are Pro-only",
+			"Transcription-first design; dictation was added later and isn't the core workflow",
 			"Limited custom vocabulary",
-			"No global-hotkey paste-into-any-app workflow",
 		],
 		parrotWins: [
 			{
@@ -251,19 +251,19 @@ export const competitors: Competitor[] = [
 				body: "Parrot is designed around the live workflow: press hotkey, speak, transcript appears at cursor. You can still drop in a file when you need a batch transcript.",
 			},
 			{
-				title: "AI cleanup",
-				body: "Parrot removes filler words and applies your writing style automatically. MacWhisper leaves you with raw transcripts.",
+				title: "AI cleanup included free",
+				body: "Parrot removes filler words and applies your writing style automatically, with no paid tier. MacWhisper gates its grammar cleanup and best dictation models behind the €64 Pro license.",
 			},
 		],
 		chooseParrotWhen: [
 			"You want to dictate emails, code comments, or notes throughout the day",
-			"You want filler words and grammar cleaned up automatically",
+			"You want filler words and grammar cleaned up automatically, free",
 			"You want custom vocabulary to handle names and jargon",
 		],
 		chooseThemWhen: [
 			"Your main job is batch-transcribing long recordings with a specialized editor UI",
-			"You don't need live dictation or AI cleanup",
-			"You want a one-time purchase tool focused only on files",
+			"You prefer a one-time license and don't mind paying Pro for cleanup",
+			"You want a transcription editor with timestamps and subtitle export",
 		],
 		keywords: [
 			"macwhisper alternative",
@@ -365,7 +365,7 @@ export const competitors: Competitor[] = [
 			},
 			{
 				q: "Is Parrot a Dragon Professional alternative for medical dictation?",
-				a: "For most general medical dictation, yes — Parrot's local mode keeps audio on-device (HIPAA-friendly) and AI cleanup handles formatting. For highly specialized terminology Dragon's medical vocabularies remain best-in-class. Note Dragon is Windows-only, so on a Mac Parrot is the native option.",
+				a: "For most general medical dictation, yes — Parrot keeps audio on-device (HIPAA-friendly) and AI cleanup handles formatting. For highly specialized terminology Dragon's medical vocabularies remain best-in-class. Note Dragon is Windows-only, so on a Mac Parrot is the native option.",
 			},
 			{
 				q: "Can Parrot match Dragon's accuracy?",
