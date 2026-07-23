@@ -2,6 +2,13 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight, Check, Download, X } from "lucide-react";
 import Footer from "@/components/Footer";
 import { competitors, getCompetitor } from "@/lib/competitors";
+import { PARROT_FACTS } from "@/lib/parrot-facts";
+
+/** Blog alternatives posts that pair with a compare page (cross-links both ways). */
+const ALTERNATIVES_BLOG: Record<string, string> = {
+	"wispr-flow": "wispr-flow-alternatives",
+	superwhisper: "superwhisper-alternatives",
+};
 
 export const Route = createFileRoute("/compare/$competitor")({
 	loader: ({ params }) => {
@@ -412,8 +419,8 @@ function CompareCompetitorPage() {
 						Try Parrot for free
 					</h2>
 					<p className="text-base text-muted-foreground mb-8 max-w-xl mx-auto">
-						No account, no card, no trial. Local-first dictation that runs on
-						your Mac.
+						{PARROT_FACTS.entity} No account, no card, no trial —{" "}
+						{PARROT_FACTS.price}.
 					</p>
 					<Link
 						to="/download"
@@ -423,6 +430,19 @@ function CompareCompetitorPage() {
 						Download Parrot
 						<ArrowRight size={16} strokeWidth={2.5} />
 					</Link>
+					{ALTERNATIVES_BLOG[c.slug] && (
+						<p className="mt-6 text-sm text-muted-foreground">
+							Comparing several options? See{" "}
+							<Link
+								to="/blog/$slug"
+								params={{ slug: ALTERNATIVES_BLOG[c.slug] }}
+								className="text-foreground underline underline-offset-2 hover:text-primary"
+							>
+								best {c.shortName} alternatives
+							</Link>
+							.
+						</p>
+					)}
 				</div>
 			</section>
 

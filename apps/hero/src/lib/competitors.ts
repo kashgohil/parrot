@@ -42,7 +42,7 @@ export const competitors: Competitor[] = [
 		description:
 			"Parrot vs Wispr Flow — a deep comparison of pricing, privacy, accuracy, and platform support to help you pick the right voice dictation app.",
 		heroVerdict:
-			"Pick Parrot if you want the same AI-cleaned dictation workflow without a monthly subscription, with a local-first option, and no weekly word cap. Pick Wispr Flow if you need cross-platform support (Windows + Mac).",
+			"Parrot is a free, local-first voice dictation app for Apple Silicon Macs: global hotkey, on-device transcription + AI cleanup, no word caps. Pick Parrot if you want Wispr Flow’s daily workflow without a $15/mo subscription or cloud upload. Pick Wispr Flow if you need Windows + Mac or prefer a managed cloud product.",
 		pricing: {
 			theirFree: "Free tier with weekly word cap",
 			theirPaid: "$15/mo Pro",
@@ -136,7 +136,7 @@ export const competitors: Competitor[] = [
 		description:
 			"Parrot vs Superwhisper — comparing two Mac-native voice dictation apps on price, features, and AI cleanup quality.",
 		heroVerdict:
-			"Both apps run locally on Mac and have similar workflows. Pick Parrot if you want a fully free option with no subscription. Pick Superwhisper if you specifically want their voice command features and don't mind a monthly fee.",
+			"Parrot and Superwhisper both run local dictation on Mac. Pick Parrot if you want free-for-life AI cleanup and a simple hotkey-to-cursor loop with no Pro tier. Pick Superwhisper ($8.49/mo Pro) if you need voice commands and a denser power-user control surface — including Windows and iOS.",
 		pricing: {
 			theirFree: "Limited free tier",
 			theirPaid: "$8.49/mo Pro",
@@ -213,7 +213,7 @@ export const competitors: Competitor[] = [
 		description:
 			"Parrot vs MacWhisper — comparing dictation workflow, AI cleanup, and pricing model for Mac voice transcription.",
 		heroVerdict:
-			"MacWhisper is a transcription-first app that later added dictation — its editor for files and meetings is still the core product. Parrot is built dictation-first: global hotkey, clean paste at the cursor, and AI cleanup included free. Pick MacWhisper if your main job is transcribing recordings in a dedicated editor and you prefer a one-time license.",
+			"Parrot is dictation-first: free global hotkey → clean paste at the cursor with AI cleanup included. MacWhisper is transcription-first (files, meetings, subtitles) with system-wide dictation and grammar cleanup behind a €64 one-time Pro license. Pick Parrot for daily live dictation; pick MacWhisper if you live in a batch-transcription editor and prefer a paid one-time license.",
 		pricing: {
 			theirFree: "Free tier with smaller models",
 			theirPaid: "€64 one-time",
@@ -290,7 +290,7 @@ export const competitors: Competitor[] = [
 		description:
 			"Parrot vs Dragon Professional — free, Mac-native AI dictation versus the Windows-only enterprise standard for legal and medical transcription. Dragon no longer ships a Mac version.",
 		heroVerdict:
-			"Dragon is the gold standard for hour-a-day professional dictation in legal and medical settings, but it's expensive and Windows-only — Nuance discontinued Dragon for Mac in 2018, so there's no current Mac version at any price. On a Mac, Parrot is the practical choice: free, fast, and good enough for most work. Dragon still wins on raw accuracy after extensive voice training, but only if you're on Windows.",
+			"Dragon Professional ($699 one-time) is the enterprise gold standard for legal and medical dictation after heavy voice training — but it is Windows-only in 2026 (Nuance discontinued Dragon for Mac in 2018). On a Mac, Parrot is the practical choice: free for life, local, and fast enough for daily work without hours of training. Pick Dragon only if you are on Windows and need its specialized vocabularies.",
 		pricing: {
 			theirFree: null,
 			theirPaid: "$699 one-time (Professional)",
