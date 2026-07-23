@@ -6,7 +6,12 @@
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { competitors, type FaqItem } from "../src/lib/competitors.ts";
+import {
+	competitors,
+	type FaqItem,
+	getCompetitor,
+} from "../src/lib/competitors.ts";
+import { PARROT_FACTS } from "../src/lib/parrot-facts.ts";
 
 const SITE_URL = "https://tryparrot.app";
 const SITE_NAME = "Parrot";
@@ -292,12 +297,53 @@ function stripInlineJsx(s: string): string {
 	return out;
 }
 
+/**
+ * Resolve shared-data expressions in post source before markdown conversion.
+ *
+ * Posts render facts from shared modules instead of hardcoding them (GEO §2D):
+ *
+ *   import { getCompetitor } from "@/lib/competitors";
+ *   const wispr = getCompetitor("wispr-flow")!;
+ *   ...
+ *   <td>{wispr.pricing.theirPaid}</td>   →   <td>$15/mo Pro</td>
+ *
+ * Convention: only simple member-access expressions (`{var.path.to.string}`)
+ * where `var` is bound via `const x = getCompetitor("slug")!` or is
+ * `PARROT_FACTS`. No calls, no template literals, no array indexing — anything
+ * else is left untouched and stripped by stripInlineJsx as before.
+ */
+function resolveDataExpressions(source: string): string {
+	const bindings = new Map<string, Record<string, unknown>>();
+	for (const m of source.matchAll(
+		/const\s+(\w+)\s*=\s*getCompetitor\("([^"]+)"\)!?/g,
+	)) {
+		const c = getCompetitor(m[2]);
+		if (c) bindings.set(m[1], c as unknown as Record<string, unknown>);
+	}
+	if (source.includes("PARROT_FACTS")) {
+		bindings.set("PARROT_FACTS", PARROT_FACTS);
+	}
+	if (bindings.size === 0) return source;
+
+	return source.replace(
+		/\{(\w+)((?:\.\w+)+)\}/g,
+		(expr, ident: string, path: string) => {
+			let cur: unknown = bindings.get(ident);
+			if (!cur) return expr;
+			for (const key of path.slice(1).split(".")) {
+				cur = (cur as Record<string, unknown>)?.[key];
+			}
+			return typeof cur === "string" ? cur : expr;
+		},
+	);
+}
+
 function extractBlogPostBody(slug: string): string | null {
 	const postsDir = resolve(import.meta.dir, "../src/routes/blog/-posts");
 	const filePath = resolve(postsDir, `${slug}.tsx`);
 	try {
 		const source = readFileSync(filePath, "utf-8");
-		const md = jsxToMarkdown(source);
+		const md = jsxToMarkdown(resolveDataExpressions(source));
 		return md.length > 40 ? md : null;
 	} catch {
 		return null;
@@ -380,7 +426,7 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 	sections.push(`# ${SITE_NAME} — Full LLM Context`);
 	sections.push("");
 	sections.push(
-		`> Free, local-first voice dictation for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud, no API keys.`,
+		`> ${PARROT_FACTS.entity} Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud, no API keys.`,
 	);
 	sections.push("");
 	sections.push(
@@ -408,7 +454,7 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 	sections.push("## How it works");
 	sections.push("");
 	sections.push(
-		"1. Press your global hotkey (default Cmd+Shift+Space) to start recording.",
+		`1. Press your global hotkey (default ${PARROT_FACTS.defaultHotkey}) to start recording.`,
 	);
 	sections.push("2. Speak naturally — names, jargon, full sentences.");
 	sections.push(
