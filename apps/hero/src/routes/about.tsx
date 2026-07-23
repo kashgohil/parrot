@@ -1,5 +1,6 @@
-import Footer from "@/components/Footer";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import Footer from "@/components/Footer";
+import { PARROT_FACTS } from "@/lib/parrot-facts";
 
 export const Route = createFileRoute("/about")({
 	component: AboutPage,
@@ -62,9 +63,9 @@ export const Route = createFileRoute("/about")({
 					"@context": "https://schema.org",
 					"@type": "Organization",
 					name: "Parrot",
+					alternateName: [...PARROT_FACTS.alternateNames],
 					url: "https://tryparrot.app",
-					description:
-						"Native Mac voice dictation app with AI cleanup, custom vocabulary, and local-first privacy.",
+					description: PARROT_FACTS.entity,
 					logo: {
 						"@type": "ImageObject",
 						url: "https://tryparrot.app/parrot-transparent.png",
@@ -131,8 +132,8 @@ function AboutPage() {
 						Voice dictation, rebuilt.
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-						Parrot is a native Mac dictation app. Press a hotkey, talk, and your
-						words appear where your cursor is.
+						{PARROT_FACTS.entity} Press a hotkey, talk, and your words appear
+						where your cursor is.
 					</p>
 				</div>
 			</section>
@@ -197,7 +198,7 @@ function AboutPage() {
 							{
 								num: "04",
 								title: "Everything stays local",
-								body: "In local mode, History, settings, vocabulary - all stored in a local SQLite database. Your audio never leaves your Mac.",
+								body: "History, settings, vocabulary — all stored in a local SQLite database. Your audio never leaves your Mac.",
 							},
 						].map((item) => (
 							<div key={item.num} className="flex gap-6">
@@ -272,7 +273,7 @@ function AboutPage() {
 							},
 							{
 								title: "Free means free",
-								body: "Local mode is free for life — no word caps, no trial that expires, no feature paywall for the daily dictation loop.",
+								body: "Free for life — no word caps, no trial that expires, no feature paywall for the daily dictation loop.",
 							},
 							{
 								title: "Simple beats clever",

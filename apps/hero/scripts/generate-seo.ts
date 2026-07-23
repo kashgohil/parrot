@@ -443,8 +443,8 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 	sections.push("");
 	sections.push("## Key facts");
 	sections.push("");
-	sections.push("- Free for life — no account, no trial, no card");
-	sections.push("- macOS only; Apple Silicon (M1 and later)");
+	sections.push(`- ${PARROT_FACTS.price} — no account, no trial, no card`);
+	sections.push(`- ${PARROT_FACTS.os} only; ${PARROT_FACTS.osRequirement}`);
 	sections.push("- On-device transcription and optional AI cleanup");
 	sections.push("- Works system-wide via global hotkey (any Mac app)");
 	sections.push("- Custom vocabulary, writing style, and dictation history");
@@ -470,8 +470,8 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 	sections.push("## Features");
 	sections.push("");
 	sections.push("- Fast, accurate first-pass dictation");
-	sections.push("- Audio never leaves your device (local mode)");
-	sections.push("- No account, no sign-in required for local use");
+	sections.push("- Audio never leaves your device");
+	sections.push("- No account, no sign-in required");
 	sections.push("- Works fully offline after setup");
 	sections.push("- Custom vocabulary & AI cleanup");
 	sections.push("- Dictation history with search");
@@ -479,22 +479,16 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 	sections.push("");
 	sections.push("## FAQ");
 	sections.push("");
-	sections.push("**Q: What's local mode?**");
+	sections.push("**Q: Does Parrot work fully offline?**");
 	sections.push("");
 	sections.push(
-		"Parrot runs transcription and AI cleanup entirely on your Mac. Everything happens on-device — zero data leaves your computer. You download what you need once, then no internet is required. Ideal for private work, legal documents, or anyone who values control.",
+		"Yes. Parrot runs transcription and AI cleanup entirely on your Mac. Everything happens on-device — zero data leaves your computer. You download what you need once, then no internet is required. Ideal for private work, legal documents, or anyone who values control.",
 	);
 	sections.push("");
 	sections.push("**Q: How fast is it?**");
 	sections.push("");
 	sections.push(
 		"Built for daily use: release the hotkey and text lands at your cursor with minimal wait. Accuracy is tuned for first-pass names, jargon, and everyday speech — not a raw draft you have to rewrite.",
-	);
-	sections.push("");
-	sections.push("**Q: Does it work offline?**");
-	sections.push("");
-	sections.push(
-		"Yes. After the one-time download, Parrot runs fully offline. No internet, no account, no API keys.",
 	);
 	sections.push("");
 	sections.push("**Q: How does the cleanup work?**");
@@ -506,13 +500,18 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 	sections.push("**Q: What about my privacy?**");
 	sections.push("");
 	sections.push(
-		"Everything stays on your Mac — audio, transcripts, history, vocabulary. Nothing is sent to our servers in local mode.",
+		"Everything stays on your Mac — audio, transcripts, history, vocabulary. Nothing is sent to our servers.",
 	);
 	sections.push("");
 	sections.push("**Q: Is it really free?**");
 	sections.push("");
+	const wispr = getCompetitor("wispr-flow");
+	const superwhisper = getCompetitor("superwhisper");
 	sections.push(
-		"Yes. Local mode is free, for life. No account, no trial, no card. Unlimited dictation on your Mac.",
+		`Yes — ${PARROT_FACTS.price}. Unlimited local dictation with AI cleanup and custom vocabulary. No word caps and no subscription.` +
+			(wispr && superwhisper
+				? ` Wispr Flow Pro is ${wispr.pricing.theirPaid}; Superwhisper Pro is ${superwhisper.pricing.theirPaid} (checked ${wispr.pricesCheckedOn}).`
+				: ""),
 	);
 	sections.push("");
 	sections.push("**Q: Does it work on Intel Macs?**");
@@ -524,7 +523,7 @@ function generateLlmsFull(posts: ReturnType<typeof parseBlogPosts>): {
 	sections.push("**Q: Will my audio be uploaded?**");
 	sections.push("");
 	sections.push(
-		"No. Local mode runs entirely on your Mac — transcription, cleanup, and history all stay on-device. Nothing is sent to any server.",
+		"No. Parrot runs entirely on your Mac — transcription, cleanup, and history all stay on-device. Nothing is sent to any server.",
 	);
 	sections.push("");
 	sections.push(`Download: ${SITE_URL}/download`);

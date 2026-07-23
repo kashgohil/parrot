@@ -2,19 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import Footer from "@/components/Footer";
+import { PARROT_FACTS } from "@/lib/parrot-facts";
 
 const DOWNLOAD_FAQ = [
 	{
 		title: "Is it really free?",
-		body: "Yes. Local mode is free, for life. No account, no trial, no card. Unlimited dictation on your Mac.",
+		body: `Yes — ${PARROT_FACTS.price}. No account, no trial, no card. Unlimited local dictation on your Mac.`,
 	},
 	{
 		title: "Does it work on Intel Macs?",
-		body: "Not currently. Parrot is built for Apple Silicon (M1 and later) and the on-device performance that makes dictation feel instant.",
+		body: `Not currently. Parrot requires ${PARROT_FACTS.osRequirement} for the on-device performance that makes dictation feel instant.`,
 	},
 	{
 		title: "Will my audio be uploaded?",
-		body: "No. Local mode runs entirely on your Mac — transcription, cleanup, and history all stay on-device. Nothing is sent to any server.",
+		body: "No. Parrot runs entirely on your Mac — transcription, cleanup, and history all stay on-device. Nothing is sent to any server.",
 	},
 	{
 		title: "Why does macOS show a security prompt?",
@@ -33,8 +34,7 @@ export const Route = createFileRoute("/download")({
 			{ title: "Download Parrot - Free voice dictation for Mac" },
 			{
 				name: "description",
-				content:
-					"Download Parrot for macOS. Free, local-only voice dictation for Apple Silicon Macs. Press a hotkey, talk, and your words appear where your cursor is.",
+				content: `Download Parrot for ${PARROT_FACTS.os}. Free, local-only voice dictation for ${PARROT_FACTS.osRequirement}. Press a hotkey, talk, and your words appear where your cursor is.`,
 			},
 			{
 				property: "og:title",
@@ -42,8 +42,7 @@ export const Route = createFileRoute("/download")({
 			},
 			{
 				property: "og:description",
-				content:
-					"Free, local-only voice dictation for Apple Silicon Macs. Runs entirely on your device.",
+				content: `${PARROT_FACTS.entity} Runs entirely on your device — ${PARROT_FACTS.price}.`,
 			},
 			{ property: "og:url", content: "https://tryparrot.app/download" },
 			{
@@ -52,8 +51,7 @@ export const Route = createFileRoute("/download")({
 			},
 			{
 				name: "twitter:description",
-				content:
-					"Free, local-only voice dictation for Apple Silicon Macs. Runs entirely on your device.",
+				content: `${PARROT_FACTS.entity} Runs entirely on your device.`,
 			},
 			{
 				property: "og:image",
@@ -87,6 +85,26 @@ export const Route = createFileRoute("/download")({
 		],
 		links: [{ rel: "canonical", href: "https://tryparrot.app/download" }],
 		scripts: [
+			{
+				type: "application/ld+json",
+				children: JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "SoftwareApplication",
+					name: PARROT_FACTS.name,
+					alternateName: [...PARROT_FACTS.alternateNames],
+					operatingSystem: PARROT_FACTS.os,
+					applicationCategory: "UtilitiesApplication",
+					description: PARROT_FACTS.entity,
+					softwareVersion: PARROT_FACTS.version,
+					downloadUrl: "https://tryparrot.app/download",
+					offers: {
+						"@type": "Offer",
+						price: "0",
+						priceCurrency: "USD",
+						description: PARROT_FACTS.price,
+					},
+				}),
+			},
 			{
 				type: "application/ld+json",
 				children: JSON.stringify({
@@ -195,8 +213,8 @@ function DownloadPage() {
 						Free, for life.
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-						Local-only voice dictation that runs entirely on your device. No
-						account, no subscription, no servers.
+						{PARROT_FACTS.entity} No account, no subscription, no servers —
+						requires {PARROT_FACTS.osRequirement}.
 					</p>
 
 					<div className="mt-10">
@@ -218,7 +236,8 @@ function DownloadPage() {
 							</span>
 						)}
 						<p className="mt-3 text-xs text-muted-foreground">
-							Apple Silicon (M1 or later) &middot; .dmg &middot; macOS 11+
+							{PARROT_FACTS.osRequirement} &middot; .dmg &middot; macOS 11+
+							&middot; {PARROT_FACTS.price}
 						</p>
 
 						{release.status === "no-release" && (
@@ -423,9 +442,41 @@ function DownloadPage() {
 				</div>
 			</section>
 
-			{/* ── Other links ── */}
-			<section className="px-6 py-16">
+			{/* ── Related guides ── */}
+			<section className="px-6 py-16 border-t border-border">
 				<div className="max-w-3xl mx-auto">
+					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
+						Before or after you install
+					</p>
+					<h2 className="text-2xl font-bold text-foreground tracking-tight mb-6">
+						Related guides
+					</h2>
+					<div className="grid sm:grid-cols-2 gap-4 mb-12">
+						<Link
+							to="/blog/$slug"
+							params={{ slug: "local-voice-dictation-mac" }}
+							className="p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+						>
+							<p className="text-[15px] font-bold text-foreground mb-1">
+								Local setup guide
+							</p>
+							<p className="text-sm text-muted-foreground">
+								On-device dictation in under five minutes.
+							</p>
+						</Link>
+						<Link
+							to="/blog/$slug"
+							params={{ slug: "free-voice-dictation-apps-2026" }}
+							className="p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+						>
+							<p className="text-[15px] font-bold text-foreground mb-1">
+								Free dictation apps
+							</p>
+							<p className="text-sm text-muted-foreground">
+								What free forever vs free tier actually means.
+							</p>
+						</Link>
+					</div>
 					<div className="grid sm:grid-cols-3 gap-6 text-center">
 						<Link
 							to="/changelog"

@@ -1,3 +1,24 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+	ArrowRight,
+	Bot,
+	Check,
+	Clipboard,
+	Code,
+	Download,
+	Laptop,
+	Lock,
+	Mail,
+	MessageSquare,
+	Mic,
+	Minus,
+	Monitor,
+	Stethoscope,
+	X as XIcon,
+	Zap,
+} from "lucide-react";
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import {
 	AppleMessagesIcon,
 	AppleNotesIcon,
@@ -37,27 +58,11 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-	ArrowRight,
-	Bot,
-	Check,
-	Clipboard,
-	Code,
-	Download,
-	Laptop,
-	Lock,
-	Mail,
-	MessageSquare,
-	Mic,
-	Minus,
-	Monitor,
-	Stethoscope,
-	X as XIcon,
-	Zap,
-} from "lucide-react";
-import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { getCompetitor } from "@/lib/competitors";
+import { PARROT_FACTS } from "@/lib/parrot-facts";
+
+const wispr = getCompetitor("wispr-flow")!;
+const superwhisper = getCompetitor("superwhisper")!;
 
 export const Route = createFileRoute("/")({
 	component: HomePage,
@@ -67,7 +72,7 @@ export const Route = createFileRoute("/")({
 			{
 				name: "description",
 				content:
-					"Free, local-first voice dictation for Mac. 3x faster than typing, with on-device AI cleanup, custom vocabulary, and full offline support. No subscription, no cloud, no API keys.",
+					"Free, local-first voice dictation for Mac. About 3x faster than typing for prose (Stanford/Baidu 2016), with on-device AI cleanup, custom vocabulary, and full offline support. No subscription, no cloud, no API keys.",
 			},
 			{
 				property: "og:title",
@@ -76,7 +81,7 @@ export const Route = createFileRoute("/")({
 			{
 				property: "og:description",
 				content:
-					"Free, local-first voice dictation for Mac. 3x faster than typing, with on-device AI cleanup, custom vocabulary, and full offline support. No subscription, no cloud, no API keys.",
+					"Free, local-first voice dictation for Mac. About 3x faster than typing for prose, with on-device AI cleanup, custom vocabulary, and full offline support. No subscription, no cloud, no API keys.",
 			},
 			{ property: "og:url", content: "https://tryparrot.app/" },
 			{
@@ -121,16 +126,16 @@ export const Route = createFileRoute("/")({
 				children: JSON.stringify({
 					"@context": "https://schema.org",
 					"@type": "SoftwareApplication",
-					name: "Parrot",
-					url: "https://tryparrot.app",
-					operatingSystem: "macOS",
+					name: PARROT_FACTS.name,
+					alternateName: [...PARROT_FACTS.alternateNames],
+					url: PARROT_FACTS.siteUrl,
+					operatingSystem: PARROT_FACTS.os,
 					applicationCategory: "UtilitiesApplication",
-					description:
-						"Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabulary, and local-first privacy.",
+					description: PARROT_FACTS.entity,
 					image: "https://tryparrot.app/og/home.png",
 					screenshot: "https://tryparrot.app/og/home.png",
 					downloadUrl: "https://tryparrot.app/download",
-					softwareVersion: "0.2.1",
+					softwareVersion: PARROT_FACTS.version,
 					author: {
 						"@type": "Person",
 						name: "Kash Gohil",
@@ -163,10 +168,10 @@ export const Route = createFileRoute("/")({
 					mainEntity: [
 						{
 							"@type": "Question",
-							name: "What's local mode?",
+							name: "Does Parrot work fully offline?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Parrot runs transcription and AI cleanup entirely on your Mac. Everything happens on-device — zero data leaves your computer. You download what you need once, then no internet is required. Ideal for private work, legal documents, or anyone who values control.",
+								text: "Yes. Parrot runs transcription and AI cleanup entirely on your Mac. Everything happens on-device — zero data leaves your computer. You download what you need once, then no internet is required. Ideal for private work, legal documents, or anyone who values control.",
 							},
 						},
 						{
@@ -179,10 +184,10 @@ export const Route = createFileRoute("/")({
 						},
 						{
 							"@type": "Question",
-							name: "Does it work offline?",
+							name: "Is Parrot really free?",
 							acceptedAnswer: {
 								"@type": "Answer",
-								text: "Yes. After the one-time download, Parrot runs fully offline. No internet, no account, no API keys.",
+								text: `Yes — ${PARROT_FACTS.price}. Unlimited local dictation with AI cleanup and custom vocabulary. No word caps and no subscription. Wispr Flow Pro is ${wispr.pricing.theirPaid}; Superwhisper Pro is ${superwhisper.pricing.theirPaid} (checked ${wispr.pricesCheckedOn}).`,
 							},
 						},
 						{
@@ -737,9 +742,7 @@ function DualModeSpotlight() {
 					<Monitor size={16} />
 					On your Mac
 				</div>
-				<span className="text-sm text-muted-foreground">
-					Private by design
-				</span>
+				<span className="text-sm text-muted-foreground">Private by design</span>
 			</div>
 
 			{/* Data flow diagram */}
@@ -1113,7 +1116,12 @@ function ComparisonTable() {
 		macos: boolean | "partial" | "soon";
 	}[] = [
 		{ feature: "Local mode", parrot: true, wispr: false, macos: false },
-		{ feature: "Fast on-device dictation", parrot: true, wispr: false, macos: "partial" },
+		{
+			feature: "Fast on-device dictation",
+			parrot: true,
+			wispr: false,
+			macos: "partial",
+		},
 		{ feature: "Custom vocabulary", parrot: true, wispr: true, macos: false },
 		{ feature: "AI cleanup", parrot: true, wispr: true, macos: false },
 		{
@@ -1183,13 +1191,13 @@ function ComparisonTable() {
 // ---------------------------------------------------------------------------
 const FAQ: { q: string; a: ReactNode }[] = [
 	{
-		q: "What's local mode?",
+		q: "Does Parrot work fully offline?",
 		a: (
 			<>
-				Parrot runs on your Mac — <strong>fully on-device</strong>. Transcription
-				and cleanup never leave your machine.
-				<br />
-				You download what you need once, then no internet required.
+				Yes. Parrot runs on your Mac — <strong>fully on-device</strong>.
+				Transcription and cleanup never leave your machine. You download what
+				you need once, then no internet, no account, and no API keys are
+				required.
 			</>
 		),
 	},
@@ -1204,11 +1212,13 @@ const FAQ: { q: string; a: ReactNode }[] = [
 		),
 	},
 	{
-		q: "Does it work offline?",
+		q: "Is Parrot really free?",
 		a: (
 			<>
-				Yes. After the one-time download, Parrot runs fully offline. No internet,
-				no account, no API keys.
+				Yes — {PARROT_FACTS.price}. Unlimited local dictation with AI cleanup
+				and custom vocabulary. No word caps and no subscription. (Competitors
+				like Wispr Flow Pro at {wispr.pricing.theirPaid} and Superwhisper Pro at{" "}
+				{superwhisper.pricing.theirPaid} charge monthly.)
 			</>
 		),
 	},
@@ -1234,8 +1244,8 @@ const FAQ: { q: string; a: ReactNode }[] = [
 		q: "What about my privacy?",
 		a: (
 			<>
-				Local mode keeps everything on your Mac — audio, transcripts, history,
-				vocabulary. Nothing is sent to our servers.
+				Everything stays on your Mac — audio, transcripts, history, vocabulary.
+				Nothing is sent to our servers.
 			</>
 		),
 	},
@@ -1251,35 +1261,28 @@ function HomePage() {
 				<div className="max-w-6xl mx-auto grid md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 items-center">
 					{/* Left - copy */}
 					<div>
-						<div
-							className="inline-flex items-center gap-2 px-3 py-1 bg-primary/8 border border-primary/15 rounded-full mb-6"
-						>
+						<div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/8 border border-primary/15 rounded-full mb-6">
 							<div className="w-1.5 h-1.5 rounded-full bg-primary" />
 							<span className="text-xs font-semibold text-primary tracking-wide">
 								macOS &middot; Free for life &middot; Faster &amp; sharper
 							</span>
 						</div>
 
-						<h1
-							className="text-[2.75rem] md:text-[3.5rem] lg:text-[4rem] font-black text-foreground tracking-tight leading-[1.08] mb-5"
-						>
+						<h1 className="text-[2.75rem] md:text-[3.5rem] lg:text-[4rem] font-black text-foreground tracking-tight leading-[1.08] mb-5">
 							Voice dictation for Mac.
 							<br />
 							<span className="text-primary">Local-first. Free.</span>
 						</h1>
 
-						<p
-							className="text-lg text-muted-foreground leading-relaxed max-w-md mb-8"
-						>
-							Press a hotkey, speak, and polished text lands at your cursor —
-							fast enough for daily work, accurate enough to trust. Custom
-							vocabulary, AI cleanup, full history. Runs entirely on your Mac.
-							Free for life.
+						<p className="text-lg text-muted-foreground leading-relaxed max-w-md mb-8">
+							{PARROT_FACTS.entity} Unlike Wispr Flow ({wispr.pricing.theirPaid}
+							) and Superwhisper ({superwhisper.pricing.theirPaid}), Parrot is{" "}
+							{PARROT_FACTS.price}, runs transcription fully on-device, and
+							pastes into any Mac app via a global hotkey. Custom vocabulary, AI
+							cleanup, full history.
 						</p>
 
-						<div
-							className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
-						>
+						<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
 							<Link
 								to="/download"
 								className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline shadow-[0_4px_20px_rgba(0,0,0,0.08)]"
@@ -1294,9 +1297,7 @@ function HomePage() {
 						</div>
 
 						{/* Hotkey hint */}
-						<div
-							className="mt-8 flex items-center gap-3"
-						>
+						<div className="mt-8 flex items-center gap-3">
 							<div className="flex items-center gap-1">
 								<kbd className="px-2 py-1 bg-muted border border-border rounded-md text-[11px] font-bold text-foreground/70 shadow-[0_1px_0_0] shadow-border/50">
 									fn
@@ -1653,51 +1654,69 @@ function HomePage() {
 						From the blog
 					</p>
 					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
-						Learn more about voice dictation
+						Guides for free, local Mac dictation
 					</h2>
-					<div className="grid sm:grid-cols-3 gap-5">
-						<a
-							href="/blog/best-voice-dictation-apps-mac-2026"
-							className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-colors no-underline block"
-						>
-							<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
-								Comparison
-							</span>
-							<p className="text-[15px] font-bold text-foreground mt-2 mb-2 leading-snug">
-								Best Voice Dictation Apps for Mac in 2026
-							</p>
-							<p className="text-sm text-muted-foreground line-clamp-2">
-								A head-to-head comparison of the top dictation apps.
-							</p>
-						</a>
-						<a
-							href="/blog/voice-dictation-vs-typing"
-							className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-colors no-underline block"
-						>
-							<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
-								Comparison
-							</span>
-							<p className="text-[15px] font-bold text-foreground mt-2 mb-2 leading-snug">
-								Voice Dictation vs. Typing: Which Is Faster?
-							</p>
-							<p className="text-sm text-muted-foreground line-clamp-2">
-								We compared speed, accuracy, and when each method wins.
-							</p>
-						</a>
-						<a
-							href="/blog/local-voice-dictation-mac"
-							className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-colors no-underline block"
-						>
-							<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
-								Tutorial
-							</span>
-							<p className="text-[15px] font-bold text-foreground mt-2 mb-2 leading-snug">
-								How to Set Up Local Voice Dictation on Mac
-							</p>
-							<p className="text-sm text-muted-foreground line-clamp-2">
-								Run dictation entirely on your Mac with no internet required.
-							</p>
-						</a>
+					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+						{[
+							{
+								href: "/blog/wispr-flow-alternatives",
+								tag: "Alternatives",
+								title: "Best Wispr Flow alternatives (2026)",
+								blurb:
+									"Free local options vs Wispr’s subscription and word cap.",
+							},
+							{
+								href: "/blog/superwhisper-alternatives",
+								tag: "Alternatives",
+								title: "Best Superwhisper alternatives",
+								blurb:
+									"Local Mac dictation with cleanup — without a Pro plan.",
+							},
+							{
+								href: "/blog/free-voice-dictation-apps-2026",
+								tag: "Guide",
+								title: "Free voice dictation apps in 2026",
+								blurb:
+									"What “free” really means: caps, trials, and free forever.",
+							},
+							{
+								href: "/blog/local-voice-dictation-mac",
+								tag: "Tutorial",
+								title: "Set up local voice dictation on Mac",
+								blurb:
+									"On-device transcription and cleanup in under five minutes.",
+							},
+							{
+								href: "/blog/best-voice-dictation-apps-mac-2026",
+								tag: "Comparison",
+								title: "Best voice dictation apps for Mac",
+								blurb:
+									"Parrot, macOS Dictation, Otter, Dragon, and more.",
+							},
+							{
+								href: "/compare",
+								tag: "Compare",
+								title: "Parrot vs the rest",
+								blurb:
+									"Side-by-side feature and pricing tables for each competitor.",
+							},
+						].map((card) => (
+							<a
+								key={card.href}
+								href={card.href}
+								className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-colors no-underline block"
+							>
+								<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+									{card.tag}
+								</span>
+								<p className="text-[15px] font-bold text-foreground mt-2 mb-2 leading-snug">
+									{card.title}
+								</p>
+								<p className="text-sm text-muted-foreground line-clamp-2">
+									{card.blurb}
+								</p>
+							</a>
+						))}
 					</div>
 				</div>
 			</section>
@@ -1717,8 +1736,8 @@ function FinalCTA() {
 					Start dictating. Stop typing.
 				</h2>
 				<p className="text-background/50 mb-8 text-[15px]">
-					Local mode is available today &mdash; free, for life. Download for Mac
-					and start dictating in minutes.
+					{PARROT_FACTS.price}. Fully on-device on Apple Silicon. Download for
+					Mac and start dictating in minutes.
 				</p>
 
 				<div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
