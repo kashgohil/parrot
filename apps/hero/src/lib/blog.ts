@@ -271,7 +271,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Looking for a Superwhisper alternative? Compare free and paid Mac dictation apps on price, privacy, AI cleanup, and daily workflow — including a free local option.",
 		date: "2026-07-18",
-		dateModified: "2026-07-19",
+		dateModified: "2026-07-23",
 		readingTime: "7 min read",
 		category: "Comparison",
 		keywords: [
@@ -491,7 +491,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Looking for a Wispr Flow alternative? We compare the 5 best voice dictation apps on price, privacy, accuracy, and offline support so you can pick the right one.",
 		date: "2026-04-29",
-		dateModified: "2026-07-19",
+		dateModified: "2026-07-23",
 		readingTime: "7 min read",
 		category: "Comparison",
 		keywords: [
@@ -509,7 +509,7 @@ export const posts: BlogPost[] = [
 			},
 			{
 				q: "What is the best free Wispr Flow alternative?",
-				a: "Parrot is the closest free alternative: the same global-hotkey, AI-cleaned dictation workflow, running locally on your Mac, with no subscription and no weekly word cap. Superwhisper ($8.49/mo Pro) and MacWhisper (€59 one-time) are strong paid options.",
+				a: "Parrot is the closest free alternative: the same global-hotkey, AI-cleaned dictation workflow, running locally on your Mac, with no subscription and no weekly word cap. Superwhisper ($8.49/mo Pro) and MacWhisper (€64 one-time) are strong paid options.",
 			},
 			{
 				q: "Does Wispr Flow work offline?",
@@ -517,7 +517,7 @@ export const posts: BlogPost[] = [
 			},
 			{
 				q: "Is there a Wispr Flow alternative for Windows?",
-				a: "Wispr Flow itself is the cross-platform option — most alternatives, including Parrot and Superwhisper, are Mac-only. If you are on Windows, staying on Wispr Flow is the practical choice today.",
+				a: "Wispr Flow and Superwhisper both ship Windows apps; Parrot is Mac-only today. If you are on Windows, Wispr Flow or Superwhisper are the practical choices — Parrot is not an option there yet.",
 			},
 			{
 				q: "Is Whisper Flow the same as Wispr Flow?",
@@ -584,7 +584,7 @@ export const posts: BlogPost[] = [
 		description:
 			"An honest look at free voice dictation apps in 2026 - which ones are truly free forever, which have hidden caps, and which charge you through API fees.",
 		date: "2026-04-26",
-		dateModified: "2026-07-19",
+		dateModified: "2026-07-23",
 		readingTime: "7 min read",
 		category: "Guide",
 		keywords: [
@@ -650,7 +650,7 @@ export const posts: BlogPost[] = [
 		description:
 			"A comprehensive comparison of the best voice dictation apps for Mac, including Parrot, Whisper Flow, macOS Dictation, and more.",
 		date: "2026-02-05",
-		dateModified: "2026-07-19",
+		dateModified: "2026-07-23",
 		readingTime: "8 min read",
 		category: "Comparison",
 		keywords: [
@@ -752,7 +752,7 @@ export const posts: BlogPost[] = [
 		description:
 			"Step-by-step guide to running voice dictation entirely on your Mac with no cloud services, no API keys, and no internet required.",
 		date: "2026-01-24",
-		dateModified: "2026-07-19",
+		dateModified: "2026-07-23",
 		readingTime: "5 min read",
 		category: "Tutorial",
 		keywords: [
@@ -921,14 +921,38 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
 	return posts.find((p) => p.slug === slug);
 }
 
+/** P0 money URLs for SEO cluster priority (homepage, blog index, related). */
+export const MONEY_POST_SLUGS = [
+	"wispr-flow-alternatives",
+	"superwhisper-alternatives",
+	"free-voice-dictation-apps-2026",
+	"local-voice-dictation-mac",
+	"best-voice-dictation-apps-mac-2026",
+] as const;
+
+/** Blog index / hub: money posts first, then the rest in source order. */
+export function getPostsForBlogIndex(): BlogPost[] {
+	const money = MONEY_POST_SLUGS.map((s) => getPostBySlug(s)).filter(
+		(p): p is BlogPost => Boolean(p),
+	);
+	const moneySet = new Set<string>(MONEY_POST_SLUGS);
+	const rest = posts.filter((p) => !moneySet.has(p.slug));
+	return [...money, ...rest];
+}
+
 export function getRelatedPosts(slug: string, count = 3): BlogPost[] {
 	const current = getPostBySlug(slug);
-	if (!current) return posts.slice(0, count);
-	const sameCategory = posts.filter(
-		(p) => p.slug !== slug && p.category === current.category,
-	);
-	const others = posts.filter(
-		(p) => p.slug !== slug && p.category !== current.category,
-	);
-	return [...sameCategory, ...others].slice(0, count);
+	if (!current) return getPostsForBlogIndex().slice(0, count);
+
+	const moneySet = new Set<string>(MONEY_POST_SLUGS);
+	const pool = posts.filter((p) => p.slug !== slug);
+	const score = (p: BlogPost) => {
+		let s = 0;
+		if (moneySet.has(p.slug)) s += 4;
+		if (p.category === current.category) s += 2;
+		const shared = p.keywords.filter((k) => current.keywords.includes(k));
+		s += Math.min(shared.length, 3);
+		return s;
+	};
+	return [...pool].sort((a, b) => score(b) - score(a)).slice(0, count);
 }

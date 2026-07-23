@@ -1,15 +1,26 @@
 import { Link } from "@tanstack/react-router";
+import { getCompetitor } from "@/lib/competitors";
+import { PARROT_FACTS } from "@/lib/parrot-facts";
+
+const wispr = getCompetitor("wispr-flow")!;
+const superwhisper = getCompetitor("superwhisper")!;
+const macwhisper = getCompetitor("macwhisper")!;
 
 export default function WisprFlowAlternatives() {
 	return (
 		<>
 			<p>
 				<strong>The best Wispr Flow alternative in 2026 is Parrot</strong> if
-				you want the same fast, AI-cleaned dictation experience with a fully
-				local option, no forced subscription, and no weekly word cap. Below, we
-				compare the five strongest Wispr Flow alternatives across price,
-				privacy, accuracy, and platform support so you can pick the right one
-				for how you actually work.
+				you want the same fast, AI-cleaned dictation experience with fully local
+				processing — {PARROT_FACTS.price}, no weekly word cap, and no cloud
+				upload. Wispr Flow Pro is {wispr.pricing.theirPaid} (checked{" "}
+				{wispr.pricesCheckedOn}). Below, we compare the five strongest
+				alternatives across price, privacy, accuracy, and platform support.
+			</p>
+			<p>
+				<strong>Best for Parrot:</strong> Mac users who want free, private,
+				offline dictation with cleanup. <strong>Not for:</strong> Windows or
+				multi-device cloud sync — stay on Wispr Flow for those.
 			</p>
 
 			<h2>Why people look for a Wispr Flow alternative</h2>
@@ -52,30 +63,30 @@ export default function WisprFlowAlternatives() {
 						<td>
 							<strong>Parrot</strong>
 						</td>
-						<td>Free for life</td>
+						<td>{PARROT_FACTS.price}</td>
 						<td>Yes</td>
 						<td>Yes</td>
 						<td>Yes</td>
 					</tr>
 					<tr>
 						<td>Wispr Flow</td>
-						<td>Free tier / $15/mo</td>
+						<td>Free tier / {wispr.pricing.theirPaid}</td>
 						<td>No</td>
 						<td>Yes</td>
 						<td>Limited</td>
 					</tr>
 					<tr>
 						<td>Superwhisper</td>
-						<td>$8.49/mo</td>
+						<td>{superwhisper.pricing.theirPaid}</td>
 						<td>Yes</td>
-						<td>Yes</td>
+						<td>Pro only</td>
 						<td>Yes</td>
 					</tr>
 					<tr>
 						<td>MacWhisper</td>
-						<td>€59 one-time</td>
+						<td>{macwhisper.pricing.theirPaid}</td>
 						<td>Yes</td>
-						<td>No</td>
+						<td>Pro only</td>
 						<td>Limited</td>
 					</tr>
 					<tr>
@@ -87,14 +98,42 @@ export default function WisprFlowAlternatives() {
 					</tr>
 				</tbody>
 			</table>
+			<p>
+				Prices checked {wispr.pricesCheckedOn} — see{" "}
+				<a
+					href="https://wisprflow.ai/pricing"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					Wispr Flow
+				</a>
+				,{" "}
+				<a
+					href="https://superwhisper.com/"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					Superwhisper
+				</a>
+				, and{" "}
+				<a
+					href="https://www.macwhisper.com/"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					MacWhisper
+				</a>{" "}
+				for current plans.
+			</p>
 
 			<h2>1. Parrot - the closest match, without the subscription</h2>
 			<p>
-				<Link to="/">Parrot</Link> is the most direct Wispr Flow alternative if
-				you want the same workflow - global hotkey, transcribe, AI cleanup,
-				paste into any app - without paying monthly. It's free for life, runs as
-				a native menu-bar app, and gives you a local-first option so your audio
-				never leaves your Mac.
+				<Link to="/">{PARROT_FACTS.name}</Link> is the most direct Wispr Flow
+				alternative if you want the same workflow — global hotkey, transcribe,
+				AI cleanup, paste into any app — without paying monthly. It&apos;s{" "}
+				{PARROT_FACTS.price}, runs as a native menu-bar app on{" "}
+				{PARROT_FACTS.osRequirement}, and keeps audio on-device so nothing
+				leaves your Mac.
 			</p>
 			<p>
 				<strong>Where Parrot wins:</strong>
@@ -119,34 +158,68 @@ export default function WisprFlowAlternatives() {
 			</ul>
 			<p>
 				<strong>Where Wispr Flow still wins:</strong> cross-platform support
-				(Wispr ships on Windows; Parrot is Mac-only today).
+				(Wispr ships on Windows; Parrot is Mac-only today). Full side-by-side:{" "}
+				<Link
+					to="/compare/$competitor"
+					params={{ competitor: "wispr-flow" }}
+				>
+					Parrot vs Wispr Flow
+				</Link>
+				. Also see{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "superwhisper-alternatives" }}
+				>
+					Superwhisper alternatives
+				</Link>
+				,{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "free-voice-dictation-apps-2026" }}
+				>
+					free dictation apps
+				</Link>
+				, and{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "local-voice-dictation-mac" }}
+				>
+					local setup
+				</Link>
+				.
 			</p>
 
 			<h2>2. Superwhisper - if you don't mind the subscription</h2>
 			<p>
 				Superwhisper is another Mac-native dictation app with a similar shape:
 				hotkey, dictate, paste. It supports local Whisper models out of the box
-				and has a clean UI.
+				and has a clean UI. Pro is {superwhisper.pricing.theirPaid}.
 			</p>
 			<p>
 				<strong>Trade-offs:</strong> the Pro plan is required for AI cleanup and
-				unlocks better models, so the "free" experience is meaningfully thinner.
-				If you'd rather pay once or not at all, look at Parrot or MacWhisper
-				instead.
+				unlocks better models, so the free experience is meaningfully thinner.
+				If you&apos;d rather pay once or not at all, look at Parrot or
+				MacWhisper instead.
+			</p>
+			<p>
+				<strong>Best for Superwhisper:</strong> power users who want voice
+				commands and don&apos;t mind a subscription. <strong>Not for:</strong>{" "}
+				free-forever daily dictation with cleanup included.
 			</p>
 
-			<h2>3. MacWhisper - one-time payment, no cleanup</h2>
+			<h2>3. MacWhisper - one-time payment, transcription-first</h2>
 			<p>
 				MacWhisper is a popular choice for people who want to run Whisper
-				locally with a real GUI. It nails transcription quality and the license
-				is a one-time €59.
+				locally with a real GUI. It's transcription-first (files, meetings,
+				subtitles) and has since added system-wide dictation and grammar
+				cleanup. The license costs {macwhisper.pricing.theirPaid}.
 			</p>
 			<p>
-				<strong>The catch:</strong> there's no AI cleanup, so you get raw
-				transcripts with filler words ("um", "uh", "you know") and speech-style
-				punctuation. If you mostly transcribe audio files, that's fine. For
-				dictation - where you want output that reads like you wrote it - you'll
-				want a tool with a cleanup pass.
+				<strong>The catch:</strong> the best dictation features - high-quality
+				dictation models, automatic grammar cleanup, AI prompts - sit behind the
+				Pro license. If you mostly transcribe audio files, the free tier is
+				fine. For daily dictation with cleanup included, Parrot covers it
+				without a license.
 			</p>
 
 			<h2>4. macOS Dictation - free, but bare-bones</h2>
@@ -207,7 +280,7 @@ export default function WisprFlowAlternatives() {
 				Wispr Flow proved that AI-cleaned dictation is a workflow worth paying
 				for. The good news: you don't actually have to pay monthly to get it.{" "}
 				<Link to="/">Parrot</Link> delivers the same core experience - hotkey,
-				dictate, AI cleanup, paste - with a local-first option and no word caps,
+				dictate, AI cleanup, paste - fully on-device with no word caps,
 				for free.
 			</p>
 			<p>

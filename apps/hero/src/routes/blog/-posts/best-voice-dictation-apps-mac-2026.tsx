@@ -1,4 +1,8 @@
 import { Link } from "@tanstack/react-router";
+import { getCompetitor } from "@/lib/competitors";
+import { PARROT_FACTS } from "@/lib/parrot-facts";
+
+const dragon = getCompetitor("dragon-professional")!;
 
 export default function BestVoiceDictationAppsMac2026() {
 	return (
@@ -6,9 +10,14 @@ export default function BestVoiceDictationAppsMac2026() {
 			<p>
 				<strong>Parrot is the best voice dictation app for Mac in 2026</strong>{" "}
 				if you want AI-powered cleanup, custom vocabulary, and fully local
-				processing — free for life. For casual use, macOS Dictation is solid and
-				free. For meetings, Otter.ai leads. We compared the top options across
-				accuracy, speed, privacy, and price to help you pick the right one.
+				processing — {PARROT_FACTS.price}. For casual use, macOS Dictation is
+				solid and free. For meetings, Otter.ai leads. We compared the top
+				options across accuracy, speed, privacy, and price.
+			</p>
+			<p>
+				<strong>Best for Parrot:</strong> daily hotkey dictation with cleanup on{" "}
+				{PARROT_FACTS.osRequirement}. <strong>Not for:</strong> meeting
+				transcription (Otter) or Windows enterprise workflows (Dragon).
 			</p>
 
 			<h2>Quick comparison</h2>
@@ -28,7 +37,7 @@ export default function BestVoiceDictationAppsMac2026() {
 							<strong>Parrot</strong>
 						</td>
 						<td>Power users, privacy-conscious</td>
-						<td>Free for life</td>
+						<td>{PARROT_FACTS.price}</td>
 						<td>Yes</td>
 					</tr>
 					<tr>
@@ -60,18 +69,31 @@ export default function BestVoiceDictationAppsMac2026() {
 							<strong>Dragon Professional</strong>
 						</td>
 						<td>Enterprise, legal/medical</td>
-						<td>$699 (one-time)</td>
+						<td>{dragon.pricing.theirPaid}</td>
 						<td>Yes</td>
 					</tr>
 				</tbody>
 			</table>
+			<p>
+				Prices checked {dragon.pricesCheckedOn}. Otter Pro shown at the
+				monthly-billing rate ($8.33/mo billed annually) — see{" "}
+				<a
+					href="https://otter.ai/pricing"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					Otter.ai
+				</a>{" "}
+				for current plans.
+			</p>
 
 			<h2>Parrot</h2>
 			<p>
-				<Link to="/">Parrot</Link> is a native Mac app built specifically for
-				fast, accurate voice dictation. It sits in your menu bar and activates
-				with a global hotkey (fn by default). Speak, and the transcribed text
-				appears wherever your cursor is.
+				<Link to="/">{PARROT_FACTS.name}</Link> is a native Mac app built
+				specifically for fast, accurate voice dictation. It sits in your menu
+				bar and activates with a global hotkey ({PARROT_FACTS.defaultHotkey} by
+				default). Speak, and the transcribed text appears wherever your cursor
+				is.
 			</p>
 			<p>
 				<strong>What sets it apart:</strong>
@@ -92,13 +114,42 @@ export default function BestVoiceDictationAppsMac2026() {
 					setup.
 				</li>
 				<li>
-					<strong>Free for life</strong> - No subscription, no word caps, no API
-					bills for daily dictation.
+					<strong>{PARROT_FACTS.price}</strong> - No subscription, no word caps,
+					no API bills for daily dictation.
 				</li>
 			</ul>
 			<p>
 				Parrot is built with Tauri (Rust), so it's lightweight (~15MB) and uses
-				minimal system resources compared to Electron-based alternatives.
+				minimal system resources compared to Electron-based alternatives. Deeper
+				matchups:{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "wispr-flow-alternatives" }}
+				>
+					Wispr Flow alternatives
+				</Link>
+				,{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "superwhisper-alternatives" }}
+				>
+					Superwhisper alternatives
+				</Link>
+				,{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "free-voice-dictation-apps-2026" }}
+				>
+					free dictation apps
+				</Link>
+				, and{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "local-voice-dictation-mac" }}
+				>
+					local setup
+				</Link>
+				.
 			</p>
 
 			<h2>macOS Dictation</h2>
@@ -138,7 +189,17 @@ export default function BestVoiceDictationAppsMac2026() {
 			<p>
 				Whisper Flow is an open-source tool that runs OpenAI's Whisper model
 				locally. It's popular among developers who prefer command-line tools and
-				want full control over their transcription setup.
+				want full control over their transcription setup. In{" "}
+				<a
+					href="https://arxiv.org/abs/2212.04356"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					the original Whisper paper
+				</a>
+				, the large-v2 model reaches roughly 5-10% word error rate on standard
+				English benchmarks — which is why local-first apps are viable for daily
+				dictation now.
 			</p>
 			<p>
 				<strong>Pros:</strong>
@@ -214,7 +275,7 @@ export default function BestVoiceDictationAppsMac2026() {
 				<strong>Cons:</strong>
 			</p>
 			<ul>
-				<li>Expensive ($699 one-time)</li>
+				<li>Expensive — {dragon.pricing.theirPaid}</li>
 				<li>Requires significant training time</li>
 				<li>No Mac version — Windows-only since 2018</li>
 				<li>Heavy software with dated interface</li>
@@ -227,10 +288,10 @@ export default function BestVoiceDictationAppsMac2026() {
 
 			<h2>Our recommendation</h2>
 			<p>
-				For most Mac users in 2026, <Link to="/">Parrot</Link> offers the best
-				balance of accuracy, ease of use, and privacy. The AI cleanup feature
-				alone saves significant editing time, and the ability to run locally
-				means your data stays on your machine.
+				For most Mac users in 2026, <Link to="/">{PARROT_FACTS.name}</Link>{" "}
+				offers the best balance of accuracy, ease of use, and privacy. The AI
+				cleanup feature alone saves significant editing time, and fully local
+				processing means your data stays on your machine — {PARROT_FACTS.price}.
 			</p>
 			<p>
 				If you're just getting started with voice dictation, try the built-in

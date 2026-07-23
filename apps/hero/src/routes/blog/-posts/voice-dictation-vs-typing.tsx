@@ -7,11 +7,18 @@ export default function VoiceDictationVsTyping() {
 				<strong>
 					Voice dictation is roughly 3x faster than typing for prose
 				</strong>{" "}
-				- the average person speaks at 130-150 WPM versus 40 WPM typing, per
-				Stanford's 2017 speech-vs-keyboard study. For emails, notes, and
-				long-form writing, dictation wins convincingly. For code, structured
-				data, or heavy editing, typing is still faster. Here's exactly when each
-				method wins, backed by data.
+				— a 2016 Stanford/Baidu study found speech input about 3× faster than
+				typing on mobile keyboards (
+				<a
+					href="https://arxiv.org/abs/1608.07323"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					Ruan et al.
+				</a>
+				). For emails, notes, and long-form writing, dictation wins
+				convincingly. For code, structured data, or heavy editing, typing is
+				still faster. Here&apos;s when each method wins.
 			</p>
 
 			<h2>Raw speed: dictation wins easily</h2>

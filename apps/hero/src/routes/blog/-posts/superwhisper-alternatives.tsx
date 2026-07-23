@@ -1,16 +1,26 @@
 import { Link } from "@tanstack/react-router";
+import { getCompetitor } from "@/lib/competitors";
+import { PARROT_FACTS } from "@/lib/parrot-facts";
+
+const superwhisper = getCompetitor("superwhisper")!;
+const wispr = getCompetitor("wispr-flow")!;
+const macwhisper = getCompetitor("macwhisper")!;
 
 export default function SuperwhisperAlternatives() {
 	return (
 		<>
 			<p>
-				<strong>
-					The best Superwhisper alternative in 2026 is Parrot
-				</strong>{" "}
-				if you want local Mac dictation with AI cleanup, custom vocabulary, and
-				no monthly subscription. Below we compare the strongest Superwhisper
-				alternatives on price, privacy, cleanup, and day-to-day workflow so you
-				can switch with confidence.
+				<strong>The best Superwhisper alternative in 2026 is Parrot</strong> if
+				you want local Mac dictation with AI cleanup, custom vocabulary, and no
+				monthly subscription — {PARROT_FACTS.price}. Superwhisper Pro is{" "}
+				{superwhisper.pricing.theirPaid} (checked {superwhisper.pricesCheckedOn}
+				). Below we compare the strongest alternatives on price, privacy,
+				cleanup, and day-to-day workflow.
+			</p>
+			<p>
+				<strong>Best for Parrot:</strong> daily hotkey dictation with cleanup
+				included, fully on-device. <strong>Not for:</strong> Superwhisper-style
+				voice commands or non-Mac platforms.
 			</p>
 
 			<h2>Why people look for a Superwhisper alternative</h2>
@@ -54,21 +64,21 @@ export default function SuperwhisperAlternatives() {
 						<td>
 							<strong>Parrot</strong>
 						</td>
-						<td>Free for life</td>
+						<td>{PARROT_FACTS.price}</td>
 						<td>Yes</td>
 						<td>Yes (included)</td>
 						<td>Daily hotkey dictation</td>
 					</tr>
 					<tr>
 						<td>Superwhisper</td>
-						<td>Free tier / Pro sub</td>
+						<td>Free tier / {superwhisper.pricing.theirPaid}</td>
 						<td>Yes</td>
 						<td>Pro-gated</td>
 						<td>Power users</td>
 					</tr>
 					<tr>
 						<td>Wispr Flow</td>
-						<td>Free tier / paid</td>
+						<td>Free tier / {wispr.pricing.theirPaid}</td>
 						<td>No</td>
 						<td>Yes</td>
 						<td>Polished cloud UX</td>
@@ -82,25 +92,53 @@ export default function SuperwhisperAlternatives() {
 					</tr>
 					<tr>
 						<td>MacWhisper</td>
-						<td>One-time Pro</td>
+						<td>{macwhisper.pricing.theirPaid}</td>
 						<td>Yes</td>
-						<td>No</td>
+						<td>Pro only</td>
 						<td>File transcription</td>
 					</tr>
 				</tbody>
 			</table>
+			<p>
+				Prices checked {superwhisper.pricesCheckedOn} — see{" "}
+				<a
+					href="https://superwhisper.com/"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					Superwhisper
+				</a>
+				,{" "}
+				<a
+					href="https://wisprflow.ai/pricing"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					Wispr Flow
+				</a>
+				, and{" "}
+				<a
+					href="https://www.macwhisper.com/"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					MacWhisper
+				</a>{" "}
+				for current plans.
+			</p>
 
 			<h2>1. Parrot — free local dictation with cleanup included</h2>
 			<p>
-				<Link to="/">Parrot</Link> matches the Superwhisper job people care
-				about most: press a global hotkey, speak, get clean text at the cursor.
-				It runs fully on your Mac, keeps audio on-device, and includes AI
-				cleanup and custom vocabulary without a paid tier.
+				<Link to="/">{PARROT_FACTS.name}</Link> matches the Superwhisper job
+				people care about most: press a global hotkey, speak, get clean text at
+				the cursor. It runs fully on your Mac ({PARROT_FACTS.osRequirement}),
+				keeps audio on-device, and includes AI cleanup and custom vocabulary
+				without a paid tier — {PARROT_FACTS.price}.
 			</p>
 			<p>
-				<strong>Where Parrot wins:</strong> free for life, simple daily loop,
-				strong first-pass accuracy for names and jargon, optional cleanup that
-				removes filler words, and offline use after the one-time download.
+				<strong>Where Parrot wins:</strong> {PARROT_FACTS.price}, simple daily
+				loop, strong first-pass accuracy for names and jargon, optional cleanup
+				that removes filler words, and offline use after the one-time download.
 			</p>
 			<p>
 				<strong>Where Superwhisper may still win:</strong> voice commands and a
@@ -108,10 +146,7 @@ export default function SuperwhisperAlternatives() {
 			</p>
 			<p>
 				See also our full{" "}
-				<Link
-					to="/compare/$competitor"
-					params={{ competitor: "superwhisper" }}
-				>
+				<Link to="/compare/$competitor" params={{ competitor: "superwhisper" }}>
 					Parrot vs Superwhisper
 				</Link>{" "}
 				page.
@@ -126,10 +161,7 @@ export default function SuperwhisperAlternatives() {
 			<p>
 				Choose Wispr if you want a cloud product and don’t mind uploading audio.
 				Choose Parrot if privacy and price matter more. We cover that matchup in{" "}
-				<Link
-					to="/blog/$slug"
-					params={{ slug: "wispr-flow-alternatives" }}
-				>
+				<Link to="/blog/$slug" params={{ slug: "wispr-flow-alternatives" }}>
 					Wispr Flow alternatives
 				</Link>
 				.
@@ -143,11 +175,13 @@ export default function SuperwhisperAlternatives() {
 				a bigger monitor.
 			</p>
 
-			<h2>4. MacWhisper — great for files, weaker for live dictation</h2>
+			<h2>4. MacWhisper — transcription-first, dictation costs extra</h2>
 			<p>
-				MacWhisper shines when you drop in interviews or recordings. Live
-				hotkey-to-cursor dictation with cleanup is a different product. If that’s
-				your loop, pick a dictation-first tool.
+				MacWhisper shines when you drop in interviews or recordings, and it now
+				offers system-wide dictation too — but the high-quality dictation models
+				and grammar cleanup sit behind the {macwhisper.pricing.theirPaid} Pro
+				license. If you want dictation with cleanup included at no cost, Parrot
+				is the simpler path.
 			</p>
 
 			<h2>How to choose</h2>
@@ -160,8 +194,8 @@ export default function SuperwhisperAlternatives() {
 					Flow.
 				</li>
 				<li>
-					<strong>Want maximum power-user knobs?</strong> Superwhisper may
-					still be your home.
+					<strong>Want maximum power-user knobs?</strong> Superwhisper may still
+					be your home.
 				</li>
 				<li>
 					<strong>Mostly batch files?</strong> MacWhisper remains strong.
@@ -171,9 +205,24 @@ export default function SuperwhisperAlternatives() {
 			<h2>Try the free path</h2>
 			<p>
 				If you wanted Superwhisper’s local privacy without the subscription,{" "}
-				<Link to="/download">download Parrot</Link> for Mac (Apple Silicon).
-				Press <strong>fn</strong>, talk, and see whether the daily loop is
-				enough — for most people, it is.
+				<Link to="/download">download Parrot</Link> for Mac (
+				{PARROT_FACTS.osRequirement}). Press{" "}
+				<strong>{PARROT_FACTS.defaultHotkey}</strong>, talk, and see whether
+				the daily loop is enough — for most people, it is. Related:{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "free-voice-dictation-apps-2026" }}
+				>
+					free dictation apps
+				</Link>{" "}
+				and{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "local-voice-dictation-mac" }}
+				>
+					local setup
+				</Link>
+				.
 			</p>
 		</>
 	);

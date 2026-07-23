@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import Footer from "@/components/Footer";
-import { posts } from "@/lib/blog";
+import { getPostsForBlogIndex } from "@/lib/blog";
 
 export const Route = createFileRoute("/blog/")({
 	component: BlogIndex,
@@ -104,6 +104,8 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogIndex() {
+	const orderedPosts = getPostsForBlogIndex();
+
 	return (
 		<div className="min-h-screen">
 			{/* ── Hero ── */}
@@ -117,7 +119,8 @@ function BlogIndex() {
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
 						Guides, comparisons, and stories about voice dictation,
-						transcription, and building Parrot.
+						transcription, and building Parrot. Money guides (alternatives,
+						free, local) surface first.
 					</p>
 				</div>
 			</section>
@@ -126,7 +129,7 @@ function BlogIndex() {
 			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
 				<div className="max-w-5xl mx-auto">
 					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-						{posts.map((post) => (
+						{orderedPosts.map((post) => (
 							<Link
 								key={post.slug}
 								to="/blog/$slug"

@@ -1,16 +1,27 @@
 import { Link } from "@tanstack/react-router";
+import { getCompetitor } from "@/lib/competitors";
+import { PARROT_FACTS } from "@/lib/parrot-facts";
+
+const wispr = getCompetitor("wispr-flow")!;
 
 export default function FreeVoiceDictationApps2026() {
 	return (
 		<>
 			<p>
 				<strong>
-					Most "free" voice dictation apps in 2026 are not actually free
+					Most &quot;free&quot; voice dictation apps in 2026 are not actually
+					free
 				</strong>{" "}
-				- they're either freemium teasers with word caps, free trials that
-				expire, or "free" front-ends that quietly charge you per minute via your
-				own API key. This guide separates genuinely free dictation tools from
-				the rest, with honest notes on the catches.
+				— they&apos;re freemium teasers with word caps, trials that expire, or
+				front-ends that charge per minute via your own API key.{" "}
+				{PARROT_FACTS.entity} is one of the few options that is truly free
+				forever for personal Mac dictation. This guide separates genuinely free
+				tools from the rest.
+			</p>
+			<p>
+				<strong>Best for Parrot:</strong> unlimited local dictation with cleanup
+				on Apple Silicon. <strong>Not for:</strong> meeting transcription (use
+				Otter) or Windows (use Wispr Flow).
 			</p>
 
 			<h2>The four flavors of "free"</h2>
@@ -57,8 +68,8 @@ export default function FreeVoiceDictationApps2026() {
 						<td>
 							<strong>Parrot</strong>
 						</td>
-						<td>Full app, free for life</td>
-						<td>Apple Silicon Mac; one-time model download</td>
+						<td>Full app — {PARROT_FACTS.price}</td>
+						<td>{PARROT_FACTS.osRequirement}; one-time model download</td>
 						<td>Yes</td>
 					</tr>
 					<tr>
@@ -69,7 +80,7 @@ export default function FreeVoiceDictationApps2026() {
 					</tr>
 					<tr>
 						<td>Wispr Flow</td>
-						<td>Free tier with weekly word cap</td>
+						<td>{wispr.pricing.theirFree}</td>
 						<td>Cap fills fast for daily users</td>
 						<td>No</td>
 					</tr>
@@ -87,19 +98,59 @@ export default function FreeVoiceDictationApps2026() {
 					</tr>
 				</tbody>
 			</table>
+			<p>
+				Free tiers and prices checked {wispr.pricesCheckedOn} — see{" "}
+				<a
+					href="https://wisprflow.ai/pricing"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					Wispr Flow
+				</a>{" "}
+				and{" "}
+				<a
+					href="https://otter.ai/pricing"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					Otter.ai
+				</a>{" "}
+				for current plans.
+			</p>
 
 			<h2>Parrot - free for life, fully local</h2>
 			<p>
-				<Link to="/">Parrot</Link> is free for life with no word caps. The app
-				doesn&apos;t charge you anything — ever. Transcription and AI cleanup
-				run on your Mac after a one-time download. No account, no API key, no
-				per-minute bill.
+				<Link to="/">{PARROT_FACTS.name}</Link> is {PARROT_FACTS.price} with no
+				word caps. The app doesn&apos;t charge you anything — ever.
+				Transcription and AI cleanup run on your Mac after a one-time download.
+				No account, no API key, no per-minute bill.
 			</p>
 			<p>
 				That puts it in the rare &quot;truly free&quot; bucket: a real dictation
 				UI (global hotkey, paste at cursor, vocabulary, history) without a
-				freemium ceiling. The only practical requirements are an Apple Silicon
-				Mac and disk space for models.
+				freemium ceiling. The only practical requirements are{" "}
+				{PARROT_FACTS.osRequirement} and disk space for models. Setup guide:{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "local-voice-dictation-mac" }}
+				>
+					local voice dictation on Mac
+				</Link>
+				. Also compare{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "wispr-flow-alternatives" }}
+				>
+					Wispr Flow alternatives
+				</Link>{" "}
+				and the{" "}
+				<Link
+					to="/blog/$slug"
+					params={{ slug: "best-voice-dictation-apps-mac-2026" }}
+				>
+					best Mac dictation apps
+				</Link>
+				.
 			</p>
 			<p>
 				Other products still use the &quot;free app, paid API&quot; pattern.
@@ -138,10 +189,11 @@ export default function FreeVoiceDictationApps2026() {
 
 			<h2>Otter.ai - free for meetings, not dictation</h2>
 			<p>
-				Otter's free tier gives you 300 minutes of transcription per month.
-				That's plenty for occasional meeting notes, but Otter isn't optimized
-				for dictation - there's no global hotkey, no paste-on-the- fly workflow,
-				and the latency is built around recorded audio rather than live typing.
+				Otter's free tier gives you 300 minutes of transcription per month; Pro
+				runs $16.99/user/mo billed monthly (checked July 2026). That's plenty
+				for occasional meeting notes, but Otter isn't optimized for dictation -
+				there's no global hotkey, no paste-on-the-fly workflow, and the latency
+				is built around recorded audio rather than live typing.
 			</p>
 			<p>
 				Use Otter if your job is "transcribe meetings." Don't pick it for
@@ -160,7 +212,16 @@ export default function FreeVoiceDictationApps2026() {
 				</a>
 				. It's MIT-licensed, runs entirely locally, and is genuinely free
 				forever - the same underlying model that powers most "free" cloud tiers
-				you'll see advertised.
+				you'll see advertised. According to{" "}
+				<a
+					href="https://arxiv.org/abs/2212.04356"
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					the original Whisper paper
+				</a>
+				, the large-v2 model reaches roughly 5-10% word error rate on standard
+				English benchmarks - strong enough for daily dictation.
 			</p>
 			<p>
 				<strong>The catch:</strong> it's a command-line tool. To turn it into a
