@@ -5,5 +5,13 @@
 	"buildCommand": "bun run build",
 	"git": {
 		"deploymentEnabled": false
-	}
+	},
+	"redirects": [
+		{
+			"source": "/:path*",
+			"has": [{ "type": "host", "value": "www.tryparrot.app" }],
+			"destination": "https://tryparrot.app/:path*",
+			"permanent": true
+		}
+	]
 }
