@@ -73,6 +73,9 @@ export function HudOrb() {
 				cleanupReadyTimer.current = setTimeout(() => {
 					setStatus((prev) => (prev === "cleanup-ready" ? "idle" : prev));
 					cleanupReadyTimer.current = null;
+					// The chip is gone — release the transient ⌘⇧C shortcut so
+					// other apps get the combo back. Idempotent on the backend.
+					void invoke("dismiss_pending_cleanup");
 				}, CLEANUP_READY_MS);
 			}),
 			listen("cleanup-applied", () => {
