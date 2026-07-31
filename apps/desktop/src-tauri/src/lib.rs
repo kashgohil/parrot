@@ -67,6 +67,56 @@ impl PendingCleanup {
     }
 }
 
+/// The apply-cleanup accelerator. Registered **only** while a polish is actually
+/// pending (see [`register_apply_cleanup_shortcut`]) so we don't hold this very
+/// common combo — Arc's Copy-URL, Chromium DevTools inspect, etc. — hostage for
+/// the whole session.
+const APPLY_CLEANUP_SHORTCUT: &str = "CmdOrCtrl+Shift+C";
+
+/// Grab ⌘⇧C for the duration of a pending polish. Idempotent — safe to call on
+/// every `cleanup-ready`.
+fn register_apply_cleanup_shortcut(app: &tauri::AppHandle) {
+    use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
+    let gs = app.global_shortcut();
+    if gs.is_registered(APPLY_CLEANUP_SHORTCUT) {
+        return;
+    }
+    if let Err(e) = gs.on_shortcut(APPLY_CLEANUP_SHORTCUT, |app, _shortcut, event| {
+        if event.state() != ShortcutState::Pressed {
+            return;
+        }
+        let app = app.clone();
+        tauri::async_runtime::spawn(async move {
+            apply_pending(&app).await;
+        });
+    }) {
+        eprintln!("Failed to register apply-cleanup shortcut: {}", e);
+    }
+}
+
+/// Release ⌘⇧C back to the rest of the system. Idempotent.
+fn unregister_apply_cleanup_shortcut(app: &tauri::AppHandle) {
+    use tauri_plugin_global_shortcut::GlobalShortcutExt;
+    let gs = app.global_shortcut();
+    if gs.is_registered(APPLY_CLEANUP_SHORTCUT) {
+        let _ = gs.unregister(APPLY_CLEANUP_SHORTCUT);
+    }
+}
+
+/// Paste the pending background-cleanup polish into the focused app and release
+/// the transient ⌘⇧C shortcut. Shared by the `apply_pending_cleanup` command
+/// (HUD click) and the shortcut handler. Idempotent: a no-op if nothing pending.
+async fn apply_pending(app: &tauri::AppHandle) -> bool {
+    let Some((_id, cleaned)) = app.state::<PendingCleanup>().take() else {
+        unregister_apply_cleanup_shortcut(app);
+        return false;
+    };
+    let pasted = copy_and_paste_safely(app, cleaned).await;
+    let _ = app.emit("cleanup-applied", ());
+    unregister_apply_cleanup_shortcut(app);
+    pasted
+}
+
 /// Very short utterances (a word or two — "yes", "on it", a name) don't gain
 /// much from LLM cleanup and aren't worth the round-trip. Anything longer runs
 /// through cleanup so fillers, punctuation, and tone are actually handled.
@@ -243,8 +293,10 @@ async fn transcribe_last(
         || word_count(&raw_text) < SHORT_UTTERANCE_WORD_LIMIT;
 
     // Clear any previous polish affordance so a new dictation doesn't
-    // accidentally apply a stale cleanup.
+    // accidentally apply a stale cleanup, and release ⌘⇧C if the prior
+    // polish window never got applied/dismissed.
     app.state::<PendingCleanup>().clear();
+    unregister_apply_cleanup_shortcut(&app);
 
     if skip_cleanup {
         let paste_start = Instant::now();
@@ -370,6 +422,8 @@ async fn transcribe_last(
         app_handle
             .state::<PendingCleanup>()
             .set(id_bg.clone(), cleaned.clone());
+        // Only now — while a polish is actually on offer — do we grab ⌘⇧C.
+        register_apply_cleanup_shortcut(&app_handle);
         let _ = app_handle.emit(
             "cleanup-ready",
             serde_json::json!({
@@ -583,18 +637,20 @@ async fn transcribe_audio_file(
     Ok(result)
 }
 
-/// Paste the most recent background-cleanup result (bound to ⌘⇧C).
+/// Paste the most recent background-cleanup result (HUD click, or ⌘⇧C while the
+/// polish chip is showing).
 #[tauri::command]
-async fn apply_pending_cleanup(
-    pending: tauri::State<'_, PendingCleanup>,
-    app: tauri::AppHandle,
-) -> Result<bool, String> {
-    let Some((_id, cleaned)) = pending.take() else {
-        return Ok(false);
-    };
-    let pasted = copy_and_paste_safely(&app, cleaned).await;
-    let _ = app.emit("cleanup-applied", ());
-    Ok(pasted)
+async fn apply_pending_cleanup(app: tauri::AppHandle) -> Result<bool, String> {
+    Ok(apply_pending(&app).await)
+}
+
+/// Drop the pending polish without applying it and release ⌘⇧C. Invoked by the
+/// HUD when the polish chip auto-dismisses, so the shortcut's lifetime matches
+/// the chip's visible window rather than lingering until the next dictation.
+#[tauri::command]
+fn dismiss_pending_cleanup(app: tauri::AppHandle) {
+    app.state::<PendingCleanup>().clear();
+    unregister_apply_cleanup_shortcut(&app);
 }
 
 /// Deliver `text` into the focused app.
@@ -2086,6 +2142,7 @@ pub fn run() {
             transcribe_last,
             transcribe_audio_file,
             apply_pending_cleanup,
+            dismiss_pending_cleanup,
             get_timing_stats,
             get_stt_status,
             get_cleanup_status,
@@ -2152,34 +2209,10 @@ pub fn run() {
                 }
             }
 
-            // ⌘⇧C applies the latest background cleanup when it differs from
-            // the raw paste (see paste-then-refine flow in transcribe_last).
-            {
-                use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
-                let apply_binding = "CmdOrCtrl+Shift+C";
-                if let Err(e) = app.global_shortcut().on_shortcut(
-                    apply_binding,
-                    |app, _shortcut, event| {
-                        if event.state() != ShortcutState::Pressed {
-                            return;
-                        }
-                        let app = app.clone();
-                        tauri::async_runtime::spawn(async move {
-                            let pending = app.state::<PendingCleanup>();
-                            let Some((_id, cleaned)) = pending.take() else {
-                                return;
-                            };
-                            let _ = copy_and_paste_safely(&app, cleaned).await;
-                            let _ = app.emit("cleanup-applied", ());
-                        });
-                    },
-                ) {
-                    eprintln!(
-                        "Failed to register cleanup-apply hotkey '{}': {}",
-                        apply_binding, e
-                    );
-                }
-            }
+            // ⌘⇧C (apply-cleanup) is intentionally NOT registered here. It's a
+            // very common combo (Arc Copy-URL, DevTools inspect), so we only
+            // grab it transiently while a background polish is actually pending
+            // — see register_apply_cleanup_shortcut on the `cleanup-ready` path.
 
             // Local-only: force setup_mode to local if it was cloud (or other).
             let db = app.state::<Database>();
