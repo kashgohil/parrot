@@ -141,6 +141,11 @@ function MainShell() {
 				}
 				setStatus("idle");
 			}),
+			// fn turned out to be part of a key combo — no dictation happened.
+			listen("recording-cancelled", () => {
+				setStatus("idle");
+				setResult(null);
+			}),
 			listen("cleanup-started", () => {
 				setStatus("cleaning");
 			}),

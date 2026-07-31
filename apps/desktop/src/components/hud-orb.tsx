@@ -55,6 +55,11 @@ export function HudOrb() {
 			listen("recording-stopped", () => {
 				setStatus("transcribing");
 			}),
+			// fn was used in a combo — back to idle, nothing to transcribe.
+			listen("recording-cancelled", () => {
+				clearCleanupTimer();
+				setStatus("idle");
+			}),
 			// Blocking cleanup mode only — background mode never emits this.
 			listen("cleanup-started", () => setStatus("cleaning")),
 			// Paste-then-refine: raw paste is done; go idle immediately.
