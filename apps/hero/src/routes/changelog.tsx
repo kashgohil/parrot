@@ -60,9 +60,22 @@ export const Route = createFileRoute("/changelog")({
 
 const RELEASES = [
 	{
+		version: "v0.2.4",
+		date: "July 31, 2026",
+		tag: "Latest",
+		changes: [
+			{
+				type: "fixed",
+				items: [
+					"The fn dictation hotkey no longer interferes with other apps — global shortcuts like ⌘S stopped getting dropped, and fn-based keys (fn+arrows, fn+delete) in Arc and other browsers now work normally instead of triggering dictation",
+					"The ⌘⇧C “apply polish” shortcut is only active while a cleanup suggestion is on screen, so it no longer hijacks ⌘⇧C (Copy URL, Inspect Element) in your browser and other apps the rest of the time",
+				],
+			},
+		],
+	},
+	{
 		version: "v0.2.3",
 		date: "July 20, 2026",
-		tag: "Latest",
 		changes: [
 			{
 				type: "added",
