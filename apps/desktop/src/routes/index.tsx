@@ -111,11 +111,26 @@ function HomePage() {
 		}
 	}
 
+	const SUPPORTED_AUDIO_EXTENSIONS = [
+		".wav",
+		".mp3",
+		".m4a",
+		".aac",
+		".flac",
+		".ogg",
+		".oga",
+		".aiff",
+		".aif",
+		".caf",
+	];
+
 	async function transcribeFile(file: File) {
 		setFileError(null);
 		const name = file.name.toLowerCase();
-		if (!name.endsWith(".wav")) {
-			setFileError("Only WAV files are supported right now.");
+		if (!SUPPORTED_AUDIO_EXTENSIONS.some((ext) => name.endsWith(ext))) {
+			setFileError(
+				"Unsupported file type. Supported formats: WAV, MP3, M4A, AAC, FLAC, OGG, AIFF, CAF.",
+			);
 			return;
 		}
 		setFileBusy(true);
@@ -229,7 +244,7 @@ function HomePage() {
 					<input
 						ref={fileInputRef}
 						type="file"
-						accept=".wav,audio/wav,audio/x-wav"
+						accept=".wav,.mp3,.m4a,.aac,.flac,.ogg,.oga,.aiff,.aif,.caf,audio/*"
 						className="hidden"
 						onChange={(e) => {
 							const f = e.target.files?.[0];
@@ -267,7 +282,7 @@ function HomePage() {
 					<p className="text-sm font-medium text-foreground">
 						{fileBusy
 							? fileProgress || "Working…"
-							: "Drop a WAV file here to transcribe"}
+							: "Drop an audio file here to transcribe"}
 					</p>
 					<p className="text-xs text-muted-foreground mt-0.5">
 						Runs fully on-device. Result is saved to history and copied to the
