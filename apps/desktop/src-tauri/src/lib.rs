@@ -486,7 +486,7 @@ async fn transcribe_audio_file(
     if data.is_empty() {
         return Err("Empty audio file".into());
     }
-    run_file_transcription(data, filename, &db, &engine_state, &app).await
+    run_file_transcription(data, filename, None, &db, &engine_state, &app).await
 }
 
 /// Transcribe an audio file at a filesystem path (drag-drop / native file
@@ -504,12 +504,66 @@ async fn transcribe_audio_file_path(
     let filename = std::path::Path::new(&file_path)
         .file_name()
         .map(|n| n.to_string_lossy().into_owned());
-    run_file_transcription(data, filename, &db, &engine_state, &app).await
+    run_file_transcription(data, filename, Some(file_path), &db, &engine_state, &app).await
+}
+
+#[derive(serde::Serialize, Clone)]
+struct FileTranscriptionProgress {
+    stage: &'static str,
+    progress: u8,
+    filename: String,
+}
+
+fn emit_file_progress(app: &tauri::AppHandle, stage: &'static str, progress: u8, filename: &str) {
+    let _ = app.emit(
+        "file-transcription-progress",
+        FileTranscriptionProgress {
+            stage,
+            progress,
+            filename: filename.to_string(),
+        },
+    );
+}
+
+/// Persist the source audio next to the dictation so it shows as an
+/// attachment in history. Prefer copying from `source_path` (no extra RAM);
+/// fall back to writing `data` when the caller only had bytes.
+fn save_file_attachment(
+    db: &Database,
+    id: &str,
+    filename: &str,
+    source_path: Option<&str>,
+    data: Option<&[u8]>,
+) -> Result<String, String> {
+    let audio_dir = Database::audio_dir().map_err(|e| e.to_string())?;
+    let dest_dir = audio_dir.join(id);
+    std::fs::create_dir_all(&dest_dir).map_err(|e| e.to_string())?;
+
+    let safe_name = std::path::Path::new(filename)
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .filter(|n| !n.is_empty())
+        .unwrap_or_else(|| "audio".into());
+    let dest = dest_dir.join(&safe_name);
+
+    if let Some(src) = source_path {
+        std::fs::copy(src, &dest).map_err(|e| format!("Failed to save attachment: {}", e))?;
+    } else if let Some(bytes) = data {
+        std::fs::write(&dest, bytes).map_err(|e| format!("Failed to save attachment: {}", e))?;
+    } else {
+        return Err("No audio data to save".into());
+    }
+
+    let path_str = dest.to_string_lossy().into_owned();
+    db.update_dictation_audio_path(id, &path_str)
+        .map_err(|e| e.to_string())?;
+    Ok(path_str)
 }
 
 async fn run_file_transcription(
     data: Vec<u8>,
     filename: Option<String>,
+    source_path: Option<String>,
     db: &Database,
     engine_state: &SharedLocalEngine,
     app: &tauri::AppHandle,
@@ -527,6 +581,15 @@ async fn run_file_transcription(
         );
     }
 
+    emit_file_progress(app, "decoding", 12, &name);
+
+    // Keep bytes only when we can't copy from a source path later.
+    let data_for_save = if source_path.is_none() {
+        Some(data.clone())
+    } else {
+        None
+    };
+
     // Decoding compressed audio (mp3/m4a/…) is CPU-bound — keep it off the
     // async worker thread.
     let (samples, sample_rate) = tokio::task::spawn_blocking(move || {
@@ -540,6 +603,7 @@ async fn run_file_transcription(
     }
     let duration_ms = (samples.len() as f64 / sample_rate as f64 * 1000.0) as u64;
 
+    emit_file_progress(app, "transcribing", 35, &name);
     let _ = app.emit("transcription-started", ());
     let local_engine =
         wait_for_local_engine(engine_state, std::time::Duration::from_secs(60)).await;
@@ -579,6 +643,7 @@ async fn run_file_transcription(
     };
 
     if raw_text.trim().is_empty() {
+        emit_file_progress(app, "done", 100, &name);
         let result = DictationResult {
             raw_text: String::new(),
             cleaned_text: String::new(),
@@ -591,6 +656,15 @@ async fn run_file_transcription(
     let id = uuid::Uuid::new_v4().to_string();
     db.insert_dictation(&id, &raw_text, "", "local-file", duration_ms as i64)
         .map_err(|e| e.to_string())?;
+
+    emit_file_progress(app, "saving", 72, &name);
+    let _ = save_file_attachment(
+        db,
+        &id,
+        &name,
+        source_path.as_deref(),
+        data_for_save.as_deref(),
+    );
 
     let engine_name = local_engine
         .as_ref()
@@ -620,10 +694,11 @@ async fn run_file_transcription(
     let cleaned_text = if skip_cleanup {
         String::new()
     } else if cleanup_mode == "blocking" || cleanup_mode != "background" {
+        emit_file_progress(app, "cleaning", 82, &name);
         // Default / blocking: wait for polish. Only explicit "background"
         // uses the fire-and-forget path below.
         let builtin = cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner());
-        let cleaned = run_cleanup(&db, &raw_text, builtin, &effective).await;
+        let cleaned = run_cleanup(db, &raw_text, builtin, &effective).await;
         if !cleaned.is_empty() && cleaned != raw_text {
             let _ = db.update_dictation_cleaned(&id, &cleaned);
         }
@@ -661,6 +736,8 @@ async fn run_file_transcription(
         use tauri_plugin_clipboard_manager::ClipboardExt;
         let _ = app.clipboard().write_text(output);
     }
+
+    emit_file_progress(app, "done", 100, &name);
 
     let result = DictationResult {
         raw_text: raw_text.clone(),
@@ -1444,6 +1521,29 @@ struct DictationEntry {
     audio_path: Option<String>,
 }
 
+/// Full dictation for the dedicated detail view.
+#[derive(serde::Serialize, serde::Deserialize, Clone)]
+struct DictationDetail {
+    id: String,
+    raw_text: String,
+    cleaned_text: String,
+    provider: String,
+    duration_ms: i64,
+    created_at: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    audio_path: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transcription_ms: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cleanup_ms: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    paste_ms: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    engine: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    model: Option<String>,
+}
+
 #[tauri::command]
 async fn get_history(db: tauri::State<'_, Database>) -> Result<Vec<DictationEntry>, String> {
     let entries = db.get_history().map_err(|e| e.to_string())?;
@@ -1459,6 +1559,28 @@ async fn get_history(db: tauri::State<'_, Database>) -> Result<Vec<DictationEntr
             audio_path: e.audio_path,
         })
         .collect())
+}
+
+#[tauri::command]
+async fn get_dictation(
+    id: String,
+    db: tauri::State<'_, Database>,
+) -> Result<Option<DictationDetail>, String> {
+    let entry = db.get_dictation(&id).map_err(|e| e.to_string())?;
+    Ok(entry.map(|e| DictationDetail {
+        id: e.id,
+        raw_text: e.raw_text,
+        cleaned_text: e.cleaned_text,
+        provider: e.provider,
+        duration_ms: e.duration_ms,
+        created_at: e.created_at,
+        audio_path: e.audio_path,
+        transcription_ms: e.transcription_ms,
+        cleanup_ms: e.cleanup_ms,
+        paste_ms: e.paste_ms,
+        engine: e.engine,
+        model: e.model,
+    }))
 }
 
 #[tauri::command]
@@ -1488,9 +1610,40 @@ async fn delete_dictation(
 ) -> Result<(), String> {
     let audio_path = db.delete_dictation(&id).map_err(|e| e.to_string())?;
     if let Some(path) = audio_path {
-        let _ = std::fs::remove_file(&path);
+        remove_audio_attachment(&path);
     }
     Ok(())
+}
+
+/// Remove only the saved audio attachment; keep the transcription text.
+#[tauri::command]
+async fn delete_dictation_audio(
+    id: String,
+    db: tauri::State<'_, Database>,
+) -> Result<(), String> {
+    let audio_path = db
+        .clear_dictation_audio_path(&id)
+        .map_err(|e| e.to_string())?;
+    if let Some(path) = audio_path {
+        remove_audio_attachment(&path);
+    }
+    Ok(())
+}
+
+fn remove_audio_attachment(path: &str) {
+    let path = std::path::Path::new(path);
+    let _ = std::fs::remove_file(path);
+    // File transcriptions are stored under audio/{id}/filename — drop the
+    // empty parent directory when present.
+    if let Some(parent) = path.parent() {
+        if parent
+            .file_name()
+            .and_then(|n| n.to_str())
+            .is_some_and(|n| n.len() == 36 && n.contains('-'))
+        {
+            let _ = std::fs::remove_dir(parent);
+        }
+    }
 }
 
 #[tauri::command]
@@ -2190,8 +2343,10 @@ pub fn run() {
             switch_stt_model,
             switch_cleanup_model,
             get_history,
+            get_dictation,
             search_history,
             delete_dictation,
+            delete_dictation_audio,
             get_setting,
             set_setting,
             get_profile,

@@ -1,5 +1,5 @@
 use anyhow::Result;
-use rusqlite::Connection;
+use rusqlite::{Connection, OptionalExtension};
 use std::path::PathBuf;
 use std::sync::Mutex;
 
@@ -256,6 +256,34 @@ impl Database {
         Ok(entries)
     }
 
+    pub fn get_dictation(&self, id: &str) -> Result<Option<DictationDetail>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, raw_text, cleaned_text, provider, duration_ms, created_at, audio_path,
+                    transcription_ms, cleanup_ms, paste_ms, engine, model
+             FROM dictation_history WHERE id = ?1",
+        )?;
+        let result = stmt
+            .query_row([id], |row| {
+                Ok(DictationDetail {
+                    id: row.get(0)?,
+                    raw_text: row.get(1)?,
+                    cleaned_text: row.get(2)?,
+                    provider: row.get(3)?,
+                    duration_ms: row.get(4)?,
+                    created_at: row.get(5)?,
+                    audio_path: row.get(6)?,
+                    transcription_ms: row.get(7)?,
+                    cleanup_ms: row.get(8)?,
+                    paste_ms: row.get(9)?,
+                    engine: row.get(10)?,
+                    model: row.get(11)?,
+                })
+            })
+            .optional()?;
+        Ok(result)
+    }
+
     pub fn search_history(&self, query: &str) -> Result<Vec<DictationEntry>> {
         let conn = self.conn.lock().unwrap();
         let pattern = format!("%{}%", query);
@@ -399,6 +427,24 @@ impl Database {
             [audio_path, id],
         )?;
         Ok(())
+    }
+
+    /// Clear the audio attachment for a dictation, returning the previous path
+    /// so the caller can delete the file on disk.
+    pub fn clear_dictation_audio_path(&self, id: &str) -> Result<Option<String>> {
+        let conn = self.conn.lock().unwrap();
+        let audio_path = conn
+            .prepare("SELECT audio_path FROM dictation_history WHERE id = ?1")?
+            .query_row([id], |row| row.get::<_, Option<String>>(0))
+            .ok()
+            .flatten();
+        if audio_path.is_some() {
+            conn.execute(
+                "UPDATE dictation_history SET audio_path = NULL WHERE id = ?1",
+                [id],
+            )?;
+        }
+        Ok(audio_path)
     }
 
     pub fn get_audio_path(&self, id: &str) -> Result<Option<String>> {
@@ -607,6 +653,22 @@ pub struct DictationEntry {
     pub duration_ms: i64,
     pub created_at: String,
     pub audio_path: Option<String>,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Clone)]
+pub struct DictationDetail {
+    pub id: String,
+    pub raw_text: String,
+    pub cleaned_text: String,
+    pub provider: String,
+    pub duration_ms: i64,
+    pub created_at: String,
+    pub audio_path: Option<String>,
+    pub transcription_ms: Option<i64>,
+    pub cleanup_ms: Option<i64>,
+    pub paste_ms: Option<i64>,
+    pub engine: Option<String>,
+    pub model: Option<String>,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Clone, Default)]
