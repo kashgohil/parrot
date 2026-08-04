@@ -472,7 +472,7 @@ async fn run_cleanup(
     }
 }
 
-/// Transcribe a user-supplied audio file (WAV bytes from the frontend file
+/// Transcribe a user-supplied audio file (bytes from the frontend file
 /// picker / drag-drop). Saves to history, runs cleanup, copies text to the
 /// clipboard — does **not** synthesize Cmd+V (there is no target field).
 #[tauri::command]
@@ -486,17 +486,27 @@ async fn transcribe_audio_file(
     if data.is_empty() {
         return Err("Empty audio file".into());
     }
-    let name = filename.unwrap_or_else(|| "audio.wav".into());
+    let name = filename.unwrap_or_else(|| "audio".into());
     let lower = name.to_lowercase();
-    if !lower.ends_with(".wav") {
+    const SUPPORTED_EXTENSIONS: &[&str] = &[
+        ".wav", ".mp3", ".m4a", ".mp4", ".mov", ".aac", ".flac", ".ogg", ".oga", ".aiff", ".aif",
+        ".caf",
+    ];
+    if !SUPPORTED_EXTENSIONS.iter().any(|ext| lower.ends_with(ext)) {
         return Err(
-            "Only WAV files are supported right now. Export or convert to WAV and try again."
+            "Unsupported file type. Supported formats: WAV, MP3, M4A, MP4, MOV, AAC, FLAC, OGG, AIFF, CAF."
                 .into(),
         );
     }
 
-    let (samples, sample_rate) =
-        transcription::load_wav_samples(&data).map_err(|e| e.to_string())?;
+    // Decoding compressed audio (mp3/m4a/…) is CPU-bound — keep it off the
+    // async worker thread.
+    let (samples, sample_rate) = tokio::task::spawn_blocking(move || {
+        transcription::decode_audio_bytes(&data)
+    })
+    .await
+    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())?;
     if samples.is_empty() {
         return Err("Audio file has no samples".into());
     }
