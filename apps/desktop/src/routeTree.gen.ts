@@ -14,6 +14,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/_onboarding'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HistoryIdRouteImport } from './routes/history.$id'
 import { Route as OnboardingTourRouteImport } from './routes/_onboarding/tour'
 import { Route as OnboardingLocalSetupRouteImport } from './routes/_onboarding/local-setup'
 import { Route as OnboardingLocalProfileRouteImport } from './routes/_onboarding/local-profile'
@@ -42,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryIdRoute = HistoryIdRouteImport.update({
+  id: '/history/$id',
+  path: '/history/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingTourRoute = OnboardingTourRouteImport.update({
   id: '/tour',
   path: '/tour',
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/local-profile': typeof OnboardingLocalProfileRoute
   '/local-setup': typeof OnboardingLocalSetupRoute
   '/tour': typeof OnboardingTourRoute
+  '/history/$id': typeof HistoryIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/local-profile': typeof OnboardingLocalProfileRoute
   '/local-setup': typeof OnboardingLocalSetupRoute
   '/tour': typeof OnboardingTourRoute
+  '/history/$id': typeof HistoryIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/_onboarding/local-profile': typeof OnboardingLocalProfileRoute
   '/_onboarding/local-setup': typeof OnboardingLocalSetupRoute
   '/_onboarding/tour': typeof OnboardingTourRoute
+  '/history/$id': typeof HistoryIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/local-profile'
     | '/local-setup'
     | '/tour'
+    | '/history/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/local-profile'
     | '/local-setup'
     | '/tour'
+    | '/history/$id'
   id:
     | '__root__'
     | '/'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/_onboarding/local-profile'
     | '/_onboarding/local-setup'
     | '/_onboarding/tour'
+    | '/history/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -124,6 +136,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
   VocabularyRoute: typeof VocabularyRoute
+  HistoryIdRoute: typeof HistoryIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history/$id': {
+      id: '/history/$id'
+      path: '/history/$id'
+      fullPath: '/history/$id'
+      preLoaderRoute: typeof HistoryIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_onboarding/tour': {
@@ -209,6 +229,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
   VocabularyRoute: VocabularyRoute,
+  HistoryIdRoute: HistoryIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
