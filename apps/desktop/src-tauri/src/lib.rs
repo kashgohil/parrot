@@ -472,9 +472,9 @@ async fn run_cleanup(
     }
 }
 
-/// Transcribe a user-supplied audio file (bytes from the frontend file
-/// picker / drag-drop). Saves to history, runs cleanup, copies text to the
-/// clipboard — does **not** synthesize Cmd+V (there is no target field).
+/// Transcribe a user-supplied audio file (bytes from the frontend). Saves to
+/// history, runs cleanup, copies text to the clipboard — does **not**
+/// synthesize Cmd+V (there is no target field).
 #[tauri::command]
 async fn transcribe_audio_file(
     data: Vec<u8>,
@@ -486,6 +486,34 @@ async fn transcribe_audio_file(
     if data.is_empty() {
         return Err("Empty audio file".into());
     }
+    run_file_transcription(data, filename, &db, &engine_state, &app).await
+}
+
+/// Transcribe an audio file at a filesystem path (drag-drop / native file
+/// picker). Reads the bytes in Rust so large files never cross IPC as a JSON
+/// number array (which freezes the webview and can OOM the content process).
+#[tauri::command]
+async fn transcribe_audio_file_path(
+    file_path: String,
+    db: tauri::State<'_, Database>,
+    engine_state: tauri::State<'_, SharedLocalEngine>,
+    app: tauri::AppHandle,
+) -> Result<DictationResult, String> {
+    let data = std::fs::read(&file_path)
+        .map_err(|e| format!("Failed to read {}: {}", file_path, e))?;
+    let filename = std::path::Path::new(&file_path)
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned());
+    run_file_transcription(data, filename, &db, &engine_state, &app).await
+}
+
+async fn run_file_transcription(
+    data: Vec<u8>,
+    filename: Option<String>,
+    db: &Database,
+    engine_state: &SharedLocalEngine,
+    app: &tauri::AppHandle,
+) -> Result<DictationResult, String> {
     let name = filename.unwrap_or_else(|| "audio".into());
     let lower = name.to_lowercase();
     const SUPPORTED_EXTENSIONS: &[&str] = &[
@@ -514,7 +542,7 @@ async fn transcribe_audio_file(
 
     let _ = app.emit("transcription-started", ());
     let local_engine =
-        wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(60)).await;
+        wait_for_local_engine(engine_state, std::time::Duration::from_secs(60)).await;
 
     let initial_prompt = match db.get_profile() {
         Ok(profile) => {
@@ -2137,6 +2165,7 @@ pub fn run() {
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_dialog::init())
         .manage(db)
         .manage(recorder_state)
         .manage(PendingCleanup::new())
@@ -2151,6 +2180,7 @@ pub fn run() {
             toggle_recording,
             transcribe_last,
             transcribe_audio_file,
+            transcribe_audio_file_path,
             apply_pending_cleanup,
             dismiss_pending_cleanup,
             get_timing_stats,

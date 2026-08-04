@@ -3,7 +3,9 @@ import { Input } from "@/components/ui/input";
 import { createFileRoute } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
+import { open } from "@tauri-apps/plugin-dialog";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import {
 	Check,
 	Copy,
@@ -16,7 +18,7 @@ import {
 	Trash2,
 	Upload,
 } from "lucide-react";
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
 interface DictationEntry {
 	id: string;
@@ -55,7 +57,6 @@ function HomePage() {
 	const [fileError, setFileError] = useState<string | null>(null);
 	const [fileProgress, setFileProgress] = useState<string | null>(null);
 	const [dragOver, setDragOver] = useState(false);
-	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const tip = useMemo(() => getTipOfTheDay(), []);
 
@@ -126,9 +127,44 @@ function HomePage() {
 		".caf",
 	];
 
-	async function transcribeFile(file: File) {
+	async function pickAndTranscribeFile() {
 		setFileError(null);
-		const name = file.name.toLowerCase();
+		try {
+			const path = await open({
+				multiple: false,
+				title: "Choose an audio file to transcribe",
+				filters: [
+					{
+						name: "Audio",
+						extensions: [
+							"wav",
+							"mp3",
+							"m4a",
+							"mp4",
+							"mov",
+							"aac",
+							"flac",
+							"ogg",
+							"oga",
+							"aiff",
+							"aif",
+							"caf",
+						],
+					},
+				],
+			});
+			if (!path) return;
+			await transcribeFilePath(path);
+		} catch (e) {
+			const msg = e instanceof Error ? e.message : String(e);
+			setFileError(msg);
+		}
+	}
+
+	async function transcribeFilePath(filePath: string) {
+		const filename = filePath.split(/[/\\]/).pop() || filePath;
+		setFileError(null);
+		const name = filename.toLowerCase();
 		if (!SUPPORTED_AUDIO_EXTENSIONS.some((ext) => name.endsWith(ext))) {
 			setFileError(
 				"Unsupported file type. Supported formats: WAV, MP3, M4A, MP4, MOV, AAC, FLAC, OGG, AIFF, CAF.",
@@ -136,17 +172,13 @@ function HomePage() {
 			return;
 		}
 		setFileBusy(true);
-		setFileProgress(`Reading ${file.name}…`);
+		setFileProgress(`Transcribing ${filename}…`);
 		try {
-			const buf = await file.arrayBuffer();
-			const data = Array.from(new Uint8Array(buf));
-			setFileProgress("Transcribing…");
 			const result = await invoke<{
 				raw_text: string;
 				cleaned_text: string;
-			}>("transcribe_audio_file", {
-				data,
-				filename: file.name,
+			}>("transcribe_audio_file_path", {
+				filePath,
 			});
 			const text = result.cleaned_text || result.raw_text;
 			setFileProgress(
@@ -162,16 +194,30 @@ function HomePage() {
 			setFileProgress(null);
 		} finally {
 			setFileBusy(false);
-			if (fileInputRef.current) fileInputRef.current.value = "";
 		}
 	}
 
-	function onDrop(e: React.DragEvent) {
-		e.preventDefault();
-		setDragOver(false);
-		const file = e.dataTransfer.files?.[0];
-		if (file) void transcribeFile(file);
-	}
+	useEffect(() => {
+		const setupListeners = async () => {
+			try {
+				await getCurrentWindow().onDragDropEvent((event) => {
+					const { type } = event.payload;
+					if (type === "enter" || type === "over") {
+						setDragOver(true);
+					} else if (type === "drop") {
+						setDragOver(false);
+						const path = event.payload.paths?.[0];
+						if (path) void transcribeFilePath(path);
+					} else if (type === "leave") {
+						setDragOver(false);
+					}
+				});
+			} catch (e) {
+				console.error("Failed to set up file drop listener:", e);
+			}
+		};
+		setupListeners();
+	}, []);
 
 	function formatDuration(ms: number): string {
 		const secs = Math.round(ms / 1000);
@@ -218,15 +264,7 @@ function HomePage() {
 	}, [entries]);
 
 	return (
-		<div
-			className="space-y-6"
-			onDragOver={(e) => {
-				e.preventDefault();
-				setDragOver(true);
-			}}
-			onDragLeave={() => setDragOver(false)}
-			onDrop={onDrop}
-		>
+		<div className="space-y-6">
 			<div className="flex items-start justify-between gap-4">
 				<div>
 					<h1 className="text-2xl font-bold text-foreground tracking-tight">
@@ -243,22 +281,12 @@ function HomePage() {
 							<span>{entries.length} entries</span>
 						</div>
 					)}
-					<input
-						ref={fileInputRef}
-						type="file"
-						accept=".wav,.mp3,.m4a,.mp4,.mov,.aac,.flac,.ogg,.oga,.aiff,.aif,.caf,audio/*,video/mp4,video/quicktime"
-						className="hidden"
-						onChange={(e) => {
-							const f = e.target.files?.[0];
-							if (f) void transcribeFile(f);
-						}}
-					/>
 					<Button
 						type="button"
 						variant="outline"
 						size="sm"
 						disabled={fileBusy}
-						onClick={() => fileInputRef.current?.click()}
+						onClick={() => void pickAndTranscribeFile()}
 					>
 						{fileBusy ? (
 							<Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
