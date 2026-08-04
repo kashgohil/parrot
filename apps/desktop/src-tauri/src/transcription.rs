@@ -268,67 +268,70 @@ fn num_cpus_default() -> std::os::raw::c_int {
         .unwrap_or(4)
 }
 
-/// Decode a WAV file into mono `f32` at the file's sample rate (no resample).
-/// Used for file transcription; engines resample as needed.
-pub fn load_wav_samples(wav_data: &[u8]) -> Result<(Vec<f32>, u32)> {
-    let cursor = std::io::Cursor::new(wav_data);
-    let mut reader = hound::WavReader::new(cursor).context(
-        "Failed to parse audio file. Parrot currently supports WAV (16-bit or float PCM).",
-    )?;
-    let spec = reader.spec();
-    let channels = spec.channels.max(1) as usize;
-    let sample_rate = spec.sample_rate;
+/// Decode a user-supplied audio file into mono `f32` at the file's native
+/// sample rate (no resample — the engines resample as needed). Symphonia
+/// probes the container from the bytes, so this covers WAV, MP3, M4A/AAC,
+/// FLAC, OGG/Vorbis, AIFF and CAF without relying on the file extension.
+pub fn decode_audio_bytes(data: &[u8]) -> Result<(Vec<f32>, u32)> {
+    use symphonia::core::audio::SampleBuffer;
+    use symphonia::core::codecs::DecoderOptions;
+    use symphonia::core::errors::Error;
+    use symphonia::core::formats::FormatOptions;
+    use symphonia::core::io::{MediaSourceStream, MediaSourceStreamOptions};
+    use symphonia::core::meta::MetadataOptions;
+    use symphonia::core::probe::Hint;
 
-    let mono: Vec<f32> = match spec.sample_format {
-        hound::SampleFormat::Float => {
-            let samples: Vec<f32> = reader
-                .samples::<f32>()
-                .collect::<std::result::Result<_, _>>()
-                .context("Failed to decode WAV float samples")?;
-            average_channels(&samples, channels)
+    let cursor = std::io::Cursor::new(data.to_vec());
+    let source = MediaSourceStream::new(Box::new(cursor), MediaSourceStreamOptions::default());
+    let probed = symphonia::default::get_probe()
+        .format(
+            &Hint::new(),
+            source,
+            &FormatOptions::default(),
+            &MetadataOptions::default(),
+        )
+        .context(
+            "Unrecognised audio format. Supported: WAV, MP3, M4A/AAC, FLAC, OGG, AIFF, CAF.",
+        )?;
+
+    let mut format = probed.format;
+    let track = format
+        .default_track()
+        .context("Audio file has no audio track")?;
+    let track_id = track.id;
+    let sample_rate = track
+        .codec_params
+        .sample_rate
+        .context("Audio file has no sample rate")?;
+    let mut decoder = symphonia::default::get_codecs()
+        .make(&track.codec_params, &DecoderOptions::default())
+        .context("Audio file uses an unsupported codec")?;
+
+    let mut mono: Vec<f32> = Vec::new();
+    loop {
+        let packet = match format.next_packet() {
+            Ok(packet) => packet,
+            Err(Error::IoError(e)) if e.kind() == std::io::ErrorKind::UnexpectedEof => break,
+            Err(e) => return Err(e).context("Failed while reading audio data"),
+        };
+        if packet.track_id() != track_id {
+            continue;
         }
-        hound::SampleFormat::Int => {
-            let bits = spec.bits_per_sample;
-            let max = match bits {
-                8 => i8::MAX as f32,
-                16 => i16::MAX as f32,
-                24 => (1i32 << 23) as f32,
-                32 => i32::MAX as f32,
-                _ => i16::MAX as f32,
-            };
-            // hound reads i16 for 16-bit; for other bit depths use i32 if available
-            if bits <= 16 {
-                let samples: Vec<i16> = reader
-                    .samples::<i16>()
-                    .collect::<std::result::Result<_, _>>()
-                    .context("Failed to decode WAV int samples")?;
-                let floats: Vec<f32> = samples.into_iter().map(|s| s as f32 / max).collect();
-                average_channels(&floats, channels)
-            } else {
-                let samples: Vec<i32> = reader
-                    .samples::<i32>()
-                    .collect::<std::result::Result<_, _>>()
-                    .context("Failed to decode WAV int samples")?;
-                let floats: Vec<f32> = samples.into_iter().map(|s| s as f32 / max).collect();
-                average_channels(&floats, channels)
+        match decoder.decode(&packet) {
+            Ok(decoded) => {
+                let spec = *decoded.spec();
+                let channels = spec.channels.count();
+                let mut buf = SampleBuffer::<f32>::new(decoded.capacity() as u64, spec);
+                buf.copy_interleaved_ref(decoded);
+                mono.extend(average_channels(buf.samples(), channels));
             }
+            // Skip corrupt packets rather than failing the whole file.
+            Err(Error::DecodeError(_)) => continue,
+            Err(e) => return Err(e).context("Failed to decode audio"),
         }
-    };
+    }
 
     Ok((mono, sample_rate))
-}
-
-/// Decode a WAV byte buffer into 16 kHz mono `f32` PCM, the format whisper
-/// expects. Handles arbitrary input sample rates and channel counts via
-/// linear-interpolation resampling and channel averaging — both adequate for
-/// voice transcription.
-#[allow(dead_code)]
-fn decode_wav_to_mono_f32(wav_data: &[u8], target_rate: u32) -> Result<Vec<f32>> {
-    let (mut mono, sample_rate) = load_wav_samples(wav_data)?;
-    if sample_rate != target_rate {
-        mono = resample_linear(&mono, sample_rate, target_rate);
-    }
-    Ok(mono)
 }
 
 fn average_channels(interleaved: &[f32], channels: usize) -> Vec<f32> {
@@ -373,4 +376,50 @@ pub async fn transcribe_audio(
         anyhow::anyhow!("Parrot is still warming up the local model. Try again in a moment.")
     })?;
     engine.transcribe_samples(samples, sample_rate, opts).await
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn make_wav_i16(channels: u16, sample_rate: u32, frames: &[i16]) -> Vec<u8> {
+        let mut buf = std::io::Cursor::new(Vec::new());
+        let spec = hound::WavSpec {
+            channels,
+            sample_rate,
+            bits_per_sample: 16,
+            sample_format: hound::SampleFormat::Int,
+        };
+        let mut writer = hound::WavWriter::new(&mut buf, spec).unwrap();
+        for &s in frames {
+            writer.write_sample(s).unwrap();
+        }
+        writer.finalize().unwrap();
+        buf.into_inner()
+    }
+
+    #[test]
+    fn decodes_mono_wav() {
+        let wav = make_wav_i16(1, 16_000, &[0, 16_384, -16_384, 0]);
+        let (samples, rate) = decode_audio_bytes(&wav).unwrap();
+        assert_eq!(rate, 16_000);
+        assert_eq!(samples.len(), 4);
+        assert!((samples[1] - 0.5).abs() < 0.01);
+        assert!((samples[2] + 0.5).abs() < 0.01);
+    }
+
+    #[test]
+    fn downmixes_stereo_wav() {
+        // Interleaved stereo: L=full, R=0 → mono should be ~0.5.
+        let wav = make_wav_i16(2, 44_100, &[32_767, 0, 32_767, 0]);
+        let (samples, rate) = decode_audio_bytes(&wav).unwrap();
+        assert_eq!(rate, 44_100);
+        assert_eq!(samples.len(), 2);
+        assert!((samples[0] - 0.5).abs() < 0.01);
+    }
+
+    #[test]
+    fn rejects_garbage_bytes() {
+        assert!(decode_audio_bytes(b"not audio at all").is_err());
+    }
 }

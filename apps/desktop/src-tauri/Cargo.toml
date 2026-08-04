@@ -32,6 +32,9 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 cpal = "0.15"
 hound = "3.5"
+# Decoding user-supplied audio files (mp3, m4a/aac, flac, ogg/vorbis, wav, …).
+# Pure Rust — no C linking, so no risk of symbol collisions with whisper/ONNX.
+symphonia = { version = "0.5", features = ["aac", "aiff", "caf", "flac", "isomp4", "mp3", "ogg"] }
 rusqlite = { version = "0.31", features = ["bundled"] }
 reqwest = { version = "0.12", features = ["json"] }
 enigo = "0.2"
