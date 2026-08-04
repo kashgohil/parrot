@@ -20,7 +20,7 @@ export const PARROT_FACTS = {
 	 */
 	alternateNames: ["Parrot Dictation", "Parrot for Mac", "tryparrot"],
 	/** Current app version — keep in sync with apps/desktop tauri.conf.json. */
-	version: "0.2.3",
+	version: "0.2.5",
 	price: "Free for life",
 	os: "macOS",
 	osRequirement: "Apple Silicon (M1 and later)",

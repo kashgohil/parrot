@@ -60,9 +60,38 @@ export const Route = createFileRoute("/changelog")({
 
 const RELEASES = [
 	{
+		version: "v0.2.5",
+		date: "August 4, 2026",
+		tag: "Latest",
+		changes: [
+			{
+				type: "added",
+				items: [
+					"Transcribe almost any audio file — drop or pick MP3, M4A, FLAC, OGG, MP4/MOV, and more on History; Parrot decodes and transcribes on device",
+					"Transcription detail page — open any dictation or file transcription to read the full transcript, see metadata, and manage attached audio",
+					"Tip of the day — dismissible quick tips in the sidebar to help you discover Parrot features",
+				],
+			},
+			{
+				type: "improved",
+				items: [
+					"History table shows live progress while file transcriptions run, attachment indicators, and clearer delete confirmation popovers",
+					"Large audio files transcribe through Rust directly from disk instead of freezing the webview on big uploads",
+				],
+			},
+			{
+				type: "fixed",
+				items: [
+					"Long audio files no longer crash Parakeet transcription — files longer than 30 seconds are chunked automatically",
+					"MP4 and MOV files pick the audio track instead of failing on video",
+					"Clearer errors when you drop a format Parrot can’t decode (e.g. Opus voice notes from WhatsApp or Telegram)",
+				],
+			},
+		],
+	},
+	{
 		version: "v0.2.4",
 		date: "July 31, 2026",
-		tag: "Latest",
 		changes: [
 			{
 				type: "fixed",
