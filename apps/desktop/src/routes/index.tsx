@@ -115,6 +115,8 @@ function HomePage() {
 		".wav",
 		".mp3",
 		".m4a",
+		".mp4",
+		".mov",
 		".aac",
 		".flac",
 		".ogg",
@@ -129,7 +131,7 @@ function HomePage() {
 		const name = file.name.toLowerCase();
 		if (!SUPPORTED_AUDIO_EXTENSIONS.some((ext) => name.endsWith(ext))) {
 			setFileError(
-				"Unsupported file type. Supported formats: WAV, MP3, M4A, AAC, FLAC, OGG, AIFF, CAF.",
+				"Unsupported file type. Supported formats: WAV, MP3, M4A, MP4, MOV, AAC, FLAC, OGG, AIFF, CAF.",
 			);
 			return;
 		}
@@ -244,7 +246,7 @@ function HomePage() {
 					<input
 						ref={fileInputRef}
 						type="file"
-						accept=".wav,.mp3,.m4a,.aac,.flac,.ogg,.oga,.aiff,.aif,.caf,audio/*"
+						accept=".wav,.mp3,.m4a,.mp4,.mov,.aac,.flac,.ogg,.oga,.aiff,.aif,.caf,audio/*,video/mp4,video/quicktime"
 						className="hidden"
 						onChange={(e) => {
 							const f = e.target.files?.[0];

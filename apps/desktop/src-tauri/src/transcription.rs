@@ -274,7 +274,7 @@ fn num_cpus_default() -> std::os::raw::c_int {
 /// FLAC, OGG/Vorbis, AIFF and CAF without relying on the file extension.
 pub fn decode_audio_bytes(data: &[u8]) -> Result<(Vec<f32>, u32)> {
     use symphonia::core::audio::SampleBuffer;
-    use symphonia::core::codecs::DecoderOptions;
+    use symphonia::core::codecs::{DecoderOptions, CODEC_TYPE_NULL};
     use symphonia::core::errors::Error;
     use symphonia::core::formats::FormatOptions;
     use symphonia::core::io::{MediaSourceStream, MediaSourceStreamOptions};
@@ -291,20 +291,23 @@ pub fn decode_audio_bytes(data: &[u8]) -> Result<(Vec<f32>, u32)> {
             &MetadataOptions::default(),
         )
         .context(
-            "Unrecognised audio format. Supported: WAV, MP3, M4A/AAC, FLAC, OGG, AIFF, CAF.",
+            "Unrecognised audio format. Supported: WAV, MP3, M4A, MP4, MOV, AAC, FLAC, OGG, AIFF, CAF.",
         )?;
 
     let mut format = probed.format;
+    // Pick the first decodable audio track. Containers like MP4/MOV can carry
+    // video tracks too — isomp4 leaves their codec params empty (CODEC_TYPE_NULL,
+    // no sample rate), so this skips them.
     let track = format
-        .default_track()
+        .tracks()
+        .iter()
+        .find(|t| t.codec_params.codec != CODEC_TYPE_NULL && t.codec_params.sample_rate.is_some())
         .context("Audio file has no audio track")?;
     let track_id = track.id;
-    let sample_rate = track
-        .codec_params
-        .sample_rate
-        .context("Audio file has no sample rate")?;
+    let sample_rate = track.codec_params.sample_rate.unwrap();
+    let codec_params = track.codec_params.clone();
     let mut decoder = symphonia::default::get_codecs()
-        .make(&track.codec_params, &DecoderOptions::default())
+        .make(&codec_params, &DecoderOptions::default())
         .context("Audio file uses an unsupported codec")?;
 
     let mut mono: Vec<f32> = Vec::new();
