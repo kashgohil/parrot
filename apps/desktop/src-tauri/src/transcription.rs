@@ -274,7 +274,7 @@ fn num_cpus_default() -> std::os::raw::c_int {
 /// FLAC, OGG/Vorbis, AIFF and CAF without relying on the file extension.
 pub fn decode_audio_bytes(data: &[u8]) -> Result<(Vec<f32>, u32)> {
     use symphonia::core::audio::SampleBuffer;
-    use symphonia::core::codecs::{DecoderOptions, CODEC_TYPE_NULL};
+    use symphonia::core::codecs::{DecoderOptions, CODEC_TYPE_NULL, CODEC_TYPE_OPUS};
     use symphonia::core::errors::Error;
     use symphonia::core::formats::FormatOptions;
     use symphonia::core::io::{MediaSourceStream, MediaSourceStreamOptions};
@@ -302,13 +302,25 @@ pub fn decode_audio_bytes(data: &[u8]) -> Result<(Vec<f32>, u32)> {
         .tracks()
         .iter()
         .find(|t| t.codec_params.codec != CODEC_TYPE_NULL && t.codec_params.sample_rate.is_some())
-        .context("Audio file has no audio track")?;
+        .context("No audio track found in this file. Video-only files can't be transcribed.")?;
     let track_id = track.id;
     let sample_rate = track.codec_params.sample_rate.unwrap();
     let codec_params = track.codec_params.clone();
+
+    // Name the gap explicitly — Opus (WhatsApp/Telegram voice notes, some
+    // screen recordings) is the common unsupported case.
+    if codec_params.codec == CODEC_TYPE_OPUS {
+        return Err(anyhow::anyhow!(
+            "This file uses the Opus codec, which Parrot doesn't support yet. Convert it to MP3, M4A, or WAV and try again."
+        ));
+    }
     let mut decoder = symphonia::default::get_codecs()
         .make(&codec_params, &DecoderOptions::default())
-        .context("Audio file uses an unsupported codec")?;
+        .map_err(|_| {
+            anyhow::anyhow!(
+                "This file uses an audio codec Parrot doesn't support yet. Convert it to WAV, MP3, M4A, or FLAC and try again."
+            )
+        })?;
 
     let mut mono: Vec<f32> = Vec::new();
     loop {

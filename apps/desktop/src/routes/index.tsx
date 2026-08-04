@@ -287,8 +287,8 @@ function HomePage() {
 							: "Drop an audio file here to transcribe"}
 					</p>
 					<p className="text-xs text-muted-foreground mt-0.5">
-						Runs fully on-device. Result is saved to history and copied to the
-						clipboard.
+						WAV, MP3, M4A, MP4, MOV, AAC, FLAC, OGG, AIFF, CAF · Runs fully
+						on-device. Result is saved to history and copied to the clipboard.
 					</p>
 				</div>
 			</div>
