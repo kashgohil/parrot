@@ -160,9 +160,31 @@ impl ParakeetProvider {
                 .model
                 .lock()
                 .map_err(|_| anyhow::anyhow!("Parakeet model mutex poisoned"))?;
-            let result = guard
-                .transcribe(&pcm, &TranscribeOptions::default())
-                .map_err(|e| anyhow::anyhow!("Parakeet transcription failed: {}", e))?;
+
+            // Long audio is transcribed in ~30s energy-split chunks. A single
+            // encoder pass over multi-minute files balloons memory into the
+            // tens of GB and macOS jetsam kills the app (exit 137/143).
+            const CHUNK_ABOVE_SAMPLES: usize = 30 * WHISPER_TARGET_SAMPLE_RATE as usize;
+            let result = if pcm.len() > CHUNK_ABOVE_SAMPLES {
+                use transcribe_rs::transcriber::{
+                    EnergyAdaptiveChunked, EnergyAdaptiveConfig, Transcriber,
+                };
+                let config = EnergyAdaptiveConfig {
+                    target_chunk_secs: 30.0,
+                    search_window_secs: 3.0,
+                    // Same leading-silence guard the direct path gets, per chunk.
+                    padding_secs: 0.25,
+                    ..Default::default()
+                };
+                let mut chunker = EnergyAdaptiveChunked::new(config, TranscribeOptions::default());
+                chunker
+                    .transcribe(&mut *guard, &pcm)
+                    .map_err(|e| anyhow::anyhow!("Parakeet transcription failed: {}", e))?
+            } else {
+                guard
+                    .transcribe(&pcm, &TranscribeOptions::default())
+                    .map_err(|e| anyhow::anyhow!("Parakeet transcription failed: {}", e))?
+            };
             Ok(result.text.trim().to_string())
         })
     }
