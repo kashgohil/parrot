@@ -28,12 +28,14 @@ import {
 	BookA,
 	ExternalLink,
 	History,
+	Lightbulb,
 	Loader2,
 	Settings,
 	Sparkles,
 	User,
+	X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Toaster } from "sonner";
 
 export const Route = createRootRoute({
@@ -121,9 +123,11 @@ function RootLayout() {
 
 function MainShell() {
 	const { user } = useAuth();
+	const location = useLocation();
 	const [status, setStatus] = useState<AppStatus>("idle");
 	const [result, setResult] = useState<DictationResult | null>(null);
 	const updater = useUpdater();
+	const isTranscriptionDetail = location.pathname.startsWith("/history/");
 
 	useEffect(() => {
 		const unsubs = [
@@ -199,7 +203,8 @@ function MainShell() {
 
 				<UpdateBanner updater={updater} />
 
-				<div className="relative z-10 p-4 lg:p-6">
+				<div className="relative z-10 p-4 lg:p-6 space-y-3">
+					<TipOfTheDay />
 					<div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
 						<div className="flex items-center gap-3">
 							<div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
@@ -218,7 +223,7 @@ function MainShell() {
 				</div>
 			</div>
 
-			<div className="flex-1 flex flex-col relative overflow-hidden">
+			<div className="flex-1 flex flex-col relative overflow-hidden min-h-0">
 				<DoodleBackground opacity={0.06} />
 
 				<div
@@ -249,8 +254,20 @@ function MainShell() {
 				<PermissionsBanner />
 				<ParakeetUpgradeBanner />
 
-				<main className="flex-1 overflow-y-auto relative z-10">
-					<div className="max-w-3xl mx-auto w-full px-5 py-6 lg:py-8">
+				<main
+					className={`flex-1 relative z-10 min-h-0 ${
+						isTranscriptionDetail
+							? "overflow-hidden flex flex-col"
+							: "overflow-y-auto"
+					}`}
+				>
+					<div
+						className={`max-w-3xl mx-auto w-full px-5 ${
+							isTranscriptionDetail
+								? "flex-1 min-h-0 flex flex-col py-0"
+								: "py-6 lg:py-8"
+						}`}
+					>
 						<Outlet />
 					</div>
 				</main>
@@ -278,7 +295,10 @@ function NavLink({
 	label: string;
 }) {
 	const location = useLocation();
-	const isActive = location.pathname === to;
+	const isActive =
+		to === "/"
+			? location.pathname === "/" || location.pathname.startsWith("/history/")
+			: location.pathname === to;
 
 	return (
 		<Link
@@ -299,6 +319,63 @@ function NavLink({
 	);
 }
 
+const TIPS = [
+	"Press your hotkey to start recording — release it or press again to stop.",
+	"Add custom vocabulary in the Vocabulary tab so Parrot nails tricky names and jargon.",
+	"Set your writing style in Settings to get cleaner, more consistent transcriptions.",
+	"Your transcriptions are automatically copied to your clipboard after processing.",
+	"Parrot cleans up your dictations with AI — grammar, punctuation, and style, all handled.",
+];
+
+function TipOfTheDay() {
+	const tip = useMemo(() => {
+		const dayIndex = Math.floor(Date.now() / 86400000) % TIPS.length;
+		return TIPS[dayIndex];
+	}, []);
+	const [hidden, setHidden] = useState<boolean | null>(null);
+
+	useEffect(() => {
+		invoke<string | null>("get_setting", { key: "hide_tip_of_day" })
+			.then((value) => setHidden(value === "true"))
+			.catch(() => setHidden(false));
+	}, []);
+
+	async function dismiss() {
+		setHidden(true);
+		try {
+			await invoke("set_setting", { key: "hide_tip_of_day", value: "true" });
+		} catch (e) {
+			console.error("Failed to dismiss tip:", e);
+		}
+	}
+
+	if (hidden !== false) return null;
+
+	return (
+		<div className="bg-white/10 backdrop-blur-sm rounded-xl p-3.5 border border-white/10">
+			<div className="flex items-start gap-2.5">
+				<Lightbulb className="w-4 h-4 text-white/70 shrink-0 mt-0.5" />
+				<div className="flex-1 min-w-0">
+					<div className="flex items-center justify-between gap-2">
+						<p className="text-[10px] font-semibold text-white/50 uppercase tracking-wide">
+							Tip of the day
+						</p>
+						<button
+							type="button"
+							onClick={() => void dismiss()}
+							aria-label="Dismiss tip"
+							className="text-white/40 hover:text-white/80 transition-colors -mr-1 -mt-0.5 p-0.5 rounded"
+						>
+							<X className="w-3.5 h-3.5" />
+						</button>
+					</div>
+					<p className="text-xs text-white/80 leading-relaxed mt-1">{tip}</p>
+				</div>
+			</div>
+		</div>
+	);
+}
+
 function MobileNavLink({
 	to,
 	icon: Icon,
@@ -309,7 +386,10 @@ function MobileNavLink({
 	label: string;
 }) {
 	const location = useLocation();
-	const isActive = location.pathname === to;
+	const isActive =
+		to === "/"
+			? location.pathname === "/" || location.pathname.startsWith("/history/")
+			: location.pathname === to;
 
 	return (
 		<Link
