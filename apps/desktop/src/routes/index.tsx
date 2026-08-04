@@ -1,16 +1,17 @@
 import { Button } from "@/components/ui/button";
+import { DeleteConfirmPopover } from "@/components/delete-confirm-popover";
 import { Input } from "@/components/ui/input";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { open } from "@tauri-apps/plugin-dialog";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import {
 	Check,
 	Copy,
 	FileAudio,
-	Lightbulb,
 	Loader2,
 	Mic,
 	Search,
@@ -18,7 +19,14 @@ import {
 	Trash2,
 	Upload,
 } from "lucide-react";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import {
+	Fragment,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 
 interface DictationEntry {
 	id: string;
@@ -27,38 +35,48 @@ interface DictationEntry {
 	provider: string;
 	duration_ms: number;
 	created_at: string;
+	audio_path?: string | null;
+}
+
+interface FileTranscriptionProgress {
+	stage: string;
+	progress: number;
+	filename: string;
 }
 
 export const Route = createFileRoute("/")({
 	component: HomePage,
 });
 
-const tips = [
-	"Press your hotkey to start recording — release it or press again to stop.",
-	"Add custom vocabulary in the Vocabulary tab so Parrot nails tricky names and jargon.",
-	"Set your writing style in Settings to get cleaner, more consistent transcriptions.",
-	"Your transcriptions are automatically copied to your clipboard after processing.",
-	"Parrot cleans up your dictations with AI — grammar, punctuation, and style, all handled.",
-];
+const STAGE_LABELS: Record<string, string> = {
+	decoding: "Decoding audio…",
+	transcribing: "Transcribing…",
+	saving: "Saving attachment…",
+	cleaning: "Cleaning up…",
+	done: "Done",
+};
 
-function getTipOfTheDay() {
-	const dayIndex = Math.floor(Date.now() / 86400000) % tips.length;
-	return tips[dayIndex];
+function attachmentFilename(path: string): string {
+	return path.split(/[/\\]/).pop() || "Audio file";
 }
 
 function HomePage() {
+	const navigate = useNavigate();
 	const [entries, setEntries] = useState<DictationEntry[]>([]);
 	const [search, setSearch] = useState("");
 	const [copiedId, setCopiedId] = useState<string | null>(null);
-	const [expandedId, setExpandedId] = useState<string | null>(null);
-	const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 	const [deletingId, setDeletingId] = useState<string | null>(null);
+	const [pendingDeleteAudioId, setPendingDeleteAudioId] = useState<
+		string | null
+	>(null);
+	const [deletingAudioId, setDeletingAudioId] = useState<string | null>(null);
 	const [fileBusy, setFileBusy] = useState(false);
 	const [fileError, setFileError] = useState<string | null>(null);
 	const [fileProgress, setFileProgress] = useState<string | null>(null);
+	const [fileProgressPct, setFileProgressPct] = useState(0);
+	const [fileName, setFileName] = useState<string | null>(null);
 	const [dragOver, setDragOver] = useState(false);
-
-	const tip = useMemo(() => getTipOfTheDay(), []);
+	const fileBusyRef = useRef(false);
 
 	const loadHistory = useCallback(async () => {
 		try {
@@ -79,6 +97,10 @@ function HomePage() {
 	}, [loadHistory]);
 
 	useEffect(() => {
+		fileBusyRef.current = fileBusy;
+	}, [fileBusy]);
+
+	useEffect(() => {
 		const unsub = listen("dictation-complete", () => {
 			loadHistory();
 		});
@@ -86,6 +108,40 @@ function HomePage() {
 			unsub.then((f) => f());
 		};
 	}, [loadHistory]);
+
+	useEffect(() => {
+		const unsub = listen<FileTranscriptionProgress>(
+			"file-transcription-progress",
+			(event) => {
+				const { stage, progress, filename } = event.payload;
+				setFileProgressPct(progress);
+				setFileName(filename);
+				if (stage === "done") {
+					setFileProgress("Done — copied to clipboard");
+				} else {
+					setFileProgress(STAGE_LABELS[stage] || "Working…");
+				}
+			},
+		);
+		return () => {
+			unsub.then((f) => f());
+		};
+	}, []);
+
+	useEffect(() => {
+		if (!fileBusy) return;
+		const id = window.setInterval(() => {
+			setFileProgressPct((prev) => {
+				// Creep toward the next stage ceiling so long STT doesn't look frozen.
+				if (prev >= 95 || prev < 8) return prev;
+				const ceiling =
+					prev < 35 ? 34 : prev < 72 ? 70 : prev < 82 ? 81 : 94;
+				if (prev >= ceiling) return prev;
+				return Math.min(ceiling, prev + 0.4);
+			});
+		}, 400);
+		return () => window.clearInterval(id);
+	}, [fileBusy]);
 
 	async function copyEntry(entry: DictationEntry) {
 		const text = entry.cleaned_text || entry.raw_text;
@@ -103,12 +159,33 @@ function HomePage() {
 		try {
 			await invoke("delete_dictation", { id });
 			setEntries((prev) => prev.filter((e) => e.id !== id));
-			if (expandedId === id) setExpandedId(null);
 		} catch (e) {
 			console.error("Failed to delete:", e);
 		} finally {
 			setDeletingId(null);
-			setPendingDeleteId(null);
+		}
+	}
+
+	async function deleteAudioAttachment(id: string) {
+		setDeletingAudioId(id);
+		try {
+			await invoke("delete_dictation_audio", { id });
+			setEntries((prev) =>
+				prev.map((e) => (e.id === id ? { ...e, audio_path: null } : e)),
+			);
+		} catch (e) {
+			console.error("Failed to delete audio:", e);
+		} finally {
+			setDeletingAudioId(null);
+			setPendingDeleteAudioId(null);
+		}
+	}
+
+	async function revealAttachment(path: string) {
+		try {
+			await revealItemInDir(path);
+		} catch (e) {
+			console.error("Failed to reveal file:", e);
 		}
 	}
 
@@ -128,6 +205,7 @@ function HomePage() {
 	];
 
 	async function pickAndTranscribeFile() {
+		if (fileBusyRef.current) return;
 		setFileError(null);
 		try {
 			const path = await open({
@@ -162,6 +240,7 @@ function HomePage() {
 	}
 
 	async function transcribeFilePath(filePath: string) {
+		if (fileBusyRef.current) return;
 		const filename = filePath.split(/[/\\]/).pop() || filePath;
 		setFileError(null);
 		const name = filename.toLowerCase();
@@ -171,8 +250,11 @@ function HomePage() {
 			);
 			return;
 		}
+		fileBusyRef.current = true;
 		setFileBusy(true);
-		setFileProgress(`Transcribing ${filename}…`);
+		setFileName(filename);
+		setFileProgressPct(8);
+		setFileProgress(`Preparing ${filename}…`);
 		try {
 			const result = await invoke<{
 				raw_text: string;
@@ -181,18 +263,26 @@ function HomePage() {
 				filePath,
 			});
 			const text = result.cleaned_text || result.raw_text;
+			setFileProgressPct(100);
 			setFileProgress(
 				text
 					? "Done — copied to clipboard"
 					: "No speech detected in that file",
 			);
 			await loadHistory();
-			setTimeout(() => setFileProgress(null), 2500);
+			setTimeout(() => {
+				setFileProgress(null);
+				setFileProgressPct(0);
+				setFileName(null);
+			}, 2500);
 		} catch (e) {
 			const msg = e instanceof Error ? e.message : String(e);
 			setFileError(msg);
 			setFileProgress(null);
+			setFileProgressPct(0);
+			setFileName(null);
 		} finally {
+			fileBusyRef.current = false;
 			setFileBusy(false);
 		}
 	}
@@ -203,9 +293,10 @@ function HomePage() {
 				await getCurrentWindow().onDragDropEvent((event) => {
 					const { type } = event.payload;
 					if (type === "enter" || type === "over") {
-						setDragOver(true);
+						if (!fileBusyRef.current) setDragOver(true);
 					} else if (type === "drop") {
 						setDragOver(false);
+						if (fileBusyRef.current) return;
 						const path = event.payload.paths?.[0];
 						if (path) void transcribeFilePath(path);
 					} else if (type === "leave") {
@@ -263,6 +354,18 @@ function HomePage() {
 		return groups;
 	}, [entries]);
 
+	const dropzoneLabel = fileBusy
+		? fileProgress || "Working on your file…"
+		: dragOver
+			? "Drop to transcribe"
+			: "Drop an audio file here to transcribe";
+
+	const dropzoneHint = fileBusy
+		? fileName
+			? `${fileName} · please wait — another file can’t be started yet`
+			: "Please wait — another file can’t be started yet"
+		: "WAV, MP3, M4A, MP4, MOV, AAC, FLAC, OGG, AIFF, CAF · Runs fully on-device. Result is saved to history and copied to the clipboard.";
+
 	return (
 		<div className="space-y-6">
 			<div className="flex items-start justify-between gap-4">
@@ -293,32 +396,47 @@ function HomePage() {
 						) : (
 							<FileAudio className="w-4 h-4 mr-1.5" />
 						)}
-						Transcribe file
+						{fileBusy ? "Transcribing…" : "Transcribe file"}
 					</Button>
 				</div>
 			</div>
 
 			<div
-				className={`rounded-xl border-2 border-dashed px-4 py-6 flex flex-col sm:flex-row items-center justify-center gap-3 transition-colors ${
-					dragOver
-						? "border-primary bg-primary/10"
-						: "border-border bg-muted/20"
+				aria-busy={fileBusy}
+				className={`relative overflow-hidden rounded-xl border-2 border-dashed px-4 py-6 flex flex-col sm:flex-row items-center justify-center gap-3 transition-[border-color,background-color,opacity] duration-200 ${
+					fileBusy
+						? "border-primary/50 bg-primary/5 cursor-wait"
+						: dragOver
+							? "border-primary bg-primary/10"
+							: "border-border bg-muted/20"
 				}`}
 			>
-				<Upload
-					className={`w-5 h-5 shrink-0 ${dragOver ? "text-primary" : "text-muted-foreground"}`}
-				/>
-				<div className="text-center sm:text-left">
+				{fileBusy && (
+					<div
+						className="absolute inset-y-0 left-0 bg-primary/15 transition-[width] duration-500 ease-out pointer-events-none"
+						style={{ width: `${Math.min(100, Math.max(0, fileProgressPct))}%` }}
+					/>
+				)}
+				{fileBusy ? (
+					<Loader2 className="relative z-10 w-5 h-5 shrink-0 text-primary animate-spin" />
+				) : (
+					<Upload
+						className={`relative z-10 w-5 h-5 shrink-0 ${dragOver ? "text-primary" : "text-muted-foreground"}`}
+					/>
+				)}
+				<div className="relative z-10 text-center sm:text-left min-w-0">
 					<p className="text-sm font-medium text-foreground">
-						{fileBusy
-							? fileProgress || "Working…"
-							: "Drop an audio file here to transcribe"}
+						{dropzoneLabel}
 					</p>
 					<p className="text-xs text-muted-foreground mt-0.5">
-						WAV, MP3, M4A, MP4, MOV, AAC, FLAC, OGG, AIFF, CAF · Runs fully
-						on-device. Result is saved to history and copied to the clipboard.
+						{dropzoneHint}
 					</p>
 				</div>
+				{fileBusy && (
+					<span className="relative z-10 tabular-nums text-xs font-medium text-primary shrink-0">
+						{Math.round(fileProgressPct)}%
+					</span>
+				)}
 			</div>
 			{fileError && (
 				<p className="text-sm text-destructive -mt-3">{fileError}</p>
@@ -326,16 +444,6 @@ function HomePage() {
 			{fileProgress && !fileBusy && (
 				<p className="text-sm text-primary -mt-3">{fileProgress}</p>
 			)}
-
-			<div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3.5 flex items-start gap-3">
-				<Lightbulb className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-				<div>
-					<p className="text-xs font-semibold text-primary uppercase tracking-wide">
-						Tip of the day
-					</p>
-					<p className="text-sm text-foreground mt-1">{tip}</p>
-				</div>
-			</div>
 
 			<div className="relative">
 				<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -368,6 +476,7 @@ function HomePage() {
 						<thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
 							<tr>
 								<th className="text-left font-semibold px-4 py-2.5">Text</th>
+								<th className="w-10 px-2 py-2.5" aria-label="Status" />
 								<th className="text-left font-semibold px-4 py-2.5 w-32">
 									Duration
 								</th>
@@ -381,7 +490,7 @@ function HomePage() {
 								<Fragment key={group.label}>
 									<tr className="bg-secondary border-t border-border">
 										<td
-											colSpan={3}
+											colSpan={4}
 											className="px-4 py-2 text-[11px] font-bold text-foreground uppercase tracking-wider"
 										>
 											{group.label}
@@ -389,49 +498,78 @@ function HomePage() {
 									</tr>
 									{group.entries.map((entry) => {
 										const display = entry.cleaned_text || entry.raw_text;
-										const isExpanded = expandedId === entry.id;
 										const hasCleaned =
 											entry.cleaned_text &&
 											entry.cleaned_text !== entry.raw_text;
 										const isCopied = copiedId === entry.id;
-										const isPendingDelete = pendingDeleteId === entry.id;
 										const isDeleting = deletingId === entry.id;
+										const audioPath = entry.audio_path || null;
+										const isDeletingAudio = deletingAudioId === entry.id;
+										const isPendingDeleteAudio =
+											pendingDeleteAudioId === entry.id;
 
 										return (
 											<tr
 												key={entry.id}
-												className="border-t border-border/60 hover:bg-muted/20 transition-colors align-middle"
+												className="border-t border-border/60 hover:bg-muted/20 transition-colors align-middle cursor-pointer"
+												onClick={() =>
+													void navigate({
+														to: "/history/$id",
+														params: { id: entry.id },
+													})
+												}
 											>
+												<td className="px-4 py-3">
+													<p className="text-[14px] leading-relaxed text-foreground line-clamp-2">
+														{display}
+													</p>
+												</td>
 												<td
-													className="px-4 py-3 cursor-pointer"
-													onClick={() =>
-														setExpandedId(isExpanded ? null : entry.id)
-													}
+													className="px-2 py-3 align-middle"
+													onClick={(e) => e.stopPropagation()}
 												>
-													<div className="flex items-start gap-2">
-														<div className="flex-1 min-w-0">
-															<p
-																className={`text-[14px] leading-relaxed text-foreground ${isExpanded ? "" : "line-clamp-2"}`}
-															>
-																{display}
-															</p>
-															{isExpanded && hasCleaned && (
-																<div className="mt-3 pt-3 border-t border-border/50">
-																	<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5 flex items-center gap-1">
-																		<span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-																		Raw transcription
-																	</p>
-																	<p className="text-sm text-muted-foreground italic leading-relaxed">
-																		"{entry.raw_text}"
-																	</p>
-																</div>
-															)}
-														</div>
+													<div className="flex flex-col items-center gap-1.5">
 														{hasCleaned && (
 															<Sparkles
-																className="w-3.5 h-3.5 text-primary shrink-0 mt-1"
+																className="w-3.5 h-3.5 text-primary shrink-0"
 																aria-label="Cleaned"
 															/>
+														)}
+														{audioPath && (
+															<DeleteConfirmPopover
+																message="Remove this audio attachment?"
+																confirmLabel="Remove"
+																deletingLabel="Removing…"
+																open={isPendingDeleteAudio}
+																onOpenChange={(open) => {
+																	setPendingDeleteAudioId(
+																		open ? entry.id : null,
+																	);
+																}}
+																trigger="manual"
+																side="right"
+																align="center"
+																onConfirm={() =>
+																	deleteAudioAttachment(entry.id)
+																}
+																isDeleting={isDeletingAudio}
+															>
+																<button
+																	type="button"
+																	onClick={() =>
+																		void revealAttachment(audioPath)
+																	}
+																	onContextMenu={(e) => {
+																		e.preventDefault();
+																		setPendingDeleteAudioId(entry.id);
+																	}}
+																	className="inline-flex text-muted-foreground hover:text-foreground transition-colors"
+																	title={attachmentFilename(audioPath)}
+																	aria-label={attachmentFilename(audioPath)}
+																>
+																	<FileAudio className="w-3.5 h-3.5" />
+																</button>
+															</DeleteConfirmPopover>
 														)}
 													</div>
 												</td>
@@ -443,52 +581,37 @@ function HomePage() {
 														</span>
 													</div>
 												</td>
-												<td className="px-4 py-3 text-right whitespace-nowrap">
-													{isPendingDelete ? (
-														<div className="inline-flex items-center gap-1">
+												<td
+													className="px-4 py-3 text-right whitespace-nowrap"
+													onClick={(e) => e.stopPropagation()}
+												>
+													<div className="inline-flex items-center gap-1">
+														<Button
+															variant="ghost"
+															size="sm"
+															onClick={() => copyEntry(entry)}
+															className={`h-8 px-2 text-xs ${isCopied ? "text-green-600" : "hover:text-primary"}`}
+														>
+															{isCopied ? (
+																<Check className="w-3.5 h-3.5" />
+															) : (
+																<Copy className="w-3.5 h-3.5" />
+															)}
+														</Button>
+														<DeleteConfirmPopover
+															message="Delete this transcription?"
+															onConfirm={() => deleteEntry(entry.id)}
+															isDeleting={isDeleting}
+														>
 															<Button
 																variant="ghost"
 																size="sm"
-																disabled={isDeleting}
-																onClick={() => setPendingDeleteId(null)}
-																className="h-8 px-2 text-xs"
-															>
-																Cancel
-															</Button>
-															<Button
-																variant="ghost"
-																size="sm"
-																disabled={isDeleting}
-																onClick={() => deleteEntry(entry.id)}
-																className="h-8 px-2 text-xs bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive"
-															>
-																{isDeleting ? "Deleting…" : "Confirm"}
-															</Button>
-														</div>
-													) : (
-														<div className="inline-flex items-center gap-1">
-															<Button
-																variant="ghost"
-																size="sm"
-																onClick={() => copyEntry(entry)}
-																className={`h-8 px-2 text-xs ${isCopied ? "text-green-600" : "hover:text-primary"}`}
-															>
-																{isCopied ? (
-																	<Check className="w-3.5 h-3.5" />
-																) : (
-																	<Copy className="w-3.5 h-3.5" />
-																)}
-															</Button>
-															<Button
-																variant="ghost"
-																size="sm"
-																onClick={() => setPendingDeleteId(entry.id)}
 																className="h-8 px-2 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10"
 															>
 																<Trash2 className="w-3.5 h-3.5" />
 															</Button>
-														</div>
-													)}
+														</DeleteConfirmPopover>
+													</div>
 												</td>
 											</tr>
 										);
