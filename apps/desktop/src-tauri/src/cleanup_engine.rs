@@ -21,10 +21,10 @@ use std::sync::{Arc, Mutex};
 
 /// Shared handle to the cleanup sidecar client. `None` until the sidecar is up.
 pub type SharedCleanupEngine =
-    Arc<crate::cleanup_lifecycle::CleanupLifecycle<SidecarCleanupClient>>;
+    Arc<crate::model_lifecycle::ModelLifecycle<SidecarCleanupClient>>;
 
 pub fn new_cleanup_engine() -> SharedCleanupEngine {
-    crate::cleanup_lifecycle::CleanupLifecycle::new(|model| {
+    crate::model_lifecycle::ModelLifecycle::new(|model: PathBuf| {
         SidecarCleanupClient::spawn(&resolve_sidecar_path()?, &model)
     })
 }

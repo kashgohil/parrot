@@ -1,4 +1,4 @@
-//! Demand loading and ownership of an isolated cleanup resource.
+//! Demand loading and ownership shared by speech and isolated models.
 use anyhow::{anyhow, Result};
 use serde::Serialize;
 use std::{
@@ -9,15 +9,15 @@ use std::{
 use tokio::sync::watch;
 
 type LoadResult = std::result::Result<(), String>;
-type Loader<T> = dyn Fn(PathBuf) -> Result<T> + Send + Sync;
+type Loader<T, K> = dyn Fn(K) -> Result<T> + Send + Sync;
 
-pub struct CleanupLifecycle<T> {
-    inner: Mutex<Inner<T>>,
-    loader: Arc<Loader<T>>,
+pub struct ModelLifecycle<T, K = PathBuf> {
+    inner: Mutex<Inner<T, K>>,
+    loader: Arc<Loader<T, K>>,
 }
 
-struct Inner<T> {
-    model: Option<PathBuf>,
+struct Inner<T, K> {
+    model: Option<K>,
     generation: u64,
     client: Option<Arc<T>>,
     loading: Option<watch::Receiver<Option<LoadResult>>>,
@@ -27,20 +27,20 @@ struct Inner<T> {
 }
 
 #[derive(Serialize)]
-pub struct CleanupStatus {
+pub struct ModelStatus {
     pub state: &'static str,
     pub error: Option<String>,
     pub idle_seconds: Option<u64>,
 }
 
 /// A job owns its resource even if Settings selects another model.
-pub struct CleanupLease<T> {
+pub struct ModelLease<T, K = PathBuf> {
     pub client: Arc<T>,
-    owner: Weak<CleanupLifecycle<T>>,
+    owner: Weak<ModelLifecycle<T, K>>,
     generation: u64,
 }
 
-impl<T> Drop for CleanupLease<T> {
+impl<T, K> Drop for ModelLease<T, K> {
     fn drop(&mut self) {
         if let Some(owner) = self.owner.upgrade() {
             let mut inner = owner.inner.lock().unwrap();
@@ -51,8 +51,8 @@ impl<T> Drop for CleanupLease<T> {
     }
 }
 
-impl<T: Send + Sync + 'static> CleanupLifecycle<T> {
-    pub fn new(loader: impl Fn(PathBuf) -> Result<T> + Send + Sync + 'static) -> Arc<Self> {
+impl<T: Send + Sync + 'static, K: Clone + PartialEq + Send + 'static> ModelLifecycle<T, K> {
+    pub fn new(loader: impl Fn(K) -> Result<T> + Send + Sync + 'static) -> Arc<Self> {
         Arc::new(Self {
             inner: Mutex::new(Inner {
                 model: None,
@@ -69,7 +69,7 @@ impl<T: Send + Sync + 'static> CleanupLifecycle<T> {
 
     /// Configure without loading. Invalidating an in-flight load cannot publish
     /// its obsolete result; existing jobs keep their own handles until done.
-    pub fn configure(&self, model: Option<PathBuf>, idle_timeout: Option<Duration>) {
+    pub fn configure(&self, model: Option<K>, idle_timeout: Option<Duration>) {
         let retired = {
             let mut inner = self.inner.lock().unwrap();
             inner.idle_timeout = idle_timeout;
@@ -85,9 +85,9 @@ impl<T: Send + Sync + 'static> CleanupLifecycle<T> {
         drop(retired); // Never kill/wait while holding the coordinator lock.
     }
 
-    pub fn status(&self) -> CleanupStatus {
+    pub fn status(&self) -> ModelStatus {
         let inner = self.inner.lock().unwrap();
-        CleanupStatus {
+        ModelStatus {
             state: if inner.loading.is_some() {
                 "loading"
             } else if inner
@@ -112,17 +112,17 @@ impl<T: Send + Sync + 'static> CleanupLifecycle<T> {
         self.inner.lock().unwrap().client.is_some()
     }
 
-    pub async fn acquire(self: &Arc<Self>) -> Result<CleanupLease<T>> {
+    pub async fn acquire(self: &Arc<Self>) -> Result<ModelLease<T, K>> {
         let generation = self.inner.lock().unwrap().generation;
         loop {
             let mut receiver = {
                 let mut inner = self.inner.lock().unwrap();
                 if generation != inner.generation {
-                    return Err(anyhow!("cleanup model selection changed"));
+                    return Err(anyhow!("model selection changed"));
                 }
                 if let Some(client) = inner.client.clone() {
                     inner.last_used = Instant::now();
-                    return Ok(CleanupLease {
+                    return Ok(ModelLease {
                         client,
                         owner: Arc::downgrade(self),
                         generation,
@@ -134,7 +134,7 @@ impl<T: Send + Sync + 'static> CleanupLifecycle<T> {
                     let model = inner
                         .model
                         .clone()
-                        .ok_or_else(|| anyhow!("builtin cleanup model is not configured"))?;
+                        .ok_or_else(|| anyhow!("model is not configured"))?;
                     let (sender, receiver) = watch::channel(None);
                     inner.loading = Some(receiver.clone());
                     inner.error = None;
@@ -144,12 +144,12 @@ impl<T: Send + Sync + 'static> CleanupLifecycle<T> {
                         let loader = owner.loader.clone();
                         let loaded = tokio::task::spawn_blocking(move || loader(model))
                             .await
-                            .map_err(|e| format!("cleanup load task failed: {e}"))
+                            .map_err(|e| format!("model load task failed: {e}"))
                             .and_then(|r| r.map(Arc::new).map_err(|e| format!("{e:#}")));
                         let outcome = {
                             let mut inner = owner.inner.lock().unwrap();
                             if inner.generation != generation {
-                                Err("cleanup model selection changed during load".to_string())
+                                Err("model selection changed during load".to_string())
                             } else {
                                 inner.loading = None;
                                 match &loaded {
@@ -179,7 +179,7 @@ impl<T: Send + Sync + 'static> CleanupLifecycle<T> {
                 receiver
                     .changed()
                     .await
-                    .map_err(|_| anyhow!("cleanup load task ended without a result"))?;
+                    .map_err(|_| anyhow!("model load task ended without a result"))?;
             }
         }
     }
@@ -209,6 +209,25 @@ impl<T: Send + Sync + 'static> CleanupLifecycle<T> {
         released
     }
 
+    /// Release a warm model without changing its selection. Active work wins.
+    pub fn release_unused(&self) -> bool {
+        let retired = {
+            let mut inner = self.inner.lock().unwrap();
+            if inner.loading.is_some()
+                || inner
+                    .client
+                    .as_ref()
+                    .is_some_and(|c| Arc::strong_count(c) > 1)
+            {
+                return false;
+            }
+            inner.client.take()
+        };
+        let released = retired.is_some();
+        drop(retired);
+        released
+    }
+
     pub fn start_idle_monitor(self: &Arc<Self>) {
         let owner = Arc::downgrade(self);
         tauri::async_runtime::spawn(async move {
@@ -217,7 +236,7 @@ impl<T: Send + Sync + 'static> CleanupLifecycle<T> {
                 let Some(owner) = owner.upgrade() else {
                     return;
                 };
-                // Sidecar Drop kills/waits; do that on a blocking worker.
+                // Native resources and child processes must drop on a blocking worker.
                 let _ = tokio::task::spawn_blocking(move || owner.release_if_idle(Instant::now()))
                     .await;
             }
@@ -234,7 +253,7 @@ mod tests {
     async fn concurrent_loads_reuse_and_idle_waits_for_final_owner() {
         let loads = Arc::new(AtomicUsize::new(0));
         let count = loads.clone();
-        let owner = CleanupLifecycle::new(move |_| {
+        let owner = ModelLifecycle::<_, PathBuf>::new(move |_| {
             count.fetch_add(1, Ordering::SeqCst);
             std::thread::sleep(Duration::from_millis(30));
             Ok(())
@@ -263,7 +282,7 @@ mod tests {
         let (started_tx, started_rx) = std::sync::mpsc::channel();
         let (resume_tx, resume_rx) = std::sync::mpsc::channel();
         let resume = Mutex::new(resume_rx);
-        let owner = CleanupLifecycle::new(move |p| {
+        let owner = ModelLifecycle::new(move |p: PathBuf| {
             if p == PathBuf::from("old") {
                 started_tx.send(()).unwrap();
                 resume.lock().unwrap().recv().unwrap();
@@ -293,7 +312,7 @@ mod tests {
     async fn cancelled_waiter_does_not_cancel_load_and_failures_are_retryable() {
         let attempts = Arc::new(AtomicUsize::new(0));
         let count = attempts.clone();
-        let owner = CleanupLifecycle::new(move |_| {
+        let owner = ModelLifecycle::<_, PathBuf>::new(move |_| {
             let n = count.fetch_add(1, Ordering::SeqCst);
             if n == 0 {
                 anyhow::bail!("invalid model");
