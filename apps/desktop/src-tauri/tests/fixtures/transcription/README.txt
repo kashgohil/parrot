@@ -22,3 +22,10 @@ The test checks distinctive words in their original language, all Auto setting
 forms, explicit English/French hints, silence and accidental short recordings.
 It is ignored by default because model files are large and machine-specific.
 It does not download a model or launch the app/cleanup sidecar.
+
+ISSUE-1042 also uses french.wav to compare live-preview and final inference with
+the same database preferences. It covers missing/blank/Auto/explicit French
+settings and an unconditional vocabulary hint. Conditional hints are excluded.
+The database is in memory and does not change the user's Settings or profile.
+
+PARROT_TEST_WHISPER_MODEL='/path/to/ggml-large-v3-turbo-q5_0.bin' cargo test --locked -p parrot --lib multilingual_preview_inference -- --ignored --nocapture

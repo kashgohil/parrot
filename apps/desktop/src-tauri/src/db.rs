@@ -10,6 +10,15 @@ pub struct Database {
 }
 
 impl Database {
+    #[cfg(test)]
+    pub(crate) fn in_memory() -> Result<Self> {
+        let db = Self {
+            conn: Mutex::new(Connection::open_in_memory()?),
+        };
+        db.run_migrations()?;
+        Ok(db)
+    }
+
     pub fn new() -> Result<Self> {
         let db_path = Self::db_path()?;
         if let Some(parent) = db_path.parent() {

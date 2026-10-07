@@ -15,6 +15,25 @@ pub struct TranscribeOpts {
     pub initial_prompt: Option<String>,
 }
 
+impl TranscribeOpts {
+    /// Read the same current preferences for previews, dictation, and imports.
+    /// Parakeet continues to ignore both hints and detect language automatically.
+    pub fn from_database(db: &crate::db::Database) -> Result<Self> {
+        let language = db
+            .get_setting("stt_language")?
+            .filter(|s| !s.trim().is_empty());
+        // Vocabulary is optional. An unavailable or malformed profile must not
+        // prevent transcription, matching the final-transcription behavior.
+        let initial_prompt = db.get_profile().ok().and_then(|profile| {
+            crate::vocab::whisper_initial_prompt(&crate::vocab::parse(&profile.custom_words))
+        });
+        Ok(Self {
+            language,
+            initial_prompt,
+        })
+    }
+}
+
 /// Local transcription engines available to the app.
 ///
 /// Phase 2: Whisper (Metal) remains supported for multilingual / low-RAM;
@@ -94,12 +113,7 @@ impl LocalWhisperProvider {
         let initial_prompt = opts.initial_prompt.clone();
 
         tokio::task::spawn_blocking(move || {
-            run_whisper(
-                &ctx,
-                &pcm,
-                language.as_deref(),
-                initial_prompt.as_deref(),
-            )
+            run_whisper(&ctx, &pcm, language.as_deref(), initial_prompt.as_deref())
         })
         .await
         .context("Whisper task panicked")?
@@ -128,7 +142,11 @@ impl ParakeetProvider {
         }
 
         let model = ParakeetModel::load(model_dir, &Quantization::Int8).map_err(|e| {
-            anyhow::anyhow!("Failed to load Parakeet model at {}: {}", model_dir.display(), e)
+            anyhow::anyhow!(
+                "Failed to load Parakeet model at {}: {}",
+                model_dir.display(),
+                e
+            )
         })?;
         Ok(Self {
             model: Mutex::new(model),
@@ -210,6 +228,7 @@ fn run_whisper(
     // "Whisper inference failed" — treat sub-threshold input as empty
     // transcription instead so accidental hotkey taps don't show an error.
     const MIN_SAMPLES_16K: usize = 16_000 / 4; // 0.25s
+
     // Whisper can hallucinate words on digital silence. Only skip exact zero
     // samples here so quiet speech is not discarded by an amplitude threshold.
     if pcm.len() < MIN_SAMPLES_16K || pcm.iter().all(|&sample| sample == 0.0) {
@@ -420,6 +439,55 @@ pub async fn transcribe_audio(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn transcription_preferences_preserve_auto_and_explicit_languages() {
+        let db = crate::db::Database::in_memory().unwrap();
+        let opts = TranscribeOpts::from_database(&db).unwrap();
+        assert!(opts.language.is_none());
+        assert!(opts.initial_prompt.is_none());
+
+        db.update_profile(
+            r#"["réserver", {"term":"Parrot"}, {"term":"Acme", "context":"company name"}]"#,
+            "",
+            "",
+        )
+        .unwrap();
+        // Re-read the same database after each Settings change, as previews do.
+        for (setting, expected) in [
+            ("", None),
+            ("  ", None),
+            ("auto", Some("auto")),
+            (" AuTo ", Some(" AuTo ")),
+            ("fr", Some("fr")),
+            ("hi", Some("hi")),
+            ("en", Some("en")),
+        ] {
+            db.set_setting("stt_language", setting).unwrap();
+            let opts = TranscribeOpts::from_database(&db).unwrap();
+            assert_eq!(opts.language.as_deref(), expected);
+            assert_eq!(
+                opts.initial_prompt.as_deref(),
+                Some("Vocabulary hints: réserver, Parrot.")
+            );
+        }
+    }
+
+    #[test]
+    fn transcription_preferences_tolerate_malformed_and_conditional_vocabulary() {
+        let db = crate::db::Database::in_memory().unwrap();
+        db.set_setting("stt_language", "fr").unwrap();
+        for words in [
+            "not valid JSON",
+            "[]",
+            r#"[{"term":"Acme", "context":"company name"}]"#,
+        ] {
+            db.update_profile(words, "", "").unwrap();
+            let opts = TranscribeOpts::from_database(&db).unwrap();
+            assert_eq!(opts.language.as_deref(), Some("fr"));
+            assert!(opts.initial_prompt.is_none());
+        }
+    }
 
     fn make_wav_i16(channels: u16, sample_rate: u32, frames: &[i16]) -> Vec<u8> {
         let mut buf = std::io::Cursor::new(Vec::new());

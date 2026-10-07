@@ -88,7 +88,13 @@ pub fn start_partial_loop(app: AppHandle, generation: u64) {
                     let engine = engine_slot.read().await.clone();
                     if let Some(engine) = engine {
                         // Engines already run inference on blocking pools.
-                        let text = transcribe_partial(engine, samples, sample_rate).await;
+                        let text = transcribe_partial(
+                            engine,
+                            samples,
+                            sample_rate,
+                            &app.state::<crate::db::Database>(),
+                        )
+                        .await;
 
                         if app.state::<Arc<StreamingCoordinator>>().current() != generation {
                             break;
@@ -122,16 +128,10 @@ async fn transcribe_partial(
     engine: Arc<LocalEngine>,
     samples: Vec<f32>,
     sample_rate: u32,
+    db: &crate::db::Database,
 ) -> anyhow::Result<String> {
     engine
-        .transcribe_samples(
-            &samples,
-            sample_rate,
-            TranscribeOpts {
-                language: Some("en".into()),
-                initial_prompt: None,
-            },
-        )
+        .transcribe_samples(&samples, sample_rate, TranscribeOpts::from_database(db)?)
         .await
 }
 
@@ -148,6 +148,18 @@ mod tests {
     use super::*;
     use crate::transcription::{decode_audio_bytes, transcribe_audio, LocalWhisperProvider};
 
+    #[test]
+    fn new_generations_invalidate_ended_recording_previews() {
+        let coordinator = StreamingCoordinator::new();
+        let recording = coordinator.next_generation();
+        assert_eq!(coordinator.current(), recording);
+        coordinator.next_generation(); // End or cancel recording.
+        assert_ne!(coordinator.current(), recording);
+        let next_recording = coordinator.next_generation();
+        assert_ne!(coordinator.current(), recording);
+        assert_eq!(coordinator.current(), next_recording);
+    }
+
     /// Run with PARROT_TEST_WHISPER_MODEL set to a multilingual Whisper model.
     #[tokio::test]
     #[ignore = "requires a local multilingual Whisper model"]
@@ -161,26 +173,44 @@ mod tests {
         let (samples, rate) =
             decode_audio_bytes(include_bytes!("../tests/fixtures/transcription/french.wav"))
                 .unwrap();
-        let final_text = transcribe_audio(
-            &samples,
-            rate,
-            Some(engine.as_ref()),
-            TranscribeOpts {
-                language: Some("auto".into()),
-                initial_prompt: Some("Vocabulary hints: réserver.".into()),
-            },
+        let db = crate::db::Database::in_memory().unwrap();
+        db.update_profile(
+            r#"["réserver", {"term":"Acme", "context":"company name"}]"#,
+            "",
+            "",
         )
-        .await
         .unwrap();
-        let preview = transcribe_partial(engine, samples, rate).await.unwrap();
-        eprintln!("French preview: {preview:?}; final: {final_text:?}");
-        for (path, text) in [("preview", preview), ("final", final_text)] {
-            let lower = text.to_lowercase();
-            for word in ["bonjour", "voudrais", "table"] {
-                assert!(
-                    lower.contains(word),
-                    "{path} lost French word {word:?}: {text:?}"
-                );
+        for language in [
+            None,
+            Some("auto"),
+            Some(" AuTo "),
+            Some(""),
+            Some("  "),
+            Some("fr"),
+        ] {
+            if let Some(language) = language {
+                db.set_setting("stt_language", language).unwrap();
+            }
+            let opts = TranscribeOpts::from_database(&db).unwrap();
+            assert_eq!(
+                opts.initial_prompt.as_deref(),
+                Some("Vocabulary hints: réserver.")
+            );
+            let final_text = transcribe_audio(&samples, rate, Some(engine.as_ref()), opts)
+                .await
+                .unwrap();
+            let preview = transcribe_partial(engine.clone(), samples.clone(), rate, &db)
+                .await
+                .unwrap();
+            eprintln!("language={language:?}: French preview: {preview:?}; final: {final_text:?}");
+            for (path, text) in [("preview", preview), ("final", final_text)] {
+                let lower = text.to_lowercase();
+                for word in ["bonjour", "voudrais", "réserver", "table", "demain", "soir"] {
+                    assert!(
+                        lower.contains(word),
+                        "language={language:?}, {path} lost French word {word:?}: {text:?}"
+                    );
+                }
             }
         }
     }

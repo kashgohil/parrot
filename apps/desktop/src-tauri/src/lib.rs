@@ -197,17 +197,7 @@ async fn transcribe_last(
         wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(30)).await;
 
     // Bias Whisper toward the user's vocabulary. Parakeet ignores the prompt.
-    let initial_prompt = match db.get_profile() {
-        Ok(profile) => {
-            let entries = vocab::parse(&profile.custom_words);
-            vocab::whisper_initial_prompt(&entries)
-        }
-        Err(_) => None,
-    };
-    let language = db
-        .get_setting("stt_language")
-        .map_err(|e| e.to_string())?
-        .filter(|s| !s.trim().is_empty());
+    let opts = TranscribeOpts::from_database(&db).map_err(|e| e.to_string())?;
 
     // Local STT feeds f32 samples straight into the engine.
     let transcription_start = Instant::now();
@@ -215,10 +205,7 @@ async fn transcribe_last(
         &audio.samples,
         audio.sample_rate,
         local_engine.as_deref(),
-        TranscribeOpts {
-            language,
-            initial_prompt,
-        },
+        opts,
     )
     .await
     .map_err(|e| e.to_string())?;
@@ -608,27 +595,14 @@ async fn run_file_transcription(
     let local_engine =
         wait_for_local_engine(engine_state, std::time::Duration::from_secs(60)).await;
 
-    let initial_prompt = match db.get_profile() {
-        Ok(profile) => {
-            let entries = vocab::parse(&profile.custom_words);
-            vocab::whisper_initial_prompt(&entries)
-        }
-        Err(_) => None,
-    };
-    let language = db
-        .get_setting("stt_language")
-        .map_err(|e| e.to_string())?
-        .filter(|s| !s.trim().is_empty());
+    let opts = TranscribeOpts::from_database(db).map_err(|e| e.to_string())?;
 
     let transcription_start = Instant::now();
     let raw_text = transcription::transcribe_audio(
         &samples,
         sample_rate,
         local_engine.as_deref(),
-        TranscribeOpts {
-            language,
-            initial_prompt,
-        },
+        opts,
     )
     .await
     .map_err(|e| e.to_string())?;
