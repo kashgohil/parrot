@@ -174,9 +174,20 @@ def long_import_quality(events, reference_seconds):
     required = max(1, int(ends[-1]["details"]["audio_seconds"] / reference_seconds))
     text = result["raw_text"].lower()
     counts = {word: text.count(word) for word in result["expected_words"]}
+    # Counts alone allow reordered chunks to pass. Each complete reference
+    # must also preserve the sequence of distinctive source topics.
+    cursor = 0
+    ordered = True
+    for word in result["expected_words"] * required:
+        offset = text.find(word, cursor)
+        if offset < 0:
+            ordered = False
+            break
+        cursor = offset + len(word)
     return [{"kind": "quality_check", "scenario": "long_import_occurrences",
-             "quality_ok": all(count >= required for count in counts.values()),
-             "minimum_occurrences": required, "observed_occurrences": counts}]
+             "quality_ok": ordered and all(count >= required for count in counts.values()),
+             "minimum_occurrences": required, "observed_occurrences": counts,
+             "source_topic_order_ok": ordered}]
 
 
 def summarize(samples, events, reference_seconds=None):

@@ -43,8 +43,19 @@ class MemoryAccountingTests(unittest.TestCase):
         check = benchmark.long_import_quality(events, 10)[0]
         self.assertEqual(check["minimum_occurrences"], 2)
         self.assertFalse(check["quality_ok"])
-        events[0]["raw_text"] += " bicycle"
+        events[0]["raw_text"] = "bicycle museum bicycle museum"
         self.assertTrue(benchmark.long_import_quality(events, 10)[0]["quality_ok"])
+
+    def test_long_import_rejects_reordered_chunks_with_complete_word_counts(self):
+        events = [
+            {"kind": "result", "scenario": "long_import", "raw_text": "bicycle museum museum bicycle",
+             "expected_words": ["bicycle", "museum"]},
+            {"kind": "end", "scenario": "long_import", "details": {"audio_seconds": 25}},
+        ]
+        check = benchmark.long_import_quality(events, 10)[0]
+        self.assertEqual(check["observed_occurrences"], {"bicycle": 2, "museum": 2})
+        self.assertFalse(check["source_topic_order_ok"])
+        self.assertFalse(check["quality_ok"])
 
 
 if __name__ == "__main__":
