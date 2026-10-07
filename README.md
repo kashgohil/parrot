@@ -395,6 +395,9 @@ Parrot is open source and we welcome contributions.
 
 For larger changes, please open an issue first to discuss the approach.
 
+For model or memory changes, use the [memory benchmark workflow](docs/memory-benchmarks.md)
+to compare the complete desktop process tree, latency, and transcript quality.
+
 ### Reporting bugs
 
 When the app shows a "Something went wrong" toast, click **Copy details** — that copies the full error trace to your clipboard. Paste it into a new issue along with what you were doing when it happened.
