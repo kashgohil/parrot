@@ -374,7 +374,11 @@ function SettingsPage() {
 				}>("get_cleanup_status"),
 				invoke<string | null>("get_setting", { key: "cleanup_idle_seconds" }),
 			]);
-			setCleanupIdleSeconds(idleSeconds ?? "60");
+			setCleanupIdleSeconds(
+				idleSeconds !== null && /^\d+$/.test(idleSeconds) && Number(idleSeconds) <= 86400
+					? String(Number(idleSeconds))
+					: "60",
+			);
 			setCleanupLifecycle(cleanup.lifecycle);
 			setCleanupBackend(cleanup.backend === "ollama" ? "ollama" : "builtin");
 			setCanUpgradeCleanup(!!cleanup.can_upgrade_to_builtin);
@@ -767,7 +771,7 @@ function SettingsPage() {
 											{!["0", "30", "60", "300"].includes(cleanupIdleSeconds) && <SelectItem value={cleanupIdleSeconds}>{cleanupIdleSeconds} seconds idle</SelectItem>}
 										</SelectContent>
 									</Select>
-									<p className="text-xs text-muted-foreground">Loads when needed. Releasing memory adds a short load time to your next cleanup. Active cleanup always finishes first.</p>
+									<p className="text-xs text-muted-foreground">Loads when needed. Releasing memory adds model load time to your next cleanup. Active cleanup always finishes first.</p>
 									<p className="text-xs text-muted-foreground" role="status">
 										{cleanupLifecycle?.state === "loading" ? "Loading cleanup model…" : cleanupLifecycle?.state === "in_use" ? "Cleaning…" : cleanupLifecycle?.state === "ready" ? "Cleanup model is ready" : cleanupLifecycle?.state === "failed" ? `Cleanup unavailable: ${cleanupLifecycle.error ?? "Load failed"}` : "Cleanup model is unloaded"}
 									</p>

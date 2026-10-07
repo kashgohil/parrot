@@ -439,9 +439,14 @@ async fn run_cleanup(
         configure_cleanup(db, state.inner());
         match state.acquire().await {
             Ok(lease) => Some(lease),
-            Err(error) => { eprintln!("Builtin cleanup unavailable: {error:#}"); return String::new(); }
+            Err(error) => {
+                eprintln!("Builtin cleanup unavailable: {error:#}");
+                return String::new();
+            }
         }
-    } else { None };
+    } else {
+        None
+    };
     let builtin = lease.as_ref().map(|lease| lease.client.clone());
     let llm_model = db.get_setting("llm_model").ok().flatten();
     let formality = cleanup::Formality::from_setting(
@@ -695,7 +700,7 @@ async fn run_file_transcription(
         let effective_bg = effective.clone();
         tokio::spawn(async move {
             let db = app_handle.state::<Database>();
-                let cleaned = run_cleanup(&app_handle, &db, &raw_bg, &effective_bg).await;
+            let cleaned = run_cleanup(&app_handle, &db, &raw_bg, &effective_bg).await;
             if !cleaned.is_empty() && cleaned.trim() != raw_bg.trim() {
                 let _ = db.update_dictation_cleaned(&id_bg, &cleaned);
                 let _ = app_handle.emit(
@@ -1607,13 +1612,25 @@ fn get_setting(key: &str, state: tauri::State<'_, Database>) -> Result<Option<St
 }
 
 #[tauri::command]
-fn set_setting(key: &str, value: &str, state: tauri::State<'_, Database>, cleanup: tauri::State<'_, SharedCleanupEngine>) -> Result<(), String> {
+fn set_setting(
+    key: &str,
+    value: &str,
+    state: tauri::State<'_, Database>,
+    cleanup: tauri::State<'_, SharedCleanupEngine>,
+) -> Result<(), String> {
     if key == "cleanup_idle_seconds" {
-        let seconds = value.parse::<u64>().map_err(|_| "Cleanup idle time must be a whole number of seconds".to_string())?;
-        if seconds > 86400 { return Err("Cleanup idle time must be between 0 and 86400 seconds".into()); }
+        let seconds = value
+            .parse::<u64>()
+            .map_err(|_| "Cleanup idle time must be a whole number of seconds".to_string())?;
+        if seconds > 86400 {
+            return Err("Cleanup idle time must be between 0 and 86400 seconds".into());
+        }
     }
     state.set_setting(key, value).map_err(|e| e.to_string())?;
-    if matches!(key, "cleanup_idle_seconds" | "cleanup_mode" | "cleanup_backend" | "cleanup_model_path") {
+    if matches!(
+        key,
+        "cleanup_idle_seconds" | "cleanup_mode" | "cleanup_backend" | "cleanup_model_path"
+    ) {
         configure_cleanup(&state, cleanup.inner());
     }
     Ok(())
@@ -2091,8 +2108,13 @@ fn resolve_cleanup_backend(db: &Database) -> String {
 
 /// A zero timeout keeps a used model warm until cleanup is disabled or switched.
 fn cleanup_idle_timeout(db: &Database) -> Option<std::time::Duration> {
-    let seconds = db.get_setting("cleanup_idle_seconds").ok().flatten()
-        .and_then(|s| s.parse::<u64>().ok()).unwrap_or(60);
+    let seconds = db
+        .get_setting("cleanup_idle_seconds")
+        .ok()
+        .flatten()
+        .and_then(|s| s.parse::<u64>().ok())
+        .filter(|seconds| *seconds <= 86400)
+        .unwrap_or(60);
     (seconds != 0).then(|| std::time::Duration::from_secs(seconds))
 }
 
@@ -2100,16 +2122,32 @@ fn configure_cleanup(db: &Database, state: &SharedCleanupEngine) {
     let enabled = resolve_cleanup_backend(db) == "builtin"
         && db.get_setting("cleanup_mode").ok().flatten().as_deref() != Some("off");
     let config = db.get_local_setup_config().ok();
-    let path = enabled.then(|| resolve_cleanup_model_path(db, config.as_ref())).flatten();
+    let path = enabled
+        .then(|| resolve_cleanup_model_path(db, config.as_ref()))
+        .flatten();
     state.configure(path.map(Into::into), cleanup_idle_timeout(db));
 }
 
-fn resolve_cleanup_model_path(db: &Database, config: Option<&local_setup::LocalSetupConfig>) -> Option<String> {
-    db.get_setting("cleanup_model_path").ok().flatten().filter(|p| !p.is_empty())
-        .or_else(|| local_setup::get_cleanup_model_path(&config?.ollama_model).ok()
-            .filter(|p| p.exists()).map(|p| p.to_string_lossy().into_owned()))
-        .or_else(|| local_setup::get_cleanup_model_path(local_setup::CLEANUP_QWEN25_05B).ok()
-            .filter(|p| p.exists()).map(|p| p.to_string_lossy().into_owned()))
+fn resolve_cleanup_model_path(
+    db: &Database,
+    config: Option<&local_setup::LocalSetupConfig>,
+) -> Option<String> {
+    db.get_setting("cleanup_model_path")
+        .ok()
+        .flatten()
+        .filter(|p| !p.is_empty())
+        .or_else(|| {
+            local_setup::get_cleanup_model_path(&config?.ollama_model)
+                .ok()
+                .filter(|p| p.exists())
+                .map(|p| p.to_string_lossy().into_owned())
+        })
+        .or_else(|| {
+            local_setup::get_cleanup_model_path(local_setup::CLEANUP_QWEN25_05B)
+                .ok()
+                .filter(|p| p.exists())
+                .map(|p| p.to_string_lossy().into_owned())
+        })
 }
 
 fn resolve_stt_load_target(
@@ -2219,27 +2257,15 @@ async fn validate_local_servers(
         }
     };
 
-    let backend = db
-        .get_setting("cleanup_backend")
-        .ok()
-        .flatten()
-        .unwrap_or_else(|| "builtin".into());
-    let cleanup_ok = if backend == "ollama" {
-        local_setup::test_cleanup(ollama_port, &config.ollama_model)
-            .await
-            .is_ok()
+    let cleanup_ok = if resolve_cleanup_backend(&db) == "ollama" {
+        local_setup::test_cleanup(ollama_port, &config.ollama_model).await.is_ok()
     } else {
-        // Builtin: model loaded, or path exists (load may still be in flight).
-        if cleanup_engine.is_loaded() {
-            true
-        } else {
-            local_setup::get_cleanup_model_path(&config.ollama_model)
-                .map(|p| p.exists())
-                .unwrap_or(false)
-                || local_setup::get_cleanup_model_path(local_setup::CLEANUP_QWEN25_05B)
-                    .map(|p| p.exists())
-                    .unwrap_or(false)
-        }
+        // Availability does not require model residency. Check the selected
+        // model and executable without starting a sidecar during validation.
+        cleanup_engine.status().state != "failed"
+            && resolve_cleanup_model_path(&db, Some(&config))
+                .is_some_and(|p| std::path::Path::new(&p).is_file())
+            && cleanup_engine::resolve_sidecar_path().is_ok()
     };
 
     Ok(serde_json::json!({
@@ -2590,4 +2616,55 @@ fn setup_hud_window(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Er
 
     let _ = hud.show();
     Ok(())
+}
+
+#[cfg(test)]
+mod cleanup_policy_tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn configured_cleanup_is_unloaded_and_off_cannot_acquire() {
+        let db = Database::in_memory().unwrap();
+        db.set_setting("cleanup_backend", "builtin").unwrap();
+        db.set_setting("cleanup_model_path", "/missing/test-cleanup.gguf")
+            .unwrap();
+        let state = cleanup_engine::new_cleanup_engine();
+        configure_cleanup(&db, &state);
+        assert_eq!(state.status().state, "unloaded");
+        assert_eq!(state.status().idle_seconds, Some(60));
+        db.set_setting("cleanup_mode", "off").unwrap();
+        configure_cleanup(&db, &state);
+        let error = state
+            .acquire()
+            .await
+            .err()
+            .expect("off must not load cleanup");
+        assert!(error.to_string().contains("not configured"));
+        assert_eq!(state.status().state, "unloaded");
+    }
+
+    #[test]
+    fn idle_policy_handles_keep_warm_and_invalid_stored_values() {
+        let db = Database::in_memory().unwrap();
+        assert_eq!(
+            cleanup_idle_timeout(&db),
+            Some(std::time::Duration::from_secs(60))
+        );
+        for (setting, expected) in [
+            ("0", None),
+            ("30", Some(30)),
+            ("300", Some(300)),
+            ("86400", Some(86400)),
+            ("86401", Some(60)),
+            ("bad", Some(60)),
+            ("-1", Some(60)),
+        ] {
+            db.set_setting("cleanup_idle_seconds", setting).unwrap();
+            assert_eq!(
+                cleanup_idle_timeout(&db).map(|d| d.as_secs()),
+                expected,
+                "{setting}"
+            );
+        }
+    }
 }
