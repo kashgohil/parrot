@@ -3,7 +3,9 @@
 //! (Whisper / Parakeet). True streaming engines (Moonshine / Kyutai) can
 //! replace this path later without changing the HUD event contract.
 
-use crate::transcription::{LocalEngine, TranscribeOpts};
+#[cfg(test)]
+use crate::transcription::LocalEngine;
+use crate::transcription::TranscribeOpts;
 use crate::RecorderState;
 use crate::SharedLocalEngine;
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -46,6 +48,12 @@ const MIN_RMS: f32 = 0.008;
 
 /// Start the partial-transcription loop for this recording generation.
 pub fn start_partial_loop(app: AppHandle, generation: u64) {
+    let speech = app.state::<SharedLocalEngine>();
+    crate::configure_speech(&app.state::<crate::db::Database>(), speech.inner());
+    speech.prewarm(
+        app.state::<Arc<StreamingCoordinator>>().inner().clone(),
+        generation,
+    );
     tauri::async_runtime::spawn(async move {
         let mut last_len: usize = 0;
         // First partial a bit sooner so short holds still get something.
@@ -84,37 +92,36 @@ pub fn start_partial_loop(app: AppHandle, generation: u64) {
 
                 if rms(&samples) >= MIN_RMS {
                     last_len = snapshot.samples.len();
-                    let engine_slot = app.state::<SharedLocalEngine>();
-                    let engine = engine_slot.read().await.clone();
-                    if let Some(engine) = engine {
-                        // Engines already run inference on blocking pools.
-                        let text = transcribe_partial(
-                            engine,
+                    let opts =
+                        match TranscribeOpts::from_database(&app.state::<crate::db::Database>()) {
+                            Ok(opts) => opts,
+                            Err(error) => {
+                                eprintln!("Preview preferences unavailable: {error:#}");
+                                continue;
+                            }
+                        };
+                    let text = app
+                        .state::<SharedLocalEngine>()
+                        .transcribe_preview(
                             samples,
                             sample_rate,
-                            &app.state::<crate::db::Database>(),
+                            opts,
+                            app.state::<Arc<StreamingCoordinator>>().inner().clone(),
+                            generation,
                         )
                         .await;
-
-                        if app.state::<Arc<StreamingCoordinator>>().current() != generation {
-                            break;
+                    if app.state::<Arc<StreamingCoordinator>>().current() != generation {
+                        break;
+                    }
+                    match text {
+                        Ok(Some(text)) if !text.trim().is_empty() => {
+                            let _ = app.emit(
+                                "streaming-partial",
+                                serde_json::json!({"text": text, "generation": generation}),
+                            );
                         }
-
-                        match text {
-                            Ok(t) if !t.trim().is_empty() => {
-                                let _ = app.emit(
-                                    "streaming-partial",
-                                    serde_json::json!({
-                                        "text": t,
-                                        "generation": generation,
-                                    }),
-                                );
-                            }
-                            Err(e) => {
-                                eprintln!("streaming partial failed: {e}");
-                            }
-                            _ => {}
-                        }
+                        Err(error) => eprintln!("streaming partial failed: {error:#}"),
+                        _ => {}
                     }
                 }
             }
@@ -124,6 +131,7 @@ pub fn start_partial_loop(app: AppHandle, generation: u64) {
     });
 }
 
+#[cfg(test)]
 async fn transcribe_partial(
     engine: Arc<LocalEngine>,
     samples: Vec<f32>,

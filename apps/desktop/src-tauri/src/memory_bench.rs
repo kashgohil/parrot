@@ -163,7 +163,7 @@ impl Events {
             "end",
             scenario,
             json!({
-                "stt_loaded": app.state::<SharedLocalEngine>().read().await.is_some(),
+                "stt_loaded": app.state::<SharedLocalEngine>().models.is_loaded(),
                 "cleanup_loaded": app.state::<SharedCleanupEngine>().is_loaded(),
             "cleanup_lifecycle": app.state::<SharedCleanupEngine>().status(),
             }),
@@ -183,23 +183,11 @@ pub(crate) fn start(app: AppHandle, config: Config) {
         }
         // Reap the sidecar before exit, including errors. Release the STT Arc.
         app.state::<SharedCleanupEngine>().configure(None, None);
-        *app.state::<SharedLocalEngine>().write().await = None;
+        app.state::<SharedLocalEngine>()
+            .models
+            .configure(None, None);
         app.exit(if result.is_ok() { 0 } else { 1 });
     });
-}
-
-async fn wait_ready(app: &AppHandle) -> Result<()> {
-    let deadline = Instant::now() + Duration::from_secs(180);
-    loop {
-        if app.state::<SharedLocalEngine>().read().await.is_some() {
-            return Ok(());
-        }
-        anyhow::ensure!(
-            Instant::now() < deadline,
-            "engines did not become ready within 180 seconds"
-        );
-        tokio::time::sleep(Duration::from_millis(100)).await;
-    }
 }
 
 fn fixture(french: bool) -> (Vec<f32>, u32, &'static [&'static str]) {
@@ -256,22 +244,24 @@ async fn switch_models(
     stt: &Path,
     cleanup_model: &Path,
 ) -> Result<()> {
-    // Same clear-and-load operations as Settings; only use already-local models.
-    let state = app.state::<SharedLocalEngine>();
-    *state.write().await = None;
-    crate::load_local_engine(
-        state.inner().clone(),
-        engine.into(),
-        stt.to_string_lossy().into_owned(),
-        stt.file_name().unwrap().to_string_lossy().into_owned(),
-    );
+    let db = app.state::<Database>();
+    db.set_setting("stt_engine", engine)?;
+    db.set_setting("stt_model", &stt.file_name().unwrap().to_string_lossy())?;
+    if engine == "parakeet" {
+        db.set_setting("parakeet_model_path", &stt.to_string_lossy())?;
+    } else {
+        let mut config = db.get_local_setup_config()?;
+        config.whisper_model_path = stt.to_string_lossy().into_owned();
+        db.set_local_setup_config(&config)?;
+    }
+    crate::configure_speech(&db, app.state::<SharedLocalEngine>().inner());
     app.state::<Database>()
         .set_setting("cleanup_model_path", &cleanup_model.to_string_lossy())?;
     crate::configure_cleanup(
         &app.state::<Database>(),
         app.state::<SharedCleanupEngine>().inner(),
     );
-    wait_ready(app).await
+    Ok(())
 }
 
 async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<()> {
@@ -280,18 +270,12 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
         "begin",
         "startup",
         json!({"build": if cfg!(debug_assertions) {"debug"} else {"release"},
-            "cleanup_loading": "on_demand", "cleanup_idle_seconds": 60,
+            "cleanup_loading": "on_demand", "cleanup_idle_seconds": 60, "speech_loading": "on_demand", "speech_idle_seconds": 60,
             "cleanup_lifecycle_checks": config.cleanup_lifecycle_checks}),
     );
     let db = app.state::<Database>();
-    let setup = db.get_local_setup_config()?;
-    crate::kick_off_engine_load(
-        &db,
-        app.state::<SharedLocalEngine>().inner().clone(),
-        &setup,
-    );
+    crate::configure_speech(&db, app.state::<SharedLocalEngine>().inner());
     crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
-    wait_ready(app).await?;
     events.write(
         "end",
         "startup",

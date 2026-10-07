@@ -8,6 +8,7 @@ mod inference_scheduler;
 mod local_setup;
 #[cfg(feature = "memory-bench")]
 mod memory_bench;
+mod speech_engine;
 mod streaming;
 mod transcription;
 mod vocab;
@@ -22,10 +23,8 @@ use tokio::sync::RwLock;
 use cleanup_engine::SharedCleanupEngine;
 use transcription::{LocalEngine, TranscribeOpts};
 
-/// Shared handle to the in-process local STT engine (Whisper or Parakeet).
-/// `None` until the model finishes loading — falls through to a friendly
-/// error if a dictation arrives before then.
-pub type SharedLocalEngine = Arc<RwLock<Option<Arc<LocalEngine>>>>;
+/// Demand-loaded, idle-released speech models with coordinated inference.
+pub type SharedLocalEngine = Arc<speech_engine::SpeechEngine>;
 
 /// Back-compat alias used during the Phase 2 rename.
 pub type SharedWhisperProvider = SharedLocalEngine;
@@ -197,22 +196,12 @@ async fn transcribe_last(
     // Step 1: Transcribe (local-only)
     let _ = app.emit("transcription-started", ());
     let pipeline_start = Instant::now();
-    let local_engine =
-        wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(30)).await;
-
-    // Bias Whisper toward the user's vocabulary. Parakeet ignores the prompt.
+    configure_speech(&db, engine_state.inner());
     let opts = TranscribeOpts::from_database(&db).map_err(|e| e.to_string())?;
-
-    // Local STT feeds f32 samples straight into the engine.
     let transcription_start = Instant::now();
-    let raw_text = transcription::transcribe_audio(
-        &audio.samples,
-        audio.sample_rate,
-        local_engine.as_deref(),
-        opts,
-    )
-    .await
-    .map_err(|e| e.to_string())?;
+    let speech = engine_state.transcribe_final(audio.samples.clone(), audio.sample_rate, opts)
+        .await.map_err(|e| e.to_string())?;
+    let raw_text = speech.text;
 
     // Deterministic dictionary pass before cleanup — fixes proper-noun
     // near-misses Whisper never learns on its own.
@@ -225,11 +214,8 @@ async fn transcribe_last(
     };
 
     let transcription_ms = transcription_start.elapsed().as_millis() as i64;
-    let engine_name = local_engine
-        .as_ref()
-        .map(|e| e.engine_id())
-        .unwrap_or("local");
-    let model_name = local_engine.as_ref().map(|e| e.model_label());
+    let engine_name = speech.engine;
+    let model_name = Some(speech.model);
 
     // Skip empty transcriptions (e.g. silence / accidental hotkey tap) — don't
     // save, clean up, or paste.
@@ -433,6 +419,14 @@ async fn run_cleanup(
     raw_text: &str,
     profile: &db::EffectiveProfile,
 ) -> String {
+    let speech = app.state::<SharedLocalEngine>();
+    let sequential_permit = match speech.before_cleanup().await {
+        Ok(permit) => permit,
+        Err(error) => {
+            eprintln!("Speech release before cleanup failed: {error:#}");
+            return String::new();
+        }
+    };
     let cleanup_backend = resolve_cleanup_backend(db);
     let state = app.state::<SharedCleanupEngine>();
     // Keep the lease through inference. Loading failures leave the raw text usable.
@@ -456,7 +450,7 @@ async fn run_cleanup(
             .flatten()
             .unwrap_or_default(),
     );
-    match cleanup::cleanup_text(
+    let result = match cleanup::cleanup_text(
         raw_text,
         llm_model.as_deref(),
         &profile.custom_words,
@@ -473,7 +467,12 @@ async fn run_cleanup(
             eprintln!("LLM cleanup failed: {}", e);
             String::new()
         }
+    };
+    drop(lease);
+    if let Err(error) = speech.after_cleanup(&sequential_permit).await {
+        eprintln!("Cleanup release failed: {error:#}");
     }
+    result
 }
 
 /// Transcribe a user-supplied audio file (bytes from the frontend). Saves to
@@ -609,20 +608,12 @@ async fn run_file_transcription(
 
     emit_file_progress(app, "transcribing", 35, &name);
     let _ = app.emit("transcription-started", ());
-    let local_engine =
-        wait_for_local_engine(engine_state, std::time::Duration::from_secs(60)).await;
-
+    configure_speech(db, engine_state);
     let opts = TranscribeOpts::from_database(db).map_err(|e| e.to_string())?;
-
     let transcription_start = Instant::now();
-    let raw_text = transcription::transcribe_audio(
-        &samples,
-        sample_rate,
-        local_engine.as_deref(),
-        opts,
-    )
-    .await
-    .map_err(|e| e.to_string())?;
+    let speech = engine_state.transcribe_final(samples, sample_rate, opts)
+        .await.map_err(|e| e.to_string())?;
+    let raw_text = speech.text;
     let transcription_ms = transcription_start.elapsed().as_millis() as i64;
 
     let raw_text = {
@@ -657,11 +648,8 @@ async fn run_file_transcription(
         data_for_save.as_deref(),
     );
 
-    let engine_name = local_engine
-        .as_ref()
-        .map(|e| e.engine_id())
-        .unwrap_or("local");
-    let model_name = local_engine.as_ref().map(|e| e.model_label());
+    let engine_name = speech.engine;
+    let model_name = Some(speech.model);
     let _ = db.update_dictation_timings(
         &id,
         Some(transcription_ms),
@@ -1259,7 +1247,7 @@ fn get_timing_stats(db: tauri::State<'_, Database>) -> Result<db::TimingStats, S
 
 /// Current STT engine + model tier for Settings / upgrade banners.
 #[tauri::command]
-fn get_stt_status(db: tauri::State<'_, Database>) -> Result<serde_json::Value, String> {
+fn get_stt_status(db: tauri::State<'_, Database>, speech: tauri::State<'_, SharedLocalEngine>) -> Result<serde_json::Value, String> {
     let config = db.get_local_setup_config().map_err(|e| e.to_string())?;
     let (engine, path, model_id) = resolve_stt_load_target(&db, &config);
     Ok(serde_json::json!({
@@ -1268,6 +1256,8 @@ fn get_stt_status(db: tauri::State<'_, Database>) -> Result<serde_json::Value, S
         "model_path": path,
         "language": db.get_setting("stt_language").ok().flatten().unwrap_or_else(|| "auto".into()),
         "can_upgrade_to_parakeet": engine != "parakeet",
+        "lifecycle": speech.models.status(),
+        "release_before_cleanup": db.get_setting("stt_release_before_cleanup").ok().flatten().as_deref() == Some("true"),
     }))
 }
 
@@ -1395,22 +1385,8 @@ async fn switch_stt_model(
         }
     }
 
-    // Clear and reload engine.
-    {
-        let mut slot = engine_state.write().await;
-        *slot = None;
-    }
-    load_local_engine(
-        engine_state.inner().clone(),
-        engine.to_string(),
-        path_str.clone(),
-        model_id.clone(),
-    );
-
-    // Wait briefly so the UI can show "ready".
-    let ready = wait_for_local_engine(engine_state.inner(), std::time::Duration::from_secs(120))
-        .await
-        .is_some();
+    configure_speech(&db, engine_state.inner());
+    let ready = engine_state.models.is_loaded();
 
     Ok(serde_json::json!({
         "engine": engine,
@@ -1618,14 +1594,18 @@ fn set_setting(
     value: &str,
     state: tauri::State<'_, Database>,
     cleanup: tauri::State<'_, SharedCleanupEngine>,
+    speech: tauri::State<'_, SharedLocalEngine>,
 ) -> Result<(), String> {
-    if key == "cleanup_idle_seconds" {
+    if matches!(key, "cleanup_idle_seconds" | "stt_idle_seconds") {
         let seconds = value
             .parse::<u64>()
-            .map_err(|_| "Cleanup idle time must be a whole number of seconds".to_string())?;
+            .map_err(|_| "Model idle time must be a whole number of seconds".to_string())?;
         if seconds > 86400 {
-            return Err("Cleanup idle time must be between 0 and 86400 seconds".into());
+            return Err("Model idle time must be between 0 and 86400 seconds".into());
         }
+    }
+    if key == "stt_release_before_cleanup" && !matches!(value, "true" | "false") {
+        return Err("Speech release policy must be true or false".into());
     }
     state.set_setting(key, value).map_err(|e| e.to_string())?;
     if matches!(
@@ -1633,6 +1613,16 @@ fn set_setting(
         "cleanup_idle_seconds" | "cleanup_mode" | "cleanup_backend" | "cleanup_model_path"
     ) {
         configure_cleanup(&state, cleanup.inner());
+    }
+    if matches!(
+        key,
+        "stt_idle_seconds"
+            | "stt_release_before_cleanup"
+            | "stt_engine"
+            | "stt_model"
+            | "parakeet_model_path"
+    ) {
+        configure_speech(&state, speech.inner());
     }
     Ok(())
 }
@@ -1934,12 +1924,7 @@ async fn start_local_setup(
                         );
                     }
                     let engine_state = app.state::<SharedLocalEngine>();
-                    load_local_engine(
-                        engine_state.inner().clone(),
-                        engine.to_string(),
-                        config.whisper_model_path.clone(),
-                        stt_model_id.clone(),
-                    );
+                    configure_speech(&db, engine_state.inner());
                     let _ = app.emit("setup-complete", serde_json::json!({
                         "success": true,
                         "config": config,
@@ -1987,11 +1972,7 @@ async fn start_local_servers(
         return Err("Local setup not completed".to_string());
     }
 
-    // Local STT runs in-process — kick off the (eager-async) model load if
-    // it hasn't been loaded yet. Errors surface via toast on next dictation.
-    if whisper.read().await.is_none() {
-        kick_off_engine_load(&db, whisper.inner().clone(), &config);
-    }
+    configure_speech(&db, whisper.inner());
 
     // If we've already established a port for Ollama (either by spawning it
     // or by adopting an existing daemon), short-circuit. The presence of a
@@ -2023,60 +2004,31 @@ async fn start_local_servers(
     }))
 }
 
-/// Wait briefly for the local STT engine to finish loading. Returns the
-/// engine as soon as it's available, or `None` after `timeout` so the caller
-/// surfaces a friendly error rather than blocking forever.
-async fn wait_for_local_engine(
-    state: &SharedLocalEngine,
-    timeout: std::time::Duration,
-) -> Option<Arc<LocalEngine>> {
-    if let Some(p) = state.read().await.clone() {
-        return Some(p);
-    }
-    let start = std::time::Instant::now();
-    while start.elapsed() < timeout {
-        tokio::time::sleep(std::time::Duration::from_millis(150)).await;
-        if let Some(p) = state.read().await.clone() {
-            return Some(p);
-        }
-    }
-    None
-}
-
-/// Load the configured local STT engine (Whisper or Parakeet) in the background.
-fn load_local_engine(state: SharedLocalEngine, engine: String, model_path: String, model_id: String) {
-    tauri::async_runtime::spawn(async move {
-        let path = std::path::PathBuf::from(model_path);
-        let engine_id = engine.clone();
-        let mid = model_id.clone();
-        let result = tokio::task::spawn_blocking(move || load_engine_blocking(&engine_id, &path, &mid))
-            .await;
-        match result {
-            Ok(Ok(engine)) => {
-                let label = engine.model_label();
-                let kind = engine.engine_id();
-                let mut slot = state.write().await;
-                *slot = Some(Arc::new(engine));
-                println!("Local STT engine loaded: {} ({})", kind, label);
-            }
-            Ok(Err(e)) => {
-                eprintln!("Failed to load local STT engine: {}", e);
-            }
-            Err(e) => {
-                eprintln!("STT engine load task join error: {}", e);
-            }
-        }
+/// Configure the selected model without starting inference or loading it.
+fn configure_speech(db: &Database, state: &SharedLocalEngine) {
+    let target = db.get_local_setup_config().ok().and_then(|config| {
+        let (engine, path, label) = resolve_stt_load_target(db, &config);
+        (!path.is_empty()).then(|| speech_engine::SpeechTarget {
+            engine,
+            path: path.into(),
+            label,
+        })
     });
-}
-
-/// Resolve engine + path from settings / local_setup config, then load.
-fn kick_off_engine_load(db: &Database, state: SharedLocalEngine, config: &local_setup::LocalSetupConfig) {
-    let (engine, path, model_id) = resolve_stt_load_target(db, config);
-    if path.is_empty() {
-        eprintln!("No STT model path configured — skip engine load");
-        return;
-    }
-    load_local_engine(state, engine, path, model_id);
+    let seconds = db
+        .get_setting("stt_idle_seconds")
+        .ok()
+        .flatten()
+        .and_then(|s| s.parse::<u64>().ok())
+        .filter(|s| *s <= 86400)
+        .unwrap_or(60);
+    let idle = (seconds != 0).then(|| std::time::Duration::from_secs(seconds));
+    let sequential = db
+        .get_setting("stt_release_before_cleanup")
+        .ok()
+        .flatten()
+        .as_deref()
+        == Some("true");
+    state.configure(target, idle, sequential);
 }
 
 fn resolve_cleanup_backend(db: &Database) -> String {
@@ -2244,19 +2196,10 @@ async fn validate_local_servers(
         guard.ollama_port.unwrap_or(config.ollama_server_port)
     };
 
-    // Transcription validation: local STT engine loaded in-process.
-    let transcription_ok = {
-        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
-        loop {
-            if whisper.read().await.is_some() {
-                break true;
-            }
-            if std::time::Instant::now() >= deadline {
-                break false;
-            }
-            tokio::time::sleep(std::time::Duration::from_millis(250)).await;
-        }
-    };
+    let (engine, path, _) = resolve_stt_load_target(&db, &config);
+    let transcription_ok = whisper.models.status().state != "failed"
+        && if engine == "parakeet" { std::path::Path::new(&path).is_dir() }
+            else { std::path::Path::new(&path).is_file() };
 
     let cleanup_ok = if resolve_cleanup_backend(&db) == "ollama" {
         local_setup::test_cleanup(ollama_port, &config.ollama_model).await.is_ok()
@@ -2284,6 +2227,8 @@ pub fn run() {
     if let Some(config) = &benchmark {
         config.prepare_database(&db).expect("Failed to prepare benchmark database");
     }
+    let cleanup_state = cleanup_engine::new_cleanup_engine();
+    let speech_state = speech_engine::SpeechEngine::new(cleanup_state.clone());
     let recorder = AudioRecorder::new().expect("Failed to initialize audio recorder");
     let recorder_state = RecorderState {
         recorder: Mutex::new(recorder),
@@ -2303,8 +2248,8 @@ pub fn run() {
         .manage(recorder_state)
         .manage(PendingCleanup::new())
         .manage::<SharedServerProcesses>(Arc::new(RwLock::new(ServerProcesses::new())))
-        .manage::<SharedWhisperProvider>(Arc::new(RwLock::new(None)))
-        .manage::<SharedCleanupEngine>(cleanup_engine::new_cleanup_engine())
+        .manage::<SharedWhisperProvider>(speech_state)
+        .manage::<SharedCleanupEngine>(cleanup_state)
         .manage(Arc::new(streaming::StreamingCoordinator::new()))
         .invoke_handler(tauri::generate_handler![
             start_recording,
@@ -2371,6 +2316,7 @@ pub fn run() {
             });
 
             app.state::<SharedCleanupEngine>().start_idle_monitor();
+            app.state::<SharedLocalEngine>().models.start_idle_monitor();
 
             #[cfg(feature = "memory-bench")]
             if let Some(config) = benchmark {
@@ -2411,9 +2357,9 @@ pub fn run() {
             let config = db.get_local_setup_config();
             if let Ok(config) = config {
                 if config.setup_completed {
-                    // 1. Load the local STT engine in-process (eager async).
+                    // Configure speech; recording or transcription will start loading.
                     let engine_state = app.state::<SharedLocalEngine>();
-                    kick_off_engine_load(&db, engine_state.inner().clone(), &config);
+                    configure_speech(&db, engine_state.inner());
 
                     // Configure built-in cleanup; the first eligible job loads it.
                     configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
