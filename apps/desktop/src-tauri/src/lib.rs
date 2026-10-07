@@ -1,6 +1,7 @@
 mod audio;
 mod cleanup;
 mod cleanup_engine;
+mod cleanup_lifecycle;
 mod db;
 mod hotkey;
 mod local_setup;
