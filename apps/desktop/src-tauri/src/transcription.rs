@@ -230,13 +230,10 @@ fn run_whisper(
     let lang = language
         .map(str::trim)
         .filter(|s| !s.is_empty() && !s.eq_ignore_ascii_case("auto"));
-    match lang {
-        Some(code) => params.set_language(Some(code)),
-        None => {
-            params.set_language(None);
-            params.set_detect_language(true);
-        }
-    }
+    params.set_language(lang);
+    // An unset language already triggers automatic detection. Detection-only
+    // mode returns before decoding speech, leaving the transcript empty.
+    params.set_detect_language(false);
 
     params.set_print_special(false);
     params.set_print_progress(false);
