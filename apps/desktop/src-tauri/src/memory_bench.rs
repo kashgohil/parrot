@@ -28,6 +28,8 @@ pub(crate) struct Config {
     pub idle_seconds: u64,
     pub post_idle_seconds: u64,
     pub long_import_seconds: u32,
+    #[serde(default)]
+    pub cleanup_lifecycle_checks: bool,
 }
 
 pub(crate) fn is_active() -> bool {
@@ -163,6 +165,7 @@ impl Events {
             json!({
                 "stt_loaded": app.state::<SharedLocalEngine>().read().await.is_some(),
                 "cleanup_loaded": app.state::<SharedCleanupEngine>().is_loaded(),
+            "cleanup_lifecycle": app.state::<SharedCleanupEngine>().status(),
             }),
         );
     }
@@ -276,7 +279,9 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
     events.write(
         "begin",
         "startup",
-        json!({"build": if cfg!(debug_assertions) {"debug"} else {"release"}}),
+        json!({"build": if cfg!(debug_assertions) {"debug"} else {"release"},
+            "cleanup_loading": "on_demand", "cleanup_idle_seconds": 60,
+            "cleanup_lifecycle_checks": config.cleanup_lifecycle_checks}),
     );
     let db = app.state::<Database>();
     let setup = db.get_local_setup_config()?;
@@ -293,6 +298,22 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
         json!({"ready_latency_ms": started.elapsed().as_secs_f64() * 1000.0}),
     );
     events.idle("ready_idle", config.idle_seconds, app).await;
+    anyhow::ensure!(
+        !app.state::<SharedCleanupEngine>().is_loaded(),
+        "startup must leave cleanup unloaded"
+    );
+    if config.cleanup_lifecycle_checks {
+        db.set_setting("cleanup_mode", "off")?;
+        crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
+        events.idle("disabled_idle", config.idle_seconds, app).await;
+        dictation(app, events, "disabled_dictation", false).await?;
+        anyhow::ensure!(
+            !app.state::<SharedCleanupEngine>().is_loaded(),
+            "disabled cleanup loaded a sidecar"
+        );
+        db.set_setting("cleanup_mode", "blocking")?;
+        crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
+    }
 
     // Instrument the production dictation stages, keeping the entire pipeline.
     let phase = Arc::new(Mutex::new(String::from("cold")));
@@ -391,6 +412,48 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
     events
         .idle("after_repeats_idle", config.idle_seconds, app)
         .await;
+
+    if config.cleanup_lifecycle_checks {
+        // Use the production default timeout. Measure a warm sidecar and its
+        // absence in the same app process, then verify a fresh demand load.
+        events.idle("cleanup_release_wait", 65, app).await;
+        anyhow::ensure!(
+            !app.state::<SharedCleanupEngine>().is_loaded(),
+            "cleanup did not release after idle"
+        );
+        events
+            .idle("cleanup_released_idle", config.idle_seconds, app)
+            .await;
+        *phase.lock().unwrap() = "reload".into();
+        dictation(app, events, "reload_dictation", true).await?;
+        anyhow::ensure!(
+            app.state::<SharedCleanupEngine>().is_loaded(),
+            "first cleanup after idle did not load"
+        );
+        events
+            .idle("cleanup_reloaded_idle", config.idle_seconds, app)
+            .await;
+
+        // A failed load must return a usable original transcript promptly.
+        db.set_setting(
+            "cleanup_model_path",
+            "/nonexistent/parrot-invalid-cleanup-model.gguf",
+        )?;
+        crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
+        *phase.lock().unwrap() = "failure".into();
+        dictation(app, events, "failed_load_dictation", false).await?;
+        anyhow::ensure!(
+            app.state::<SharedCleanupEngine>().status().state == "failed",
+            "load failure was not reported"
+        );
+        db.set_setting(
+            "cleanup_model_path",
+            &config.cleanup_model.to_string_lossy(),
+        )?;
+        crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
+        *phase.lock().unwrap() = "recovery".into();
+        dictation(app, events, "recovered_dictation", false).await?;
+    }
 
     if config.switch_stt_model.is_some() || config.switch_cleanup_model.is_some() {
         events.write("begin", "model_switch", json!({}));

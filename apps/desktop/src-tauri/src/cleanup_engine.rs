@@ -243,6 +243,79 @@ pub fn resolve_sidecar_path() -> Result<PathBuf> {
 mod tests {
     use super::*;
 
+    #[cfg(unix)]
+    #[test]
+    fn startup_error_kills_and_reaps_child() {
+        use std::os::unix::fs::PermissionsExt;
+        let dir =
+            std::env::temp_dir().join(format!("parrot-cleanup-startup-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir(&dir).unwrap();
+        let script = dir.join("sidecar");
+        let pid_file = dir.join("pid");
+        std::fs::write(&script, "#!/bin/sh\necho $$ > \"$1\"\nprintf '%s\\n' '{\"type\":\"error\",\"error\":\"invalid model\"}'\nexec sleep 30\n").unwrap();
+        std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o700)).unwrap();
+        assert!(SidecarCleanupClient::spawn(&script, &pid_file).is_err());
+        let pid = std::fs::read_to_string(&pid_file).unwrap();
+        assert!(!std::process::Command::new("ps")
+            .args(["-p", pid.trim(), "-o", "pid="])
+            .output()
+            .unwrap()
+            .status
+            .success());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[tokio::test]
+    #[ignore = "needs PARROT_CLEANUP_SIDECAR + PARROT_TEST_CLEANUP_MODEL"]
+    async fn real_sidecar_demand_idle_release_and_reload() {
+        let owner = new_cleanup_engine();
+        owner.configure(
+            Some(std::env::var("PARROT_TEST_CLEANUP_MODEL").unwrap().into()),
+            Some(std::time::Duration::from_secs(1)),
+        );
+        assert_eq!(owner.status().state, "unloaded");
+        let start = std::time::Instant::now();
+        let (first, second) = tokio::join!(owner.acquire(), owner.acquire());
+        let first = first.unwrap();
+        let second = second.unwrap();
+        eprintln!("cold load: {:?}", start.elapsed());
+        assert!(Arc::ptr_eq(&first.client, &second.client));
+        let pid = first.client.proc.lock().unwrap().child.id();
+        let raw = "Bonjour, je voudrais réserver une table pour demain soir.";
+        let cleaned = crate::cleanup::cleanup_text(
+            raw,
+            None,
+            "",
+            "",
+            "",
+            crate::cleanup::Formality::Neutral,
+            "builtin",
+            Some(first.client.clone()),
+        )
+        .await
+        .unwrap();
+        assert!(cleaned.to_lowercase().contains("réserver"));
+        assert!(
+            !owner.release_if_idle(std::time::Instant::now() + std::time::Duration::from_secs(2))
+        );
+        drop(first);
+        drop(second);
+        assert!(
+            owner.release_if_idle(std::time::Instant::now() + std::time::Duration::from_secs(2))
+        );
+        assert!(!std::process::Command::new("ps")
+            .args(["-p", &pid.to_string(), "-o", "pid="])
+            .output()
+            .unwrap()
+            .status
+            .success());
+        let next = owner.acquire().await.unwrap();
+        assert_ne!(pid, next.client.proc.lock().unwrap().child.id());
+        drop(next);
+        owner.configure(None, None);
+        assert!(!owner.is_loaded());
+    }
+
     /// End-to-end round-trip through a spawned sidecar, exercising the real
     /// client: spawn + `ready` handshake, request/response id correlation, and
     /// process reuse across calls. `#[ignore]`d — needs local binaries:

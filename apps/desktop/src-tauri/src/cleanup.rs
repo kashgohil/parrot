@@ -483,6 +483,22 @@ fn normalize_whitespace(text: &str) -> String {
 mod tests {
     use super::*;
 
+    #[tokio::test]
+    async fn missing_builtin_returns_error_without_ollama_fallback() {
+        assert!(cleanup_text(
+            "Please keep this original sentence.",
+            None,
+            "",
+            "",
+            "",
+            Formality::Neutral,
+            "builtin",
+            None
+        )
+        .await
+        .is_err());
+    }
+
     #[test]
     fn system_prompt_covers_fillers_disfluencies_and_formatting() {
         let p = build_system_prompt("", "", "", Formality::Neutral);
