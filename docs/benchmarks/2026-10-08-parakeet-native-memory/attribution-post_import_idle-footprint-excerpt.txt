@@ -1,0 +1,47 @@
+footprint(66711) MallocStackLogging: could not tag MSL-related memory as no_footprint, so those pages will be included in process footprint - No such file or directory (2)
+footprint(66711) MallocStackLogging: recording malloc (and VM allocation) stacks using lite mode
+======================================================================
+parrot-1070-before [65339]: 64-bit    Footprint: 11631816488 B (16384 bytes per page)
+======================================================================
+
+      Dirty         Clean   Reclaimable    Regions    Category
+        ---           ---           ---        ---    ---
+7706263552 B           0 B           0 B       1118    MALLOC_LARGE
+3569958912 B           0 B     3883008 B       1085    MALLOC_SMALL
+217448448 B           0 B    88080384 B        119    Owned physical footprint (unmapped) (graphics)
+ 67551232 B           0 B           0 B         39    performance tool data
+ 37453824 B           0 B      212992 B         83    MALLOC metadata
+ 12107776 B           0 B           0 B        739    IOKit
+  8269608 B           0 B           0 B          1    page table
+  2381752 B           0 B           0 B        420    __DATA_DIRTY
+  1900544 B           0 B           0 B        130    stack
+  1703936 B           0 B       81920 B          6    WebKit malloc
+  1608916 B           0 B           0 B        169    __DATA
+  1097728 B           0 B           0 B          3    __DATA_CONST
+   737280 B           0 B           0 B         15    IOAccelerator (graphics)
+   540672 B           0 B           0 B         32    CoreAnimation
+   491520 B           0 B           0 B         66    untagged (VM_ALLOCATE)
+   419269 B           0 B           0 B         68    __AUTH
+   407015 B           0 B           0 B        193    unused dyld shared cache area
+   393216 B    14680064 B           0 B         45    mapped file
+   278528 B           0 B           0 B          2    CoreUI image data
+   131072 B           0 B           0 B          1    Accelerate image backing stores
+   114688 B           0 B           0 B          1    __AUTH_CONST
+   114632 B           0 B           0 B          2    __TPRO_CONST
+    49152 B           0 B           0 B          1    IOAccelerator
+    49152 B           0 B           0 B          1    MALLOC_TINY
+    49152 B           0 B           0 B          3    CoreGraphics
+    32768 B           0 B           0 B          1    Activity Tracing
+    32768 B           0 B           0 B          1    tag 22
+    32768 B           0 B           0 B          2    ColorSync
+    16384 B           0 B           0 B          1    MALLOC_NANO
+    16384 B           0 B           0 B          1    os_alloc_once
+    16384 B           0 B           0 B          1    Foundation
+        0 B           0 B      180224 B         76    Owned physical footprint (unmapped) (neural) (nofootprint)
+        0 B           0 B       16384 B          2    ImageIO
+        0 B    27017216 B           0 B          4    __TEXT
+        0 B      163840 B           0 B          3    __LINKEDIT
+        0 B           0 B           0 B          4    IOSurface
+        0 B           0 B           0 B         32    JS VM Gigacage
+
+[Excerpt ends; full-report SHA-256 and size are in results.json.]

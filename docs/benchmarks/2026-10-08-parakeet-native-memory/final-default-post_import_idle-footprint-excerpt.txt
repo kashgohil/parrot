@@ -1,0 +1,47 @@
+======================================================================
+parrot [79467]: 64-bit    Footprint: 2670383040 B (16384 bytes per page)
+======================================================================
+
+      Dirty         Clean   Reclaimable    Regions    Category
+        ---           ---           ---        ---    ---
+2485288960 B           0 B           0 B        323    MALLOC_LARGE
+144703488 B           0 B   260980736 B        124    MALLOC_SMALL
+ 17825792 B           0 B           0 B         40    performance tool data
+  8290304 B           0 B      491520 B         27    MALLOC metadata
+  2772928 B           0 B           0 B          1    page table
+  2327832 B           0 B           0 B        408    __DATA_DIRTY
+  1671168 B           0 B           0 B        126    stack
+  1622016 B           0 B      163840 B          6    WebKit malloc
+  1477870 B           0 B           0 B        156    __DATA
+  1097728 B           0 B           0 B          3    __DATA_CONST
+   524288 B           0 B           0 B         32    CoreAnimation
+   491520 B           0 B           0 B         68    untagged (VM_ALLOCATE)
+   393216 B    15171584 B           0 B         38    mapped file
+   391497 B           0 B           0 B         61    __AUTH
+   390377 B           0 B           0 B        182    unused dyld shared cache area
+   278528 B           0 B           0 B          2    CoreUI image data
+   131072 B           0 B           0 B          1    Accelerate image backing stores
+   114688 B           0 B           0 B          1    __AUTH_CONST
+   114632 B           0 B           0 B          2    __TPRO_CONST
+    49152 B           0 B           0 B          1    IOAccelerator
+    49152 B           0 B           0 B          1    Activity Tracing
+    49152 B           0 B           0 B          1    MALLOC_TINY
+    49152 B           0 B           0 B          3    CoreGraphics
+    32768 B           0 B           0 B          2    ColorSync
+    16384 B           0 B           0 B          1    MALLOC_NANO
+    16384 B           0 B           0 B          2    IOAccelerator (graphics)
+    16384 B           0 B           0 B          1    tag 22
+    16384 B           0 B           0 B          1    os_alloc_once
+    16384 B           0 B           0 B          1    Foundation
+    16384 B           0 B           0 B          1    IOKit
+        0 B           0 B     4194304 B          2    ImageIO
+        0 B    25231360 B           0 B          3    __TEXT
+        0 B      180224 B           0 B          3    __LINKEDIT
+        0 B           0 B           0 B         32    JS VM Gigacage
+        ---           ---           ---        ---    ---
+2670235584 B    40583168 B   265830400 B       1658    TOTAL
+
+Shared with com.apple.WebKit.Networking [79494], com.apple.WebKit.GPU [79493]:
+      Dirty         Clean   Reclaimable    Regions    Category
+
+[Excerpt ends; full-report SHA-256 and size are in results.json.]

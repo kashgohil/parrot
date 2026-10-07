@@ -1,0 +1,92 @@
+malloc_history Report Version:  2.0
+Process:         parrot [79467]
+Path:            /Users/USER/*/parrot
+Load Address:    0x102ad8000
+Identifier:      parrot
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  Python [79455]
+Target Type:     live task
+
+Date/Time:       2026-10-08 00:40:03.870 +0530
+Launch Time:     2026-10-08 00:38:02.451 +0530
+OS Version:      macOS 26.6.2 (25G83)
+Report Version:  7
+Analysis Tool:   /usr/bin/malloc_history
+
+Physical footprint:         126.3M
+Physical footprint (peak):  2.5G
+Idle exit:                  untracked
+----
+
+VM region sizes shown as dirty + swapped/compressed - purgableVolatile.
+
+Stack logging was dynamically enabled in target process after it was launched so no backtraces are available for earlier allocations.
+Stack logging was enabled for 93.0 seconds, which is 76.6% of the process's total lifetime of 121.4 seconds.
+
+Malloc blocks with no stack:   6569   total size: 666K
+   VM regions with no stack:     22   total size: 1888K
+
+Call graph:
+    126804 (28.8M) << TOTAL >>
+      90492 (13.6M) _malloc_zone_malloc_instrumented_or_legacy  (in libsystem_malloc.dylib)
+      + 83718 (7.87M) _malloc_type_malloc_outlined  (in libsystem_malloc.dylib)
+      + ! 64123 (5.30M) operator new(unsigned long)  (in libc++abi.dylib)
+      + ! : 1891 (709K) std::__hash_table<std::__hash_value_type<std::basic_string<char>, onnx::OpSchema::Attribute>>::__emplace_unique_key_args<std::basic_string<char>, std::pair<std::basic_string<char> const, onnx::OpSchema::Attribute> const&>(std::basic_string<char> const&, std::pair<std::basic_string<char> const, onnx::OpSchema::Attribute> const&)  (in parrot)
+      + ! : | 1891 (709K) std::unordered_map<std::basic_string<char>, onnx::OpSchema::Attribute>::unordered_map(std::unordered_map<std::basic_string<char>, onnx::OpSchema::Attribute> const&)  (in parrot)
+      + ! : |   1891 (709K) onnx::OpSchema::OpSchema(onnx::OpSchema const&)  (in parrot)
+      + ! : |     100 (37.5K) onnxruntime::internal_nhwc_onnx::(anonymous namespace)::RegisterNHWCSchemaWithActivation(std::function<void (onnx::OpSchema&&)> const&, onnx::OpSchema&&)  (in parrot)
+      + ! : |     + 100 (37.5K) onnxruntime::internal_nhwc_onnx::OpSet_Internal_NHWC_ONNX::ForEachSchema(std::function<void (onnx::OpSchema&&)> const&)  (in parrot)
+      + ! : |     +   100 (37.5K) std::__call_once_proxy[abi:ne190102]<std::tuple<onnxruntime::Environment::Initialize(std::unique_ptr<onnxruntime::logging::LoggingManager>, OrtThreadingOptions const*, bool, OrtKeyValuePairs const*)::$_1&&>>(void*)  (in parrot)
+      + ! : |     +     100 (37.5K) std::__call_once(unsigned long volatile&, void*, void (*)(void*))  (in libc++.1.dylib)
+      + ! : |     +       100 (37.5K) onnxruntime::Environment::Initialize(std::unique_ptr<onnxruntime::logging::LoggingManager>, OrtThreadingOptions const*, bool, OrtKeyValuePairs const*)  (in parrot)
+      + ! : |     +         100 (37.5K) onnxruntime::Environment::Create(std::unique_ptr<onnxruntime::logging::LoggingManager>, std::unique_ptr<onnxruntime::Environment>&, OrtThreadingOptions const*, bool, OrtKeyValuePairs const*)  (in parrot)
+      + ! : |     +           100 (37.5K) OrtEnv::GetOrCreateInstance(OrtEnv::LoggingManagerConstructionInfo const&, onnxruntime::common::Status&, OrtThreadingOptions const*, OrtKeyValuePairs const*)  (in parrot)
+      + ! : |     +             100 (37.5K) OrtApis::CreateEnvWithCustomLogger(void (*)(void*, OrtLoggingLevel, char const*, char const*, char const*, char const*), void*, OrtLoggingLevel, char const*, OrtEnv**)  (in parrot)
+      + ! : |     +               100 (37.5K) ort::environment::EnvironmentBuilder::create_environment::_$u7b$$u7b$closure$u7d$$u7d$::h48ee5b94941efcdf  (in parrot)
+      + ! : |     +                 100 (37.5K) ort::environment::current::h50deb4c9e16f9e16  (in parrot)
+      + ! : |     +                   100 (37.5K) ort::session::builder::SessionBuilder::new::h8932fb86b7b86cf5  (in parrot)
+      + ! : |     +                     100 (37.5K) transcribe_rs::onnx::session::build_session::h9148d9955a8484e5  (in parrot)
+      + ! : |     +                       100 (37.5K) transcribe_rs::onnx::parakeet::ParakeetModel::load::h45fa9850ae26fb6b  (in parrot)
+      + ! : |     +                         100 (37.5K) parrot_lib::transcription::ParakeetProvider::load::h0e27a3c6206ff05c  (in parrot)
+      + ! : |     +                           100 (37.5K) parrot_lib::speech_engine::SpeechEngine::new::_$u7b$$u7b$closure$u7d$$u7d$::h48d1817123855056  (in parrot)
+      + ! : |     +                             100 (37.5K) _$LT$tokio..runtime..blocking..task..BlockingTask$LT$T$GT$$u20$as$u20$core..future..future..Future$GT$::poll::hcc986518bac10b94  (in parrot)
+      + ! : |     +                               100 (37.5K) tokio::runtime::task::core::Core$LT$T$C$S$GT$::poll::h7bd8c62bc53d744b  (in parrot)
+      + ! : |     +                                 100 (37.5K) tokio::runtime::task::harness::Harness$LT$T$C$S$GT$::poll::hd4b31eeb00709ad2  (in parrot)
+      + ! : |     +                                   100 (37.5K) tokio::runtime::blocking::pool::Inner::run::h887d6de595aab882  (in parrot)
+      + ! : |     +                                     100 (37.5K) std::sys::backtrace::__rust_begin_short_backtrace::h989210ab274536de  (in parrot)
+      + ! : |     +                                       100 (37.5K) core::ops::function::FnOnce::call_once$u7b$$u7b$vtable.shim$u7d$$u7d$::h72526a49d10b627f  (in parrot)
+      + ! : |     +                                         100 (37.5K) _RNvNvMs0_NtNtNtCscEX5ZwinSox_3std3sys6thread4unixNtB7_6Thread3new12thread_start  (in parrot)
+      + ! : |     +                                           100 (37.5K) _pthread_start  (in libsystem_pthread.dylib)
+      + ! : |     +                                             100 (37.5K) thread_start  (in libsystem_pthread.dylib)
+      + ! : |     57 (21.4K) onnxruntime::contrib::RegisterContribSchemas()  (in parrot)
+      + ! : |     + 57 (21.4K) std::__call_once_proxy[abi:ne190102]<std::tuple<onnxruntime::Environment::Initialize(std::unique_ptr<onnxruntime::logging::LoggingManager>, OrtThreadingOptions const*, bool, OrtKeyValuePairs const*)::$_1&&>>(void*)  (in parrot)
+      + ! : |     +   57 (21.4K) std::__call_once(unsigned long volatile&, void*, void (*)(void*))  (in libc++.1.dylib)
+      + ! : |     +     57 (21.4K) onnxruntime::Environment::Initialize(std::unique_ptr<onnxruntime::logging::LoggingManager>, OrtThreadingOptions const*, bool, OrtKeyValuePairs const*)  (in parrot)
+      + ! : |     +       57 (21.4K) onnxruntime::Environment::Create(std::unique_ptr<onnxruntime::logging::LoggingManager>, std::unique_ptr<onnxruntime::Environment>&, OrtThreadingOptions const*, bool, OrtKeyValuePairs const*)  (in parrot)
+      + ! : |     +         57 (21.4K) OrtEnv::GetOrCreateInstance(OrtEnv::LoggingManagerConstructionInfo const&, onnxruntime::common::Status&, OrtThreadingOptions const*, OrtKeyValuePairs const*)  (in parrot)
+      + ! : |     +           57 (21.4K) OrtApis::CreateEnvWithCustomLogger(void (*)(void*, OrtLoggingLevel, char const*, char const*, char const*, char const*), void*, OrtLoggingLevel, char const*, OrtEnv**)  (in parrot)
+      + ! : |     +             57 (21.4K) ort::environment::EnvironmentBuilder::create_environment::_$u7b$$u7b$closure$u7d$$u7d$::h48ee5b94941efcdf  (in parrot)
+      + ! : |     +               57 (21.4K) ort::environment::current::h50deb4c9e16f9e16  (in parrot)
+      + ! : |     +                 57 (21.4K) ort::session::builder::SessionBuilder::new::h8932fb86b7b86cf5  (in parrot)
+      + ! : |     +                   57 (21.4K) transcribe_rs::onnx::session::build_session::h9148d9955a8484e5  (in parrot)
+      + ! : |     +                     57 (21.4K) transcribe_rs::onnx::parakeet::ParakeetModel::load::h45fa9850ae26fb6b  (in parrot)
+      + ! : |     +                       57 (21.4K) parrot_lib::transcription::ParakeetProvider::load::h0e27a3c6206ff05c  (in parrot)
+      + ! : |     +                         57 (21.4K) parrot_lib::speech_engine::SpeechEngine::new::_$u7b$$u7b$closure$u7d$$u7d$::h48d1817123855056  (in parrot)
+      + ! : |     +                           57 (21.4K) _$LT$tokio..runtime..blocking..task..BlockingTask$LT$T$GT$$u20$as$u20$core..future..future..Future$GT$::poll::hcc986518bac10b94  (in parrot)
+      + ! : |     +                             57 (21.4K) tokio::runtime::task::core::Core$LT$T$C$S$GT$::poll::h7bd8c62bc53d744b  (in parrot)
+      + ! : |     +                               57 (21.4K) tokio::runtime::task::harness::Harness$LT$T$C$S$GT$::poll::hd4b31eeb00709ad2  (in parrot)
+      + ! : |     +                                 57 (21.4K) tokio::runtime::blocking::pool::Inner::run::h887d6de595aab882  (in parrot)
+      + ! : |     +                                   57 (21.4K) std::sys::backtrace::__rust_begin_short_backtrace::h989210ab274536de  (in parrot)
+      + ! : |     +                                     57 (21.4K) core::ops::function::FnOnce::call_once$u7b$$u7b$vtable.shim$u7d$$u7d$::h72526a49d10b627f  (in parrot)
+      + ! : |     +                                       57 (21.4K) _RNvNvMs0_NtNtNtCscEX5ZwinSox_3std3sys6thread4unixNtB7_6Thread3new12thread_start  (in parrot)
+      + ! : |     +                                         57 (21.4K) _pthread_start  (in libsystem_pthread.dylib)
+      + ! : |     +                                           57 (21.4K) thread_start  (in libsystem_pthread.dylib)
+      + ! : |     55 (20.6K) onnxruntime::internal_nhwc_onnx::(anonymous namespace)::RegisterNHWCSchema(std::function<void (onnx::OpSchema&&)> const&, onnx::OpSchema&&)  (in parrot)
+      + ! : |     + 55 (20.6K) onnxruntime::internal_nhwc_onnx::OpSet_Internal_NHWC_ONNX::ForEachSchema(std::function<void (onnx::OpSchema&&)> const&)  (in parrot)
+      + ! : |     +   55 (20.6K) std::__call_once_proxy[abi:ne190102]<std::tuple<onnxruntime::Environment::Initialize(std::unique_ptr<onnxruntime::logging::LoggingManager>, OrtThreadingOptions const*, bool, OrtKeyValuePairs const*)::$_1&&>>(void*)  (in parrot)
+      + ! : |     +     55 (20.6K) std::__call_once(unsigned long volatile&, void*, void (*)(void*))  (in libc++.1.dylib)
+      + ! : |     +       55 (20.6K) onnxruntime::Environment::Initialize(std::unique_ptr<onnxruntime::logging::LoggingManager>, OrtThreadingOptions const*, bool, OrtKeyValuePairs const*)  (in parrot)
+
+[Excerpt ends; full-report SHA-256 and size are in results.json.]

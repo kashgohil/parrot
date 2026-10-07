@@ -1,0 +1,67 @@
+Process:         parrot [79467]
+Path:            /Users/USER/*/parrot
+Load Address:    0x102ad8000
+Identifier:      parrot
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  Python [79455]
+Target Type:     live task
+
+Date/Time:       2026-10-08 00:38:53.796 +0530
+Launch Time:     2026-10-08 00:38:02.451 +0530
+OS Version:      macOS 26.6.2 (25G83)
+Report Version:  7
+Analysis Tool:   /usr/bin/heap
+
+Physical footprint:         2.5G
+Physical footprint (peak):  2.5G
+Idle exit:                  untracked
+----
+
+Process 79467: 12 zones
+
+All zones: 402461 nodes malloced - Sizes: 40000KB[1] 10432KB[1] 8272KB[48] 8224KB[49] 5776KB[1] 5648KB[1] 5136KB[2] 4624KB[2] 4112KB[39] 3136KB[1] 2368KB[1] 2080KB[95] 2064KB[22] 1808KB[1] 1296KB[1] 1040KB[24] 816KB[2] 688KB[1] 528KB[2] 400KB[3] 368KB[8] 336KB[1] 304KB[2] 272KB[2] 256KB[6] 240KB[1] 208KB[5] 192KB[4] 144KB[1] 112KB[3] 80KB[7] 64KB[8] 48KB[37] 32KB[1] 28KB[4] 24.5KB[2] 24KB[8] 20KB[25] 16KB[3] 14KB[6] 12KB[1] 10KB[72] 8KB[26] 7KB[6] 6KB[23] 5KB[443] 4.5KB[4] 4KB[63] 3.5KB[26] 3KB[126] 2.5KB[180] 2KB[76] 1.75KB[118] 1.5KB[62] 1.4375KB[2] 1.25KB[207] 1.01562KB[1] 1KB[112] 1008[1] 992[2] 896[158] 864[1] 848[2] 832[1] 784[2] 768[466] 640[1488] 592[5] 576[2] 544[5] 528[2] 512[2614] 496[1] 448[642] 432[2] 416[23] 384[2742] 352[14] 320[5630] 304[14] 288[2] 272[2] 256[1794] 240[16] 228[3] 224[1159] 208[310] 192[13687] 176[6] 160[5664] 144[3] 132[3] 128[3738] 112[4678] 110[3] 108[6] 104[3] 96[11430] 91[3] 88[3] 85[18] 84[6] 80[24399] 76[3] 74[3] 72[18] 67[15] 65[3] 64[112811] 63[3] 60[15] 58[3] 56[9] 53[3] 52[15] 50[3] 48[63885] 47[3] 44[6] 43[3] 40[9] 36[12] 34[3] 33[6] 32[124505] 31[3] 30[3] 28[63] 24[51] 20[6] 17[9] 16[18120] 12[6] 10[3] 8[93] 4[27] 1[9] 
+
+Found:  1416 ObjC classes  450 Swift classes  550 C++ classes  255 CFTypes
+Derived 2424 type names for non-objects from allocation backtraces
+
+-----------------------------------------------------------------------
+All zones: 402461 nodes (1401735512 bytes)
+
+   COUNT      BYTES       AVG   CLASS_NAME                                        TYPE    BINARY
+   =====      =====       ===   ==========                                        ====    ======
+     225  1156677632  5140789.5   memalign in onnxruntime::IAllocator::MakeUniquePtr<void>(std::shared_ptr<onnxruntime::IAllocator>, unsigned long, bool, onnxruntime::Stream*)  C++     parrot
+     403  127833856  317205.6   memalign in onnxruntime::Tensor::Tensor(onnxruntime::DataTypeImpl const*, onnxruntime::TensorShape const&, std::shared_ptr<onnxruntime::IAllocator>)  C++     parrot
+      10   39911424  3991142.5   malloc in ArmKleidiAI::MlasGemmBatch(CBLAS_TRANSPOSE, CBLAS_TRANSPOSE, unsigned long, unsigned long, unsigned long, MLAS_SGEMM_DATA_PARAMS const*, unsigned long, onnxruntime::concurrency::ThreadPool*)  C++     parrot
+       5   18694144  3738828.8   malloc in std::vector<std::byte>::resize(unsigned long)  C++     parrot
+       4    5357888  1339472.0   realloc in alloc::raw_vec::RawVecInner$LT$A$GT$::finish_grow::h7709d18def3c413a  C++     parrot
+       1    4210688  4210688.0   malloc in tauri::image::_$LT$impl$u20$core..convert..TryFrom$LT$tauri..image..Image$GT$$u20$for$u20$tray_icon..icon..Icon$GT$::try_from::he5f405f36f606cc9  C++     parrot
+      10    3702784  370278.4   malloc in onnxruntime::concurrency::ThreadPoolTempl<onnxruntime::Env>::WorkerLoop(int)  C++     parrot
+   22014    2465136     112.0   malloc in onnxruntime::Graph::GetOrCreateNodeArg(std::basic_string<char> const&, onnx::TypeProto const*)  C++     parrot
+       2    2425216  1212608.0   NSConcreteData (Bytes Storage)                    C       Foundation
+      10    1736704  173670.4   malloc in onnxruntime::concurrency::ThreadPoolTempl<onnxruntime::Env>::RunInParallel(std::function<void (unsigned int)>, unsigned int, long)  C++     parrot
+      48    1575168   32816.0   malloc in onnxruntime::concurrency::ThreadPoolTempl<onnxruntime::Env>::ThreadPoolTempl(char const*, int, bool, onnxruntime::Env&, onnxruntime::ThreadOptions const&)  C++     parrot
+   22554    1420608      63.0   malloc in onnxruntime::Node::ForEachDef(std::function<void (onnxruntime::NodeArg const&, bool)>, bool) const  C++     parrot
+   20132    1351296      67.1   malloc in std::basic_string<char>::__assign_external(char const*, unsigned long)  C++     libc++.1.dylib
+    2440    1330944     545.5   malloc in onnxruntime::Graph::AllocateNode()      C++     parrot
+   19562    1251968      64.0   onnx::TensorShapeProto_Dimension                  C++     parrot
+    4275    1070560     250.4   malloc in std::unordered_map<std::basic_string<char>, onnx::OpSchema::Attribute>::unordered_map(std::unordered_map<std::basic_string<char>, onnx::OpSchema::Attribute> const&)  C++     parrot
+   20529    1040080      50.7   malloc in google::protobuf::internal::RepeatedPtrFieldBase::InternalExtend(int)  C++     parrot
+   23982     969840      40.4   malloc in google::protobuf::internal::ArenaStringPtr::Set(std::basic_string<char> const&, google::protobuf::Arena*)  C++     parrot
+    4494     862848     192.0   onnx::NodeProto                                   C++     parrot
+   12462     797568      64.0   onnx::TypeProto                                   C++     parrot
+   20247     795856      39.3   malloc in onnx::OpSchema::ParseAndSetTypes(std::vector<onnx::OpSchema::FormalParameter>*)  C++     parrot
+       2     786432  393216.0   malloc in onnxruntime::concurrency::ThreadPoolTempl<onnxruntime::Env>::RunInParallelInternal(onnxruntime::concurrency::ThreadPoolTempl<onnxruntime::Env>::PerThread&, onnxruntime::concurrency::ThreadPoolParallelSection&, unsigned int, bool, std::function<void (unsigned int)>)::'lambda'()::operator()() const  C++     parrot
+   11920     762880      64.0   onnx::TensorShapeProto                            C++     parrot
+    1598     748064     468.1   Class.methodCache._buckets (bucket_t)             C       libobjc.A.dylib
+   10834     736512      68.0   CFString                                          ObjC    CoreFoundation
+    2254     721280     320.0   onnx::AttributeProto                              C++     parrot
+       1     704512  704512.0   malloc in alloc::slice::_$LT$impl$u20$$u5b$T$u5d$$GT$::repeat::he9d2b8eb16a90be1  C++     parrot
+      20     685184   34259.2   malloc in absl::lts_20250814::container_internal::(anonymous namespace)::GrowToNextCapacityAndPrepareInsert(absl::lts_20250814::container_internal::CommonFields&, absl::lts_20250814::container_internal::PolicyFunctions const&, unsigned long)  C++     parrot
+   13579     655024      48.2   malloc in std::unordered_map<std::basic_string<char>, std::pair<std::unordered_set<std::basic_string<char> const*>, std::basic_string<char>>>::unordered_map(std::unordered_map<std::basic_string<char>, std::pair<std::unordered_set<std::basic_string<char> const*>, std::basic_string<char>>> const&)  C++     parrot
+   18761     600352      32.0   malloc in google::protobuf::internal::ArenaStringPtr::Mutable(google::protobuf::Arena*)  C++     parrot
+    1864     595552     319.5   malloc in onnx::OpSchemaRegistry::OpSchemaRegisterOnce::OpSchemaRegisterImpl(onnx::OpSchema&&, int, bool)  C++     parrot
+   12343     592464      48.0   onnx::TypeProto_Tensor                            C++     parrot
+
+[Excerpt ends; full-report SHA-256 and size are in results.json.]

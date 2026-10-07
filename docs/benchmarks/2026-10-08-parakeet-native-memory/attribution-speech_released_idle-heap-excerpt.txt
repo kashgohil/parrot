@@ -1,0 +1,67 @@
+Process:         parrot-1070-before [65339]
+Path:            /private/tmp/parrot-1070-before
+Load Address:    0x104c78000
+Identifier:      parrot-1070-before
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  Python [65332]
+Target Type:     live task
+
+Date/Time:       2026-10-08 00:23:52.347 +0530
+Launch Time:     2026-10-08 00:21:19.703 +0530
+OS Version:      macOS 26.6.2 (25G83)
+Report Version:  7
+Analysis Tool:   /usr/bin/heap
+
+Physical footprint:         884.5M
+Physical footprint (peak):  11.8G
+Idle exit:                  untracked
+----
+
+Process 65339: 12 zones
+
+All zones: 144938 nodes malloced - Sizes: 4624KB[1] 4112KB[1] 2368KB[1] 688KB[1] 528KB[1] 304KB[2] 112KB[1] 64KB[3] 48KB[5] 28KB[2] 24.5KB[2] 24KB[6] 20KB[25] 16KB[3] 14KB[7] 12KB[2] 10KB[52] 8KB[24] 7KB[4] 6KB[19] 5KB[135] 4.5KB[4] 4KB[63] 3.5KB[22] 3KB[144] 2.5KB[170] 2KB[54] 1.75KB[77] 1.5KB[66] 1.4375KB[2] 1.25KB[200] 1.01562KB[1] 1KB[113] 1008[1] 992[2] 896[141] 864[1] 848[2] 832[1] 784[3] 768[473] 640[1468] 592[5] 576[2] 544[5] 528[2] 512[173] 496[1] 448[656] 432[2] 416[23] 384[3005] 352[14] 320[1666] 304[13] 288[2] 272[2] 256[1692] 240[16] 228[3] 224[1069] 208[310] 192[2457] 176[6] 160[4438] 144[3] 132[3] 128[3075] 112[5360] 110[3] 108[6] 104[3] 96[3341] 91[3] 88[3] 85[18] 84[6] 80[14721] 76[3] 74[3] 72[18] 67[15] 65[3] 64[21323] 63[3] 60[15] 58[3] 56[9] 53[3] 52[15] 50[3] 48[26855] 47[3] 44[6] 43[3] 40[9] 36[12] 34[3] 33[6] 32[46799] 31[3] 30[3] 28[63] 24[51] 20[6] 17[9] 16[4141] 12[6] 10[3] 8[93] 4[27] 1[9] 
+
+Found:  1553 ObjC classes  452 Swift classes  582 C++ classes  257 CFTypes
+Derived 2422 type names for non-objects from allocation backtraces
+
+-----------------------------------------------------------------------
+All zones: 144938 nodes (30447688 bytes)
+
+   COUNT      BYTES       AVG   CLASS_NAME                                        TYPE    BINARY
+   =====      =====       ===   ==========                                        ====    ======
+       4    5357888  1339472.0   realloc in alloc::raw_vec::RawVecInner$LT$A$GT$::finish_grow::h7709d18def3c413a  C++     parrot-1070-before
+       1    4210688  4210688.0   malloc in tauri::image::_$LT$impl$u20$core..convert..TryFrom$LT$tauri..image..Image$GT$$u20$for$u20$tray_icon..icon..Icon$GT$::try_from::he5f405f36f606cc9  C++     parrot-1070-before
+       2    2425216  1212608.0   NSConcreteData (Bytes Storage)                    C       Foundation
+    4275    1070560     250.4   malloc in std::unordered_map<std::basic_string<char>, onnx::OpSchema::Attribute>::unordered_map(std::unordered_map<std::basic_string<char>, onnx::OpSchema::Attribute> const&)  C++     parrot-1070-before
+   12129     904992      74.6   CFString                                          ObjC    CoreFoundation
+   20247     795856      39.3   malloc in onnx::OpSchema::ParseAndSetTypes(std::vector<onnx::OpSchema::FormalParameter>*)  C++     parrot-1070-before
+    1798     784512     436.3   Class.methodCache._buckets (bucket_t)             C       libobjc.A.dylib
+       1     704512  704512.0   malloc in alloc::slice::_$LT$impl$u20$$u5b$T$u5d$$GT$::repeat::he9d2b8eb16a90be1  C++     parrot-1070-before
+   13579     655024      48.2   malloc in std::unordered_map<std::basic_string<char>, std::pair<std::unordered_set<std::basic_string<char> const*>, std::basic_string<char>>>::unordered_map(std::unordered_map<std::basic_string<char>, std::pair<std::unordered_set<std::basic_string<char> const*>, std::basic_string<char>>> const&)  C++     parrot-1070-before
+    1864     595552     319.5   malloc in onnx::OpSchemaRegistry::OpSchemaRegisterOnce::OpSchemaRegisterImpl(onnx::OpSchema&&, int, bool)  C++     parrot-1070-before
+       1     540672  540672.0   GLDDeviceRec                                      C++     AppleMetalOpenGLRenderer
+     908     527200     580.6   NSMutableDictionary (Storage)                     C       CoreFoundation
+    4023     461248     114.7   malloc in std::vector<onnx::OpSchema::TypeConstraintParam>::__init_with_size[abi:ne190102]<onnx::OpSchema::TypeConstraintParam*, onnx::OpSchema::TypeConstraintParam*>(onnx::OpSchema::TypeConstraintParam*, onnx::OpSchema::TypeConstraintParam*, unsigned long)  C++     parrot-1070-before
+    3385     454592     134.3   non-object in zone WebKit Malloc_0x11fe7e5f8              <unknown>
+    1607     436448     271.6   malloc in std::vector<onnx::OpSchema::FormalParameter>::__init_with_size[abi:ne190102]<onnx::OpSchema::FormalParameter*, onnx::OpSchema::FormalParameter*>(onnx::OpSchema::FormalParameter*, onnx::OpSchema::FormalParameter*, unsigned long)  C++     parrot-1070-before
+      18     288896   16049.8   Swift Metadata                                    C       libswiftCore.dylib
+    2772     229456      82.8   malloc in onnxruntime::KernelRegistry::Register(onnxruntime::KernelCreateInfo&&)  C++     parrot-1070-before
+     261     226512     867.9   CFDictionary (Value Storage)                      C       CoreFoundation
+     503     218224     433.8   NSDictionary                                      ObjC    CoreFoundation
+    3457     212304      61.4   malloc in onnxruntime::KernelDefBuilder::TypeConstraint(char const*, std::vector<onnxruntime::DataTypeImpl const*>)  C++     parrot-1070-before
+      64     196608    3072.0   calloc in weak_resize(weak_table_t*, unsigned long)  C       libobjc.A.dylib
+     327     190656     583.0   CFData                                            ObjC    CoreFoundation
+    4498     175552      39.0   malloc in TCFStringUniquerImp::GetUniqueString(unsigned char const*, unsigned long) const  C++     libFontRegistry.dylib
+    3696     173408      46.9   Class.data (class_rw_t)                           C       libobjc.A.dylib
+    1890     150080      79.4   malloc in MTLLibraryDataWithArchive::parseArchiveSync(NSError**, bool, id<MTLDevice>)  C++     Metal
+      18     147456    8192.0   @autoreleasepool content                          C       libobjc.A.dylib
+     380     145920     384.0   _FileCache                                        CFType  CoreServicesInternal
+     254     140800     554.3   malloc in sqlite3Malloc                           C       parrot-1070-before
+      54     138240    2560.0   malloc in alloc::collections::btree::map::BTreeMap$LT$K$C$V$C$A$GT$::insert::hd17698cc72467176  C++     parrot-1070-before
+     149     137520     923.0   CFDictionary (Key Storage)                        C       CoreFoundation
+    1701     121920      71.7   non-object in zone QuartzCore_0x10ee28000                 <unknown>
+       1     114688  114688.0   realloc in fscache_open_worker                    C       libCoreFSCache.dylib
+
+[Excerpt ends; full-report SHA-256 and size are in results.json.]

@@ -1,0 +1,92 @@
+malloc_history Report Version:  2.0
+Process:         parrot [79467]
+Path:            /Users/USER/*/parrot
+Load Address:    0x102ad8000
+Identifier:      parrot
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  Python [79455]
+Target Type:     live task
+
+Date/Time:       2026-10-08 00:38:54.506 +0530
+Launch Time:     2026-10-08 00:38:02.451 +0530
+OS Version:      macOS 26.6.2 (25G83)
+Report Version:  7
+Analysis Tool:   /usr/bin/malloc_history
+
+Physical footprint:         2.5G
+Physical footprint (peak):  2.5G
+Idle exit:                  untracked
+----
+
+VM region sizes shown as dirty + swapped/compressed - purgableVolatile.
+
+Stack logging was dynamically enabled in target process after it was launched so no backtraces are available for earlier allocations.
+Stack logging was enabled for 50.0 seconds, which is 96.1% of the process's total lifetime of 52.1 seconds.
+
+Malloc blocks with no stack:   6581   total size: 667K
+   VM regions with no stack:     22   total size: 1872K
+
+Call graph:
+    396021 (1338M) << TOTAL >>
+      1482 (1226M) _malloc_zone_memalign  (in libsystem_malloc.dylib)
+      + 1282 (1225M) _malloc_type_aligned_alloc_outlined  (in libsystem_malloc.dylib)
+      + ! 1282 (1225M) operator new(unsigned long, std::align_val_t)  (in libc++abi.dylib)
+      + !   225 (1103M) onnxruntime::IAllocator::MakeUniquePtr<void>(std::shared_ptr<onnxruntime::IAllocator>, unsigned long, bool, onnxruntime::Stream*)  (in parrot)
+      + !   : 220 (1087M) onnxruntime::MatMulIntegerBase::PrePack(onnxruntime::Tensor const&, int, std::shared_ptr<onnxruntime::IAllocator>, bool&, onnxruntime::PrePackedWeights*)  (in parrot)
+      + !   : | 220 (1087M) onnxruntime::SessionState::PrepackConstantInitializedTensors(onnxruntime::InlinedHashMap<std::basic_string<char>, unsigned long>&, std::unordered_map<std::basic_string<char>, OrtValue const*> const&)::$_0::operator()(bool) const  (in parrot)
+      + !   : |   220 (1087M) onnxruntime::SessionState::FinalizeSessionStateImpl(std::basic_string<char> const&, onnxruntime::KernelRegistryManager const&, onnxruntime::Node const*, onnxruntime::SessionOptions const&, bool, bool, onnxruntime::InlinedHashMap<std::basic_string<char>, unsigned long>&, onnxruntime::InlinedHashMap<std::basic_string<char>, OrtDevice> const&, bool)  (in parrot)
+      + !   : |     220 (1087M) onnxruntime::SessionState::FinalizeSessionState(std::basic_string<char> const&, onnxruntime::KernelRegistryManager const&, bool, bool)  (in parrot)
+      + !   : |       220 (1087M) onnxruntime::InferenceSession::Initialize()  (in parrot)
+      + !   : |         220 (1087M) InitializeSession(OrtSessionOptions const*, onnxruntime::InferenceSession&, OrtPrepackedWeightsContainer*)  (in parrot)
+      + !   : |           220 (1087M) OrtApis::CreateSession(OrtEnv const*, char const*, OrtSessionOptions const*, OrtSession**)  (in parrot)
+      + !   : |             220 (1087M) ort::session::builder::impl_commit::_$LT$impl$u20$ort..session..builder..SessionBuilder$GT$::commit_from_file_inner::hfe51d715c1753b8e  (in parrot)
+      + !   : |               220 (1087M) ort::session::builder::impl_commit::_$LT$impl$u20$ort..session..builder..SessionBuilder$GT$::commit_from_file::he78d9a462373a98d  (in parrot)
+      + !   : |                 220 (1087M) transcribe_rs::onnx::session::build_session::h9148d9955a8484e5  (in parrot)
+      + !   : |                   220 (1087M) transcribe_rs::onnx::parakeet::ParakeetModel::load::h45fa9850ae26fb6b  (in parrot)
+      + !   : |                     220 (1087M) parrot_lib::transcription::ParakeetProvider::load::h0e27a3c6206ff05c  (in parrot)
+      + !   : |                       220 (1087M) parrot_lib::speech_engine::SpeechEngine::new::_$u7b$$u7b$closure$u7d$$u7d$::h48d1817123855056  (in parrot)
+      + !   : |                         220 (1087M) _$LT$tokio..runtime..blocking..task..BlockingTask$LT$T$GT$$u20$as$u20$core..future..future..Future$GT$::poll::hcc986518bac10b94  (in parrot)
+      + !   : |                           220 (1087M) tokio::runtime::task::core::Core$LT$T$C$S$GT$::poll::h7bd8c62bc53d744b  (in parrot)
+      + !   : |                             220 (1087M) tokio::runtime::task::harness::Harness$LT$T$C$S$GT$::poll::hd4b31eeb00709ad2  (in parrot)
+      + !   : |                               220 (1087M) tokio::runtime::blocking::pool::Inner::run::h887d6de595aab882  (in parrot)
+      + !   : |                                 220 (1087M) std::sys::backtrace::__rust_begin_short_backtrace::h989210ab274536de  (in parrot)
+      + !   : |                                   220 (1087M) core::ops::function::FnOnce::call_once$u7b$$u7b$vtable.shim$u7d$$u7d$::h72526a49d10b627f  (in parrot)
+      + !   : |                                     220 (1087M) _RNvNvMs0_NtNtNtCscEX5ZwinSox_3std3sys6thread4unixNtB7_6Thread3new12thread_start  (in parrot)
+      + !   : |                                       220 (1087M) _pthread_start  (in libsystem_pthread.dylib)
+      + !   : |                                         220 (1087M) thread_start  (in libsystem_pthread.dylib)
+      + !   : 4 (16.1M) onnxruntime::contrib::DynamicQuantizeLSTM::TryPackWeights(onnxruntime::Tensor const&, onnxruntime::rnn::detail::PackedWeights&, bool&, bool&, std::shared_ptr<onnxruntime::IAllocator>&)  (in parrot)
+      + !   : | 4 (16.1M) onnxruntime::contrib::DynamicQuantizeLSTM::PrePack(onnxruntime::Tensor const&, int, std::shared_ptr<onnxruntime::IAllocator>, bool&, onnxruntime::PrePackedWeights*)  (in parrot)
+      + !   : |   4 (16.1M) onnxruntime::SessionState::PrepackConstantInitializedTensors(onnxruntime::InlinedHashMap<std::basic_string<char>, unsigned long>&, std::unordered_map<std::basic_string<char>, OrtValue const*> const&)::$_0::operator()(bool) const  (in parrot)
+      + !   : |     4 (16.1M) onnxruntime::SessionState::FinalizeSessionStateImpl(std::basic_string<char> const&, onnxruntime::KernelRegistryManager const&, onnxruntime::Node const*, onnxruntime::SessionOptions const&, bool, bool, onnxruntime::InlinedHashMap<std::basic_string<char>, unsigned long>&, onnxruntime::InlinedHashMap<std::basic_string<char>, OrtDevice> const&, bool)  (in parrot)
+      + !   : |       4 (16.1M) onnxruntime::SessionState::FinalizeSessionState(std::basic_string<char> const&, onnxruntime::KernelRegistryManager const&, bool, bool)  (in parrot)
+      + !   : |         4 (16.1M) onnxruntime::InferenceSession::Initialize()  (in parrot)
+      + !   : |           4 (16.1M) InitializeSession(OrtSessionOptions const*, onnxruntime::InferenceSession&, OrtPrepackedWeightsContainer*)  (in parrot)
+      + !   : |             4 (16.1M) OrtApis::CreateSession(OrtEnv const*, char const*, OrtSessionOptions const*, OrtSession**)  (in parrot)
+      + !   : |               4 (16.1M) ort::session::builder::impl_commit::_$LT$impl$u20$ort..session..builder..SessionBuilder$GT$::commit_from_file_inner::hfe51d715c1753b8e  (in parrot)
+      + !   : |                 4 (16.1M) ort::session::builder::impl_commit::_$LT$impl$u20$ort..session..builder..SessionBuilder$GT$::commit_from_file::he78d9a462373a98d  (in parrot)
+      + !   : |                   4 (16.1M) transcribe_rs::onnx::session::build_session::h9148d9955a8484e5  (in parrot)
+      + !   : |                     4 (16.1M) transcribe_rs::onnx::parakeet::ParakeetModel::load::h45fa9850ae26fb6b  (in parrot)
+      + !   : |                       4 (16.1M) parrot_lib::transcription::ParakeetProvider::load::h0e27a3c6206ff05c  (in parrot)
+      + !   : |                         4 (16.1M) parrot_lib::speech_engine::SpeechEngine::new::_$u7b$$u7b$closure$u7d$$u7d$::h48d1817123855056  (in parrot)
+      + !   : |                           4 (16.1M) _$LT$tokio..runtime..blocking..task..BlockingTask$LT$T$GT$$u20$as$u20$core..future..future..Future$GT$::poll::hcc986518bac10b94  (in parrot)
+      + !   : |                             4 (16.1M) tokio::runtime::task::core::Core$LT$T$C$S$GT$::poll::h7bd8c62bc53d744b  (in parrot)
+      + !   : |                               4 (16.1M) tokio::runtime::task::harness::Harness$LT$T$C$S$GT$::poll::hd4b31eeb00709ad2  (in parrot)
+      + !   : |                                 4 (16.1M) tokio::runtime::blocking::pool::Inner::run::h887d6de595aab882  (in parrot)
+      + !   : |                                   4 (16.1M) std::sys::backtrace::__rust_begin_short_backtrace::h989210ab274536de  (in parrot)
+      + !   : |                                     4 (16.1M) core::ops::function::FnOnce::call_once$u7b$$u7b$vtable.shim$u7d$$u7d$::h72526a49d10b627f  (in parrot)
+      + !   : |                                       4 (16.1M) _RNvNvMs0_NtNtNtCscEX5ZwinSox_3std3sys6thread4unixNtB7_6Thread3new12thread_start  (in parrot)
+      + !   : |                                         4 (16.1M) _pthread_start  (in libsystem_pthread.dylib)
+      + !   : |                                           4 (16.1M) thread_start  (in libsystem_pthread.dylib)
+      + !   : 1 (144K) onnxruntime::GemmPackBFp32(std::shared_ptr<onnxruntime::IAllocator>&, onnxruntime::Tensor const&, bool, bool, std::unique_ptr<void, std::function<void (void*)>>&, unsigned long&, onnxruntime::TensorShape&)  (in parrot)
+      + !   :   1 (144K) onnxruntime::MatMul<float>::PrePack(onnxruntime::Tensor const&, int, std::shared_ptr<onnxruntime::IAllocator>, bool&, onnxruntime::PrePackedWeights*)  (in parrot)
+      + !   :     1 (144K) onnxruntime::SessionState::PrepackConstantInitializedTensors(onnxruntime::InlinedHashMap<std::basic_string<char>, unsigned long>&, std::unordered_map<std::basic_string<char>, OrtValue const*> const&)::$_0::operator()(bool) const  (in parrot)
+      + !   :       1 (144K) onnxruntime::SessionState::FinalizeSessionStateImpl(std::basic_string<char> const&, onnxruntime::KernelRegistryManager const&, onnxruntime::Node const*, onnxruntime::SessionOptions const&, bool, bool, onnxruntime::InlinedHashMap<std::basic_string<char>, unsigned long>&, onnxruntime::InlinedHashMap<std::basic_string<char>, OrtDevice> const&, bool)  (in parrot)
+      + !   :         1 (144K) onnxruntime::SessionState::FinalizeSessionState(std::basic_string<char> const&, onnxruntime::KernelRegistryManager const&, bool, bool)  (in parrot)
+      + !   :           1 (144K) onnxruntime::InferenceSession::Initialize()  (in parrot)
+      + !   :             1 (144K) InitializeSession(OrtSessionOptions const*, onnxruntime::InferenceSession&, OrtPrepackedWeightsContainer*)  (in parrot)
+      + !   :               1 (144K) OrtApis::CreateSession(OrtEnv const*, char const*, OrtSessionOptions const*, OrtSession**)  (in parrot)
+      + !   :                 1 (144K) ort::session::builder::impl_commit::_$LT$impl$u20$ort..session..builder..SessionBuilder$GT$::commit_from_file_inner::hfe51d715c1753b8e  (in parrot)
+
+[Excerpt ends; full-report SHA-256 and size are in results.json.]

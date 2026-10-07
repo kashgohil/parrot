@@ -1,0 +1,92 @@
+malloc_history Report Version:  2.0
+Process:         parrot-1070-before [65339]
+Path:            /private/tmp/parrot-1070-before
+Load Address:    0x104c78000
+Identifier:      parrot-1070-before
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  Python [65332]
+Target Type:     live task
+
+Date/Time:       2026-10-08 00:22:41.898 +0530
+Launch Time:     2026-10-08 00:21:19.703 +0530
+OS Version:      macOS 26.6.2 (25G83)
+Report Version:  7
+Analysis Tool:   /usr/bin/malloc_history
+
+Physical footprint:         10.3G
+Physical footprint (peak):  11.8G
+Idle exit:                  untracked
+----
+
+VM region sizes shown as dirty + swapped/compressed - purgableVolatile.
+
+Stack logging was dynamically enabled in target process after it was launched so no backtraces are available for earlier allocations.
+Stack logging was enabled for 81.0 seconds, which is 98.5% of the process's total lifetime of 82.2 seconds.
+
+Malloc blocks with no stack:   6670   total size: 673K
+   VM regions with no stack:    760   total size: 13.4M
+
+Call graph:
+    669112 (9600M) << TOTAL >>
+      5334 (9453M) _malloc_zone_memalign  (in libsystem_malloc.dylib)
+      + 4438 (8087M) _posix_memalign  (in libsystem_malloc.dylib)
+      + ! 4392 (8086M) _malloc_type_posix_memalign_outlined  (in libsystem_malloc.dylib)
+      + ! : 4232 (8086M) Espresso::kern_alloc_uninitialized(unsigned long)  (in Espresso)
+      + ! : | 4232 (8086M) std::allocate_shared[abi:nqe210106]<Espresso::blob<float, 4>, int&, int&, int&, int&, 0>(std::allocator<Espresso::blob<float, 4>> const&, int&, int&, int&, int&)  (in Espresso)
+      + ! : |   2744 (5693M) Espresso::blob_cpu::resize(Espresso::layer_shape const&, std::shared_ptr<Espresso::abstract_blob_container_options>)  (in Espresso)
+      + ! : |   + 2722 (5693M) Espresso::reshape_networks_graph_coloring_raw_ptr(std::vector<Espresso::net*>, int)  (in Espresso)
+      + ! : |   + ! 2722 (5693M) Espresso::pass_graph_coloring::run_on_network(Espresso::net&)  (in Espresso)
+      + ! : |   + !   2722 (5693M) Espresso::shape_network_recursive(Espresso::net*, Espresso::network_shape const&, int, bool)  (in Espresso)
+      + ! : |   + !     2722 (5693M) EspressoLight::espresso_plan::prepare()  (in Espresso)
+      + ! : |   + !       2722 (5693M) espresso_plan_build_with_options  (in Espresso)
+      + ! : |   + !         2722 (5693M) espresso_plan_build  (in Espresso)
+      + ! : |   + !           2722 (5693M) -[MLNeuralNetworkEngine rebuildPlan:error:]  (in CoreML)
+      + ! : |   + !             2722 (5693M) -[MLNeuralNetworkEngine resetSizesNoAutoRelease:error:]  (in CoreML)
+      + ! : |   + !               2722 (5693M) -[MLNeuralNetworkEngine resetSizes:error:]  (in CoreML)
+      + ! : |   + !                 2722 (5693M) -[MLNeuralNetworkEngine evaluateInputs:options:verifyInputs:error:]  (in CoreML)
+      + ! : |   + !                   2722 (5693M) -[MLNeuralNetworkEngine evaluateInputs:options:error:]  (in CoreML)
+      + ! : |   + !                     2722 (5693M) __62-[MLNeuralNetworkEngine predictionFromFeatures:options:error:]_block_invoke  (in CoreML)
+      + ! : |   + !                       2722 (5693M) _dispatch_client_callout  (in libdispatch.dylib)
+      + ! : |   + !                         2722 (5693M) _dispatch_lane_barrier_sync_invoke_and_complete  (in libdispatch.dylib)
+      + ! : |   + !                           2722 (5693M) -[MLNeuralNetworkEngine predictionFromFeatures:options:error:]  (in CoreML)
+      + ! : |   + !                             2722 (5693M) -[MLDelegateModel _predictionFromFeatures:usingState:options:error:]  (in CoreML)
+      + ! : |   + !                               2722 (5693M) -[MLDelegateModel predictionFromFeatures:options:error:]  (in CoreML)
+      + ! : |   + !                                 2722 (5693M) onnxruntime::coreml::Execution::Predict(std::unordered_map<std::basic_string<char>, onnxruntime::coreml::OnnxTensorData> const&, std::unordered_map<std::basic_string<char>, onnxruntime::coreml::OnnxTensorInfo> const&, std::function<void* (std::basic_string<char> const&, int, gsl::span<long long const, 18446744073709551615ul>)> const&)  (in parrot-1070-before)
+      + ! : |   + !                                   2722 (5693M) std::__function::__func<onnxruntime::CoreMLExecutionProvider::Compile(std::vector<onnxruntime::IExecutionProvider::FusedNodeAndGraph> const&, std::vector<onnxruntime::NodeComputeInfo>&)::$_3, onnxruntime::common::Status (void*, OrtApi const*, OrtKernelContext*)>::operator()(void*&&, OrtApi const*&&, OrtKernelContext*&&)  (in parrot-1070-before)
+      + ! : |   + !                                     2722 (5693M) onnxruntime::FunctionKernel::Compute(onnxruntime::OpKernelContext*) const  (in parrot-1070-before)
+      + ! : |   + !                                       2722 (5693M) onnxruntime::ExecuteKernel(onnxruntime::StreamExecutionContext&, unsigned long, unsigned long, bool const&, onnxruntime::SessionScope&)  (in parrot-1070-before)
+      + ! : |   + !                                         2722 (5693M) onnxruntime::LaunchKernelStep::Execute(onnxruntime::StreamExecutionContext&, unsigned long, onnxruntime::SessionScope&, bool const&, bool&)  (in parrot-1070-before)
+      + ! : |   + !                                           2722 (5693M) onnxruntime::RunSince(unsigned long, onnxruntime::StreamExecutionContext&, onnxruntime::SessionScope&, bool const&, unsigned long)  (in parrot-1070-before)
+      + ! : |   + !                                             2722 (5693M) onnxruntime::concurrency::ThreadPoolTempl<onnxruntime::Env>::WorkerLoop(int)  (in parrot-1070-before)
+      + ! : |   + !                                               2722 (5693M) onnxruntime::concurrency::ThreadPoolTempl<onnxruntime::Env>::WorkerLoop(int, Eigen::ThreadPoolInterface*)  (in parrot-1070-before)
+      + ! : |   + !                                                 2722 (5693M) onnxruntime::(anonymous namespace)::PosixThread::ThreadMain(void*)  (in parrot-1070-before)
+      + ! : |   + !                                                   2722 (5693M) _pthread_start  (in libsystem_pthread.dylib)
+      + ! : |   + !                                                     2722 (5693M) thread_start  (in libsystem_pthread.dylib)
+      + ! : |   + 22 (296K) Espresso::allocate_blobs(std::unordered_map<std::shared_ptr<Espresso::abstract_blob_container>, int> const&, std::unordered_map<std::shared_ptr<Espresso::abstract_blob_container>, unsigned long>&, std::unordered_map<std::shared_ptr<Espresso::abstract_blob_container>, Espresso::layer_shape>&, int)  (in Espresso)
+      + ! : |   +   22 (296K) Espresso::reshape_networks_graph_coloring_raw_ptr_only_in_context(std::shared_ptr<Espresso::abstract_context> const&, std::vector<Espresso::net*> const&, int)  (in Espresso)
+      + ! : |   +     22 (296K) Espresso::reshape_networks_graph_coloring_raw_ptr(std::vector<Espresso::net*>, int)  (in Espresso)
+      + ! : |   +       22 (296K) Espresso::pass_graph_coloring::run_on_network(Espresso::net&)  (in Espresso)
+      + ! : |   +         22 (296K) Espresso::shape_network_recursive(Espresso::net*, Espresso::network_shape const&, int, bool)  (in Espresso)
+      + ! : |   +           22 (296K) EspressoLight::espresso_plan::prepare()  (in Espresso)
+      + ! : |   +             22 (296K) espresso_plan_build_with_options  (in Espresso)
+      + ! : |   +               22 (296K) espresso_plan_build  (in Espresso)
+      + ! : |   +                 22 (296K) -[MLNeuralNetworkEngine rebuildPlan:error:]  (in CoreML)
+      + ! : |   +                   22 (296K) -[MLNeuralNetworkEngine _setupContextAndPlanWithConfiguration:usingCPU:priority:reshapeWithContainer:error:]  (in CoreML)
+      + ! : |   +                     22 (296K) -[MLNeuralNetworkEngine initWithContainer:configuration:error:]  (in CoreML)
+      + ! : |   +                       22 (296K) +[MLNeuralNetworkEngine loadModelFromCompiledArchive:modelVersionInfo:compilerVersionInfo:configuration:error:]  (in CoreML)
+      + ! : |   +                         22 (296K) +[MLLoader _loadModelWithClass:fromArchive:modelVersionInfo:compilerVersionInfo:configuration:error:]  (in CoreML)
+      + ! : |   +                           22 (296K) +[MLLoader _loadModelFromArchive:configuration:modelVersion:compilerVersion:loaderEvent:useUpdatableModelLoaders:loadingClasses:error:]  (in CoreML)
+      + ! : |   +                             22 (296K) +[MLLoader _loadWithModelLoaderFromArchive:configuration:loaderEvent:useUpdatableModelLoaders:error:]  (in CoreML)
+      + ! : |   +                               22 (296K) +[MLLoader _loadModelFromArchive:configuration:loaderEvent:useUpdatableModelLoaders:error:]  (in CoreML)
+      + ! : |   +                                 22 (296K) +[MLLoader _loadModelFromAssetAtURL:configuration:loaderEvent:error:]  (in CoreML)
+      + ! : |   +                                   22 (296K) +[MLLoader loadModelFromAssetAtURL:configuration:error:]  (in CoreML)
+      + ! : |   +                                     22 (296K) -[MLModelAssetResourceFactoryOnDiskImpl modelWithConfiguration:error:]  (in CoreML)
+      + ! : |   +                                       22 (296K) __60-[MLModelAssetResourceFactory modelWithConfiguration:error:]_block_invoke  (in CoreML)
+      + ! : |   +                                         22 (296K) _dispatch_client_callout  (in libdispatch.dylib)
+      + ! : |   +                                           22 (296K) _dispatch_lane_barrier_sync_invoke_and_complete  (in libdispatch.dylib)
+      + ! : |   +                                             22 (296K) -[MLModelAssetResourceFactory modelWithConfiguration:error:]  (in CoreML)
+      + ! : |   +                                               22 (296K) -[MLModelAssetModelVendor modelWithConfiguration:error:]  (in CoreML)
+
+[Excerpt ends; full-report SHA-256 and size are in results.json.]
