@@ -61,6 +61,73 @@ class MacMemory:
         )}
 
 
+class BenchmarkProcess:
+    """posix_spawn with macOS responsibility detached from the shell/agent.
+
+    This is the same optional private spawn attribute used by LLDB. Require it
+    for automated runs: silently inheriting responsibility loses WebKit XPCs.
+    """
+    def __init__(self, memory, executable, env, log):
+        lib = memory.lib
+        disclaim = getattr(lib, "responsibility_spawnattrs_setdisclaim", None)
+        if disclaim is None or memory.responsible is None:
+            raise RuntimeError("XPC attribution APIs unavailable; use --pid on a normally launched app.")
+        ptr = ctypes.POINTER(ctypes.c_void_p)
+        for name in ("posix_spawnattr_init", "posix_spawnattr_destroy",
+                     "posix_spawn_file_actions_init", "posix_spawn_file_actions_destroy"):
+            getattr(lib, name).argtypes = [ptr]
+            getattr(lib, name).restype = ctypes.c_int
+        disclaim.argtypes = [ptr, ctypes.c_bool]
+        disclaim.restype = ctypes.c_int
+        lib.posix_spawnattr_setflags.argtypes = [ptr, ctypes.c_short]
+        lib.posix_spawnattr_setpgroup.argtypes = [ptr, ctypes.c_int]
+        lib.posix_spawn_file_actions_adddup2.argtypes = [ptr, ctypes.c_int, ctypes.c_int]
+        lib.posix_spawn.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_char_p,
+            ptr, ptr, ctypes.POINTER(ctypes.c_char_p), ctypes.POINTER(ctypes.c_char_p)]
+        lib.posix_spawn.restype = ctypes.c_int
+
+        def check(status):
+            if status:
+                raise OSError(status, os.strerror(status))
+
+        attr, actions = ctypes.c_void_p(), ctypes.c_void_p()
+        check(lib.posix_spawnattr_init(ctypes.byref(attr)))
+        try:
+            check(lib.posix_spawn_file_actions_init(ctypes.byref(actions)))
+            try:
+                check(disclaim(ctypes.byref(attr), True))
+                check(lib.posix_spawnattr_setflags(ctypes.byref(attr), 0x0002))  # SETPGROUP
+                check(lib.posix_spawnattr_setpgroup(ctypes.byref(attr), 0))
+                check(lib.posix_spawn_file_actions_adddup2(ctypes.byref(actions), log.fileno(), 1))
+                check(lib.posix_spawn_file_actions_adddup2(ctypes.byref(actions), log.fileno(), 2))
+                argv = (ctypes.c_char_p * 2)(os.fsencode(executable), None)
+                envp = (ctypes.c_char_p * (len(env) + 1))(
+                    *(os.fsencode(f"{key}={value}") for key, value in env.items()), None)
+                pid = ctypes.c_int()
+                check(lib.posix_spawn(ctypes.byref(pid), os.fsencode(executable),
+                    ctypes.byref(actions), ctypes.byref(attr), argv, envp))
+                self.pid, self.returncode = pid.value, None
+            finally:
+                lib.posix_spawn_file_actions_destroy(ctypes.byref(actions))
+        finally:
+            lib.posix_spawnattr_destroy(ctypes.byref(attr))
+
+    def poll(self):
+        if self.returncode is None:
+            pid, status = os.waitpid(self.pid, os.WNOHANG)
+            if pid:
+                self.returncode = os.waitstatus_to_exitcode(status)
+        return self.returncode
+
+    def wait(self, timeout):
+        deadline = time.monotonic() + timeout
+        while self.poll() is None:
+            if time.monotonic() >= deadline:
+                raise subprocess.TimeoutExpired("parrot", timeout)
+            time.sleep(0.02)
+        return self.returncode
+
+
 def process_table():
     table = {}
     for line in command("ps", "-axo", "pid=,ppid=,comm=").splitlines():
@@ -206,12 +273,14 @@ def run(args):
                 env["PARROT_CLEANUP_SIDECAR"] = str(Path(args.sidecar).resolve())
             log = (out / "app.log").open("w")
             logs.append(log)
-            child = subprocess.Popen([str(Path(args.app).resolve())], env=env,
-                                     stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+            child = BenchmarkProcess(memory, str(Path(args.app).resolve()), env, log)
             root = child.pid
         else:
             root = args.pid
         metadata["root_pid"] = root
+        metadata["responsible_pid"] = memory.responsible(root) if memory.responsible else None
+        if args.app and metadata["responsible_pid"] != root:
+            raise RuntimeError("benchmark process did not acquire its own XPC responsibility")
         metadata["root_identity"] = memory.usage(root)
         (out / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
         roots = {root, *args.extra_pid}
@@ -264,11 +333,17 @@ def run(args):
         if child and child.poll() is None:
             # Terminate only this launched process group, including sidecars.
             # Never terminate --pid / --extra-pid processes supplied by a user.
-            os.killpg(child.pid, signal.SIGTERM)
+            try:
+                os.killpg(child.pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
             try:
                 child.wait(timeout=10)
             except subprocess.TimeoutExpired:
-                os.killpg(child.pid, signal.SIGKILL)
+                try:
+                    os.killpg(child.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
                 child.wait()
         for diagnostic in diagnostics:
             try:
@@ -284,7 +359,8 @@ def run(args):
     for phase, values in summary["phases"].items():
         peak = values["peak_footprint_bytes"]
         print(f"{phase}: peak {peak / 2**20:.1f} MiB" if peak is not None else f"{phase}: unavailable")
-    if args.app and (not summary["completed"] or summary["quality_failures"] or child.returncode != 0):
+    if args.app and (not summary["completed"] or summary["quality_failures"]
+                     or child.returncode != 0 or not summary["webview_pids_seen"]):
         raise SystemExit("Benchmark incomplete or quality checks failed; inspect events.jsonl and app.log.")
 
 
