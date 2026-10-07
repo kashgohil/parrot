@@ -210,7 +210,9 @@ fn run_whisper(
     // "Whisper inference failed" — treat sub-threshold input as empty
     // transcription instead so accidental hotkey taps don't show an error.
     const MIN_SAMPLES_16K: usize = 16_000 / 4; // 0.25s
-    if pcm.len() < MIN_SAMPLES_16K {
+    // Whisper can hallucinate words on digital silence. Only skip exact zero
+    // samples here so quiet speech is not discarded by an amplitude threshold.
+    if pcm.len() < MIN_SAMPLES_16K || pcm.iter().all(|&sample| sample == 0.0) {
         return Ok(String::new());
     }
 
@@ -524,7 +526,12 @@ mod tests {
             }
         }
 
-        for samples in [Vec::new(), vec![0.0; 3_999], vec![0.0; 32_000]] {
+        for samples in [
+            Vec::new(),
+            vec![0.1; 3_999], // Non-silent accidental tap, below 0.25s.
+            vec![0.0; 4_000], // Silence at the minimum inference length.
+            vec![0.0; 32_000],
+        ] {
             let transcript = transcribe_audio(
                 &samples,
                 WHISPER_TARGET_SAMPLE_RATE,
@@ -535,7 +542,7 @@ mod tests {
             .unwrap();
             assert!(
                 transcript.is_empty(),
-                "Silent input produced {transcript:?}"
+                "Silent or short input produced {transcript:?}"
             );
         }
     }
