@@ -11,7 +11,7 @@ use serde_json::{json, Value};
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 use tauri::{AppHandle, Listener, Manager};
 
@@ -201,9 +201,17 @@ impl Events {
     }
 }
 
+static PARAKEET_ACCELERATOR: OnceLock<transcribe_rs::OrtAccelerator> = OnceLock::new();
+
+pub(crate) fn parakeet_accelerator_override() -> Option<transcribe_rs::OrtAccelerator> {
+    PARAKEET_ACCELERATOR.get().copied()
+}
+
 pub(crate) fn start(app: AppHandle, config: Config) {
     if let Some(accelerator) = &config.parakeet_accelerator {
-        transcribe_rs::set_ort_accelerator(accelerator.parse().expect("validated accelerator"));
+        PARAKEET_ACCELERATOR
+            .set(accelerator.parse().expect("validated accelerator"))
+            .expect("one benchmark per process");
     }
     let events = Events(Arc::new(Mutex::new(
         File::create(&config.events_path).expect("create events"),
@@ -325,7 +333,7 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
             "cleanup_loading": "on_demand", "cleanup_idle_seconds": 60, "speech_loading": "on_demand", "speech_idle_seconds": 60,
             "cleanup_lifecycle_checks": config.cleanup_lifecycle_checks,
             "speech_lifecycle_checks": config.speech_lifecycle_checks,
-            "parakeet_accelerator": transcribe_rs::get_ort_accelerator().to_string(),
+            "parakeet_accelerator": transcription::parakeet_accelerator().to_string(),
             "stt_release_before_cleanup": config.stt_release_before_cleanup}),
     );
     let db = app.state::<Database>();

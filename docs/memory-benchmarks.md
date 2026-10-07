@@ -94,10 +94,10 @@ used eager cleanup loading; their model-switch phases loaded both models.
 The new policy changes residency and cold latency, so label comparisons clearly.
 The full long reference is included even when a smoke configuration requests
 less than its duration. The final event records the actual audio duration.
-Switching uses the same clear-and-load operations as Settings, without model
-downloads. It measures residency and load overlap rather than download time.
+Switching uses the same path-selection and release operations as Settings,
+without model downloads. Alternate models load only if inference needs them.
 
-The first dictation is cold **inference**, after model loading. OS file caches
+The first dictation includes demand loading and cold **inference**. OS file caches
 are uncontrolled: model SHA-256 collection reads the files before launch.
 These are not power-on cold-disk measurements. Capture hardware/codec startup,
 Bluetooth warm-up, GPU driver caches, paste latency, updater activity, and
@@ -178,7 +178,8 @@ allocations. Check report headers and retain complete raw diagnostic output.
 To compare Parakeet execution providers, set `"parakeet_accelerator": "cpu"`
 or `"auto"` in the benchmark config. The override is applied before the first
 model load and reported in the startup event. It is available only in benchmark
-builds; normal model selection has no benchmark-only provider override.
+builds. With no override, macOS uses the production CPU policy for INT8 Parakeet;
+other platforms retain automatic provider selection.
 
 Normally launch the app, find its main PID, and attach without changing it:
 

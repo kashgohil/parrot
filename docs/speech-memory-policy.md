@@ -49,9 +49,25 @@ An async cleanup caller that is cancelled still protects its blocking inference;
 new speech waits until that inference releases its handle.
 
 Sequential residency trades memory between stages for more model reloads. Repeated
-Parakeet dictations can become substantially slower because each one loads speech
-again. Keeping both models warm is faster. Idle release lowers retained memory;
-it does not bound the active Parakeet import peak or fix long-input allocations.
+Parakeet dictations can become slower because each one loads speech again.
+Keeping both models warm avoids reload cost. Idle release lowers retained memory;
+it does not bound active inference allocations.
+
+## Parakeet execution provider
+
+The INT8 Parakeet model uses ONNX Runtime's CPU provider on macOS. Native
+allocation captures attributed the previous CoreML path's multi-GiB long-import
+allocations to Espresso plans rebuilt for changing audio shapes. CPU execution
+avoids those CoreML plans while retaining the same model files, decoder, automatic
+language detection, and approximately 30-second energy-based chunks. Other
+platforms retain the library's automatic provider selection.
+
+CoreML remains compiled in for controlled benchmark comparisons, using the
+benchmark-only `parakeet_accelerator` override. Normal app builds use the macOS
+CPU policy without an override. Whisper still uses its existing Metal backend.
+The setup copy describes local processing without promising a particular chip.
+See the [native memory investigation](benchmarks/2026-10-08-parakeet-native-memory.md)
+for matched memory/content/latency results and hardware limitations.
 
 ## Verification
 
@@ -80,6 +96,7 @@ includes speech load latency. Compare these scenarios explicitly with the
 eager-loaded ISSUE-1057 baseline. Preserve source-language/content gates and
 report cold reload costs before making lower-RAM device support claims.
 
-The [measured report](benchmarks/2026-10-08-speech-memory.md) compares two release-app
-runs per policy. The remaining native Parakeet heap and active import peak are
-tracked in [ISSUE-1070](https://rezee.app/kash/plan/1070).
+The [original lifecycle report](benchmarks/2026-10-08-speech-memory.md) compares two
+release-app runs per residency policy using the previous automatic/CoreML provider.
+Its timings and footprints predate the CPU provider change in
+[ISSUE-1070](https://rezee.app/kash/plan/1070).

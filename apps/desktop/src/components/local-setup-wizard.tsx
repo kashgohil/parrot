@@ -862,7 +862,7 @@ function getEducationalTooltip(step: SetupStep): string {
 		case "validate_setup":
 			return "Running a quick test to make sure cleanup is working.";
 		case "download_whisper_model":
-			return "The dictation engine converts your voice into text using your Mac's Neural Engine — your audio never leaves your computer.";
+			return "The dictation engine converts your voice into text on your Mac — your audio never leaves your computer.";
 		case "download_cleanup_model":
 			return "A small language model that fixes grammar, punctuation, and filler words. Runs entirely inside Parrot — no third-party installs.";
 		case "download_ollama_model":

@@ -129,14 +129,26 @@ pub struct ParakeetProvider {
     model_label: String,
 }
 
+pub(crate) fn parakeet_accelerator() -> transcribe_rs::OrtAccelerator {
+    #[cfg(feature = "memory-bench")]
+    if let Some(accelerator) = crate::memory_bench::parakeet_accelerator_override() {
+        return accelerator;
+    }
+    // The INT8 model's CoreML partitions retain large Espresso plans for
+    // dynamic audio shapes. CPU execution avoids those allocations and was
+    // faster on the measured M4 Pro. Keep other platforms' existing policy.
+    #[cfg(target_os = "macos")]
+    return transcribe_rs::OrtAccelerator::CpuOnly;
+    #[cfg(not(target_os = "macos"))]
+    transcribe_rs::OrtAccelerator::Auto
+}
+
 impl ParakeetProvider {
     pub fn load(model_dir: &Path, label: &str) -> Result<Self> {
         use transcribe_rs::onnx::parakeet::ParakeetModel;
         use transcribe_rs::onnx::Quantization;
 
-        // The library defaults to Auto (CoreML on macOS, then CPU fallback).
-        // Do not reset the process preference here: the opt-in benchmark sets
-        // it before the first load to compare native execution providers.
+        transcribe_rs::set_ort_accelerator(parakeet_accelerator());
         let model = ParakeetModel::load(model_dir, &Quantization::Int8).map_err(|e| {
             anyhow::anyhow!(
                 "Failed to load Parakeet model at {}: {}",

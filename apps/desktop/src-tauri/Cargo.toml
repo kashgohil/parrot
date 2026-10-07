@@ -62,5 +62,6 @@ unicode-script = "0.5"
 [target.'cfg(target_os = "macos")'.dependencies]
 core-graphics = "0.24"
 core-foundation = "0.10"
-# CoreML EP for ONNX Parakeet on Apple Silicon (~Neural Engine).
+# Keep CoreML available for benchmark comparisons. Parakeet INT8 defaults to
+# CPU on macOS to avoid large dynamic-shape Espresso plan allocations.
 transcribe-rs = { version = "0.3", default-features = false, features = ["onnx", "ort-coreml"] }
