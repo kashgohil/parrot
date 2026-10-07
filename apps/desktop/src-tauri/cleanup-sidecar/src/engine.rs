@@ -191,8 +191,9 @@ impl CleanupSession<'_> {
         ]);
 
         let gen_start = Instant::now();
-        let mut decoder = encoding_rs::UTF_8.new_decoder();
-        let mut output = String::new();
+        // Tokens can split a UTF-8 character across byte pieces. Accumulate
+        // bytes before decoding so no partial character is silently dropped.
+        let mut output = Vec::new();
         let mut n_cur = prompt_len;
         // First sample reads the last prompt token's logits in the final prefill
         // chunk; every generation step after decodes a single-token batch.
@@ -206,11 +207,7 @@ impl CleanupSession<'_> {
                 break;
             }
 
-            let piece = self
-                .model
-                .token_to_piece(token, &mut decoder, true, None)
-                .unwrap_or_default();
-            output.push_str(&piece);
+            output.extend(token_bytes(self.model, token)?);
 
             // Hard stop if the model starts chatting / labeling.
             if output.len() > 8000 {
@@ -233,6 +230,8 @@ impl CleanupSession<'_> {
              prefill={prefill_ms}ms gen_tok={gen_tokens} gen={gen_ms}ms"
         );
 
+        let output = String::from_utf8(output)
+            .context("Cleanup output contains incomplete or invalid UTF-8")?;
         Ok(sanitize_cleanup_output(&output))
     }
 
@@ -252,6 +251,16 @@ impl CleanupSession<'_> {
             .apply_chat_template(&template, &messages, true)
             .map_err(|e| anyhow::anyhow!("apply_chat_template: {e}"))
     }
+}
+
+fn token_bytes(model: &LlamaModel, token: LlamaToken) -> Result<Vec<u8>> {
+    let bytes = match model.token_to_piece_bytes(token, 32, true, None) {
+        Err(llama_cpp_2::TokenToStringError::InsufficientBufferSpace(required)) => {
+            model.token_to_piece_bytes(token, required.unsigned_abs() as usize, true, None)
+        }
+        result => result,
+    };
+    bytes.context("Failed to decode cleanup token bytes")
 }
 
 fn format_chatml(system: &str, user: &str) -> String {
@@ -298,4 +307,29 @@ fn num_threads() -> i32 {
     std::thread::available_parallelism()
         .map(|n| n.get().min(8) as i32)
         .unwrap_or(4)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[ignore = "needs PARROT_TEST_CLEANUP_MODEL"]
+    fn preserves_multibyte_token_boundaries() {
+        let path = std::env::var_os("PARROT_TEST_CLEANUP_MODEL")
+            .expect("Set PARROT_TEST_CLEANUP_MODEL to an existing cleanup GGUF");
+        let engine = CleanupEngine::load(Path::new(&path)).unwrap();
+        for text in [
+            "प्रिया ने 25 रुपये का invoice approve नहीं किया",
+            "小王没有批准25元的付款",
+            "Élodie — Привет — مرحبا — 👋🏽",
+        ] {
+            let tokens = engine.model.str_to_token(text, AddBos::Never).unwrap();
+            let mut bytes = Vec::new();
+            for token in tokens {
+                bytes.extend(token_bytes(&engine.model, token).unwrap());
+            }
+            assert_eq!(String::from_utf8(bytes).unwrap(), text);
+        }
+    }
 }
