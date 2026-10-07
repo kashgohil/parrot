@@ -2,7 +2,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-use crate::cleanup_engine::{SidecarCleanupClient, SharedCleanupEngine};
+use crate::cleanup_engine::{SharedCleanupEngine, SidecarCleanupClient};
 
 /// Request body for Ollama's native `/api/chat` endpoint.
 /// Using the native API (not OpenAI-compat) so we can pass `keep_alive` on
@@ -38,8 +38,8 @@ struct OllamaChatResponse {
 /// Content-sensitive fillers ("like", "you know", "basically") are left to
 /// the LLM — stripping them here would mangle real sentences.
 const PURE_FILLER_TOKENS: &[&str] = &[
-    "um", "uh", "uhh", "umm", "uhm", "er", "erm", "ah", "ahh", "ohh", "hmm", "hm", "mm",
-    "mmm", "mhm", "uh-huh", "uhhuh", "huh",
+    "um", "uh", "uhh", "umm", "uhm", "er", "erm", "ah", "ahh", "ohh", "hmm", "hm", "mm", "mmm",
+    "mhm", "uh-huh", "uhhuh", "huh",
 ];
 
 /// Local cleanup: in-process llama.cpp (default) or legacy Ollama.
@@ -447,7 +447,12 @@ mod tests {
 
     #[test]
     fn system_prompt_includes_vocab_context_style() {
-        let p = build_system_prompt(r#"["Parrot"]"#, "I'm a founder", "Concise", Formality::Neutral);
+        let p = build_system_prompt(
+            r#"["Parrot"]"#,
+            "I'm a founder",
+            "Concise",
+            Formality::Neutral,
+        );
         assert!(p.contains("Parrot"));
         assert!(p.contains("Vocabulary") || p.contains("Always spell"));
         assert!(p.contains("I'm a founder"));
@@ -474,6 +479,81 @@ mod tests {
         let formal = build_system_prompt("", "", "", Formality::Formal);
         assert!(formal.contains("Tone: Formal"));
         assert!(formal.contains("professional"));
+    }
+
+    /// Exercise the production prompt, sidecar and output finalizer with an
+    /// existing GGUF. Set PARROT_CLEANUP_SIDECAR and PARROT_TEST_CLEANUP_MODEL,
+    /// then run: cargo test --locked -p parrot --lib multilingual_cleanup_inference -- --ignored --nocapture
+    #[tokio::test]
+    #[ignore = "needs PARROT_CLEANUP_SIDECAR + PARROT_TEST_CLEANUP_MODEL"]
+    async fn multilingual_cleanup_inference() {
+        let sidecar = std::env::var_os("PARROT_CLEANUP_SIDECAR")
+            .expect("Set PARROT_CLEANUP_SIDECAR to the built cleanup-sidecar binary");
+        let model = std::env::var_os("PARROT_TEST_CLEANUP_MODEL")
+            .expect("Set PARROT_TEST_CLEANUP_MODEL to an existing cleanup GGUF");
+        let engine = Arc::new(
+            SidecarCleanupClient::spawn(
+                std::path::Path::new(&sidecar),
+                std::path::Path::new(&model),
+            )
+            .unwrap(),
+        );
+        // Synthetic short transcripts. Check names, amounts, negations and
+        // language-specific content without requiring exact punctuation.
+        let cases: &[(&str, &str, &[&str])] = &[
+            (
+                "English",
+                "um Priya did not approve the payment of 25 euros",
+                &["Priya", "not", "25", "euros"],
+            ),
+            (
+                "French",
+                "euh Priya n'a pas approuvé le paiement de 25 euros",
+                &["Priya", "pas", "paiement", "25", "euros"],
+            ),
+            (
+                "Hindi",
+                "प्रिया ने 25 रुपये का भुगतान नहीं किया",
+                &["प्रिया", "25", "रुपये", "भुगतान", "नहीं"],
+            ),
+            (
+                "Hindi-English",
+                "प्रिया ने 25 रुपये का invoice approve नहीं किया",
+                &["प्रिया", "25", "रुपये", "invoice", "approve", "नहीं"],
+            ),
+            (
+                "Chinese",
+                "小王没有批准25元的付款",
+                &["小王", "没有", "25", "元", "付款"],
+            ),
+        ];
+        let mut failures = Vec::new();
+        for tone in [Formality::Casual, Formality::Neutral, Formality::Formal] {
+            for &(language, raw, required) in cases {
+                let cleaned = cleanup_text(
+                    raw,
+                    None,
+                    "",
+                    "",
+                    "",
+                    tone,
+                    "builtin",
+                    Some(Arc::clone(&engine)),
+                )
+                .await
+                .unwrap();
+                eprintln!("{language}, {tone:?}: {raw:?} -> {cleaned:?}");
+                let lower = cleaned.to_lowercase();
+                for expected in required {
+                    if !lower.contains(&expected.to_lowercase()) {
+                        failures.push(format!(
+                            "{language}, {tone:?}: missing {expected:?} in {cleaned:?}"
+                        ));
+                    }
+                }
+            }
+        }
+        assert!(failures.is_empty(), "{}", failures.join("\n"));
     }
 
     #[test]
