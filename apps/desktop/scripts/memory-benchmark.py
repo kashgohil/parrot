@@ -14,6 +14,7 @@ import statistics
 import subprocess
 import sys
 import time
+import wave
 
 
 # Stable SDK layout from sys/resource.h, RUSAGE_INFO_V4 (macOS 10.15+).
@@ -162,7 +163,23 @@ def events_at(path):
     return events
 
 
-def summarize(samples, events):
+def long_import_quality(events, reference_seconds):
+    results = [e for e in events if e.get("kind") == "result" and e.get("scenario") == "long_import"]
+    ends = [e for e in events if e.get("kind") == "end" and e.get("scenario") == "long_import"]
+    if not results or not ends or not reference_seconds:
+        return []
+    result = results[-1]
+    # Ignore the partially repeated tail; every complete reference occurrence
+    # must remain. This catches a result retaining only the first whole cycle.
+    required = max(1, int(ends[-1]["details"]["audio_seconds"] / reference_seconds))
+    text = result["raw_text"].lower()
+    counts = {word: text.count(word) for word in result["expected_words"]}
+    return [{"kind": "quality_check", "scenario": "long_import_occurrences",
+             "quality_ok": all(count >= required for count in counts.values()),
+             "minimum_occurrences": required, "observed_occurrences": counts}]
+
+
+def summarize(samples, events, reference_seconds=None):
     phases = {}
     for sample in samples:
         phases.setdefault(sample["scenario"], []).append(sample)
@@ -193,6 +210,7 @@ def summarize(samples, events):
                 identity = f'{process["pid"]}:{process["proc_start_abstime"]}'
                 historical_peaks[identity] = max(historical_peaks.get(identity, 0),
                     process["lifetime_max_phys_footprint"])
+    quality_checks = long_import_quality(events, reference_seconds)
     return {
         "phases": summary,
         # Max of simultaneous sums, NOT sum of each process's historical peak.
@@ -204,7 +222,8 @@ def summarize(samples, events):
         "webview_pids_seen": sorted({p["pid"] for s in samples for p in s["processes"]
                                      if p["role"] == "webview"}),
         "events": events,
-        "quality_failures": [e for e in events if e.get("quality_ok") is False],
+        "quality_checks": quality_checks,
+        "quality_failures": [e for e in [*events, *quality_checks] if e.get("quality_ok") is False],
         "completed": any(e.get("scenario") == "complete" and e.get("kind") == "end"
                          for e in events),
     }
@@ -239,6 +258,17 @@ def file_digest(path):
     return digest.hexdigest()
 
 
+def fixture_metadata():
+    directory = Path(__file__).resolve().parents[1] / "src-tauri/tests/fixtures/transcription"
+    fixtures = {}
+    for path in sorted(directory.glob("*.wav")):
+        with wave.open(str(path)) as audio:
+            duration = audio.getnframes() / audio.getframerate()
+        fixtures[path.name] = {"bytes": path.stat().st_size,
+                               "sha256": file_digest(path), "seconds": duration}
+    return fixtures
+
+
 def run(args):
     if sys.platform != "darwin":
         raise SystemExit("This sampler requires macOS (proc_pid_rusage).")
@@ -259,6 +289,7 @@ def run(args):
         "xpc_attribution_available": memory.responsible is not None,
         "extra_pids": args.extra_pid, "config": config,
         "models": model_metadata(config),
+        "fixtures": fixture_metadata(),
         "cache_state": "new process, OS file cache uncontrolled (model hashes read before launch)",
     }
     (out / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -353,7 +384,8 @@ def run(args):
                 diagnostic.wait()
         for log in logs:
             log.close()
-    summary = summarize(samples, events_at(event_file))
+    summary = summarize(samples, events_at(event_file),
+                        metadata["fixtures"]["long-import.wav"]["seconds"])
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(f"Results: {out}")
     for phase, values in summary["phases"].items():

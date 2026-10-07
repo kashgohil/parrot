@@ -34,6 +34,18 @@ class MemoryAccountingTests(unittest.TestCase):
         self.assertEqual(result["phases"]["idle"]["complete_samples"], 2)
         self.assertFalse(result["completed"])
 
+    def test_long_import_requires_all_complete_reference_repetitions(self):
+        events = [
+            {"kind": "result", "scenario": "long_import", "raw_text": "bicycle museum museum",
+             "expected_words": ["bicycle", "museum"]},
+            {"kind": "end", "scenario": "long_import", "details": {"audio_seconds": 25}},
+        ]
+        check = benchmark.long_import_quality(events, 10)[0]
+        self.assertEqual(check["minimum_occurrences"], 2)
+        self.assertFalse(check["quality_ok"])
+        events[0]["raw_text"] += " bicycle"
+        self.assertTrue(benchmark.long_import_quality(events, 10)[0]["quality_ok"])
+
 
 if __name__ == "__main__":
     unittest.main()
