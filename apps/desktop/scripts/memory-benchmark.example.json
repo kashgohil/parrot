@@ -1,0 +1,12 @@
+{
+  "stt_engine": "whisper",
+  "stt_model": "/absolute/path/to/ggml-large-v3-turbo-q5_0.bin",
+  "cleanup_model": "/absolute/path/to/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+  "switch_stt_engine": "parakeet",
+  "switch_stt_model": "/absolute/path/to/parakeet-v3",
+  "switch_cleanup_model": "/absolute/path/to/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  "repeats": 10,
+  "idle_seconds": 10,
+  "post_idle_seconds": 60,
+  "long_import_seconds": 120
+}

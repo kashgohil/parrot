@@ -33,6 +33,10 @@ impl Database {
     }
 
     fn db_path() -> Result<PathBuf> {
+        #[cfg(feature = "memory-bench")]
+        if let Some(path) = crate::memory_bench::data_dir() {
+            return Ok(path.join("parrot.db"));
+        }
         let data_dir =
             dirs::data_dir().ok_or_else(|| anyhow::anyhow!("Could not find data directory"))?;
         Ok(data_dir.join("com.kash.parrot").join("parrot.db"))
@@ -467,6 +471,10 @@ impl Database {
     }
 
     pub fn audio_dir() -> Result<PathBuf> {
+        #[cfg(feature = "memory-bench")]
+        if let Some(path) = crate::memory_bench::data_dir() {
+            return Ok(path.join("audio"));
+        }
         let data_dir =
             dirs::data_dir().ok_or_else(|| anyhow::anyhow!("Could not find data directory"))?;
         Ok(data_dir.join("com.kash.parrot").join("audio"))

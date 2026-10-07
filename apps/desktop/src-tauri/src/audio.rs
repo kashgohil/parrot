@@ -14,6 +14,19 @@ unsafe impl Send for AudioRecorder {}
 unsafe impl Sync for AudioRecorder {}
 
 impl AudioRecorder {
+    /// Replay synthetic PCM through the ordinary capture buffer, without a mic.
+    #[cfg(feature = "memory-bench")]
+    pub(crate) fn begin_fixture(&mut self, sample_rate: u32) {
+        self.samples.lock().unwrap().clear();
+        self.sample_rate = sample_rate;
+        *self.is_recording.lock().unwrap() = true;
+    }
+
+    #[cfg(feature = "memory-bench")]
+    pub(crate) fn push_fixture(&mut self, samples: &[f32]) {
+        self.samples.lock().unwrap().extend_from_slice(samples);
+    }
+
     pub fn new() -> Result<Self> {
         Ok(Self {
             samples: Arc::new(Mutex::new(Vec::new())),

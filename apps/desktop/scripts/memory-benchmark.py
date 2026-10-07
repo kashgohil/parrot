@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import signal
 import statistics
 import subprocess
 import sys
@@ -115,11 +116,26 @@ def summarize(samples, events):
             "peak_rss_bytes": max((row["rss_bytes"] for row in complete), default=None),
             "role_peak_footprint_bytes": roles,
         }
+    gaps = sorted(b["elapsed_seconds"] - a["elapsed_seconds"]
+                  for a, b in zip(samples, samples[1:])
+                  if "elapsed_seconds" in a and "elapsed_seconds" in b)
+    historical_peaks = {}
+    for row in samples:
+        for process in row["processes"]:
+            if "lifetime_max_phys_footprint" in process:
+                identity = f'{process["pid"]}:{process["proc_start_abstime"]}'
+                historical_peaks[identity] = max(historical_peaks.get(identity, 0),
+                    process["lifetime_max_phys_footprint"])
     return {
         "phases": summary,
         # Max of simultaneous sums, NOT sum of each process's historical peak.
         "peak_footprint_bytes": max((s["footprint_bytes"] for s in samples
                                       if s["complete"]), default=None),
+        "per_process_lifetime_peaks_bytes_do_not_sum": historical_peaks,
+        "max_sample_gap_seconds": max(gaps, default=None),
+        "p95_sample_gap_seconds": gaps[int(0.95 * (len(gaps) - 1))] if gaps else None,
+        "webview_pids_seen": sorted({p["pid"] for s in samples for p in s["processes"]
+                                     if p["role"] == "webview"}),
         "events": events,
         "quality_failures": [e for e in events if e.get("quality_ok") is False],
         "completed": any(e.get("scenario") == "complete" and e.get("kind") == "end"
@@ -142,9 +158,18 @@ def model_metadata(config):
                            "sha256": digest.hexdigest()}
         elif path.is_dir():
             models[key] = {"name": path.name, "files": {
-                str(p.relative_to(path)): p.stat().st_size
+                str(p.relative_to(path)): {"bytes": p.stat().st_size,
+                    "sha256": file_digest(p)}
                 for p in sorted(path.rglob("*")) if p.is_file()}}
     return models
+
+
+def file_digest(path):
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def run(args):
@@ -182,7 +207,7 @@ def run(args):
             log = (out / "app.log").open("w")
             logs.append(log)
             child = subprocess.Popen([str(Path(args.app).resolve())], env=env,
-                                     stdout=log, stderr=subprocess.STDOUT)
+                                     stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
             root = child.pid
         else:
             root = args.pid
@@ -237,11 +262,13 @@ def run(args):
                 time.sleep(max(0, args.interval - (time.monotonic() - tick)))
     finally:
         if child and child.poll() is None:
-            child.terminate()
+            # Terminate only this launched process group, including sidecars.
+            # Never terminate --pid / --extra-pid processes supplied by a user.
+            os.killpg(child.pid, signal.SIGTERM)
             try:
                 child.wait(timeout=10)
             except subprocess.TimeoutExpired:
-                child.kill()
+                os.killpg(child.pid, signal.SIGKILL)
                 child.wait()
         for diagnostic in diagnostics:
             try:

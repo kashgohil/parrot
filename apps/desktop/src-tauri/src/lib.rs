@@ -4,6 +4,8 @@ mod cleanup_engine;
 mod db;
 mod hotkey;
 mod local_setup;
+#[cfg(feature = "memory-bench")]
+mod memory_bench;
 mod streaming;
 mod transcription;
 mod vocab;
@@ -708,7 +710,13 @@ async fn run_file_transcription(
     // Copy only — no synthetic paste for file transcription.
     {
         use tauri_plugin_clipboard_manager::ClipboardExt;
-        let _ = app.clipboard().write_text(output);
+        #[cfg(feature = "memory-bench")]
+        let copy_output = !memory_bench::is_active();
+        #[cfg(not(feature = "memory-bench"))]
+        let copy_output = true;
+        if copy_output {
+            let _ = app.clipboard().write_text(output);
+        }
     }
 
     emit_file_progress(app, "done", 100, &name);
@@ -758,6 +766,10 @@ fn dismiss_pending_cleanup(app: tauri::AppHandle) {
 /// After a successful paste, the previous pasteboard contents are restored ~1s
 /// later so dictation doesn't permanently clobber the clipboard.
 async fn copy_and_paste_safely(app: &tauri::AppHandle, text: String) -> bool {
+    #[cfg(feature = "memory-bench")]
+    if memory_bench::is_active() {
+        return false;
+    }
     if text.is_empty() {
         return false;
     }
@@ -2277,7 +2289,13 @@ async fn validate_local_servers(
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    #[cfg(feature = "memory-bench")]
+    let benchmark = memory_bench::Config::from_env().expect("Invalid memory benchmark config");
     let db = Database::new().expect("Failed to initialize database");
+    #[cfg(feature = "memory-bench")]
+    if let Some(config) = &benchmark {
+        config.prepare_database(&db).expect("Failed to prepare benchmark database");
+    }
     let recorder = AudioRecorder::new().expect("Failed to initialize audio recorder");
     let recorder_state = RecorderState {
         recorder: Mutex::new(recorder),
@@ -2350,7 +2368,7 @@ pub fn run() {
             check_microphone_permission,
             request_microphone_permission,
         ])
-        .setup(|app| {
+        .setup(move |app| {
             setup_tray(app.handle())?;
             setup_hud_window(app.handle())?;
 
@@ -2363,6 +2381,12 @@ pub fn run() {
                     let _ = w.hide();
                 }
             });
+
+            #[cfg(feature = "memory-bench")]
+            if let Some(config) = benchmark {
+                memory_bench::start(app.handle().clone(), config);
+                return Ok(());
+            }
 
             // Register the dictation hotkey from saved settings, falling back
             // to the platform default. Hotkey changes apply on app restart.

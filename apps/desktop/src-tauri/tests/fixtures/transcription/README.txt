@@ -29,3 +29,12 @@ settings and an unconditional vocabulary hint. Conditional hints are excluded.
 The database is in memory and does not change the user's Settings or profile.
 
 PARROT_TEST_WHISPER_MODEL='/path/to/ggml-large-v3-turbo-q5_0.bin' cargo test --locked -p parrot --lib multilingual_preview_inference -- --ignored --nocapture
+
+ISSUE-1057 long-import.wav contains the 12 varied synthetic English sentences
+in long-import.txt (Samantha, en_US, 150 words/minute). The memory workload
+repeats/trims this fixture to at least the requested duration, including the
+whole reference once. Topic keywords throughout the recording detect major
+omissions. Keyword checks are not a complete word-error or semantic evaluation.
+
+say -v Samantha -r 150 -f long-import.txt -o /tmp/parrot-long-import.aiff
+ffmpeg -i /tmp/parrot-long-import.aiff -ac 1 -ar 16000 -c:a pcm_s16le long-import.wav
