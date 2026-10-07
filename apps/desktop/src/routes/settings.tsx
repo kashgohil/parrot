@@ -759,7 +759,7 @@ function SettingsPage() {
 										{!["0", "30", "60", "300"].includes(sttIdleSeconds) && <SelectItem value={sttIdleSeconds}>{sttIdleSeconds} seconds idle</SelectItem>}
 									</SelectContent>
 								</Select>
-								<p className="text-xs text-muted-foreground">Loads when recording starts or you import audio. Releasing memory can delay your next transcription. Active transcription always finishes first.</p>
+								<p className="text-xs text-muted-foreground">Loads when recording starts or you import audio. Releasing memory can add several seconds to your next transcription. Active transcription always finishes first.</p>
 								<p className="text-xs text-muted-foreground" role="status">
 									{speechLifecycle?.state === "loading" ? "Loading speech model…" : speechLifecycle?.state === "in_use" ? "Transcribing…" : speechLifecycle?.state === "ready" ? "Speech model is ready" : speechLifecycle?.state === "failed" ? `Speech unavailable: ${speechLifecycle.error ?? "Load failed"}` : "Speech model is unloaded"}
 								</p>

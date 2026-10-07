@@ -3,7 +3,7 @@
 Built-in cleanup loads on the first eligible request. Startup, setup completion,
 and choosing a model do not start a cleanup sidecar. Cleanup Off, a profile that
 turns cleanup off, empty transcripts, and the current short-utterance rule skip
-loading. Speech model startup is unchanged.
+loading. Speech loading and release follow the [speech memory policy](speech-memory-policy.md).
 
 Settings → Cleanup → **Release cleanup memory after** offers 30 seconds, 1 minute
 (the default), 5 minutes, or **Keep warm after first use**. Save Settings to apply
@@ -30,7 +30,8 @@ backend; its residency policy is tracked separately in ISSUE-1054.
 The first cleanup and the first cleanup after idle include model loading in
 their latency. Background cleanup still returns raw text first. Keeping a model
 warm saves that reload time but retains the sidecar's memory. Model files stay
-on disk after release.
+on disk after release. The optional sequential speech policy can release cleanup
+sooner than the idle timeout.
 
 ## Verification
 

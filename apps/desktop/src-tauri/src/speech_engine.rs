@@ -90,7 +90,12 @@ impl SpeechEngine {
                         return Ok(());
                     }
                     owner.prepare_speech().await?;
-                    drop(owner.models.acquire().await?);
+                    drop(
+                        owner
+                            .models
+                            .acquire_with_timeout(Duration::from_secs(180))
+                            .await?,
+                    );
                     Ok(())
                 })
                 .await;
@@ -110,7 +115,10 @@ impl SpeechEngine {
         self.scheduler
             .final_job(async move {
                 owner.prepare_speech().await?;
-                let lease = owner.models.acquire().await?;
+                let lease = owner
+                    .models
+                    .acquire_with_timeout(Duration::from_secs(180))
+                    .await?;
                 let text = lease
                     .client
                     .transcribe_samples(&samples, rate, opts)
@@ -142,7 +150,10 @@ impl SpeechEngine {
                     return Ok(None);
                 }
                 owner.prepare_speech().await?;
-                let lease = owner.models.acquire().await?;
+                let lease = owner
+                    .models
+                    .acquire_with_timeout(Duration::from_secs(180))
+                    .await?;
                 if coordinator.current() != generation {
                     return Ok(None);
                 }
@@ -189,6 +200,35 @@ impl SpeechEngine {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn obsolete_previews_do_not_load_a_model() {
+        let owner = SpeechEngine::new(crate::cleanup_engine::new_cleanup_engine());
+        owner.configure(
+            Some(SpeechTarget {
+                engine: "whisper".into(),
+                path: "/nonexistent/obsolete-preview-model".into(),
+                label: "test".into(),
+            }),
+            None,
+            false,
+        );
+        let coordinator = Arc::new(StreamingCoordinator::new());
+        let generation = coordinator.next_generation();
+        coordinator.next_generation();
+        assert!(owner
+            .transcribe_preview(
+                vec![0.1; 16000],
+                16000,
+                TranscribeOpts::default(),
+                coordinator,
+                generation
+            )
+            .await
+            .unwrap()
+            .is_none());
+        assert_eq!(owner.models.status().state, "unloaded");
+    }
 
     #[tokio::test]
     #[ignore = "needs PARROT_TEST_STT_MODEL pointing to Whisper or Parakeet"]

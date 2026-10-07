@@ -424,6 +424,7 @@ fn resample_linear(input: &[f32], from_rate: u32, to_rate: u32) -> Vec<f32> {
 ///
 /// Requires a preloaded `LocalEngine` and feeds it the raw f32 samples from
 /// the recorder (or a decoded WAV file).
+#[cfg(test)]
 pub async fn transcribe_audio(
     samples: &[f32],
     sample_rate: u32,

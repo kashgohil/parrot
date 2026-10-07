@@ -63,13 +63,13 @@ Private attribution APIs may change; an unavailable API is not zero memory.
 
 | Scenario | Work performed | Comparison |
 | --- | --- | --- |
-| Startup | Real windows/plugins; eager STT, demand-loaded cleanup | Time until STT is ready; simultaneous tree peak |
-| Ready idle | 10 seconds with STT loaded and cleanup unloaded | Median/peak footprint before inference |
-| Cold dictation | First inference on synthetic English audio; blocking cleanup including its cold load | Total latency, STT/cleanup phase memory, source words retained |
+| Startup | Real windows/plugins; configure demand-loaded speech and cleanup | Configuration latency; simultaneous tree peak |
+| Ready idle | 10 seconds with speech and cleanup unloaded | Median/peak footprint before inference |
+| Cold dictation | First inference on synthetic English audio; speech loading and blocking cleanup including cold loads | Total latency, STT/cleanup phase memory, source words retained |
 | Capture/previews | About 11 seconds of real-time PCM replay plus a 2-second hold | Full recorder/preview allocation path; emitted text and first-preview latency |
 | Warm dictations | 10 alternating English/French dictations; 1-second idle each | Latency, content checks, retained growth after each operation |
 | After repeats | 10 seconds idle | Residency after allocations have warmed |
-| Model switch | Load already-local alternate STT; select cleanup model without loading it | STT load latency, transition peak, 10-second alternate idle |
+| Model switch | Select already-local alternate speech and cleanup paths without loading them | Selection latency, release peak, 10-second alternate idle |
 | Model restore | Restore the original pair | Include allocations retained across switches |
 | Long import | At least 120 seconds of varied synthetic English speech through the file-path command | Decoder/full-file buffers, STT peak, source-topic coverage |
 | Post import | 10 seconds idle after the import returns | Retained buffers and inference resources |
@@ -77,6 +77,14 @@ Private attribution APIs may change; an unavailable API is not zero memory.
 
 Long import disables cleanup and releases its cached sidecar so context/token limits cannot confound the
 STT memory measurement. Short dictations measure blocking cleanup separately.
+
+For speech idle release and reload checks, add `"speech_lifecycle_checks": true`
+and keep at least 65 seconds of combined post-import idle. This adds a separate
+released-idle snapshot and a final dictation that reloads speech. To compare
+sequential residency, repeat with `"stt_release_before_cleanup": true`.
+See the [speech memory policy](speech-memory-policy.md). Speech defaults to a
+60-second idle timeout. First transcription includes model loading, and model
+switches now select paths without eagerly loading them.
 
 For cleanup release checks, add `"cleanup_lifecycle_checks": true` to the config.
 This adds disabled dictation, 65-second idle release under the default policy,

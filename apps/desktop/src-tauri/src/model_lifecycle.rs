@@ -1,5 +1,5 @@
 //! Demand loading and ownership shared by speech and isolated models.
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use serde::Serialize;
 use std::{
     path::PathBuf,
@@ -184,6 +184,15 @@ impl<T: Send + Sync + 'static, K: Clone + PartialEq + Send + 'static> ModelLifec
         }
     }
 
+    pub async fn acquire_with_timeout(
+        self: &Arc<Self>,
+        timeout: Duration,
+    ) -> Result<ModelLease<T, K>> {
+        tokio::time::timeout(timeout, self.acquire())
+            .await
+            .context("Model loading timed out; the background load may still finish")?
+    }
+
     pub fn release_if_idle(&self, now: Instant) -> bool {
         let retired = {
             let mut inner = self.inner.lock().unwrap();
@@ -248,6 +257,38 @@ impl<T: Send + Sync + 'static, K: Clone + PartialEq + Send + 'static> ModelLifec
 mod tests {
     use super::*;
     use std::sync::atomic::{AtomicUsize, Ordering};
+
+    #[tokio::test]
+    async fn a_load_timeout_does_not_cancel_or_duplicate_the_native_load() {
+        let (resume_tx, resume_rx) = std::sync::mpsc::channel();
+        let receiver = Mutex::new(resume_rx);
+        let owner = ModelLifecycle::<_, PathBuf>::new(move |_| {
+            receiver.lock().unwrap().recv().unwrap();
+            Ok(())
+        });
+        owner.configure(Some("model".into()), None);
+        assert!(owner
+            .acquire_with_timeout(Duration::from_millis(1))
+            .await
+            .is_err());
+        assert_eq!(owner.status().state, "loading");
+        resume_tx.send(()).unwrap();
+        drop(owner.acquire().await.unwrap());
+        assert!(owner.is_loaded());
+    }
+
+    #[tokio::test]
+    async fn sequential_release_respects_active_owners_even_with_keep_warm_policy() {
+        let owner = ModelLifecycle::<_, PathBuf>::new(|_| Ok(()));
+        owner.configure(Some("model".into()), None);
+        let active = owner.acquire().await.unwrap();
+        assert!(!owner.release_unused());
+        drop(active);
+        assert!(owner.release_unused());
+        assert!(!owner.is_loaded());
+        drop(owner.acquire().await.unwrap());
+        assert!(owner.is_loaded());
+    }
 
     #[tokio::test]
     async fn concurrent_loads_reuse_and_idle_waits_for_final_owner() {

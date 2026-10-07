@@ -2616,3 +2616,40 @@ mod cleanup_policy_tests {
         }
     }
 }
+
+#[cfg(test)]
+mod speech_policy_tests {
+    use super::*;
+
+    #[test]
+    fn speech_idle_configuration_does_not_load_and_handles_invalid_values() {
+        let db = Database::in_memory().unwrap();
+        let speech = speech_engine::SpeechEngine::new(cleanup_engine::new_cleanup_engine());
+        for (setting, expected) in [
+            ("60", Some(60)),
+            ("0", None),
+            ("30", Some(30)),
+            ("86401", Some(60)),
+            ("invalid", Some(60)),
+        ] {
+            db.set_setting("stt_idle_seconds", setting).unwrap();
+            configure_speech(&db, &speech);
+            assert_eq!(speech.models.status().idle_seconds, expected);
+            assert_eq!(speech.models.status().state, "unloaded");
+        }
+    }
+
+    #[tokio::test]
+    async fn sequential_policy_applies_to_builtin_cleanup_only() {
+        let db = Database::in_memory().unwrap();
+        let speech = speech_engine::SpeechEngine::new(cleanup_engine::new_cleanup_engine());
+        db.set_setting("stt_release_before_cleanup", "true")
+            .unwrap();
+        db.set_setting("cleanup_backend", "builtin").unwrap();
+        configure_speech(&db, &speech);
+        assert!(speech.before_cleanup().await.unwrap().is_some());
+        db.set_setting("cleanup_backend", "ollama").unwrap();
+        configure_speech(&db, &speech);
+        assert!(speech.before_cleanup().await.unwrap().is_none());
+    }
+}
