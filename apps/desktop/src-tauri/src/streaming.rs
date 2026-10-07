@@ -77,10 +77,7 @@ pub fn start_partial_loop(app: AppHandle, generation: u64) {
                 // Use the tail of long utterances for partial speed.
                 let (samples, sample_rate) = if snapshot.samples.len() > max_samples {
                     let start = snapshot.samples.len() - max_samples;
-                    (
-                        snapshot.samples[start..].to_vec(),
-                        snapshot.sample_rate,
-                    )
+                    (snapshot.samples[start..].to_vec(), snapshot.sample_rate)
                 } else {
                     (snapshot.samples.clone(), snapshot.sample_rate)
                 };
@@ -91,8 +88,7 @@ pub fn start_partial_loop(app: AppHandle, generation: u64) {
                     let engine = engine_slot.read().await.clone();
                     if let Some(engine) = engine {
                         // Engines already run inference on blocking pools.
-                        let text =
-                            transcribe_partial(engine, samples, sample_rate).await;
+                        let text = transcribe_partial(engine, samples, sample_rate).await;
 
                         if app.state::<Arc<StreamingCoordinator>>().current() != generation {
                             break;
@@ -145,4 +141,47 @@ fn rms(samples: &[f32]) -> f32 {
     }
     let sum: f32 = samples.iter().map(|s| s * s).sum();
     (sum / samples.len() as f32).sqrt()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::transcription::{decode_audio_bytes, transcribe_audio, LocalWhisperProvider};
+
+    /// Run with PARROT_TEST_WHISPER_MODEL set to a multilingual Whisper model.
+    #[tokio::test]
+    #[ignore = "requires a local multilingual Whisper model"]
+    async fn multilingual_preview_inference() {
+        let model = std::env::var("PARROT_TEST_WHISPER_MODEL")
+            .expect("set PARROT_TEST_WHISPER_MODEL to a multilingual Whisper model");
+        assert!(!model.contains(".en."), "use a multilingual model");
+        let engine = Arc::new(LocalEngine::Whisper(Arc::new(
+            LocalWhisperProvider::load(std::path::Path::new(&model)).unwrap(),
+        )));
+        let (samples, rate) =
+            decode_audio_bytes(include_bytes!("../tests/fixtures/transcription/french.wav"))
+                .unwrap();
+        let final_text = transcribe_audio(
+            &samples,
+            rate,
+            Some(engine.as_ref()),
+            TranscribeOpts {
+                language: Some("auto".into()),
+                initial_prompt: Some("Vocabulary hints: réserver.".into()),
+            },
+        )
+        .await
+        .unwrap();
+        let preview = transcribe_partial(engine, samples, rate).await.unwrap();
+        eprintln!("French preview: {preview:?}; final: {final_text:?}");
+        for (path, text) in [("preview", preview), ("final", final_text)] {
+            let lower = text.to_lowercase();
+            for word in ["bonjour", "voudrais", "table"] {
+                assert!(
+                    lower.contains(word),
+                    "{path} lost French word {word:?}: {text:?}"
+                );
+            }
+        }
+    }
 }
