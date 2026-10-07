@@ -164,6 +164,22 @@ post-import idle separately: its workload and allocator high-water marks differ.
 
 ## Manual capture and optional Ollama
 
+For native allocation attribution, launch a separate diagnostic run with
+`--allocation-phase post_import_idle --allocation-phase speech_released_idle`.
+The second phase requires `speech_lifecycle_checks=true`. This enables macOS
+`MallocStackLogging` in the launched app and saves `*-heap.txt` and
+`*-allocations.txt` reports, in addition to footprint snapshots. The reports
+identify live allocation sizes and native call stacks before/after release.
+This option does not instrument an existing process. Stack logging and heap
+inspection add overhead; use ordinary, uninstrumented repeated runs to compare
+memory and latency. A missing or failed native report is not evidence of zero
+allocations. Check report headers and retain complete raw diagnostic output.
+
+To compare Parakeet execution providers, set `"parakeet_accelerator": "cpu"`
+or `"auto"` in the benchmark config. The override is applied before the first
+model load and reported in the startup event. It is available only in benchmark
+builds; normal model selection has no benchmark-only provider override.
+
 Normally launch the app, find its main PID, and attach without changing it:
 
 ```sh

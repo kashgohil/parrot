@@ -291,6 +291,8 @@ def run(args):
         "models": model_metadata(config),
         "fixtures": fixture_metadata(),
         "cache_state": "new process, OS file cache uncontrolled (model hashes read before launch)",
+        "allocation_phases": args.allocation_phase,
+        "allocation_instrumentation": bool(args.allocation_phase),
     }
     (out / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
     (out / "config.json").write_text(json.dumps(config, indent=2) + "\n")
@@ -300,6 +302,10 @@ def run(args):
     try:
         if args.app:
             env = dict(os.environ, PARROT_MEMORY_BENCHMARK_CONFIG=str(out / "config.json"))
+            if args.allocation_phase:
+                # Scope instrumentation to our launched app, not the sampler or
+                # any process to which a user attaches. These runs have overhead.
+                env["MallocStackLogging"] = "1"
             if args.sidecar:
                 env["PARROT_CLEANUP_SIDECAR"] = str(Path(args.sidecar).resolve())
             log = (out / "app.log").open("w")
@@ -317,6 +323,7 @@ def run(args):
         roots = {root, *args.extra_pid}
         samples = []
         diagnosed = set()
+        allocation_diagnosed = set()
         started = time.monotonic()
         next_system = 0
         with (out / "samples.jsonl").open("w") as stream, (out / "system.jsonl").open("w") as system:
@@ -359,6 +366,16 @@ def run(args):
                     diagnostics.append(subprocess.Popen(
                         ["/usr/bin/footprint", "-f", "bytes", *map(str, [p["pid"] for p in processes])],
                         stdout=log, stderr=subprocess.STDOUT))
+                if phase in args.allocation_phase and phase not in allocation_diagnosed and complete:
+                    allocation_diagnosed.add(phase)
+                    for name, invocation in (
+                        ("heap", ["/usr/bin/heap", "-s", "--noContent", str(root)]),
+                        ("allocations", ["/usr/bin/malloc_history", str(root), "-callTree",
+                                         "-invert", "-consolidateAllBySymbol", "-noContent"]),
+                    ):
+                        log = (out / f"{phase}-{name}.txt").open("w")
+                        logs.append(log)
+                        diagnostics.append(subprocess.Popen(invocation, stdout=log, stderr=subprocess.STDOUT))
                 time.sleep(max(0, args.interval - (time.monotonic() - tick)))
     finally:
         if child and child.poll() is None:
@@ -410,6 +427,9 @@ def main():
     parser.add_argument("--extra-pid", type=int, action="append", default=[], help="explicit shared Ollama daemon/runner root")
     parser.add_argument("--label", default="startup", help="scenario for manual attachment")
     parser.add_argument("--build-label", default="unknown")
+    parser.add_argument("--allocation-phase", action="append", default=[], metavar="SCENARIO",
+                        choices=("after_repeats_idle", "post_import_idle", "speech_released_idle"),
+                        help="instrument launched app allocations and capture native stacks in this phase; adds overhead")
     args = parser.parse_args()
     if args.summarize:
         directory = Path(args.summarize)
@@ -427,6 +447,8 @@ def main():
         parser.error("interval and duration must be positive")
     if args.app and not args.config:
         parser.error("--app requires --config")
+    if args.allocation_phase and not args.app:
+        parser.error("--allocation-phase requires --app; it cannot instrument an existing process")
     run(args)
 
 

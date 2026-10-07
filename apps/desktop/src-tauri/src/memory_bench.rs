@@ -34,6 +34,9 @@ pub(crate) struct Config {
     pub speech_lifecycle_checks: bool,
     #[serde(default)]
     pub stt_release_before_cleanup: bool,
+    /// Diagnostic-only provider override, applied before any model is loaded.
+    #[serde(default)]
+    pub parakeet_accelerator: Option<String>,
 }
 
 pub(crate) fn is_active() -> bool {
@@ -85,6 +88,13 @@ impl Config {
         anyhow::ensure!(
             matches!(config.stt_engine.as_str(), "whisper" | "parakeet"),
             "invalid stt_engine"
+        );
+        anyhow::ensure!(
+            matches!(
+                config.parakeet_accelerator.as_deref(),
+                None | Some("auto" | "cpu")
+            ),
+            "parakeet_accelerator must be auto or cpu"
         );
         if config.switch_stt_model.is_some() {
             anyhow::ensure!(
@@ -192,6 +202,9 @@ impl Events {
 }
 
 pub(crate) fn start(app: AppHandle, config: Config) {
+    if let Some(accelerator) = &config.parakeet_accelerator {
+        transcribe_rs::set_ort_accelerator(accelerator.parse().expect("validated accelerator"));
+    }
     let events = Events(Arc::new(Mutex::new(
         File::create(&config.events_path).expect("create events"),
     )));
@@ -312,6 +325,7 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
             "cleanup_loading": "on_demand", "cleanup_idle_seconds": 60, "speech_loading": "on_demand", "speech_idle_seconds": 60,
             "cleanup_lifecycle_checks": config.cleanup_lifecycle_checks,
             "speech_lifecycle_checks": config.speech_lifecycle_checks,
+            "parakeet_accelerator": transcribe_rs::get_ort_accelerator().to_string(),
             "stt_release_before_cleanup": config.stt_release_before_cleanup}),
     );
     let db = app.state::<Database>();

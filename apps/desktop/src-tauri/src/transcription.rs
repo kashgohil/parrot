@@ -134,13 +134,9 @@ impl ParakeetProvider {
         use transcribe_rs::onnx::parakeet::ParakeetModel;
         use transcribe_rs::onnx::Quantization;
 
-        // Prefer CoreML on Apple Silicon when available; fall back to CPU.
-        #[cfg(target_os = "macos")]
-        {
-            use transcribe_rs::{set_ort_accelerator, OrtAccelerator};
-            set_ort_accelerator(OrtAccelerator::Auto);
-        }
-
+        // The library defaults to Auto (CoreML on macOS, then CPU fallback).
+        // Do not reset the process preference here: the opt-in benchmark sets
+        // it before the first load to compare native execution providers.
         let model = ParakeetModel::load(model_dir, &Quantization::Int8).map_err(|e| {
             anyhow::anyhow!(
                 "Failed to load Parakeet model at {}: {}",
