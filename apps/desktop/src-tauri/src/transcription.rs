@@ -459,4 +459,84 @@ mod tests {
     fn rejects_garbage_bytes() {
         assert!(decode_audio_bytes(b"not audio at all").is_err());
     }
+
+    /// Run with a downloaded multilingual model (never fetched by the test):
+    /// PARROT_TEST_WHISPER_MODEL=/path/to/ggml-large-v3-turbo-q5_0.bin \
+    /// cargo test --locked -p parrot --lib whisper_multilingual_inference -- --ignored --nocapture
+    #[tokio::test]
+    #[ignore = "requires PARROT_TEST_WHISPER_MODEL pointing to a multilingual Whisper model"]
+    async fn whisper_multilingual_inference() {
+        let model_path = std::env::var_os("PARROT_TEST_WHISPER_MODEL")
+            .expect("Set PARROT_TEST_WHISPER_MODEL to a multilingual Whisper model file");
+        let provider = LocalWhisperProvider::load(Path::new(&model_path)).unwrap();
+        assert!(
+            provider.ctx.is_multilingual(),
+            "Use a multilingual model, not an .en model"
+        );
+        let engine = LocalEngine::Whisper(Arc::new(provider));
+
+        // Fixed synthetic recordings; see tests/fixtures/transcription/README.txt.
+        let fixtures: &[(&str, &[u8], &[&str])] = &[
+            (
+                "en",
+                include_bytes!("../tests/fixtures/transcription/english.wav"),
+                &["blue", "notebook", "kitchen", "table"],
+            ),
+            (
+                "fr",
+                include_bytes!("../tests/fixtures/transcription/french.wav"),
+                &["bonjour", "réserver", "table", "demain", "soir"],
+            ),
+        ];
+        for &(code, wav, expected_words) in fixtures {
+            let (samples, rate) = decode_audio_bytes(wav).unwrap();
+            // Dictation and imports share this entry point. Exercise every Auto
+            // spelling accepted by run_whisper, plus a pinned language hint.
+            for language in [
+                None,
+                Some("auto"),
+                Some(" AuTo "),
+                Some(""),
+                Some("  "),
+                Some(code),
+            ] {
+                let transcript = transcribe_audio(
+                    &samples,
+                    rate,
+                    Some(&engine),
+                    TranscribeOpts {
+                        language: language.map(str::to_owned),
+                        initial_prompt: None,
+                    },
+                )
+                .await
+                .unwrap();
+                eprintln!("{code}, language={language:?}: {transcript:?}");
+                let normalized = transcript.to_lowercase();
+                for word in expected_words {
+                    assert!(
+                        normalized
+                            .split(|c: char| !c.is_alphabetic())
+                            .any(|token| token == *word),
+                        "{code}, language={language:?}: expected {word:?} in {transcript:?}"
+                    );
+                }
+            }
+        }
+
+        for samples in [Vec::new(), vec![0.0; 3_999], vec![0.0; 32_000]] {
+            let transcript = transcribe_audio(
+                &samples,
+                WHISPER_TARGET_SAMPLE_RATE,
+                Some(&engine),
+                TranscribeOpts::default(),
+            )
+            .await
+            .unwrap();
+            assert!(
+                transcript.is_empty(),
+                "Silent input produced {transcript:?}"
+            );
+        }
+    }
 }
