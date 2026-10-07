@@ -420,6 +420,7 @@ async fn run_cleanup(
     profile: &db::EffectiveProfile,
 ) -> String {
     let speech = app.state::<SharedLocalEngine>();
+    configure_speech(db, speech.inner());
     let sequential_permit = match speech.before_cleanup().await {
         Ok(permit) => permit,
         Err(error) => {
@@ -2027,7 +2028,7 @@ fn configure_speech(db: &Database, state: &SharedLocalEngine) {
         .ok()
         .flatten()
         .as_deref()
-        == Some("true");
+        == Some("true") && resolve_cleanup_backend(db) == "builtin";
     state.configure(target, idle, sequential);
 }
 

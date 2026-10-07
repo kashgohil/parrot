@@ -49,9 +49,19 @@ impl InferenceScheduler {
         F: Future<Output = Result<T>> + Send + 'static,
         T: Send + 'static,
     {
+        // Announce final demand before spawning so a preview on another
+        // runtime thread cannot sneak in while this task is being scheduled.
+        self.waiting_final.fetch_add(1, Ordering::SeqCst);
+        let ticket = FinalTicket(self.waiting_final.clone());
         let scheduler = self.clone();
         tauri::async_runtime::spawn(async move {
-            let _permit = scheduler.exclusive().await?;
+            let _permit = scheduler
+                .gate
+                .clone()
+                .acquire_owned()
+                .await
+                .context("speech scheduler closed")?;
+            drop(ticket);
             job.await
         })
         .await

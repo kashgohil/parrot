@@ -122,6 +122,9 @@ function SettingsPage() {
 	const [sttEngine, setSttEngine] = useState("whisper");
 	const [sttModel, setSttModel] = useState("");
 	const [sttLanguage, setSttLanguage] = useState("auto");
+	const [sttIdleSeconds, setSttIdleSeconds] = useState("60");
+	const [releaseSpeechBeforeCleanup, setReleaseSpeechBeforeCleanup] = useState(false);
+	const [speechLifecycle, setSpeechLifecycle] = useState<{ state: string; error: string | null } | null>(null);
 	const [sttSwitching, setSttSwitching] = useState(false);
 	const [sttProgress, setSttProgress] = useState<string | null>(null);
 	const [cleanupBackend, setCleanupBackend] = useState<"builtin" | "ollama">(
@@ -296,6 +299,20 @@ function SettingsPage() {
 		return () => { active = false; clearTimeout(timer); };
 	}, [cleanupBackend]);
 
+	useEffect(() => {
+		let active = true;
+		let timer: ReturnType<typeof setTimeout>;
+		async function refreshStatus() {
+			try {
+				const status = await invoke<{ lifecycle: { state: string; error: string | null } }>("get_stt_status");
+				if (active) setSpeechLifecycle(status.lifecycle);
+			} catch (error) { console.error("Failed to refresh speech status:", error); }
+			finally { if (active) timer = setTimeout(refreshStatus, 2000); }
+		}
+		void refreshStatus();
+		return () => { active = false; clearTimeout(timer); };
+	}, []);
+
 	// Scroll-spy: highlight the nav pill for whichever section is near the top
 	// of the scroll container (the app shell's <main>).
 	useEffect(() => {
@@ -361,10 +378,15 @@ function SettingsPage() {
 				engine: string;
 				model_id: string;
 				language: string;
+				lifecycle: { state: string; error: string | null; idle_seconds: number | null };
+				release_before_cleanup: boolean;
 			}>("get_stt_status");
 			setSttEngine(stt.engine || "whisper");
 			setSttModel(stt.model_id || "");
 			setSttLanguage(stt.language || "auto");
+			setSpeechLifecycle(stt.lifecycle);
+			setSttIdleSeconds(String(stt.lifecycle.idle_seconds ?? 0));
+			setReleaseSpeechBeforeCleanup(stt.release_before_cleanup);
 			const [cleanup, idleSeconds] = await Promise.all([
 				invoke<{
 					backend: string;
@@ -419,6 +441,8 @@ function SettingsPage() {
 				value: sttLanguage,
 			});
 
+			await invoke("set_setting", { key: "stt_idle_seconds", value: sttIdleSeconds });
+			await invoke("set_setting", { key: "stt_release_before_cleanup", value: releaseSpeechBeforeCleanup ? "true" : "false" });
 			const profile = await invoke<Profile>("get_profile");
 			await invoke("update_profile", {
 				customWords: profile.custom_words,
@@ -634,7 +658,7 @@ function SettingsPage() {
 												unsub();
 												setSttEngine(res.engine);
 												setSttModel(res.model_id);
-												setSttProgress(res.ready ? "Ready" : "Loaded — warming up…");
+												setSttProgress(res.ready ? "Ready" : "Saved — loads when you record");
 												setTimeout(() => setSttProgress(null), 2500);
 											} catch (e) {
 												console.error(e);
@@ -722,6 +746,28 @@ function SettingsPage() {
 									Whisper uses this for decoding; Parakeet auto-detects. Prefer
 									Auto unless you always dictate in one language.
 								</p>
+							</div>
+							<div className="space-y-2 pt-2">
+								<Label htmlFor="sttIdleSeconds" className="text-sm font-medium">Release speech memory after</Label>
+								<Select value={sttIdleSeconds} onValueChange={(value) => { setSttIdleSeconds(value); setDirty(true); }}>
+									<SelectTrigger id="sttIdleSeconds" className="w-full h-10 rounded-xl border-border bg-muted/50"><SelectValue /></SelectTrigger>
+									<SelectContent position="popper" className="rounded-xl">
+										<SelectItem value="30">30 seconds idle</SelectItem>
+										<SelectItem value="60">1 minute idle (default)</SelectItem>
+										<SelectItem value="300">5 minutes idle</SelectItem>
+										<SelectItem value="0">Keep warm after first use</SelectItem>
+										{!["0", "30", "60", "300"].includes(sttIdleSeconds) && <SelectItem value={sttIdleSeconds}>{sttIdleSeconds} seconds idle</SelectItem>}
+									</SelectContent>
+								</Select>
+								<p className="text-xs text-muted-foreground">Loads when recording starts or you import audio. Releasing memory can delay your next transcription. Active transcription always finishes first.</p>
+								<p className="text-xs text-muted-foreground" role="status">
+									{speechLifecycle?.state === "loading" ? "Loading speech model…" : speechLifecycle?.state === "in_use" ? "Transcribing…" : speechLifecycle?.state === "ready" ? "Speech model is ready" : speechLifecycle?.state === "failed" ? `Speech unavailable: ${speechLifecycle.error ?? "Load failed"}` : "Speech model is unloaded"}
+								</p>
+								<label className="flex items-center gap-2 text-sm">
+									<input type="checkbox" disabled={cleanupBackend !== "builtin"} checked={releaseSpeechBeforeCleanup} onChange={(event) => { setReleaseSpeechBeforeCleanup(event.target.checked); setDirty(true); }} />
+									Release speech memory before cleanup
+								</label>
+								<p className="text-xs text-muted-foreground">Uses speech and built-in cleanup models one at a time. Saves memory between stages, but reloads the speech model for each dictation.</p>
 							</div>
 						</div>
 					</section>

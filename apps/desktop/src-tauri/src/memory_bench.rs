@@ -30,6 +30,10 @@ pub(crate) struct Config {
     pub long_import_seconds: u32,
     #[serde(default)]
     pub cleanup_lifecycle_checks: bool,
+    #[serde(default)]
+    pub speech_lifecycle_checks: bool,
+    #[serde(default)]
+    pub stt_release_before_cleanup: bool,
 }
 
 pub(crate) fn is_active() -> bool {
@@ -91,6 +95,12 @@ impl Config {
                 "switch_stt_model needs switch_stt_engine"
             );
         }
+        if config.speech_lifecycle_checks {
+            anyhow::ensure!(
+                config.idle_seconds + config.post_idle_seconds >= 65,
+                "speech lifecycle checks need at least 65 seconds of combined post-import idle"
+            );
+        }
         Ok(Some(config))
     }
 
@@ -110,6 +120,15 @@ impl Config {
         db.set_setting("cleanup_backend", "builtin")?;
         db.set_setting("cleanup_model_path", &self.cleanup_model.to_string_lossy())?;
         db.set_setting("cleanup_mode", "blocking")?;
+        db.set_setting("stt_idle_seconds", "60")?;
+        db.set_setting(
+            "stt_release_before_cleanup",
+            if self.stt_release_before_cleanup {
+                "true"
+            } else {
+                "false"
+            },
+        )?;
         db.set_setting("save_audio", "false")?;
         db.set_local_setup_config(&local_setup::LocalSetupConfig {
             whisper_model_path: self.stt_model.to_string_lossy().into_owned(),
@@ -164,6 +183,7 @@ impl Events {
             scenario,
             json!({
                 "stt_loaded": app.state::<SharedLocalEngine>().models.is_loaded(),
+                "speech_lifecycle": app.state::<SharedLocalEngine>().models.status(),
                 "cleanup_loaded": app.state::<SharedCleanupEngine>().is_loaded(),
             "cleanup_lifecycle": app.state::<SharedCleanupEngine>().status(),
             }),
@@ -230,10 +250,29 @@ async fn dictation(app: &AppHandle, events: &Events, scenario: &str, french: boo
         &result.cleaned_text,
         expected,
     );
+    if app
+        .state::<Database>()
+        .get_setting("stt_release_before_cleanup")?
+        .as_deref()
+        == Some("true")
+        && app
+            .state::<Database>()
+            .get_setting("cleanup_mode")?
+            .as_deref()
+            == Some("blocking")
+    {
+        anyhow::ensure!(
+            !app.state::<SharedLocalEngine>().models.is_loaded()
+                && !app.state::<SharedCleanupEngine>().is_loaded(),
+            "sequential dictation retained a model after cleanup"
+        );
+    }
     events.write(
         "end",
         scenario,
-        json!({"latency_ms": start.elapsed().as_secs_f64() * 1000.0}),
+        json!({"latency_ms": start.elapsed().as_secs_f64() * 1000.0,
+            "stt_loaded": app.state::<SharedLocalEngine>().models.is_loaded(),
+            "cleanup_loaded": app.state::<SharedCleanupEngine>().is_loaded()}),
     );
     Ok(())
 }
@@ -271,7 +310,9 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
         "startup",
         json!({"build": if cfg!(debug_assertions) {"debug"} else {"release"},
             "cleanup_loading": "on_demand", "cleanup_idle_seconds": 60, "speech_loading": "on_demand", "speech_idle_seconds": 60,
-            "cleanup_lifecycle_checks": config.cleanup_lifecycle_checks}),
+            "cleanup_lifecycle_checks": config.cleanup_lifecycle_checks,
+            "speech_lifecycle_checks": config.speech_lifecycle_checks,
+            "stt_release_before_cleanup": config.stt_release_before_cleanup}),
     );
     let db = app.state::<Database>();
     crate::configure_speech(&db, app.state::<SharedLocalEngine>().inner());
@@ -279,12 +320,16 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
     events.write(
         "end",
         "startup",
-        json!({"ready_latency_ms": started.elapsed().as_secs_f64() * 1000.0}),
+        json!({"configuration_latency_ms": started.elapsed().as_secs_f64() * 1000.0}),
     );
     events.idle("ready_idle", config.idle_seconds, app).await;
     anyhow::ensure!(
         !app.state::<SharedCleanupEngine>().is_loaded(),
         "startup must leave cleanup unloaded"
+    );
+    anyhow::ensure!(
+        !app.state::<SharedLocalEngine>().models.is_loaded(),
+        "startup must leave speech unloaded"
     );
     if config.cleanup_lifecycle_checks {
         db.set_setting("cleanup_mode", "off")?;
@@ -550,6 +595,20 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
     events
         .idle("post_idle", config.post_idle_seconds, app)
         .await;
+    if config.speech_lifecycle_checks {
+        anyhow::ensure!(
+            !app.state::<SharedLocalEngine>().models.is_loaded(),
+            "speech model did not release after post-import idle"
+        );
+        events
+            .idle("speech_released_idle", config.idle_seconds, app)
+            .await;
+        *phase.lock().unwrap() = "speech_reload".into();
+        dictation(app, events, "speech_reload_dictation", true).await?;
+        events
+            .idle("speech_reloaded_idle", config.idle_seconds, app)
+            .await;
+    }
     events.write("begin", "complete", json!({}));
     events.write(
         "end",
