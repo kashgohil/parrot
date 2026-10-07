@@ -4,6 +4,7 @@ mod cleanup_engine;
 mod model_lifecycle;
 mod db;
 mod hotkey;
+mod inference_scheduler;
 mod local_setup;
 #[cfg(feature = "memory-bench")]
 mod memory_bench;
