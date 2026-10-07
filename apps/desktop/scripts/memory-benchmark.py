@@ -401,15 +401,28 @@ def main():
     target = parser.add_mutually_exclusive_group(required=True)
     target.add_argument("--pid", type=int, help="attach without changing the running app")
     target.add_argument("--app", help="launch a Parrot binary built with memory-bench")
+    target.add_argument("--summarize", metavar="RUN_DIR", help="re-evaluate saved samples/events without launching anything")
     parser.add_argument("--config", help="workload JSON for --app")
     parser.add_argument("--sidecar", help="cleanup-sidecar executable for --app")
-    parser.add_argument("--out", required=True, help="new directory for raw logs and summary")
+    parser.add_argument("--out", help="new directory for raw logs and summary")
     parser.add_argument("--duration", type=float, default=1800, help="maximum seconds to observe")
     parser.add_argument("--interval", type=float, default=0.1)
     parser.add_argument("--extra-pid", type=int, action="append", default=[], help="explicit shared Ollama daemon/runner root")
     parser.add_argument("--label", default="startup", help="scenario for manual attachment")
     parser.add_argument("--build-label", default="unknown")
     args = parser.parse_args()
+    if args.summarize:
+        directory = Path(args.summarize)
+        metadata = json.loads((directory / "metadata.json").read_text())
+        fixtures = metadata.get("fixtures", fixture_metadata())
+        samples = [json.loads(line) for line in (directory / "samples.jsonl").read_text().splitlines()]
+        summary = summarize(samples, events_at(directory / "events.jsonl"),
+                            fixtures["long-import.wav"]["seconds"])
+        (directory / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+        print(f'Re-evaluated {directory}: {len(summary["quality_failures"])} quality failures')
+        return
+    if not args.out:
+        parser.error("--pid and --app require --out")
     if args.interval <= 0 or args.duration <= 0:
         parser.error("interval and duration must be positive")
     if args.app and not args.config:

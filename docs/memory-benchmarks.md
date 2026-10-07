@@ -1,0 +1,193 @@
+# Memory benchmarks
+
+Use these workloads before and after changing model loading, audio buffers,
+preview scheduling, or inference. Measure the desktop app, cleanup sidecar,
+and its WebKit processes together. Run one benchmark at a time.
+
+## Run the automated macOS benchmark
+
+Requirements: macOS 10.15+, Python 3, Bun, Rust, and already-downloaded STT and
+cleanup models. No model downloads occur during a benchmark. The sampler uses
+macOS's `proc_pid_rusage` V4 memory ledgers. Its optional responsibility APIs
+must be available for automated WebKit attribution; otherwise use the manual
+workflow below and document missing coverage.
+
+From the repository root:
+
+```sh
+bun run --cwd apps/desktop build
+cargo build --manifest-path apps/desktop/src-tauri/Cargo.toml --locked --release -p parrot-cleanup-sidecar
+cargo build --manifest-path apps/desktop/src-tauri/Cargo.toml --locked --release -p parrot --features memory-bench,tauri/custom-protocol
+cp apps/desktop/scripts/memory-benchmark.example.json /tmp/parrot-memory-config.json
+```
+
+Set the model paths in `/tmp/parrot-memory-config.json` to absolute local paths.
+Remove the three `switch_*` entries if the alternate models are unavailable.
+Keep the same configuration for comparisons, including fixture durations and
+idle periods. The runner writes the event path into its copy of this config.
+
+```sh
+python3 apps/desktop/scripts/memory-benchmark.py \
+  --app apps/desktop/src-tauri/target/release/parrot \
+  --sidecar apps/desktop/src-tauri/target/release/cleanup-sidecar \
+  --config /tmp/parrot-memory-config.json \
+  --build-label release-memory-bench \
+  --out /tmp/parrot-memory-before-1
+```
+
+Repeat with new output directories. Use at least two fresh-process runs per
+model pair for initial comparisons; use three or more to establish release
+thresholds. Do not run Cargo builds or other inference while recording.
+Record background applications and system pressure; an otherwise quiet
+machine gives a stronger comparison. Do not kill another app to improve a
+result. Use an actual target device before claiming support for its RAM tier.
+
+`memory-bench` is an opt-in Cargo feature. Ordinary builds contain none of the
+workload hooks. In benchmark mode, the real app windows and native plugins run,
+but microphone input, hotkey registration, and paste/clipboard writes are
+skipped. Synthetic PCM enters the ordinary recorder buffer and preview loop.
+The ordinary dictation and file-import commands run against a database and
+attachment directory under the output directory's `app-data/`. The user's
+database, profile, history, and audio files are not changed. WebKit may use
+its normal caches. Do not use this feature for a shipped app.
+
+The launcher uses the same private `responsibility_spawnattrs_setdisclaim`
+attribute used by [LLDB](https://lldb.llvm.org/cpp_reference/PosixSpawnResponsible_8h_source.html)
+so the launched app owns its WebKit helpers. It verifies that ownership and
+fails automated runs with no attributed WebKit process. A shell launch without
+this attribute can attribute XPCs to the terminal or agent instead. The sampler
+never includes unrelated WebKit processes merely because their names match.
+Private attribution APIs may change; an unavailable API is not zero memory.
+
+## Fixed workload
+
+| Scenario | Work performed | Comparison |
+| --- | --- | --- |
+| Startup | Real windows/plugins; eager STT and cleanup loading in parallel | Time until both engines are ready; simultaneous tree peak |
+| Ready idle | 10 seconds with both engines loaded | Median/peak footprint before inference |
+| Cold dictation | First inference on synthetic English audio; blocking cleanup | Total latency, STT/cleanup phase memory, source words retained |
+| Capture/previews | About 11 seconds of real-time PCM replay plus a 2-second hold | Full recorder/preview allocation path; emitted text and first-preview latency |
+| Warm dictations | 10 alternating English/French dictations; 1-second idle each | Latency, content checks, retained growth after each operation |
+| After repeats | 10 seconds idle | Residency after allocations have warmed |
+| Model switch | Clear slots and load already-local alternate STT/cleanup models | Load latency, transition peak, 10-second alternate idle |
+| Model restore | Restore the original pair | Include allocations retained across switches |
+| Long import | At least 120 seconds of varied synthetic English speech through the file-path command | Decoder/full-file buffers, STT peak, source-topic coverage |
+| Post import | 10 seconds idle after the import returns | Retained buffers and inference resources |
+| Post idle | 60 seconds without artificially unloading anything | Which models remain loaded; sustained footprint |
+
+Long import disables cleanup so its context/token limits cannot confound the
+STT memory measurement. Short dictations measure blocking cleanup separately.
+The full long reference is included even when a smoke configuration requests
+less than its duration. The final event records the actual audio duration.
+Switching uses the same clear-and-load operations as Settings, without model
+downloads. It measures residency and load overlap rather than download time.
+
+The first dictation is cold **inference**, after model loading. OS file caches
+are uncontrolled: model SHA-256 collection reads the files before launch.
+These are not power-on cold-disk measurements. Capture hardware/codec startup,
+Bluetooth warm-up, GPU driver caches, paste latency, updater activity, and
+network downloads need separate manual measurements when relevant.
+
+## Output and accounting
+
+- `metadata.json`: revision, dirty working tree, hardware/RAM, OS, requested
+  sample interval, build label, model sizes/hashes, config, PID and ownership.
+- `samples.jsonl`: timestamps, per-process identity/start time, physical
+  footprint, RSS, page-ins, and lifetime peak; simultaneous tree totals.
+- `system.jsonl`: `vm_stat`, swap usage, and memory pressure level each second.
+- `events.jsonl`: scenario boundaries, actual durations, source words,
+  transcripts, cleanup output, preview text/timing, and quality flags.
+- `summary.json`: per-phase median/peak, role peaks, observed sample gaps,
+  attributed WebKit PIDs, quality failures, and completion status.
+- `*-footprint.txt`: native category snapshots during idle phases, including
+  dirty, clean, reclaimable, mapped, and graphics memory where available.
+- `app.log` and `app-data/`: native inference logs and isolated test history.
+
+The primary total is the **sum of current per-process physical-footprint
+ledgers at one sample time**. Each PID is included once. Its peak is the maximum
+of those simultaneous sums. Do not add independently observed process/role
+peaks, or historical lifetime peaks, to produce an app peak.
+
+[Apple's memory accounting explanation](https://developer.apple.com/videos/play/wwdc2022/10106/)
+describes footprint as dirty memory plus compressed/swapped memory charged at
+its uncompressed size, including accessed Metal resources on Apple Silicon.
+Clean mapped files can be resident while excluded from footprint. Shared
+regions are charged by the OS ledger to their owner; do not add model file
+sizes, `vmmap` virtual region sizes, RSS, or another GPU estimate to the ledger
+total. The total is an app accounting measure, not an exact change in all
+system-used RAM. Keep native category snapshots and system pressure alongside
+it because mapped model pages and system resources still affect performance.
+
+RSS is reported separately and includes resident shared/clean pages; summing
+RSS can double-count shared mappings and omits compressed/swapped pages. It is
+diagnostic, not the budget metric. Incomplete samples are excluded from peaks
+and counted explicitly. A 100 ms target interval can miss short simultaneous
+peaks. Check actual sample gaps and each process's lifetime peak for evidence
+of missed spikes; use Instruments/VM Tracker for finer attribution if needed.
+
+Quality checks require distinctive source words to survive STT and cleanup;
+long-import keywords span all 12 source sentences. Every complete repetition
+of the long reference must retain each keyword; the partial tail is excluded
+from the minimum count. Preview coverage fails if
+no preview was emitted. The runner exits nonzero on quality failures,
+incomplete workloads, or missing WebKit coverage, while retaining the data.
+These checks detect major omissions and language/content changes; they are
+not WER, a semantic evaluation, or proof that unchanged cleanup improved text.
+Keep the broader multilingual evaluation in ISSUE-1050 as a separate gate.
+
+To apply the current quality/accounting checks to saved raw data, without
+running inference again:
+
+```sh
+python3 apps/desktop/scripts/memory-benchmark.py --summarize /tmp/parrot-memory-before-1
+```
+
+For retained growth, compare medians of `warm_01_idle` through `warm_10_idle`,
+excluding startup/cold allocation growth. Report first/last, maximum, and
+the trend rather than declaring every retained allocation a leak. Compare
+post-import idle separately: its workload and allocator high-water marks differ.
+
+## Manual capture and optional Ollama
+
+Normally launch the app, find its main PID, and attach without changing it:
+
+```sh
+python3 apps/desktop/scripts/memory-benchmark.py \
+  --pid 12345 --label capture_previews --duration 60 \
+  --build-label release-0.2.5 --out /tmp/parrot-memory-manual-capture
+```
+
+Repeat for startup (launch while observing with Instruments), ready idle,
+physical microphone capture, dictation, cleanup, switching, import and idle.
+Use the same recordings and note exact action times/build/settings. Inspect
+attributed WebKit PIDs; missing ownership means the run is incomplete.
+
+For legacy Ollama, explicitly add its daemon PID with `--extra-pid 23456`.
+The sampler includes its runner descendants and deduplicates overlapping
+roots. It never auto-includes every Ollama instance on the machine. Query
+`http://localhost:11434/api/ps` before/after and record the model, quantization,
+context, residency, and latency. A shared daemon's other models must be listed
+as a confounder, not silently charged to Parrot. These measurements do not
+unload models belonging to another app. Ollama runs are a separate matrix from
+built-in cleanup; do not compare their totals without stating the difference.
+
+## Validate the tooling
+
+```sh
+python3 -m unittest discover -s apps/desktop/scripts -p 'test_memory_benchmark.py'
+cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --locked -p parrot --lib
+cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --locked -p parrot --lib --features memory-bench,tauri/custom-protocol
+```
+
+Accounting regressions cover launchd-parented XPC attribution, exclusion of
+other apps, descendant discovery, duplicate roots, simultaneous peaks, and
+incomplete samples. Actual release-app runs are required to validate native
+ownership, engine loading, event stages, sidecar cleanup and quality checks.
+
+## Baseline and proposed targets
+
+See the dated report in `docs/benchmarks/` for measured results, limitations,
+and proposed thresholds. A proposed RAM tier is a device-validation target,
+not an untested compatibility claim. Memory optimizations must retain source
+content and be compared with the same model pair, build, scenarios, and cache
+conditions; a smaller but truncated transcript is not a successful result.
