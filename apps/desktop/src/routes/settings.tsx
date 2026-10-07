@@ -127,6 +127,11 @@ function SettingsPage() {
 	const [cleanupBackend, setCleanupBackend] = useState<"builtin" | "ollama">(
 		"builtin",
 	);
+	const [cleanupIdleSeconds, setCleanupIdleSeconds] = useState("60");
+	const [cleanupLifecycle, setCleanupLifecycle] = useState<{
+		state: string;
+		error: string | null;
+	} | null>(null);
 	const [canUpgradeCleanup, setCanUpgradeCleanup] = useState(false);
 	const [cleanupUpgrading, setCleanupUpgrading] = useState(false);
 	const [cleanupProgress, setCleanupProgress] = useState<string | null>(null);
@@ -273,6 +278,24 @@ function SettingsPage() {
 		loadProfile();
 	}, []);
 
+	useEffect(() => {
+		if (cleanupBackend !== "builtin") return;
+		let active = true;
+		let timer: ReturnType<typeof setTimeout>;
+		async function refreshStatus() {
+			try {
+				const status = await invoke<{ lifecycle: { state: string; error: string | null } }>("get_cleanup_status");
+				if (active) setCleanupLifecycle(status.lifecycle);
+			} catch (error) {
+				console.error("Failed to refresh cleanup status:", error);
+			} finally {
+				if (active) timer = setTimeout(refreshStatus, 2000);
+			}
+		}
+		void refreshStatus();
+		return () => { active = false; clearTimeout(timer); };
+	}, [cleanupBackend]);
+
 	// Scroll-spy: highlight the nav pill for whichever section is near the top
 	// of the scroll container (the app shell's <main>).
 	useEffect(() => {
@@ -342,11 +365,17 @@ function SettingsPage() {
 			setSttEngine(stt.engine || "whisper");
 			setSttModel(stt.model_id || "");
 			setSttLanguage(stt.language || "auto");
-			const cleanup = await invoke<{
-				backend: string;
-				can_upgrade_to_builtin: boolean;
-				active_model_id: string;
-			}>("get_cleanup_status");
+			const [cleanup, idleSeconds] = await Promise.all([
+				invoke<{
+					backend: string;
+					can_upgrade_to_builtin: boolean;
+					active_model_id: string;
+					lifecycle: { state: string; error: string | null };
+				}>("get_cleanup_status"),
+				invoke<string | null>("get_setting", { key: "cleanup_idle_seconds" }),
+			]);
+			setCleanupIdleSeconds(idleSeconds ?? "60");
+			setCleanupLifecycle(cleanup.lifecycle);
 			setCleanupBackend(cleanup.backend === "ollama" ? "ollama" : "builtin");
 			setCanUpgradeCleanup(!!cleanup.can_upgrade_to_builtin);
 			if (cleanup.active_model_id) setCleanupModel(cleanup.active_model_id);
@@ -376,6 +405,7 @@ function SettingsPage() {
 				key: "cleanup_mode",
 				value: cleanupMode,
 			});
+			await invoke("set_setting", { key: "cleanup_idle_seconds", value: cleanupIdleSeconds });
 			await invoke("set_setting", {
 				key: "cleanup_formality",
 				value: formality,
@@ -724,6 +754,26 @@ function SettingsPage() {
 								</p>
 							</div>
 
+							{cleanupBackend === "builtin" && (
+								<div className="space-y-2">
+									<Label htmlFor="cleanupIdleSeconds" className="text-sm font-medium">Release cleanup memory after</Label>
+									<Select value={cleanupIdleSeconds} onValueChange={(value) => { setCleanupIdleSeconds(value); setDirty(true); }}>
+										<SelectTrigger id="cleanupIdleSeconds" className="w-full h-10 rounded-xl border-border bg-muted/50"><SelectValue /></SelectTrigger>
+										<SelectContent position="popper" className="rounded-xl">
+											<SelectItem value="30">30 seconds idle</SelectItem>
+											<SelectItem value="60">1 minute idle (default)</SelectItem>
+											<SelectItem value="300">5 minutes idle</SelectItem>
+											<SelectItem value="0">Keep warm after first use</SelectItem>
+											{!["0", "30", "60", "300"].includes(cleanupIdleSeconds) && <SelectItem value={cleanupIdleSeconds}>{cleanupIdleSeconds} seconds idle</SelectItem>}
+										</SelectContent>
+									</Select>
+									<p className="text-xs text-muted-foreground">Loads when needed. Releasing memory adds a short load time to your next cleanup. Active cleanup always finishes first.</p>
+									<p className="text-xs text-muted-foreground" role="status">
+										{cleanupLifecycle?.state === "loading" ? "Loading cleanup model…" : cleanupLifecycle?.state === "in_use" ? "Cleaning…" : cleanupLifecycle?.state === "ready" ? "Cleanup model is ready" : cleanupLifecycle?.state === "failed" ? `Cleanup unavailable: ${cleanupLifecycle.error ?? "Load failed"}` : "Cleanup model is unloaded"}
+									</p>
+								</div>
+							)}
+
 							<div className="space-y-2">
 								<Label className="text-sm font-medium">Cleanup quality</Label>
 								<p className="text-xs text-muted-foreground">
@@ -764,7 +814,7 @@ function SettingsPage() {
 													setCleanupBackend("builtin");
 													setCanUpgradeCleanup(false);
 													setCleanupProgress(
-														res.ready ? "Ready" : "Downloaded — loading model…",
+														res.ready ? "Ready" : "Saved — loads on your next dictation",
 													);
 													setTimeout(() => setCleanupProgress(null), 3000);
 												} catch (e) {
