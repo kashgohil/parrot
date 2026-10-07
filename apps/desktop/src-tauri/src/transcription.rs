@@ -250,6 +250,9 @@ fn run_whisper(
     // and clamp to the model's default range.
     let audio_secs = pcm.len() as f32 / WHISPER_TARGET_SAMPLE_RATE as f32;
     let audio_ctx = ((audio_secs * 100.0).ceil() as i32 + 100).clamp(150, 1500);
+    // Metal requires the f16 cross-attention row stride (audio_ctx * 2 bytes)
+    // to be divisible by 8. Round up so arbitrary clip lengths cannot abort.
+    let audio_ctx = ((audio_ctx + 3) / 4) * 4;
     params.set_audio_ctx(audio_ctx);
     if let Some(prompt) = initial_prompt.filter(|p| !p.is_empty()) {
         params.set_initial_prompt(prompt);
