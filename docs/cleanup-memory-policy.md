@@ -53,6 +53,9 @@ live state alongside process-tree memory. The default benchmark now follows
 this demand-loading policy; the original ISSUE-1057 measurements used eager
 cleanup loading. State that difference when comparing results.
 
+The [measured release report](benchmarks/2026-10-07-cleanup-memory.md) records
+repeatable idle savings and cold/warm latency.
+
 This policy releases cleanup memory. The large Parakeet heap retained after
 long imports remains a separate problem in ISSUE-1053 and related speech/audio
 issues. An idle cleanup release does not lower the active speech-model peak.

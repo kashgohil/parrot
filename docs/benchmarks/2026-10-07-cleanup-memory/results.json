@@ -1,0 +1,5317 @@
+{
+  "date": "2026-10-07",
+  "issue": "ISSUE-1052",
+  "units": "bytes; latencies in milliseconds",
+  "measured_native_source": "4db52012d6eb988f7b9a861db1575d053fd2aeb7",
+  "final_policy_validation_source": "f577c5f",
+  "build": "release; memory-bench,tauri/custom-protocol",
+  "scenario_changes_from_1057": [
+    "demand-loaded cleanup",
+    "disabled dictation before first eligible cleanup",
+    "65-second idle release and reload",
+    "failed load and recovery",
+    "cleanup tier selection without eager loading",
+    "50.568-second single-reference import instead of 120 seconds",
+    "5-second idle snapshots"
+  ],
+  "limits": [
+    "24 GiB development machine; other applications remain open; uncontrolled file cache",
+    "Content keyword screening is not WER or a semantic assessment",
+    "Shorter import does not resolve previously observed Whisper 120-second repetition loss",
+    "No Parakeet peak or retained-heap reduction claimed",
+    "No minimum-RAM device validation",
+    "Latency includes inference; cleanup phase includes model loading on cold requests; timestamp resolution one millisecond"
+  ],
+  "runs": [
+    {
+      "name": "whisper-release-1",
+      "metadata": {
+        "created_at": "2026-10-07T17:33:01.649764+00:00",
+        "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+        "machine": "arm64",
+        "hardware": "Mac16,7\nApple M4 Pro",
+        "ram_bytes": 25769803776,
+        "git_commit": "4db52012d6eb988f7b9a861db1575d053fd2aeb7",
+        "interval_seconds": 0.1,
+        "build_label": "release-memory-bench-1052",
+        "xpc_attribution_available": true,
+        "extra_pids": [],
+        "config": {
+          "stt_engine": "whisper",
+          "stt_model": "ggml-large-v3-turbo-q5_0.bin",
+          "cleanup_model": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "switch_cleanup_model": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "repeats": 10,
+          "idle_seconds": 5,
+          "post_idle_seconds": 5,
+          "long_import_seconds": 30,
+          "cleanup_lifecycle_checks": true,
+          "events_path": "events.jsonl"
+        },
+        "models": {
+          "stt_model": {
+            "name": "ggml-large-v3-turbo-q5_0.bin",
+            "bytes": 574041195,
+            "sha256": "394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2"
+          },
+          "cleanup_model": {
+            "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+            "bytes": 491400032,
+            "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+          },
+          "switch_cleanup_model": {
+            "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+            "bytes": 1117320736,
+            "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+          }
+        },
+        "fixtures": {
+          "english.wav": {
+            "bytes": 87606,
+            "sha256": "25099515efd597162712930cc7cb609f33fa2ffb6993209917b9696f3b45d01c",
+            "seconds": 2.73525
+          },
+          "french.wav": {
+            "bytes": 130728,
+            "sha256": "79458d2a6e15e391ae2661b7f2c29da059029eeace136d1744060402f0f656bf",
+            "seconds": 4.0828125
+          },
+          "long-import.wav": {
+            "bytes": 1618264,
+            "sha256": "59237b9009c1b6c6b677118bf807c59111d4a2a371a5163cee6e256007289db2",
+            "seconds": 50.5683125
+          }
+        },
+        "cache_state": "new process, OS file cache uncontrolled (model hashes read before launch)",
+        "root_pid": 19167,
+        "responsible_pid": 19167,
+        "root_identity": {
+          "resident_size": 32768,
+          "phys_footprint": 81992,
+          "lifetime_max_phys_footprint": 98376,
+          "proc_start_abstime": 28275878669408,
+          "pageins": 0
+        },
+        "source_tree_dirty": true
+      },
+      "sample_count": 1552,
+      "incomplete_samples": 0,
+      "phase_role_medians": {
+        "startup": {
+          "median_footprint_bytes": 81992,
+          "median_by_role_bytes": {
+            "app": 81992,
+            "cleanup": 0,
+            "webview": 0
+          },
+          "cleanup_pids": []
+        },
+        "ready_idle": {
+          "median_footprint_bytes": 750842104.0,
+          "median_by_role_bytes": {
+            "app": 631866904.0,
+            "cleanup": 0.0,
+            "webview": 118991584.0
+          },
+          "cleanup_pids": []
+        },
+        "disabled_idle": {
+          "median_footprint_bytes": 748065016.0,
+          "median_by_role_bytes": {
+            "app": 631604760.0,
+            "cleanup": 0.0,
+            "webview": 116460256.0
+          },
+          "cleanup_pids": []
+        },
+        "disabled_dictation": {
+          "median_footprint_bytes": 742379792,
+          "median_by_role_bytes": {
+            "app": 631948848,
+            "cleanup": 0,
+            "webview": 107137736
+          },
+          "cleanup_pids": []
+        },
+        "cold_stt": {
+          "median_footprint_bytes": 1060458888.0,
+          "median_by_role_bytes": {
+            "app": 810968720.0,
+            "cleanup": 0.0,
+            "webview": 249498360.0
+          },
+          "cleanup_pids": []
+        },
+        "cold_cleanup": {
+          "median_footprint_bytes": 790500272.0,
+          "median_by_role_bytes": {
+            "app": 669435536.0,
+            "cleanup": 6062632.0,
+            "webview": 114985720.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "after_cold_idle": {
+          "median_footprint_bytes": 904680848.0,
+          "median_by_role_bytes": {
+            "app": 669484688.0,
+            "cleanup": 119489544.0,
+            "webview": 115698424.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "capture_previews": {
+          "median_footprint_bytes": 923260304.0,
+          "median_by_role_bytes": {
+            "app": 692553360.0,
+            "cleanup": 119456776.0,
+            "webview": 111250168.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_01_stt": {
+          "median_footprint_bytes": 1071068584.0,
+          "median_by_role_bytes": {
+            "app": 840312488.0,
+            "cleanup": 119456776.0,
+            "webview": 111299320.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_01_idle": {
+          "median_footprint_bytes": 1149466000.0,
+          "median_by_role_bytes": {
+            "app": 693192336.0,
+            "cleanup": 206406664.0,
+            "webview": 249867000.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_02_stt": {
+          "median_footprint_bytes": 1078908352,
+          "median_by_role_bytes": {
+            "app": 840664744,
+            "cleanup": 119522312,
+            "webview": 118459128
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_02_cleanup": {
+          "median_footprint_bytes": 1137644944,
+          "median_by_role_bytes": {
+            "app": 693241488,
+            "cleanup": 208405512,
+            "webview": 235997944
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_02_idle": {
+          "median_footprint_bytes": 1163433360,
+          "median_by_role_bytes": {
+            "app": 693257872,
+            "cleanup": 208405512,
+            "webview": 261769976
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_03_stt": {
+          "median_footprint_bytes": 1092670900.0,
+          "median_by_role_bytes": {
+            "app": 840877736.0,
+            "cleanup": 121488392.0,
+            "webview": 130173688.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_03_cleanup": {
+          "median_footprint_bytes": 1149932968,
+          "median_by_role_bytes": {
+            "app": 693339792,
+            "cleanup": 208405512,
+            "webview": 248187664
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_03_idle": {
+          "median_footprint_bytes": 1163359680.0,
+          "median_by_role_bytes": {
+            "app": 693323408.0,
+            "cleanup": 208405512.0,
+            "webview": 261630760.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_04_stt": {
+          "median_footprint_bytes": 1106105840.0,
+          "median_by_role_bytes": {
+            "app": 841057960.0,
+            "cleanup": 121521160.0,
+            "webview": 143387432.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_04_cleanup": {
+          "median_footprint_bytes": 1162794432,
+          "median_by_role_bytes": {
+            "app": 693421712,
+            "cleanup": 208438280,
+            "webview": 260934440
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_04_idle": {
+          "median_footprint_bytes": 1166317016.0,
+          "median_by_role_bytes": {
+            "app": 693388944.0,
+            "cleanup": 208438280.0,
+            "webview": 264497984.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_05_stt": {
+          "median_footprint_bytes": 1105729020.0,
+          "median_by_role_bytes": {
+            "app": 841262760.0,
+            "cleanup": 121521160.0,
+            "webview": 142797632.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_05_idle": {
+          "median_footprint_bytes": 1169077744.0,
+          "median_by_role_bytes": {
+            "app": 693438096.0,
+            "cleanup": 208438280.0,
+            "webview": 267209560.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_06_stt": {
+          "median_footprint_bytes": 1110267424,
+          "median_by_role_bytes": {
+            "app": 841336488,
+            "cleanup": 121553928,
+            "webview": 147131224
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_06_idle": {
+          "median_footprint_bytes": 1170388464.0,
+          "median_by_role_bytes": {
+            "app": 693520016.0,
+            "cleanup": 208503816.0,
+            "webview": 268372824.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_07_stt": {
+          "median_footprint_bytes": 1172330004.0,
+          "median_by_role_bytes": {
+            "app": 841492136.0,
+            "cleanup": 121586696.0,
+            "webview": 209111896.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_07_cleanup": {
+          "median_footprint_bytes": 1165972976,
+          "median_by_role_bytes": {
+            "app": 693601936,
+            "cleanup": 208503816,
+            "webview": 263867224
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_07_idle": {
+          "median_footprint_bytes": 1173100040,
+          "median_by_role_bytes": {
+            "app": 693585552,
+            "cleanup": 208503816,
+            "webview": 271010672
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_08_stt": {
+          "median_footprint_bytes": 1116263992,
+          "median_by_role_bytes": {
+            "app": 841713320,
+            "cleanup": 121619464,
+            "webview": 152685424
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_08_cleanup": {
+          "median_footprint_bytes": 1168332296,
+          "median_by_role_bytes": {
+            "app": 693700240,
+            "cleanup": 208536584,
+            "webview": 266095472
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_08_idle": {
+          "median_footprint_bytes": 1178490376,
+          "median_by_role_bytes": {
+            "app": 693716624,
+            "cleanup": 208536584,
+            "webview": 276237168
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_09_stt": {
+          "median_footprint_bytes": 1135359532.0,
+          "median_by_role_bytes": {
+            "app": 856835752.0,
+            "cleanup": 121619464.0,
+            "webview": 156765040.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_09_cleanup": {
+          "median_footprint_bytes": 1027855880,
+          "median_by_role_bytes": {
+            "app": 711575184,
+            "cleanup": 121619464,
+            "webview": 194661232
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_09_idle": {
+          "median_footprint_bytes": 1180440072.0,
+          "median_by_role_bytes": {
+            "app": 693741200.0,
+            "cleanup": 208503816.0,
+            "webview": 278203248.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_10_stt": {
+          "median_footprint_bytes": 1136137784.0,
+          "median_by_role_bytes": {
+            "app": 856901288.0,
+            "cleanup": 121619464.0,
+            "webview": 157379440.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_10_cleanup": {
+          "median_footprint_bytes": 1179129352,
+          "median_by_role_bytes": {
+            "app": 693880464,
+            "cleanup": 208552968,
+            "webview": 276695920
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "warm_10_idle": {
+          "median_footprint_bytes": 1188664864.0,
+          "median_by_role_bytes": {
+            "app": 693847696.0,
+            "cleanup": 208552968.0,
+            "webview": 286280584.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "after_repeats_idle": {
+          "median_footprint_bytes": 963548704.0,
+          "median_by_role_bytes": {
+            "app": 693765776.0,
+            "cleanup": 121635848.0,
+            "webview": 148130696.0
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "cleanup_release_wait": {
+          "median_footprint_bytes": 954652168,
+          "median_by_role_bytes": {
+            "app": 693733008,
+            "cleanup": 121635848,
+            "webview": 139414384
+          },
+          "cleanup_pids": [
+            19390
+          ]
+        },
+        "cleanup_released_idle": {
+          "median_footprint_bytes": 845451776.0,
+          "median_by_role_bytes": {
+            "app": 694175376.0,
+            "cleanup": 0.0,
+            "webview": 151276400.0
+          },
+          "cleanup_pids": []
+        },
+        "reload_stt": {
+          "median_footprint_bytes": 1008734744,
+          "median_by_role_bytes": {
+            "app": 857310888,
+            "cleanup": 0,
+            "webview": 151423856
+          },
+          "cleanup_pids": []
+        },
+        "reload_cleanup": {
+          "median_footprint_bytes": 1161000456.0,
+          "median_by_role_bytes": {
+            "app": 694273680.0,
+            "cleanup": 191685616.0,
+            "webview": 275016584.0
+          },
+          "cleanup_pids": [
+            23128
+          ]
+        },
+        "cleanup_reloaded_idle": {
+          "median_footprint_bytes": 963573256.0,
+          "median_by_role_bytes": {
+            "app": 694257296.0,
+            "cleanup": 107021296.0,
+            "webview": 162302856.0
+          },
+          "cleanup_pids": [
+            23128
+          ]
+        },
+        "failure_stt": {
+          "median_footprint_bytes": 1019089456.0,
+          "median_by_role_bytes": {
+            "app": 857384616.0,
+            "cleanup": 0.0,
+            "webview": 161663880.0
+          },
+          "cleanup_pids": []
+        },
+        "recovery_stt": {
+          "median_footprint_bytes": 1166938708.0,
+          "median_by_role_bytes": {
+            "app": 857425576.0,
+            "cleanup": 0.0,
+            "webview": 309398432.0
+          },
+          "cleanup_pids": []
+        },
+        "recovery_cleanup": {
+          "median_footprint_bytes": 1194399264,
+          "median_by_role_bytes": {
+            "app": 694290064,
+            "cleanup": 192332784,
+            "webview": 308005792
+          },
+          "cleanup_pids": [
+            23243
+          ]
+        },
+        "model_switch": {
+          "median_footprint_bytes": 707801480.0,
+          "median_by_role_bytes": {
+            "app": 379373008.0,
+            "cleanup": 0.0,
+            "webview": 328428472.0
+          },
+          "cleanup_pids": []
+        },
+        "switched_idle": {
+          "median_footprint_bytes": 862458440.0,
+          "median_by_role_bytes": {
+            "app": 694306448.0,
+            "cleanup": 0.0,
+            "webview": 168135608.0
+          },
+          "cleanup_pids": []
+        },
+        "model_restore": {
+          "median_footprint_bytes": 539554172.0,
+          "median_by_role_bytes": {
+            "app": 371418564.0,
+            "cleanup": 0.0,
+            "webview": 168135608.0
+          },
+          "cleanup_pids": []
+        },
+        "long_import_stt": {
+          "median_footprint_bytes": 1104720648.0,
+          "median_by_role_bytes": {
+            "app": 869402352.0,
+            "cleanup": 0.0,
+            "webview": 189008848.0
+          },
+          "cleanup_pids": []
+        },
+        "post_import_idle": {
+          "median_footprint_bytes": 903598808.0,
+          "median_by_role_bytes": {
+            "app": 729433816.0,
+            "cleanup": 0.0,
+            "webview": 174181376.0
+          },
+          "cleanup_pids": []
+        },
+        "post_idle": {
+          "median_footprint_bytes": 903353048.0,
+          "median_by_role_bytes": {
+            "app": 729433816.0,
+            "cleanup": 0.0,
+            "webview": 173919232.0
+          },
+          "cleanup_pids": []
+        }
+      },
+      "idle_release_tree_reduction_bytes": 118096928.0,
+      "warm_median_latency_ms": 938.281729,
+      "warm_p95_latency_ms": 977.4292919999999,
+      "cleanup_timings": {
+        "cold_dictation": {
+          "total_latency_ms": 7289.081166,
+          "cleanup_phase_ms": 6476
+        },
+        "reload_dictation": {
+          "total_latency_ms": 1512.65275,
+          "cleanup_phase_ms": 553
+        },
+        "failed_load_dictation": {
+          "total_latency_ms": 839.561209,
+          "cleanup_phase_ms": 7
+        },
+        "recovered_dictation": {
+          "total_latency_ms": 1175.549959,
+          "cleanup_phase_ms": 365
+        }
+      },
+      "summary": {
+        "phases": {
+          "startup": {
+            "samples": 17,
+            "complete_samples": 17,
+            "median_footprint_bytes": 81992,
+            "peak_footprint_bytes": 651136672,
+            "peak_rss_bytes": 775913472,
+            "role_peak_footprint_bytes": {
+              "app": 624625152,
+              "cleanup": 0,
+              "webview": 26511520,
+              "extra": 0
+            }
+          },
+          "ready_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 750842104.0,
+            "peak_footprint_bytes": 969265376,
+            "peak_rss_bytes": 932724736,
+            "role_peak_footprint_bytes": {
+              "app": 632079896,
+              "cleanup": 0,
+              "webview": 337185480,
+              "extra": 0
+            }
+          },
+          "disabled_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 748065016.0,
+            "peak_footprint_bytes": 749162744,
+            "peak_rss_bytes": 932544512,
+            "role_peak_footprint_bytes": {
+              "app": 631768600,
+              "cleanup": 0,
+              "webview": 117394144,
+              "extra": 0
+            }
+          },
+          "disabled_dictation": {
+            "samples": 29,
+            "complete_samples": 29,
+            "median_footprint_bytes": 742379792,
+            "peak_footprint_bytes": 950210928,
+            "peak_rss_bytes": 1057177600,
+            "role_peak_footprint_bytes": {
+              "app": 843613888,
+              "cleanup": 0,
+              "webview": 116132576,
+              "extra": 0
+            }
+          },
+          "cold_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1060458888.0,
+            "peak_footprint_bytes": 1104810448,
+            "peak_rss_bytes": 1079492608,
+            "role_peak_footprint_bytes": {
+              "app": 858392280,
+              "cleanup": 0,
+              "webview": 249498360,
+              "extra": 0
+            }
+          },
+          "cold_cleanup": {
+            "samples": 62,
+            "complete_samples": 62,
+            "median_footprint_bytes": 790500272.0,
+            "peak_footprint_bytes": 987518328,
+            "peak_rss_bytes": 1615314944,
+            "role_peak_footprint_bytes": {
+              "app": 669451920,
+              "cleanup": 203162632,
+              "webview": 258951928,
+              "extra": 0
+            }
+          },
+          "after_cold_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 904680848.0,
+            "peak_footprint_bytes": 1127601552,
+            "peak_rss_bytes": 1620361216,
+            "role_peak_footprint_bytes": {
+              "app": 669517456,
+              "cleanup": 206193672,
+              "webview": 251890424,
+              "extra": 0
+            }
+          },
+          "capture_previews": {
+            "samples": 128,
+            "complete_samples": 128,
+            "median_footprint_bytes": 923260304.0,
+            "peak_footprint_bytes": 1110939120,
+            "peak_rss_bytes": 1739849728,
+            "role_peak_footprint_bytes": {
+              "app": 880232176,
+              "cleanup": 119456776,
+              "webview": 115198712,
+              "extra": 0
+            }
+          },
+          "warm_01_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1071068584.0,
+            "peak_footprint_bytes": 1077630424,
+            "peak_rss_bytes": 1706819584,
+            "role_peak_footprint_bytes": {
+              "app": 846874328,
+              "cleanup": 119456776,
+              "webview": 111299320,
+              "extra": 0
+            }
+          },
+          "warm_01_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1149466000.0,
+            "peak_footprint_bytes": 1150096784,
+            "peak_rss_bytes": 1647427584,
+            "role_peak_footprint_bytes": {
+              "app": 694306448,
+              "cleanup": 206406664,
+              "webview": 249891576,
+              "extra": 0
+            }
+          },
+          "warm_02_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1078908352,
+            "peak_footprint_bytes": 1287738792,
+            "peak_rss_bytes": 1744748544,
+            "role_peak_footprint_bytes": {
+              "app": 883590896,
+              "cleanup": 206406664,
+              "webview": 249858808,
+              "extra": 0
+            }
+          },
+          "warm_02_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1137644944,
+            "peak_footprint_bytes": 1137644944,
+            "peak_rss_bytes": 1649278976,
+            "role_peak_footprint_bytes": {
+              "app": 693241488,
+              "cleanup": 208405512,
+              "webview": 235997944,
+              "extra": 0
+            }
+          },
+          "warm_02_idle": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1163433360,
+            "peak_footprint_bytes": 1163498896,
+            "peak_rss_bytes": 1650720768,
+            "role_peak_footprint_bytes": {
+              "app": 693274256,
+              "cleanup": 208405512,
+              "webview": 261819128,
+              "extra": 0
+            }
+          },
+          "warm_03_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1092670900.0,
+            "peak_footprint_bytes": 1301337512,
+            "peak_rss_bytes": 1706082304,
+            "role_peak_footprint_bytes": {
+              "app": 841139904,
+              "cleanup": 208405512,
+              "webview": 261262072,
+              "extra": 0
+            }
+          },
+          "warm_03_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1149932968,
+            "peak_footprint_bytes": 1149932968,
+            "peak_rss_bytes": 1651408896,
+            "role_peak_footprint_bytes": {
+              "app": 693339792,
+              "cleanup": 208405512,
+              "webview": 248187664,
+              "extra": 0
+            }
+          },
+          "warm_03_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1163359680.0,
+            "peak_footprint_bytes": 1163417024,
+            "peak_rss_bytes": 1652998144,
+            "role_peak_footprint_bytes": {
+              "app": 693339792,
+              "cleanup": 208405512,
+              "webview": 261671720,
+              "extra": 0
+            }
+          },
+          "warm_04_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1106105840.0,
+            "peak_footprint_bytes": 1310807512,
+            "peak_rss_bytes": 1708425216,
+            "role_peak_footprint_bytes": {
+              "app": 841336536,
+              "cleanup": 208405512,
+              "webview": 261344040,
+              "extra": 0
+            }
+          },
+          "warm_04_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1162794432,
+            "peak_footprint_bytes": 1162794432,
+            "peak_rss_bytes": 1653211136,
+            "role_peak_footprint_bytes": {
+              "app": 693421712,
+              "cleanup": 208438280,
+              "webview": 260934440,
+              "extra": 0
+            }
+          },
+          "warm_04_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1166317016.0,
+            "peak_footprint_bytes": 1166792152,
+            "peak_rss_bytes": 1654472704,
+            "role_peak_footprint_bytes": {
+              "app": 693405328,
+              "cleanup": 208438280,
+              "webview": 264948544,
+              "extra": 0
+            }
+          },
+          "warm_05_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1105729020.0,
+            "peak_footprint_bytes": 1313904112,
+            "peak_rss_bytes": 1752416256,
+            "role_peak_footprint_bytes": {
+              "app": 899188464,
+              "cleanup": 208225288,
+              "webview": 264391488,
+              "extra": 0
+            }
+          },
+          "warm_05_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1169077744.0,
+            "peak_footprint_bytes": 1180833264,
+            "peak_rss_bytes": 1656029184,
+            "role_peak_footprint_bytes": {
+              "app": 693487248,
+              "cleanup": 208438280,
+              "webview": 278907736,
+              "extra": 0
+            }
+          },
+          "warm_06_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1110267424,
+            "peak_footprint_bytes": 1307743752,
+            "peak_rss_bytes": 1711587328,
+            "role_peak_footprint_bytes": {
+              "app": 841598656,
+              "cleanup": 208438280,
+              "webview": 267160408,
+              "extra": 0
+            }
+          },
+          "warm_06_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1170388464.0,
+            "peak_footprint_bytes": 1180620272,
+            "peak_rss_bytes": 1657257984,
+            "role_peak_footprint_bytes": {
+              "app": 693569168,
+              "cleanup": 208503816,
+              "webview": 278547288,
+              "extra": 0
+            }
+          },
+          "warm_07_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1172330004.0,
+            "peak_footprint_bytes": 1309120008,
+            "peak_rss_bytes": 1712898048,
+            "role_peak_footprint_bytes": {
+              "app": 841762496,
+              "cleanup": 208503816,
+              "webview": 268323672,
+              "extra": 0
+            }
+          },
+          "warm_07_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1165972976,
+            "peak_footprint_bytes": 1165972976,
+            "peak_rss_bytes": 1657552896,
+            "role_peak_footprint_bytes": {
+              "app": 693601936,
+              "cleanup": 208503816,
+              "webview": 263867224,
+              "extra": 0
+            }
+          },
+          "warm_07_idle": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1173100040,
+            "peak_footprint_bytes": 1183995400,
+            "peak_rss_bytes": 1658699776,
+            "role_peak_footprint_bytes": {
+              "app": 693601936,
+              "cleanup": 208503816,
+              "webview": 281889648,
+              "extra": 0
+            }
+          },
+          "warm_08_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1116263992,
+            "peak_footprint_bytes": 1320867360,
+            "peak_rss_bytes": 1714503680,
+            "role_peak_footprint_bytes": {
+              "app": 841975488,
+              "cleanup": 208503816,
+              "webview": 270650224,
+              "extra": 0
+            }
+          },
+          "warm_08_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1168332296,
+            "peak_footprint_bytes": 1168332296,
+            "peak_rss_bytes": 1658945536,
+            "role_peak_footprint_bytes": {
+              "app": 693700240,
+              "cleanup": 208536584,
+              "webview": 266095472,
+              "extra": 0
+            }
+          },
+          "warm_08_idle": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1178490376,
+            "peak_footprint_bytes": 1190155784,
+            "peak_rss_bytes": 1659518976,
+            "role_peak_footprint_bytes": {
+              "app": 693733008,
+              "cleanup": 208536584,
+              "webview": 287886192,
+              "extra": 0
+            }
+          },
+          "warm_09_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1135359532.0,
+            "peak_footprint_bytes": 1341117984,
+            "peak_rss_bytes": 1715355648,
+            "role_peak_footprint_bytes": {
+              "app": 857114304,
+              "cleanup": 208536584,
+              "webview": 276220784,
+              "extra": 0
+            }
+          },
+          "warm_09_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1027855880,
+            "peak_footprint_bytes": 1027855880,
+            "peak_rss_bytes": 1662271488,
+            "role_peak_footprint_bytes": {
+              "app": 711575184,
+              "cleanup": 121619464,
+              "webview": 194661232,
+              "extra": 0
+            }
+          },
+          "warm_09_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1180440072.0,
+            "peak_footprint_bytes": 1193039368,
+            "peak_rss_bytes": 1661386752,
+            "role_peak_footprint_bytes": {
+              "app": 693782160,
+              "cleanup": 208503816,
+              "webview": 290786160,
+              "extra": 0
+            }
+          },
+          "warm_10_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1136137784.0,
+            "peak_footprint_bytes": 1343264288,
+            "peak_rss_bytes": 1717239808,
+            "role_peak_footprint_bytes": {
+              "app": 857147072,
+              "cleanup": 208503816,
+              "webview": 277842800,
+              "extra": 0
+            }
+          },
+          "warm_10_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1179129352,
+            "peak_footprint_bytes": 1179129352,
+            "peak_rss_bytes": 1644789760,
+            "role_peak_footprint_bytes": {
+              "app": 693880464,
+              "cleanup": 208552968,
+              "webview": 276695920,
+              "extra": 0
+            }
+          },
+          "warm_10_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1188664864.0,
+            "peak_footprint_bytes": 1202001440,
+            "peak_rss_bytes": 1647198208,
+            "role_peak_footprint_bytes": {
+              "app": 693896848,
+              "cleanup": 208552968,
+              "webview": 299568008,
+              "extra": 0
+            }
+          },
+          "after_repeats_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 963548704.0,
+            "peak_footprint_bytes": 1187845664,
+            "peak_rss_bytes": 1647247360,
+            "role_peak_footprint_bytes": {
+              "app": 693831312,
+              "cleanup": 208552968,
+              "webview": 285461384,
+              "extra": 0
+            }
+          },
+          "cleanup_release_wait": {
+            "samples": 627,
+            "complete_samples": 627,
+            "median_footprint_bytes": 954652168,
+            "peak_footprint_bytes": 966907400,
+            "peak_rss_bytes": 1647296512,
+            "role_peak_footprint_bytes": {
+              "app": 694240912,
+              "cleanup": 121635848,
+              "webview": 151456624,
+              "extra": 0
+            }
+          },
+          "cleanup_released_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 845451776.0,
+            "peak_footprint_bytes": 845500928,
+            "peak_rss_bytes": 348291072,
+            "role_peak_footprint_bytes": {
+              "app": 694191760,
+              "cleanup": 0,
+              "webview": 151309168,
+              "extra": 0
+            }
+          },
+          "reload_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1008734744,
+            "peak_footprint_bytes": 1009013320,
+            "peak_rss_bytes": 408862720,
+            "role_peak_footprint_bytes": {
+              "app": 857589464,
+              "cleanup": 0,
+              "webview": 151423856,
+              "extra": 0
+            }
+          },
+          "reload_cleanup": {
+            "samples": 6,
+            "complete_samples": 6,
+            "median_footprint_bytes": 1161000456.0,
+            "peak_footprint_bytes": 1163220488,
+            "peak_rss_bytes": 973897728,
+            "role_peak_footprint_bytes": {
+              "app": 694306448,
+              "cleanup": 193905648,
+              "webview": 275057544,
+              "extra": 0
+            }
+          },
+          "cleanup_reloaded_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 963573256.0,
+            "peak_footprint_bytes": 1190450696,
+            "peak_rss_bytes": 977895424,
+            "role_peak_footprint_bytes": {
+              "app": 694322832,
+              "cleanup": 193905648,
+              "webview": 302254984,
+              "extra": 0
+            }
+          },
+          "failure_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1019089456.0,
+            "peak_footprint_bytes": 1061687928,
+            "peak_rss_bytes": 458162176,
+            "role_peak_footprint_bytes": {
+              "app": 900056816,
+              "cleanup": 0,
+              "webview": 161713032,
+              "extra": 0
+            }
+          },
+          "recovery_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1166938708.0,
+            "peak_footprint_bytes": 1207603856,
+            "peak_rss_bytes": 468254720,
+            "role_peak_footprint_bytes": {
+              "app": 900056816,
+              "cleanup": 0,
+              "webview": 310021024,
+              "extra": 0
+            }
+          },
+          "recovery_cleanup": {
+            "samples": 3,
+            "complete_samples": 3,
+            "median_footprint_bytes": 1194399264,
+            "peak_footprint_bytes": 1196054048,
+            "peak_rss_bytes": 989380608,
+            "role_peak_footprint_bytes": {
+              "app": 694306448,
+              "cleanup": 193414128,
+              "webview": 308349856,
+              "extra": 0
+            }
+          },
+          "model_switch": {
+            "samples": 2,
+            "complete_samples": 2,
+            "median_footprint_bytes": 707801480.0,
+            "peak_footprint_bytes": 925225520,
+            "peak_rss_bytes": 853606400,
+            "role_peak_footprint_bytes": {
+              "app": 597411448,
+              "cleanup": 0,
+              "webview": 329042872,
+              "extra": 0
+            }
+          },
+          "switched_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 862458440.0,
+            "peak_footprint_bytes": 1018860104,
+            "peak_rss_bytes": 951091200,
+            "role_peak_footprint_bytes": {
+              "app": 694339216,
+              "cleanup": 0,
+              "webview": 324520888,
+              "extra": 0
+            }
+          },
+          "model_restore": {
+            "samples": 2,
+            "complete_samples": 2,
+            "median_footprint_bytes": 539554172.0,
+            "peak_footprint_bytes": 788681288,
+            "peak_rss_bytes": 877314048,
+            "role_peak_footprint_bytes": {
+              "app": 620545680,
+              "cleanup": 0,
+              "webview": 168135608,
+              "extra": 0
+            }
+          },
+          "long_import_stt": {
+            "samples": 24,
+            "complete_samples": 24,
+            "median_footprint_bytes": 1104720648.0,
+            "peak_footprint_bytes": 1184322216,
+            "peak_rss_bytes": 1093353472,
+            "role_peak_footprint_bytes": {
+              "app": 936675152,
+              "cleanup": 0,
+              "webview": 317705168,
+              "extra": 0
+            }
+          },
+          "post_import_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 903598808.0,
+            "peak_footprint_bytes": 1064211160,
+            "peak_rss_bytes": 996605952,
+            "role_peak_footprint_bytes": {
+              "app": 729450200,
+              "cleanup": 0,
+              "webview": 334777344,
+              "extra": 0
+            }
+          },
+          "post_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 903353048.0,
+            "peak_footprint_bytes": 903369432,
+            "peak_rss_bytes": 996605952,
+            "role_peak_footprint_bytes": {
+              "app": 729450200,
+              "cleanup": 0,
+              "webview": 173919232,
+              "extra": 0
+            }
+          }
+        },
+        "peak_footprint_bytes": 1343264288,
+        "per_process_lifetime_peaks_bytes_do_not_sum": {
+          "19167:28275878669408": 936740688,
+          "19192:28275911645322": 196150016,
+          "19193:28275912365798": 9224720,
+          "19194:28275912478291": 123405104,
+          "19197:28275915144663": 43451088,
+          "19390:28276251194498": 208585736,
+          "23128:28279132548042": 193938416,
+          "23243:28279305621768": 193446896
+        },
+        "max_sample_gap_seconds": 0.14379625000000829,
+        "p95_sample_gap_seconds": 0.10896341700001244,
+        "webview_pids_seen": [
+          19192,
+          19193,
+          19194,
+          19197
+        ],
+        "events": [
+          {
+            "details": {
+              "build": "release",
+              "cleanup_idle_seconds": 60,
+              "cleanup_lifecycle_checks": true,
+              "cleanup_loading": "on_demand"
+            },
+            "kind": "begin",
+            "scenario": "startup",
+            "time_ms": 1791394384062
+          },
+          {
+            "details": {
+              "ready_latency_ms": 203.983417
+            },
+            "kind": "end",
+            "scenario": "startup",
+            "time_ms": 1791394384266
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "ready_idle",
+            "time_ms": 1791394384267
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "ready_idle",
+            "time_ms": 1791394389269
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "disabled_idle",
+            "time_ms": 1791394389270
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "disabled_idle",
+            "time_ms": 1791394394271
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "disabled_dictation",
+            "time_ms": 1791394394272
+          },
+          {
+            "cleaned_text": "",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 2953.212583,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "disabled_dictation",
+            "time_ms": 1791394397225
+          },
+          {
+            "details": {
+              "latency_ms": 2953.887375
+            },
+            "kind": "end",
+            "scenario": "disabled_dictation",
+            "time_ms": 1791394397226
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "cold_dictation",
+            "time_ms": 1791394397227
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "cold_stt",
+            "time_ms": 1791394397227
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "cold_cleanup",
+            "time_ms": 1791394398040
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 7289.081166,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "cold_dictation",
+            "time_ms": 1791394404516
+          },
+          {
+            "details": {
+              "latency_ms": 7289.242916
+            },
+            "kind": "end",
+            "scenario": "cold_dictation",
+            "time_ms": 1791394404517
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "after_cold_idle",
+            "time_ms": 1791394404517
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "after_cold_idle",
+            "time_ms": 1791394409519
+          },
+          {
+            "details": {
+              "source": "synthetic English PCM, real-time replay"
+            },
+            "kind": "begin",
+            "scenario": "capture_previews",
+            "time_ms": 1791394409519
+          },
+          {
+            "details": {
+              "elapsed_ms": 2254.346292,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394411774
+          },
+          {
+            "details": {
+              "elapsed_ms": 4001.563,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394413521
+          },
+          {
+            "details": {
+              "elapsed_ms": 5821.880208,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394415341
+          },
+          {
+            "details": {
+              "elapsed_ms": 7808.633000000001,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394417328
+          },
+          {
+            "details": {
+              "elapsed_ms": 9848.923542,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394419368
+          },
+          {
+            "details": {
+              "elapsed_ms": 11908.4925,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394421428
+          },
+          {
+            "details": {
+              "previews": 6
+            },
+            "kind": "end",
+            "scenario": "capture_previews",
+            "time_ms": 1791394422747
+          },
+          {
+            "cleaned_text": "",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "preview"
+            ],
+            "kind": "result",
+            "latency_ms": 13227.056292000001,
+            "quality_ok": true,
+            "raw_text": "preview",
+            "scenario": "preview_coverage",
+            "time_ms": 1791394422747
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_01_dictation",
+            "time_ms": 1791394422747
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_01_stt",
+            "time_ms": 1791394422747
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_01_cleanup",
+            "time_ms": 1791394423593
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 899.9775840000001,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_01_dictation",
+            "time_ms": 1791394423647
+          },
+          {
+            "details": {
+              "latency_ms": 900.078959
+            },
+            "kind": "end",
+            "scenario": "warm_01_dictation",
+            "time_ms": 1791394423647
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_01_idle",
+            "time_ms": 1791394423647
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_01_idle",
+            "time_ms": 1791394424649
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_02_dictation",
+            "time_ms": 1791394424649
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_02_stt",
+            "time_ms": 1791394424649
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_02_cleanup",
+            "time_ms": 1791394425542
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 977.4292919999999,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_02_dictation",
+            "time_ms": 1791394425627
+          },
+          {
+            "details": {
+              "latency_ms": 977.5285
+            },
+            "kind": "end",
+            "scenario": "warm_02_dictation",
+            "time_ms": 1791394425627
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_02_idle",
+            "time_ms": 1791394425627
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_02_idle",
+            "time_ms": 1791394426629
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_03_dictation",
+            "time_ms": 1791394426629
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_03_stt",
+            "time_ms": 1791394426629
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_03_cleanup",
+            "time_ms": 1791394427465
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 898.3703750000001,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_03_dictation",
+            "time_ms": 1791394427528
+          },
+          {
+            "details": {
+              "latency_ms": 898.476917
+            },
+            "kind": "end",
+            "scenario": "warm_03_dictation",
+            "time_ms": 1791394427528
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_03_idle",
+            "time_ms": 1791394427528
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_03_idle",
+            "time_ms": 1791394428530
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_04_dictation",
+            "time_ms": 1791394428530
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_04_stt",
+            "time_ms": 1791394428530
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_04_cleanup",
+            "time_ms": 1791394429410
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 963.440417,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_04_dictation",
+            "time_ms": 1791394429494
+          },
+          {
+            "details": {
+              "latency_ms": 963.545792
+            },
+            "kind": "end",
+            "scenario": "warm_04_dictation",
+            "time_ms": 1791394429494
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_04_idle",
+            "time_ms": 1791394429494
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_04_idle",
+            "time_ms": 1791394430496
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_05_dictation",
+            "time_ms": 1791394430496
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_05_stt",
+            "time_ms": 1791394430496
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_05_cleanup",
+            "time_ms": 1791394431340
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 906.763084,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_05_dictation",
+            "time_ms": 1791394431403
+          },
+          {
+            "details": {
+              "latency_ms": 906.871459
+            },
+            "kind": "end",
+            "scenario": "warm_05_dictation",
+            "time_ms": 1791394431403
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_05_idle",
+            "time_ms": 1791394431403
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_05_idle",
+            "time_ms": 1791394432405
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_06_dictation",
+            "time_ms": 1791394432405
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_06_stt",
+            "time_ms": 1791394432405
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_06_cleanup",
+            "time_ms": 1791394433285
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 962.985042,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_06_dictation",
+            "time_ms": 1791394433368
+          },
+          {
+            "details": {
+              "latency_ms": 963.15025
+            },
+            "kind": "end",
+            "scenario": "warm_06_dictation",
+            "time_ms": 1791394433368
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_06_idle",
+            "time_ms": 1791394433368
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_06_idle",
+            "time_ms": 1791394434369
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_07_dictation",
+            "time_ms": 1791394434369
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_07_stt",
+            "time_ms": 1791394434370
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_07_cleanup",
+            "time_ms": 1791394435227
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 917.941042,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_07_dictation",
+            "time_ms": 1791394435287
+          },
+          {
+            "details": {
+              "latency_ms": 918.112208
+            },
+            "kind": "end",
+            "scenario": "warm_07_dictation",
+            "time_ms": 1791394435288
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_07_idle",
+            "time_ms": 1791394435288
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_07_idle",
+            "time_ms": 1791394436290
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_08_dictation",
+            "time_ms": 1791394436290
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_08_stt",
+            "time_ms": 1791394436290
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_08_cleanup",
+            "time_ms": 1791394437184
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 975.1039999999999,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_08_dictation",
+            "time_ms": 1791394437265
+          },
+          {
+            "details": {
+              "latency_ms": 975.298417
+            },
+            "kind": "end",
+            "scenario": "warm_08_dictation",
+            "time_ms": 1791394437265
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_08_idle",
+            "time_ms": 1791394437265
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_08_idle",
+            "time_ms": 1791394438266
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_09_dictation",
+            "time_ms": 1791394438266
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_09_stt",
+            "time_ms": 1791394438266
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_09_cleanup",
+            "time_ms": 1791394439106
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 902.2240419999999,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_09_dictation",
+            "time_ms": 1791394439169
+          },
+          {
+            "details": {
+              "latency_ms": 902.352959
+            },
+            "kind": "end",
+            "scenario": "warm_09_dictation",
+            "time_ms": 1791394439169
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_09_idle",
+            "time_ms": 1791394439169
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_09_idle",
+            "time_ms": 1791394440171
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_10_dictation",
+            "time_ms": 1791394440171
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_10_stt",
+            "time_ms": 1791394440171
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_10_cleanup",
+            "time_ms": 1791394441046
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 958.6224159999999,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_10_dictation",
+            "time_ms": 1791394441130
+          },
+          {
+            "details": {
+              "latency_ms": 958.737375
+            },
+            "kind": "end",
+            "scenario": "warm_10_dictation",
+            "time_ms": 1791394441130
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_10_idle",
+            "time_ms": 1791394441130
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_10_idle",
+            "time_ms": 1791394442131
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "after_repeats_idle",
+            "time_ms": 1791394442131
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "after_repeats_idle",
+            "time_ms": 1791394447133
+          },
+          {
+            "details": {
+              "seconds": 65
+            },
+            "kind": "begin",
+            "scenario": "cleanup_release_wait",
+            "time_ms": 1791394447133
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "cleanup_release_wait",
+            "time_ms": 1791394512135
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "cleanup_released_idle",
+            "time_ms": 1791394512135
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "cleanup_released_idle",
+            "time_ms": 1791394517137
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "reload_dictation",
+            "time_ms": 1791394517138
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "reload_stt",
+            "time_ms": 1791394517138
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "reload_cleanup",
+            "time_ms": 1791394518097
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 1512.65275,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "reload_dictation",
+            "time_ms": 1791394518650
+          },
+          {
+            "details": {
+              "latency_ms": 1512.829375
+            },
+            "kind": "end",
+            "scenario": "reload_dictation",
+            "time_ms": 1791394518650
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "cleanup_reloaded_idle",
+            "time_ms": 1791394518651
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "cleanup_reloaded_idle",
+            "time_ms": 1791394523652
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "failed_load_dictation",
+            "time_ms": 1791394523658
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "failure_stt",
+            "time_ms": 1791394523658
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "failure_cleanup",
+            "time_ms": 1791394524490
+          },
+          {
+            "cleaned_text": "",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 839.561209,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "failed_load_dictation",
+            "time_ms": 1791394524497
+          },
+          {
+            "details": {
+              "latency_ms": 839.726834
+            },
+            "kind": "end",
+            "scenario": "failed_load_dictation",
+            "time_ms": 1791394524497
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "recovered_dictation",
+            "time_ms": 1791394524498
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "recovery_stt",
+            "time_ms": 1791394524498
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "recovery_cleanup",
+            "time_ms": 1791394525309
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 1175.549959,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "recovered_dictation",
+            "time_ms": 1791394525674
+          },
+          {
+            "details": {
+              "latency_ms": 1175.6475
+            },
+            "kind": "end",
+            "scenario": "recovered_dictation",
+            "time_ms": 1791394525674
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "model_switch",
+            "time_ms": 1791394525674
+          },
+          {
+            "details": {
+              "latency_ms": 211.973917
+            },
+            "kind": "end",
+            "scenario": "model_switch",
+            "time_ms": 1791394525886
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "switched_idle",
+            "time_ms": 1791394525886
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "switched_idle",
+            "time_ms": 1791394530888
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "model_restore",
+            "time_ms": 1791394530888
+          },
+          {
+            "details": {},
+            "kind": "end",
+            "scenario": "model_restore",
+            "time_ms": 1791394531101
+          },
+          {
+            "details": {
+              "cleanup": "off",
+              "seconds": 30
+            },
+            "kind": "begin",
+            "scenario": "long_import",
+            "time_ms": 1791394531102
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "long_import_stt",
+            "time_ms": 1791394531109
+          },
+          {
+            "cleaned_text": "",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "notebook",
+              "garden",
+              "umbrella",
+              "ticket",
+              "museum",
+              "bicycle",
+              "telescope",
+              "saturday",
+              "atlas",
+              "camera",
+              "suitcase",
+              "waterfall"
+            ],
+            "kind": "result",
+            "latency_ms": 2448.480875,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. On Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+            "scenario": "long_import",
+            "time_ms": 1791394533551
+          },
+          {
+            "details": {
+              "audio_seconds": 50.5683125,
+              "recognized_notebook_occurrences": 1,
+              "repetitions": 1
+            },
+            "kind": "end",
+            "scenario": "long_import",
+            "time_ms": 1791394533551
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "post_import_idle",
+            "time_ms": 1791394533552
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "post_import_idle",
+            "time_ms": 1791394538554
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "post_idle",
+            "time_ms": 1791394538554
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "post_idle",
+            "time_ms": 1791394543555
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "complete",
+            "time_ms": 1791394543555
+          },
+          {
+            "details": {
+              "total_ms": 159491.25183300002
+            },
+            "kind": "end",
+            "scenario": "complete",
+            "time_ms": 1791394543555
+          }
+        ],
+        "quality_checks": [
+          {
+            "kind": "quality_check",
+            "scenario": "long_import_occurrences",
+            "quality_ok": true,
+            "minimum_occurrences": 1,
+            "observed_occurrences": {
+              "notebook": 1,
+              "garden": 1,
+              "umbrella": 1,
+              "ticket": 1,
+              "museum": 1,
+              "bicycle": 1,
+              "telescope": 1,
+              "saturday": 1,
+              "atlas": 1,
+              "camera": 1,
+              "suitcase": 1,
+              "waterfall": 1
+            }
+          }
+        ],
+        "quality_failures": [],
+        "completed": true
+      },
+      "raw_archive": "whisper-release-1.jsonl.gz",
+      "raw_archive_sha256": "45a4677bab586d9425668e2b249d87d4fa48c5cb6056ea00bd3982fc19ec29e0"
+    },
+    {
+      "name": "whisper-release-2",
+      "metadata": {
+        "created_at": "2026-10-07T17:36:13.825980+00:00",
+        "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+        "machine": "arm64",
+        "hardware": "Mac16,7\nApple M4 Pro",
+        "ram_bytes": 25769803776,
+        "git_commit": "4db52012d6eb988f7b9a861db1575d053fd2aeb7",
+        "interval_seconds": 0.1,
+        "build_label": "release-memory-bench-1052",
+        "xpc_attribution_available": true,
+        "extra_pids": [],
+        "config": {
+          "stt_engine": "whisper",
+          "stt_model": "ggml-large-v3-turbo-q5_0.bin",
+          "cleanup_model": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "switch_cleanup_model": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "repeats": 10,
+          "idle_seconds": 5,
+          "post_idle_seconds": 5,
+          "long_import_seconds": 30,
+          "cleanup_lifecycle_checks": true,
+          "events_path": "events.jsonl"
+        },
+        "models": {
+          "stt_model": {
+            "name": "ggml-large-v3-turbo-q5_0.bin",
+            "bytes": 574041195,
+            "sha256": "394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2"
+          },
+          "cleanup_model": {
+            "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+            "bytes": 491400032,
+            "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+          },
+          "switch_cleanup_model": {
+            "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+            "bytes": 1117320736,
+            "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+          }
+        },
+        "fixtures": {
+          "english.wav": {
+            "bytes": 87606,
+            "sha256": "25099515efd597162712930cc7cb609f33fa2ffb6993209917b9696f3b45d01c",
+            "seconds": 2.73525
+          },
+          "french.wav": {
+            "bytes": 130728,
+            "sha256": "79458d2a6e15e391ae2661b7f2c29da059029eeace136d1744060402f0f656bf",
+            "seconds": 4.0828125
+          },
+          "long-import.wav": {
+            "bytes": 1618264,
+            "sha256": "59237b9009c1b6c6b677118bf807c59111d4a2a371a5163cee6e256007289db2",
+            "seconds": 50.5683125
+          }
+        },
+        "cache_state": "new process, OS file cache uncontrolled (model hashes read before launch)",
+        "root_pid": 23609,
+        "responsible_pid": 23609,
+        "root_identity": {
+          "resident_size": 32768,
+          "phys_footprint": 81992,
+          "lifetime_max_phys_footprint": 98376,
+          "proc_start_abstime": 28280489056915,
+          "pageins": 0
+        },
+        "source_tree_dirty": true
+      },
+      "sample_count": 1460,
+      "incomplete_samples": 0,
+      "phase_role_medians": {
+        "startup": {
+          "median_footprint_bytes": 41887676.0,
+          "median_by_role_bytes": {
+            "app": 32941076.0,
+            "cleanup": 0.0,
+            "webview": 8946600.0
+          },
+          "cleanup_pids": []
+        },
+        "ready_idle": {
+          "median_footprint_bytes": 745607560.0,
+          "median_by_role_bytes": {
+            "app": 629507584.0,
+            "cleanup": 0.0,
+            "webview": 116099976.0
+          },
+          "cleanup_pids": []
+        },
+        "disabled_idle": {
+          "median_footprint_bytes": 744018288,
+          "median_by_role_bytes": {
+            "app": 629147136,
+            "cleanup": 0,
+            "webview": 114871152
+          },
+          "cleanup_pids": []
+        },
+        "disabled_dictation": {
+          "median_footprint_bytes": 911389208.0,
+          "median_by_role_bytes": {
+            "app": 797853376.0,
+            "cleanup": 0.0,
+            "webview": 113535832.0
+          },
+          "cleanup_pids": []
+        },
+        "cold_stt": {
+          "median_footprint_bytes": 1063768624,
+          "median_by_role_bytes": {
+            "app": 812254936,
+            "cleanup": 0,
+            "webview": 251513688
+          },
+          "cleanup_pids": []
+        },
+        "cold_cleanup": {
+          "median_footprint_bytes": 1055610100.0,
+          "median_by_role_bytes": {
+            "app": 671106680.0,
+            "cleanup": 129901360.0,
+            "webview": 254602060.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "after_cold_idle": {
+          "median_footprint_bytes": 896439744.0,
+          "median_by_role_bytes": {
+            "app": 671073912.0,
+            "cleanup": 109151216.0,
+            "webview": 116214616.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "capture_previews": {
+          "median_footprint_bytes": 899560896.0,
+          "median_by_role_bytes": {
+            "app": 678200952.0,
+            "cleanup": 109134832.0,
+            "webview": 110529344.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_01_stt": {
+          "median_footprint_bytes": 1045722632.0,
+          "median_by_role_bytes": {
+            "app": 826042072.0,
+            "cleanup": 109134832.0,
+            "webview": 110545728.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_01_cleanup": {
+          "median_footprint_bytes": 1104074176,
+          "median_by_role_bytes": {
+            "app": 679839376,
+            "cleanup": 196150256,
+            "webview": 228084544
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_01_idle": {
+          "median_footprint_bytes": 1123866024,
+          "median_by_role_bytes": {
+            "app": 678741624,
+            "cleanup": 196150256,
+            "webview": 248957760
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_02_stt": {
+          "median_footprint_bytes": 1053382176,
+          "median_by_role_bytes": {
+            "app": 826263256,
+            "cleanup": 109265904,
+            "webview": 117590848
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_02_cleanup": {
+          "median_footprint_bytes": 1107187136,
+          "median_by_role_bytes": {
+            "app": 679872144,
+            "cleanup": 196297712,
+            "webview": 231017280
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_02_idle": {
+          "median_footprint_bytes": 1136154096,
+          "median_by_role_bytes": {
+            "app": 678807160,
+            "cleanup": 196297712,
+            "webview": 261049224
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_03_stt": {
+          "median_footprint_bytes": 1101010488.0,
+          "median_by_role_bytes": {
+            "app": 826459864.0,
+            "cleanup": 109380592.0,
+            "webview": 188099464.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_03_cleanup": {
+          "median_footprint_bytes": 969741880,
+          "median_by_role_bytes": {
+            "app": 730728104,
+            "cleanup": 109413360,
+            "webview": 129600416
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_03_idle": {
+          "median_footprint_bytes": 1136211464.0,
+          "median_by_role_bytes": {
+            "app": 679323256.0,
+            "cleanup": 196297712.0,
+            "webview": 260598688.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_04_stt": {
+          "median_footprint_bytes": 1079039604.0,
+          "median_by_role_bytes": {
+            "app": 827123416.0,
+            "cleanup": 109388784.0,
+            "webview": 142396320.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_04_cleanup": {
+          "median_footprint_bytes": 1131566600,
+          "median_by_role_bytes": {
+            "app": 679429752,
+            "cleanup": 196330480,
+            "webview": 255806368
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_04_idle": {
+          "median_footprint_bytes": 1138251296.0,
+          "median_by_role_bytes": {
+            "app": 679380600.0,
+            "cleanup": 196330480.0,
+            "webview": 262523832.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_05_stt": {
+          "median_footprint_bytes": 1085585060.0,
+          "median_by_role_bytes": {
+            "app": 827279064.0,
+            "cleanup": 109413360.0,
+            "webview": 144640952.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_05_cleanup": {
+          "median_footprint_bytes": 1133794848,
+          "median_by_role_bytes": {
+            "app": 679446136,
+            "cleanup": 196314096,
+            "webview": 258034616
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_05_idle": {
+          "median_footprint_bytes": 1141691936,
+          "median_by_role_bytes": {
+            "app": 679429752,
+            "cleanup": 196314096,
+            "webview": 265948088
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_06_stt": {
+          "median_footprint_bytes": 1140430512,
+          "median_by_role_bytes": {
+            "app": 827426520,
+            "cleanup": 109429744,
+            "webview": 145492920
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_06_cleanup": {
+          "median_footprint_bytes": 1137071648,
+          "median_by_role_bytes": {
+            "app": 679511672,
+            "cleanup": 196363248,
+            "webview": 261196728
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_06_idle": {
+          "median_footprint_bytes": 1144624672,
+          "median_by_role_bytes": {
+            "app": 679511672,
+            "cleanup": 196363248,
+            "webview": 268749752
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_07_stt": {
+          "median_footprint_bytes": 1086936704,
+          "median_by_role_bytes": {
+            "app": 827541208,
+            "cleanup": 109446128,
+            "webview": 149769144
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_07_idle": {
+          "median_footprint_bytes": 1150645840.0,
+          "median_by_role_bytes": {
+            "app": 680003192.0,
+            "cleanup": 196346864.0,
+            "webview": 274303976.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_08_stt": {
+          "median_footprint_bytes": 1091679908.0,
+          "median_by_role_bytes": {
+            "app": 828106432.0,
+            "cleanup": 109462512.0,
+            "webview": 153971688.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_08_cleanup": {
+          "median_footprint_bytes": 1148032592,
+          "median_by_role_bytes": {
+            "app": 680085112,
+            "cleanup": 196379632,
+            "webview": 271567848
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_08_idle": {
+          "median_footprint_bytes": 1153734248.0,
+          "median_by_role_bytes": {
+            "app": 680052344.0,
+            "cleanup": 196379632.0,
+            "webview": 277302272.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_09_stt": {
+          "median_footprint_bytes": 1109907168.0,
+          "median_by_role_bytes": {
+            "app": 843269848.0,
+            "cleanup": 109462512.0,
+            "webview": 156896256.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_09_cleanup": {
+          "median_footprint_bytes": 1150981736,
+          "median_by_role_bytes": {
+            "app": 680150648,
+            "cleanup": 196346864,
+            "webview": 274484224
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_09_idle": {
+          "median_footprint_bytes": 1154143872,
+          "median_by_role_bytes": {
+            "app": 680134264,
+            "cleanup": 196346864,
+            "webview": 277662744
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_10_stt": {
+          "median_footprint_bytes": 1152947960,
+          "median_by_role_bytes": {
+            "app": 843335384,
+            "cleanup": 109462512,
+            "webview": 157305856
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_10_cleanup": {
+          "median_footprint_bytes": 1153816168,
+          "median_by_role_bytes": {
+            "app": 680167032,
+            "cleanup": 196379632,
+            "webview": 277269504
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "warm_10_idle": {
+          "median_footprint_bytes": 1157797480,
+          "median_by_role_bytes": {
+            "app": 680167032,
+            "cleanup": 196379632,
+            "webview": 281267200
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "after_repeats_idle": {
+          "median_footprint_bytes": 933729896.0,
+          "median_by_role_bytes": {
+            "app": 680150648.0,
+            "cleanup": 109462512.0,
+            "webview": 144100352.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "cleanup_release_wait": {
+          "median_footprint_bytes": 924882512.0,
+          "median_by_role_bytes": {
+            "app": 680134264.0,
+            "cleanup": 109462512.0,
+            "webview": 135285736.0
+          },
+          "cleanup_pids": [
+            23787
+          ]
+        },
+        "cleanup_released_idle": {
+          "median_footprint_bytes": 815387232.0,
+          "median_by_role_bytes": {
+            "app": 680134264.0,
+            "cleanup": 0.0,
+            "webview": 135236584.0
+          },
+          "cleanup_pids": []
+        },
+        "reload_stt": {
+          "median_footprint_bytes": 978637504,
+          "median_by_role_bytes": {
+            "app": 843335384,
+            "cleanup": 0,
+            "webview": 135302120
+          },
+          "cleanup_pids": []
+        },
+        "reload_cleanup": {
+          "median_footprint_bytes": 1126209152,
+          "median_by_role_bytes": {
+            "app": 680183416,
+            "cleanup": 188105736,
+            "webview": 257920000
+          },
+          "cleanup_pids": [
+            26090
+          ]
+        },
+        "cleanup_reloaded_idle": {
+          "median_footprint_bytes": 932189848,
+          "median_by_role_bytes": {
+            "app": 680150648,
+            "cleanup": 105432072,
+            "webview": 146607128
+          },
+          "cleanup_pids": [
+            26090
+          ]
+        },
+        "failure_stt": {
+          "median_footprint_bytes": 988803824.0,
+          "median_by_role_bytes": {
+            "app": 843376344.0,
+            "cleanup": 0.0,
+            "webview": 145427480.0
+          },
+          "cleanup_pids": []
+        },
+        "recovery_stt": {
+          "median_footprint_bytes": 1129558792.0,
+          "median_by_role_bytes": {
+            "app": 843474648.0,
+            "cleanup": 0.0,
+            "webview": 286010416.0
+          },
+          "cleanup_pids": []
+        },
+        "recovery_cleanup": {
+          "median_footprint_bytes": 1094096500.0,
+          "median_by_role_bytes": {
+            "app": 680314488.0,
+            "cleanup": 127206348.0,
+            "webview": 286370864.0
+          },
+          "cleanup_pids": [
+            26214
+          ]
+        },
+        "model_switch": {
+          "median_footprint_bytes": 831869536.0,
+          "median_by_role_bytes": {
+            "app": 524363312.0,
+            "cleanup": 0.0,
+            "webview": 307506224.0
+          },
+          "cleanup_pids": []
+        },
+        "switched_idle": {
+          "median_footprint_bytes": 830624448.0,
+          "median_by_role_bytes": {
+            "app": 680363664.0,
+            "cleanup": 0.0,
+            "webview": 150260784.0
+          },
+          "cleanup_pids": []
+        },
+        "model_restore": {
+          "median_footprint_bytes": 547262964.0,
+          "median_by_role_bytes": {
+            "app": 398067140.0,
+            "cleanup": 0.0,
+            "webview": 149195824.0
+          },
+          "cleanup_pids": []
+        },
+        "long_import_stt": {
+          "median_footprint_bytes": 1073066928.0,
+          "median_by_role_bytes": {
+            "app": 876603180.0,
+            "cleanup": 0.0,
+            "webview": 168488008.0
+          },
+          "cleanup_pids": []
+        },
+        "post_import_idle": {
+          "median_footprint_bytes": 869249824.0,
+          "median_by_role_bytes": {
+            "app": 715458216.0,
+            "cleanup": 0.0,
+            "webview": 153783416.0
+          },
+          "cleanup_pids": []
+        },
+        "post_idle": {
+          "median_footprint_bytes": 869241632.0,
+          "median_by_role_bytes": {
+            "app": 715458216.0,
+            "cleanup": 0.0,
+            "webview": 153783416.0
+          },
+          "cleanup_pids": []
+        }
+      },
+      "idle_release_tree_reduction_bytes": 118342664.0,
+      "warm_median_latency_ms": 943.7313959999999,
+      "warm_p95_latency_ms": 988.068,
+      "cleanup_timings": {
+        "cold_dictation": {
+          "total_latency_ms": 1317.4857499999998,
+          "cleanup_phase_ms": 394
+        },
+        "reload_dictation": {
+          "total_latency_ms": 1283.120541,
+          "cleanup_phase_ms": 392
+        },
+        "failed_load_dictation": {
+          "total_latency_ms": 868.131,
+          "cleanup_phase_ms": 8
+        },
+        "recovered_dictation": {
+          "total_latency_ms": 1214.8564159999999,
+          "cleanup_phase_ms": 369
+        }
+      },
+      "summary": {
+        "phases": {
+          "startup": {
+            "samples": 4,
+            "complete_samples": 4,
+            "median_footprint_bytes": 41887676.0,
+            "peak_footprint_bytes": 603557824,
+            "peak_rss_bytes": 745177088,
+            "role_peak_footprint_bytes": {
+              "app": 540149224,
+              "cleanup": 0,
+              "webview": 63408600,
+              "extra": 0
+            }
+          },
+          "ready_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 745607560.0,
+            "peak_footprint_bytes": 952914312,
+            "peak_rss_bytes": 925646848,
+            "role_peak_footprint_bytes": {
+              "app": 629851648,
+              "cleanup": 0,
+              "webview": 323177352,
+              "extra": 0
+            }
+          },
+          "disabled_idle": {
+            "samples": 49,
+            "complete_samples": 49,
+            "median_footprint_bytes": 744018288,
+            "peak_footprint_bytes": 744640880,
+            "peak_rss_bytes": 925483008,
+            "role_peak_footprint_bytes": {
+              "app": 629212672,
+              "cleanup": 0,
+              "webview": 115428208,
+              "extra": 0
+            }
+          },
+          "disabled_dictation": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 911389208.0,
+            "peak_footprint_bytes": 912282160,
+            "peak_rss_bytes": 1008304128,
+            "role_peak_footprint_bytes": {
+              "app": 799180480,
+              "cleanup": 0,
+              "webview": 114428784,
+              "extra": 0
+            }
+          },
+          "cold_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1063768624,
+            "peak_footprint_bytes": 1063785008,
+            "peak_rss_bytes": 1030406144,
+            "role_peak_footprint_bytes": {
+              "app": 813385432,
+              "cleanup": 0,
+              "webview": 251513688,
+              "extra": 0
+            }
+          },
+          "cold_cleanup": {
+            "samples": 4,
+            "complete_samples": 4,
+            "median_footprint_bytes": 1055610100.0,
+            "peak_footprint_bytes": 1120114112,
+            "peak_rss_bytes": 1607204864,
+            "role_peak_footprint_bytes": {
+              "app": 672220816,
+              "cleanup": 192840688,
+              "webview": 256183128,
+              "extra": 0
+            }
+          },
+          "after_cold_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 896439744.0,
+            "peak_footprint_bytes": 1124783552,
+            "peak_rss_bytes": 1612529664,
+            "role_peak_footprint_bytes": {
+              "app": 671106680,
+              "cleanup": 196035568,
+              "webview": 257641304,
+              "extra": 0
+            }
+          },
+          "capture_previews": {
+            "samples": 128,
+            "complete_samples": 128,
+            "median_footprint_bytes": 899560896.0,
+            "peak_footprint_bytes": 1086953016,
+            "peak_rss_bytes": 1717108736,
+            "role_peak_footprint_bytes": {
+              "app": 867288840,
+              "cleanup": 109134832,
+              "webview": 115198808,
+              "extra": 0
+            }
+          },
+          "warm_01_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1045722632.0,
+            "peak_footprint_bytes": 1046009376,
+            "peak_rss_bytes": 1676509184,
+            "role_peak_footprint_bytes": {
+              "app": 826312432,
+              "cleanup": 109134832,
+              "webview": 110562112,
+              "extra": 0
+            }
+          },
+          "warm_01_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1104074176,
+            "peak_footprint_bytes": 1104074176,
+            "peak_rss_bytes": 1622704128,
+            "role_peak_footprint_bytes": {
+              "app": 679839376,
+              "cleanup": 196150256,
+              "webview": 228084544,
+              "extra": 0
+            }
+          },
+          "warm_01_idle": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1123866024,
+            "peak_footprint_bytes": 1124914624,
+            "peak_rss_bytes": 1623425024,
+            "role_peak_footprint_bytes": {
+              "app": 679855760,
+              "cleanup": 196150256,
+              "webview": 248990528,
+              "extra": 0
+            }
+          },
+          "warm_02_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1053382176,
+            "peak_footprint_bytes": 1271305736,
+            "peak_rss_bytes": 1678098432,
+            "role_peak_footprint_bytes": {
+              "app": 826525424,
+              "cleanup": 196150256,
+              "webview": 248892224,
+              "extra": 0
+            }
+          },
+          "warm_02_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1107187136,
+            "peak_footprint_bytes": 1107187136,
+            "peak_rss_bytes": 1624227840,
+            "role_peak_footprint_bytes": {
+              "app": 679872144,
+              "cleanup": 196297712,
+              "webview": 231017280,
+              "extra": 0
+            }
+          },
+          "warm_02_idle": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1136154096,
+            "peak_footprint_bytes": 1137153544,
+            "peak_rss_bytes": 1625489408,
+            "role_peak_footprint_bytes": {
+              "app": 679921296,
+              "cleanup": 196297712,
+              "webview": 261065608,
+              "extra": 0
+            }
+          },
+          "warm_03_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1101010488.0,
+            "peak_footprint_bytes": 1283642960,
+            "peak_rss_bytes": 1680130048,
+            "role_peak_footprint_bytes": {
+              "app": 826722032,
+              "cleanup": 196297712,
+              "webview": 260885384,
+              "extra": 0
+            }
+          },
+          "warm_03_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 969741880,
+            "peak_footprint_bytes": 969741880,
+            "peak_rss_bytes": 1627652096,
+            "role_peak_footprint_bytes": {
+              "app": 730728104,
+              "cleanup": 109413360,
+              "webview": 129600416,
+              "extra": 0
+            }
+          },
+          "warm_03_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1136211464.0,
+            "peak_footprint_bytes": 1136285192,
+            "peak_rss_bytes": 1627357184,
+            "role_peak_footprint_bytes": {
+              "app": 679331448,
+              "cleanup": 196297712,
+              "webview": 260656032,
+              "extra": 0
+            }
+          },
+          "warm_04_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1079039604.0,
+            "peak_footprint_bytes": 1196545640,
+            "peak_rss_bytes": 1682784256,
+            "role_peak_footprint_bytes": {
+              "app": 827393776,
+              "cleanup": 109413360,
+              "webview": 260230048,
+              "extra": 0
+            }
+          },
+          "warm_04_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1131566600,
+            "peak_footprint_bytes": 1131566600,
+            "peak_rss_bytes": 1627619328,
+            "role_peak_footprint_bytes": {
+              "app": 679429752,
+              "cleanup": 196330480,
+              "webview": 255806368,
+              "extra": 0
+            }
+          },
+          "warm_04_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1138251296.0,
+            "peak_footprint_bytes": 1138284064,
+            "peak_rss_bytes": 1628717056,
+            "role_peak_footprint_bytes": {
+              "app": 679429752,
+              "cleanup": 196330480,
+              "webview": 262540216,
+              "extra": 0
+            }
+          },
+          "warm_05_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1085585060.0,
+            "peak_footprint_bytes": 1198970496,
+            "peak_rss_bytes": 1692254208,
+            "role_peak_footprint_bytes": {
+              "app": 835503880,
+              "cleanup": 109413360,
+              "webview": 262261688,
+              "extra": 0
+            }
+          },
+          "warm_05_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1133794848,
+            "peak_footprint_bytes": 1133794848,
+            "peak_rss_bytes": 1628913664,
+            "role_peak_footprint_bytes": {
+              "app": 679446136,
+              "cleanup": 196314096,
+              "webview": 258034616,
+              "extra": 0
+            }
+          },
+          "warm_05_idle": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1141691936,
+            "peak_footprint_bytes": 1151112736,
+            "peak_rss_bytes": 1630732288,
+            "role_peak_footprint_bytes": {
+              "app": 679462520,
+              "cleanup": 196314096,
+              "webview": 275336120,
+              "extra": 0
+            }
+          },
+          "warm_06_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1140430512,
+            "peak_footprint_bytes": 1289508480,
+            "peak_rss_bytes": 1728905216,
+            "role_peak_footprint_bytes": {
+              "app": 885524232,
+              "cleanup": 196314096,
+              "webview": 265767864,
+              "extra": 0
+            }
+          },
+          "warm_06_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1137071648,
+            "peak_footprint_bytes": 1137071648,
+            "peak_rss_bytes": 1631043584,
+            "role_peak_footprint_bytes": {
+              "app": 679511672,
+              "cleanup": 196363248,
+              "webview": 261196728,
+              "extra": 0
+            }
+          },
+          "warm_06_idle": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1144624672,
+            "peak_footprint_bytes": 1154848288,
+            "peak_rss_bytes": 1632894976,
+            "role_peak_footprint_bytes": {
+              "app": 679528056,
+              "cleanup": 196363248,
+              "webview": 278956984,
+              "extra": 0
+            }
+          },
+          "warm_07_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1086936704,
+            "peak_footprint_bytes": 1292490368,
+            "peak_rss_bytes": 1688453120,
+            "role_peak_footprint_bytes": {
+              "app": 827803376,
+              "cleanup": 196330480,
+              "webview": 268618680,
+              "extra": 0
+            }
+          },
+          "warm_07_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1150645840.0,
+            "peak_footprint_bytes": 1161565776,
+            "peak_rss_bytes": 1635303424,
+            "role_peak_footprint_bytes": {
+              "app": 680019576,
+              "cleanup": 196346864,
+              "webview": 285199336,
+              "extra": 0
+            }
+          },
+          "warm_08_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1091679908.0,
+            "peak_footprint_bytes": 1211668120,
+            "peak_rss_bytes": 1691074560,
+            "role_peak_footprint_bytes": {
+              "app": 828376792,
+              "cleanup": 109462512,
+              "webview": 274123752,
+              "extra": 0
+            }
+          },
+          "warm_08_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1148032592,
+            "peak_footprint_bytes": 1148032592,
+            "peak_rss_bytes": 1635598336,
+            "role_peak_footprint_bytes": {
+              "app": 680085112,
+              "cleanup": 196379632,
+              "webview": 271567848,
+              "extra": 0
+            }
+          },
+          "warm_08_idle": {
+            "samples": 10,
+            "complete_samples": 10,
+            "median_footprint_bytes": 1153734248.0,
+            "peak_footprint_bytes": 1167251048,
+            "peak_rss_bytes": 1637089280,
+            "role_peak_footprint_bytes": {
+              "app": 680101496,
+              "cleanup": 196379632,
+              "webview": 290769920,
+              "extra": 0
+            }
+          },
+          "warm_09_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1109907168.0,
+            "peak_footprint_bytes": 1229838024,
+            "peak_rss_bytes": 1692975104,
+            "role_peak_footprint_bytes": {
+              "app": 843548400,
+              "cleanup": 109462512,
+              "webview": 277105664,
+              "extra": 0
+            }
+          },
+          "warm_09_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1150981736,
+            "peak_footprint_bytes": 1150981736,
+            "peak_rss_bytes": 1637253120,
+            "role_peak_footprint_bytes": {
+              "app": 680150648,
+              "cleanup": 196346864,
+              "webview": 274484224,
+              "extra": 0
+            }
+          },
+          "warm_09_idle": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1154143872,
+            "peak_footprint_bytes": 1166694016,
+            "peak_rss_bytes": 1638105088,
+            "role_peak_footprint_bytes": {
+              "app": 680183416,
+              "cleanup": 196346864,
+              "webview": 290196504,
+              "extra": 0
+            }
+          },
+          "warm_10_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1152947960,
+            "peak_footprint_bytes": 1317279456,
+            "peak_rss_bytes": 1736507392,
+            "role_peak_footprint_bytes": {
+              "app": 886179592,
+              "cleanup": 196346864,
+              "webview": 277597208,
+              "extra": 0
+            }
+          },
+          "warm_10_cleanup": {
+            "samples": 1,
+            "complete_samples": 1,
+            "median_footprint_bytes": 1153816168,
+            "peak_footprint_bytes": 1153816168,
+            "peak_rss_bytes": 1638252544,
+            "role_peak_footprint_bytes": {
+              "app": 680167032,
+              "cleanup": 196379632,
+              "webview": 277269504,
+              "extra": 0
+            }
+          },
+          "warm_10_idle": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 1157797480,
+            "peak_footprint_bytes": 1171117672,
+            "peak_rss_bytes": 1639251968,
+            "role_peak_footprint_bytes": {
+              "app": 680183416,
+              "cleanup": 196379632,
+              "webview": 294554624,
+              "extra": 0
+            }
+          },
+          "after_repeats_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 933729896.0,
+            "peak_footprint_bytes": 1157600872,
+            "peak_rss_bytes": 1639235584,
+            "role_peak_footprint_bytes": {
+              "app": 680167032,
+              "cleanup": 196379632,
+              "webview": 281054208,
+              "extra": 0
+            }
+          },
+          "cleanup_release_wait": {
+            "samples": 626,
+            "complete_samples": 626,
+            "median_footprint_bytes": 924882512.0,
+            "peak_footprint_bytes": 933549672,
+            "peak_rss_bytes": 1639219200,
+            "role_peak_footprint_bytes": {
+              "app": 680150648,
+              "cleanup": 109462512,
+              "webview": 143936512,
+              "extra": 0
+            }
+          },
+          "cleanup_released_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 815387232.0,
+            "peak_footprint_bytes": 815452768,
+            "peak_rss_bytes": 1017528320,
+            "role_peak_footprint_bytes": {
+              "app": 680150648,
+              "cleanup": 0,
+              "webview": 135302120,
+              "extra": 0
+            }
+          },
+          "reload_stt": {
+            "samples": 9,
+            "complete_samples": 9,
+            "median_footprint_bytes": 978637504,
+            "peak_footprint_bytes": 1021481712,
+            "peak_rss_bytes": 1115979776,
+            "role_peak_footprint_bytes": {
+              "app": 886179592,
+              "cleanup": 0,
+              "webview": 135302120,
+              "extra": 0
+            }
+          },
+          "reload_cleanup": {
+            "samples": 3,
+            "complete_samples": 3,
+            "median_footprint_bytes": 1126209152,
+            "peak_footprint_bytes": 1127880320,
+            "peak_rss_bytes": 1632321536,
+            "role_peak_footprint_bytes": {
+              "app": 680216184,
+              "cleanup": 189170696,
+              "webview": 258542592,
+              "extra": 0
+            }
+          },
+          "cleanup_reloaded_idle": {
+            "samples": 49,
+            "complete_samples": 49,
+            "median_footprint_bytes": 932189848,
+            "peak_footprint_bytes": 1154438808,
+            "peak_rss_bytes": 1636614144,
+            "role_peak_footprint_bytes": {
+              "app": 680183416,
+              "cleanup": 192136200,
+              "webview": 282119192,
+              "extra": 0
+            }
+          },
+          "failure_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 988803824.0,
+            "peak_footprint_bytes": 989074184,
+            "peak_rss_bytes": 1075019776,
+            "role_peak_footprint_bytes": {
+              "app": 843646704,
+              "cleanup": 0,
+              "webview": 145427480,
+              "extra": 0
+            }
+          },
+          "recovery_stt": {
+            "samples": 8,
+            "complete_samples": 8,
+            "median_footprint_bytes": 1129558792.0,
+            "peak_footprint_bytes": 1129698104,
+            "peak_rss_bytes": 1076445184,
+            "role_peak_footprint_bytes": {
+              "app": 843745032,
+              "cleanup": 0,
+              "webview": 286116912,
+              "extra": 0
+            }
+          },
+          "recovery_cleanup": {
+            "samples": 4,
+            "complete_samples": 4,
+            "median_footprint_bytes": 1094096500.0,
+            "peak_footprint_bytes": 1159042688,
+            "peak_rss_bytes": 1638842368,
+            "role_peak_footprint_bytes": {
+              "app": 680330872,
+              "cleanup": 192414680,
+              "webview": 286739504,
+              "extra": 0
+            }
+          },
+          "model_switch": {
+            "samples": 2,
+            "complete_samples": 2,
+            "median_footprint_bytes": 831869536.0,
+            "peak_footprint_bytes": 987894464,
+            "peak_rss_bytes": 1024376832,
+            "role_peak_footprint_bytes": {
+              "app": 680396432,
+              "cleanup": 0,
+              "webview": 307514416,
+              "extra": 0
+            }
+          },
+          "switched_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 830624448.0,
+            "peak_footprint_bytes": 988025536,
+            "peak_rss_bytes": 1024622592,
+            "role_peak_footprint_bytes": {
+              "app": 680396432,
+              "cleanup": 0,
+              "webview": 307645488,
+              "extra": 0
+            }
+          },
+          "model_restore": {
+            "samples": 2,
+            "complete_samples": 2,
+            "median_footprint_bytes": 547262964.0,
+            "peak_footprint_bytes": 812126912,
+            "peak_rss_bytes": 1007190016,
+            "role_peak_footprint_bytes": {
+              "app": 662931088,
+              "cleanup": 0,
+              "webview": 149195824,
+              "extra": 0
+            }
+          },
+          "long_import_stt": {
+            "samples": 24,
+            "complete_samples": 24,
+            "median_footprint_bytes": 1073066928.0,
+            "peak_footprint_bytes": 1146655568,
+            "peak_rss_bytes": 1161592832,
+            "role_peak_footprint_bytes": {
+              "app": 922814312,
+              "cleanup": 0,
+              "webview": 291163208,
+              "extra": 0
+            }
+          },
+          "post_import_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 869249824.0,
+            "peak_footprint_bytes": 1028199200,
+            "peak_rss_bytes": 1063075840,
+            "role_peak_footprint_bytes": {
+              "app": 715507368,
+              "cleanup": 0,
+              "webview": 312691832,
+              "extra": 0
+            }
+          },
+          "post_idle": {
+            "samples": 48,
+            "complete_samples": 48,
+            "median_footprint_bytes": 869241632.0,
+            "peak_footprint_bytes": 869258016,
+            "peak_rss_bytes": 1063026688,
+            "role_peak_footprint_bytes": {
+              "app": 715474600,
+              "cleanup": 0,
+              "webview": 153783416,
+              "extra": 0
+            }
+          }
+        },
+        "peak_footprint_bytes": 1317279456,
+        "per_process_lifetime_peaks_bytes_do_not_sum": {
+          "23609:28280489056915": 922879848,
+          "23615:28280491777805": 194446104,
+          "23616:28280491960512": 8946240,
+          "23617:28280492027220": 112476976,
+          "23618:28280493665284": 38847208,
+          "23787:28280783179395": 196412400,
+          "26090:28283518050938": 192168968,
+          "26214:28283688820045": 192414680
+        },
+        "max_sample_gap_seconds": 0.11451929100000768,
+        "p95_sample_gap_seconds": 0.10773133400000034,
+        "webview_pids_seen": [
+          23615,
+          23616,
+          23617,
+          23618
+        ],
+        "events": [
+          {
+            "details": {
+              "build": "release",
+              "cleanup_idle_seconds": 60,
+              "cleanup_lifecycle_checks": true,
+              "cleanup_loading": "on_demand"
+            },
+            "kind": "begin",
+            "scenario": "startup",
+            "time_ms": 1791394574833
+          },
+          {
+            "details": {
+              "ready_latency_ms": 202.863708
+            },
+            "kind": "end",
+            "scenario": "startup",
+            "time_ms": 1791394575035
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "ready_idle",
+            "time_ms": 1791394575036
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "ready_idle",
+            "time_ms": 1791394580036
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "disabled_idle",
+            "time_ms": 1791394580037
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "disabled_idle",
+            "time_ms": 1791394585038
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "disabled_dictation",
+            "time_ms": 1791394585038
+          },
+          {
+            "cleaned_text": "",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 908.015625,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "disabled_dictation",
+            "time_ms": 1791394585946
+          },
+          {
+            "details": {
+              "latency_ms": 908.2947919999999
+            },
+            "kind": "end",
+            "scenario": "disabled_dictation",
+            "time_ms": 1791394585946
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "cold_dictation",
+            "time_ms": 1791394585947
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "cold_stt",
+            "time_ms": 1791394585947
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "cold_cleanup",
+            "time_ms": 1791394586871
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 1317.4857499999998,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "cold_dictation",
+            "time_ms": 1791394587265
+          },
+          {
+            "details": {
+              "latency_ms": 1317.6865
+            },
+            "kind": "end",
+            "scenario": "cold_dictation",
+            "time_ms": 1791394587265
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "after_cold_idle",
+            "time_ms": 1791394587265
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "after_cold_idle",
+            "time_ms": 1791394592266
+          },
+          {
+            "details": {
+              "source": "synthetic English PCM, real-time replay"
+            },
+            "kind": "begin",
+            "scenario": "capture_previews",
+            "time_ms": 1791394592266
+          },
+          {
+            "details": {
+              "elapsed_ms": 2263.036125,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394594529
+          },
+          {
+            "details": {
+              "elapsed_ms": 4037.68275,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394596303
+          },
+          {
+            "details": {
+              "elapsed_ms": 5882.486583000001,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394598148
+          },
+          {
+            "details": {
+              "elapsed_ms": 7840.253125,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394600106
+          },
+          {
+            "details": {
+              "elapsed_ms": 9853.953166,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394602119
+          },
+          {
+            "details": {
+              "elapsed_ms": 11929.480083,
+              "payload": {
+                "generation": 1,
+                "text": "Please put the blue notebook on the kitchen table."
+              }
+            },
+            "kind": "preview",
+            "scenario": "capture_previews",
+            "time_ms": 1791394604194
+          },
+          {
+            "details": {
+              "previews": 6
+            },
+            "kind": "end",
+            "scenario": "capture_previews",
+            "time_ms": 1791394605492
+          },
+          {
+            "cleaned_text": "",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "preview"
+            ],
+            "kind": "result",
+            "latency_ms": 13227.453125,
+            "quality_ok": true,
+            "raw_text": "preview",
+            "scenario": "preview_coverage",
+            "time_ms": 1791394605492
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_01_dictation",
+            "time_ms": 1791394605493
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_01_stt",
+            "time_ms": 1791394605493
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_01_cleanup",
+            "time_ms": 1791394606347
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 908.333625,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_01_dictation",
+            "time_ms": 1791394606401
+          },
+          {
+            "details": {
+              "latency_ms": 908.427375
+            },
+            "kind": "end",
+            "scenario": "warm_01_dictation",
+            "time_ms": 1791394606401
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_01_idle",
+            "time_ms": 1791394606401
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_01_idle",
+            "time_ms": 1791394607403
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_02_dictation",
+            "time_ms": 1791394607404
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_02_stt",
+            "time_ms": 1791394607404
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_02_cleanup",
+            "time_ms": 1791394608306
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 988.068,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_02_dictation",
+            "time_ms": 1791394608392
+          },
+          {
+            "details": {
+              "latency_ms": 988.176875
+            },
+            "kind": "end",
+            "scenario": "warm_02_dictation",
+            "time_ms": 1791394608392
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_02_idle",
+            "time_ms": 1791394608392
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_02_idle",
+            "time_ms": 1791394609393
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_03_dictation",
+            "time_ms": 1791394609393
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_03_stt",
+            "time_ms": 1791394609393
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_03_cleanup",
+            "time_ms": 1791394610235
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 905.9835419999999,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_03_dictation",
+            "time_ms": 1791394610299
+          },
+          {
+            "details": {
+              "latency_ms": 906.1012499999999
+            },
+            "kind": "end",
+            "scenario": "warm_03_dictation",
+            "time_ms": 1791394610299
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_03_idle",
+            "time_ms": 1791394610299
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_03_idle",
+            "time_ms": 1791394611302
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_04_dictation",
+            "time_ms": 1791394611302
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_04_stt",
+            "time_ms": 1791394611302
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_04_cleanup",
+            "time_ms": 1791394612192
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 974.802917,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_04_dictation",
+            "time_ms": 1791394612277
+          },
+          {
+            "details": {
+              "latency_ms": 974.927
+            },
+            "kind": "end",
+            "scenario": "warm_04_dictation",
+            "time_ms": 1791394612277
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_04_idle",
+            "time_ms": 1791394612277
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_04_idle",
+            "time_ms": 1791394613279
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_05_dictation",
+            "time_ms": 1791394613279
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_05_stt",
+            "time_ms": 1791394613279
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_05_cleanup",
+            "time_ms": 1791394614116
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 900.807834,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_05_dictation",
+            "time_ms": 1791394614180
+          },
+          {
+            "details": {
+              "latency_ms": 900.9041249999999
+            },
+            "kind": "end",
+            "scenario": "warm_05_dictation",
+            "time_ms": 1791394614180
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_05_idle",
+            "time_ms": 1791394614180
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_05_idle",
+            "time_ms": 1791394615183
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_06_dictation",
+            "time_ms": 1791394615183
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_06_stt",
+            "time_ms": 1791394615183
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_06_cleanup",
+            "time_ms": 1791394616070
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 971.7655,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_06_dictation",
+            "time_ms": 1791394616155
+          },
+          {
+            "details": {
+              "latency_ms": 971.866667
+            },
+            "kind": "end",
+            "scenario": "warm_06_dictation",
+            "time_ms": 1791394616155
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_06_idle",
+            "time_ms": 1791394616155
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_06_idle",
+            "time_ms": 1791394617157
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_07_dictation",
+            "time_ms": 1791394617157
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_07_stt",
+            "time_ms": 1791394617157
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_07_cleanup",
+            "time_ms": 1791394618026
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 932.950334,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_07_dictation",
+            "time_ms": 1791394618090
+          },
+          {
+            "details": {
+              "latency_ms": 933.059792
+            },
+            "kind": "end",
+            "scenario": "warm_07_dictation",
+            "time_ms": 1791394618090
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_07_idle",
+            "time_ms": 1791394618090
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_07_idle",
+            "time_ms": 1791394619092
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_08_dictation",
+            "time_ms": 1791394619092
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_08_stt",
+            "time_ms": 1791394619093
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_08_cleanup",
+            "time_ms": 1791394619979
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 972.4621249999999,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_08_dictation",
+            "time_ms": 1791394620065
+          },
+          {
+            "details": {
+              "latency_ms": 972.585875
+            },
+            "kind": "end",
+            "scenario": "warm_08_dictation",
+            "time_ms": 1791394620065
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_08_idle",
+            "time_ms": 1791394620065
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_08_idle",
+            "time_ms": 1791394621067
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "warm_09_dictation",
+            "time_ms": 1791394621067
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_09_stt",
+            "time_ms": 1791394621067
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_09_cleanup",
+            "time_ms": 1791394621904
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 898.459958,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "warm_09_dictation",
+            "time_ms": 1791394621966
+          },
+          {
+            "details": {
+              "latency_ms": 898.562125
+            },
+            "kind": "end",
+            "scenario": "warm_09_dictation",
+            "time_ms": 1791394621966
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_09_idle",
+            "time_ms": 1791394621966
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_09_idle",
+            "time_ms": 1791394622968
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "warm_10_dictation",
+            "time_ms": 1791394622968
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_10_stt",
+            "time_ms": 1791394622968
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "warm_10_cleanup",
+            "time_ms": 1791394623839
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 954.5124579999999,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "warm_10_dictation",
+            "time_ms": 1791394623923
+          },
+          {
+            "details": {
+              "latency_ms": 954.6119170000001
+            },
+            "kind": "end",
+            "scenario": "warm_10_dictation",
+            "time_ms": 1791394623923
+          },
+          {
+            "details": {
+              "seconds": 1
+            },
+            "kind": "begin",
+            "scenario": "warm_10_idle",
+            "time_ms": 1791394623923
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "warm_10_idle",
+            "time_ms": 1791394624924
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "after_repeats_idle",
+            "time_ms": 1791394624924
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "after_repeats_idle",
+            "time_ms": 1791394629925
+          },
+          {
+            "details": {
+              "seconds": 65
+            },
+            "kind": "begin",
+            "scenario": "cleanup_release_wait",
+            "time_ms": 1791394629925
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "cleanup_release_wait",
+            "time_ms": 1791394694928
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "cleanup_released_idle",
+            "time_ms": 1791394694928
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "cleanup_released_idle",
+            "time_ms": 1791394699930
+          },
+          {
+            "details": {
+              "language": "fr"
+            },
+            "kind": "begin",
+            "scenario": "reload_dictation",
+            "time_ms": 1791394699930
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "reload_stt",
+            "time_ms": 1791394699930
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "reload_cleanup",
+            "time_ms": 1791394700821
+          },
+          {
+            "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "bonjour",
+              "réserver",
+              "table",
+              "demain",
+              "soir"
+            ],
+            "kind": "result",
+            "latency_ms": 1283.120541,
+            "quality_ok": true,
+            "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+            "scenario": "reload_dictation",
+            "time_ms": 1791394701213
+          },
+          {
+            "details": {
+              "latency_ms": 1283.287458
+            },
+            "kind": "end",
+            "scenario": "reload_dictation",
+            "time_ms": 1791394701214
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "cleanup_reloaded_idle",
+            "time_ms": 1791394701214
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "ready"
+              },
+              "cleanup_loaded": true,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "cleanup_reloaded_idle",
+            "time_ms": 1791394706216
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "failed_load_dictation",
+            "time_ms": 1791394706222
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "failure_stt",
+            "time_ms": 1791394706222
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "failure_cleanup",
+            "time_ms": 1791394707082
+          },
+          {
+            "cleaned_text": "",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 868.131,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "failed_load_dictation",
+            "time_ms": 1791394707090
+          },
+          {
+            "details": {
+              "latency_ms": 868.285583
+            },
+            "kind": "end",
+            "scenario": "failed_load_dictation",
+            "time_ms": 1791394707090
+          },
+          {
+            "details": {
+              "language": "en"
+            },
+            "kind": "begin",
+            "scenario": "recovered_dictation",
+            "time_ms": 1791394707091
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "recovery_stt",
+            "time_ms": 1791394707091
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "recovery_cleanup",
+            "time_ms": 1791394707937
+          },
+          {
+            "cleaned_text": "Please put the blue notebook on the kitchen table.",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "blue",
+              "notebook",
+              "kitchen",
+              "table"
+            ],
+            "kind": "result",
+            "latency_ms": 1214.8564159999999,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table.",
+            "scenario": "recovered_dictation",
+            "time_ms": 1791394708306
+          },
+          {
+            "details": {
+              "latency_ms": 1214.961083
+            },
+            "kind": "end",
+            "scenario": "recovered_dictation",
+            "time_ms": 1791394708306
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "model_switch",
+            "time_ms": 1791394708306
+          },
+          {
+            "details": {
+              "latency_ms": 214.976625
+            },
+            "kind": "end",
+            "scenario": "model_switch",
+            "time_ms": 1791394708521
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "switched_idle",
+            "time_ms": 1791394708521
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "switched_idle",
+            "time_ms": 1791394713523
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "model_restore",
+            "time_ms": 1791394713523
+          },
+          {
+            "details": {},
+            "kind": "end",
+            "scenario": "model_restore",
+            "time_ms": 1791394713738
+          },
+          {
+            "details": {
+              "cleanup": "off",
+              "seconds": 30
+            },
+            "kind": "begin",
+            "scenario": "long_import",
+            "time_ms": 1791394713739
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "long_import_stt",
+            "time_ms": 1791394713746
+          },
+          {
+            "cleaned_text": "",
+            "cleanup_unchanged": true,
+            "expected_words": [
+              "notebook",
+              "garden",
+              "umbrella",
+              "ticket",
+              "museum",
+              "bicycle",
+              "telescope",
+              "saturday",
+              "atlas",
+              "camera",
+              "suitcase",
+              "waterfall"
+            ],
+            "kind": "result",
+            "latency_ms": 2435.305,
+            "quality_ok": true,
+            "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. On Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+            "scenario": "long_import",
+            "time_ms": 1791394716174
+          },
+          {
+            "details": {
+              "audio_seconds": 50.5683125,
+              "recognized_notebook_occurrences": 1,
+              "repetitions": 1
+            },
+            "kind": "end",
+            "scenario": "long_import",
+            "time_ms": 1791394716174
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "post_import_idle",
+            "time_ms": 1791394716175
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "post_import_idle",
+            "time_ms": 1791394721177
+          },
+          {
+            "details": {
+              "seconds": 5
+            },
+            "kind": "begin",
+            "scenario": "post_idle",
+            "time_ms": 1791394721177
+          },
+          {
+            "details": {
+              "cleanup_lifecycle": {
+                "error": null,
+                "idle_seconds": 60,
+                "state": "unloaded"
+              },
+              "cleanup_loaded": false,
+              "stt_loaded": true
+            },
+            "kind": "end",
+            "scenario": "post_idle",
+            "time_ms": 1791394726180
+          },
+          {
+            "details": {},
+            "kind": "begin",
+            "scenario": "complete",
+            "time_ms": 1791394726180
+          },
+          {
+            "details": {
+              "total_ms": 151352.60458299998
+            },
+            "kind": "end",
+            "scenario": "complete",
+            "time_ms": 1791394726180
+          }
+        ],
+        "quality_checks": [
+          {
+            "kind": "quality_check",
+            "scenario": "long_import_occurrences",
+            "quality_ok": true,
+            "minimum_occurrences": 1,
+            "observed_occurrences": {
+              "notebook": 1,
+              "garden": 1,
+              "umbrella": 1,
+              "ticket": 1,
+              "museum": 1,
+              "bicycle": 1,
+              "telescope": 1,
+              "saturday": 1,
+              "atlas": 1,
+              "camera": 1,
+              "suitcase": 1,
+              "waterfall": 1
+            }
+          }
+        ],
+        "quality_failures": [],
+        "completed": true
+      },
+      "raw_archive": "whisper-release-2.jsonl.gz",
+      "raw_archive_sha256": "5baad0ac54117a0f572700a5c2bbcbab1ad42dc455e6f253696b9b5fca78f490"
+    }
+  ]
+}
