@@ -2,8 +2,8 @@
 //! Synthetic audio, separate database/attachments, no microphone/hotkey/paste.
 
 use crate::{
-    cleanup, db, local_setup, streaming, transcription, Database, RecorderState,
-    SharedCleanupEngine, SharedLocalEngine,
+    db, local_setup, streaming, transcription, Database, RecorderState, SharedCleanupEngine,
+    SharedLocalEngine,
 };
 use anyhow::{Context, Result};
 use serde::Deserialize;
@@ -157,10 +157,14 @@ impl Events {
     async fn idle(&self, scenario: &str, seconds: u64, app: &AppHandle) {
         self.write("begin", scenario, json!({"seconds": seconds}));
         tokio::time::sleep(Duration::from_secs(seconds)).await;
-        self.write("end", scenario, json!({
-            "stt_loaded": app.state::<SharedLocalEngine>().read().await.is_some(),
-            "cleanup_loaded": cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner()).is_some(),
-        }));
+        self.write(
+            "end",
+            scenario,
+            json!({
+                "stt_loaded": app.state::<SharedLocalEngine>().read().await.is_some(),
+                "cleanup_loaded": app.state::<SharedCleanupEngine>().is_loaded(),
+            }),
+        );
     }
 }
 
@@ -175,7 +179,7 @@ pub(crate) fn start(app: AppHandle, config: Config) {
             eprintln!("Memory benchmark failed: {error:#}");
         }
         // Reap the sidecar before exit, including errors. Release the STT Arc.
-        *app.state::<SharedCleanupEngine>().write().unwrap() = None;
+        app.state::<SharedCleanupEngine>().configure(None, None);
         *app.state::<SharedLocalEngine>().write().await = None;
         app.exit(if result.is_ok() { 0 } else { 1 });
     });
@@ -184,9 +188,7 @@ pub(crate) fn start(app: AppHandle, config: Config) {
 async fn wait_ready(app: &AppHandle) -> Result<()> {
     let deadline = Instant::now() + Duration::from_secs(180);
     loop {
-        if app.state::<SharedLocalEngine>().read().await.is_some()
-            && cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner()).is_some()
-        {
+        if app.state::<SharedLocalEngine>().read().await.is_some() {
             return Ok(());
         }
         anyhow::ensure!(
@@ -260,10 +262,11 @@ async fn switch_models(
         stt.to_string_lossy().into_owned(),
         stt.file_name().unwrap().to_string_lossy().into_owned(),
     );
-    *app.state::<SharedCleanupEngine>().write().unwrap() = None;
-    crate::load_cleanup_engine(
-        app.state::<SharedCleanupEngine>().inner().clone(),
-        cleanup_model.to_string_lossy().into_owned(),
+    app.state::<Database>()
+        .set_setting("cleanup_model_path", &cleanup_model.to_string_lossy())?;
+    crate::configure_cleanup(
+        &app.state::<Database>(),
+        app.state::<SharedCleanupEngine>().inner(),
     );
     wait_ready(app).await
 }
@@ -282,11 +285,7 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
         app.state::<SharedLocalEngine>().inner().clone(),
         &setup,
     );
-    crate::kick_off_cleanup_load(
-        &db,
-        app.state::<SharedCleanupEngine>().inner().clone(),
-        &setup,
-    );
+    crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
     wait_ready(app).await?;
     events.write(
         "end",
@@ -435,6 +434,7 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
     // short dictations above measure cleanup separately with quality checks.
     *phase.lock().unwrap() = "long_import".into();
     db.set_setting("cleanup_mode", "off")?;
+    crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
     events.write(
         "begin",
         "long_import",
@@ -495,6 +495,7 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
     // Results/encoded buffers should be gone during post-idle measurements.
     drop(result);
     db.set_setting("cleanup_mode", "blocking")?;
+    crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
     *phase.lock().unwrap() = "after_import".into();
     events
         .idle("post_import_idle", config.idle_seconds, app)

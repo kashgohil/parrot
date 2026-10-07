@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use unicode_script::{Script, UnicodeScript};
 
-use crate::cleanup_engine::{SharedCleanupEngine, SidecarCleanupClient};
+use crate::cleanup_engine::SidecarCleanupClient;
 
 /// Request body for Ollama's native `/api/chat` endpoint.
 /// Using the native API (not OpenAI-compat) so we can pass `keep_alive` on
@@ -70,32 +70,18 @@ pub async fn cleanup_text(
             )
             .await
         }
-        // Default: builtin. Fall back to ollama if builtin isn't loaded yet
-        // and the user still has a daemon (migration window).
         _ => {
-            if let Some(engine) = builtin {
-                cleanup_with_builtin(
-                    &engine,
-                    raw_text,
-                    custom_words,
-                    context_prompt,
-                    writing_style,
-                    formality,
-                )
-                .await
-            } else {
-                // Soft fallback so existing installs don't break mid-upgrade.
-                eprintln!("Builtin cleanup model not loaded; falling back to Ollama if available");
-                cleanup_with_ollama(
-                    raw_text,
-                    model,
-                    custom_words,
-                    context_prompt,
-                    writing_style,
-                    formality,
-                )
-                .await
-            }
+            let engine =
+                builtin.ok_or_else(|| anyhow::anyhow!("builtin cleanup model is not loaded"))?;
+            cleanup_with_builtin(
+                &engine,
+                raw_text,
+                custom_words,
+                context_prompt,
+                writing_style,
+                formality,
+            )
+            .await
         }
     }
 }
@@ -491,11 +477,6 @@ fn normalize_whitespace(text: &str) -> String {
         prev_blank = false;
     }
     result.trim().to_string()
-}
-
-/// Helper so callers can pass Arc without cloning the heavy model.
-pub fn peek_builtin(state: &SharedCleanupEngine) -> Option<Arc<SidecarCleanupClient>> {
-    state.read().ok().and_then(|g| g.clone())
 }
 
 #[cfg(test)]

@@ -18,7 +18,7 @@ use std::sync::Mutex;
 use std::time::Instant;
 use tauri::{Emitter, Manager};
 use tokio::sync::RwLock;
-use cleanup_engine::{load_cleanup_engine, SharedCleanupEngine};
+use cleanup_engine::SharedCleanupEngine;
 use transcription::{LocalEngine, TranscribeOpts};
 
 /// Shared handle to the in-process local STT engine (Whisper or Parakeet).
@@ -320,8 +320,7 @@ async fn transcribe_last(
     if cleanup_mode == "blocking" {
         let _ = app.emit("cleanup-started", ());
         let cleanup_start = Instant::now();
-        let builtin = cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner());
-        let cleaned_text = run_cleanup(&db, &raw_text, builtin, &effective).await;
+        let cleaned_text = run_cleanup(&app, &db, &raw_text, &effective).await;
         let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
         if !cleaned_text.is_empty() && cleaned_text != raw_text {
             let _ = db.update_dictation_cleaned(&id, &cleaned_text);
@@ -394,9 +393,8 @@ async fn transcribe_last(
     let effective_bg = effective.clone();
     tokio::spawn(async move {
         let db = app_handle.state::<Database>();
-        let builtin = cleanup::peek_builtin(app_handle.state::<SharedCleanupEngine>().inner());
         let cleanup_start = Instant::now();
-        let cleaned = run_cleanup(&db, &raw_bg, builtin, &effective_bg).await;
+        let cleaned = run_cleanup(&app_handle, &db, &raw_bg, &effective_bg).await;
         let cleanup_ms = cleanup_start.elapsed().as_millis() as i64;
         let _ = db.update_dictation_timings(&id_bg, None, Some(cleanup_ms), None, None, None);
         eprintln!(
@@ -429,12 +427,22 @@ async fn transcribe_last(
 /// Run local LLM cleanup. Returns empty string on failure so callers can fall
 /// back to the raw transcript.
 async fn run_cleanup(
+    app: &tauri::AppHandle,
     db: &Database,
     raw_text: &str,
-    builtin: Option<std::sync::Arc<cleanup_engine::SidecarCleanupClient>>,
     profile: &db::EffectiveProfile,
 ) -> String {
     let cleanup_backend = resolve_cleanup_backend(db);
+    let state = app.state::<SharedCleanupEngine>();
+    // Keep the lease through inference. Loading failures leave the raw text usable.
+    let lease = if cleanup_backend == "builtin" {
+        configure_cleanup(db, state.inner());
+        match state.acquire().await {
+            Ok(lease) => Some(lease),
+            Err(error) => { eprintln!("Builtin cleanup unavailable: {error:#}"); return String::new(); }
+        }
+    } else { None };
+    let builtin = lease.as_ref().map(|lease| lease.client.clone());
     let llm_model = db.get_setting("llm_model").ok().flatten();
     let formality = cleanup::Formality::from_setting(
         &db.get_setting("cleanup_formality")
@@ -674,8 +682,7 @@ async fn run_file_transcription(
         emit_file_progress(app, "cleaning", 82, &name);
         // Default / blocking: wait for polish. Only explicit "background"
         // uses the fire-and-forget path below.
-        let builtin = cleanup::peek_builtin(app.state::<SharedCleanupEngine>().inner());
-        let cleaned = run_cleanup(db, &raw_text, builtin, &effective).await;
+        let cleaned = run_cleanup(app, db, &raw_text, &effective).await;
         if !cleaned.is_empty() && cleaned != raw_text {
             let _ = db.update_dictation_cleaned(&id, &cleaned);
         }
@@ -688,8 +695,7 @@ async fn run_file_transcription(
         let effective_bg = effective.clone();
         tokio::spawn(async move {
             let db = app_handle.state::<Database>();
-            let builtin = cleanup::peek_builtin(app_handle.state::<SharedCleanupEngine>().inner());
-            let cleaned = run_cleanup(&db, &raw_bg, builtin, &effective_bg).await;
+                let cleaned = run_cleanup(&app_handle, &db, &raw_bg, &effective_bg).await;
             if !cleaned.is_empty() && cleaned.trim() != raw_bg.trim() {
                 let _ = db.update_dictation_cleaned(&id_bg, &cleaned);
                 let _ = app_handle.emit(
@@ -1280,7 +1286,8 @@ fn get_cleanup_status(
         .as_ref()
         .map(|p| std::path::Path::new(p).exists())
         .unwrap_or(false);
-    let loaded = cleanup::peek_builtin(cleanup_engine.inner()).is_some();
+    let loaded = cleanup_engine.is_loaded();
+    let lifecycle = cleanup_engine.status();
     // The active cleanup tier (0.5B / 1.5B / 3B). Defaults to the 0.5B id for
     // existing installs that predate the tier setting.
     let active_model_id = db
@@ -1297,6 +1304,7 @@ fn get_cleanup_status(
         "builtin_model_path": gguf_path,
         "builtin_on_disk": gguf_on_disk,
         "builtin_loaded": loaded,
+        "lifecycle": lifecycle,
     }))
 }
 
@@ -1326,28 +1334,8 @@ async fn upgrade_cleanup_to_builtin(
     let _ = db.set_setting("cleanup_backend", "builtin");
     let _ = db.set_setting("cleanup_model_path", &path_str);
 
-    // Drop any previous engine and load the new GGUF.
-    {
-        let mut slot = cleanup_engine
-            .write()
-            .map_err(|e| format!("cleanup engine lock: {e}"))?;
-        *slot = None;
-    }
-    load_cleanup_engine(cleanup_engine.inner().clone(), path_str.clone());
-
-    // Wait briefly for load so Settings can show ready state.
-    let ready = {
-        let deadline = Instant::now() + std::time::Duration::from_secs(120);
-        loop {
-            if cleanup::peek_builtin(cleanup_engine.inner()).is_some() {
-                break true;
-            }
-            if Instant::now() >= deadline {
-                break false;
-            }
-            tokio::time::sleep(std::time::Duration::from_millis(200)).await;
-        }
-    };
+    configure_cleanup(&db, cleanup_engine.inner());
+    let ready = cleanup_engine.is_loaded();
 
     // Stop Ollama if we started it (best-effort).
     {
@@ -1457,28 +1445,8 @@ async fn switch_cleanup_model(
     let _ = db.set_setting("cleanup_model_id", &model_id);
     let _ = db.set_setting("cleanup_model_path", &path_str);
 
-    // Drop the old sidecar and respawn with the selected GGUF.
-    {
-        let mut slot = cleanup_engine
-            .write()
-            .map_err(|e| format!("cleanup engine lock: {e}"))?;
-        *slot = None;
-    }
-    load_cleanup_engine(cleanup_engine.inner().clone(), path_str.clone());
-
-    // Wait briefly for the sidecar to load so Settings can show ready state.
-    let ready = {
-        let deadline = Instant::now() + std::time::Duration::from_secs(180);
-        loop {
-            if cleanup::peek_builtin(cleanup_engine.inner()).is_some() {
-                break true;
-            }
-            if Instant::now() >= deadline {
-                break false;
-            }
-            tokio::time::sleep(std::time::Duration::from_millis(200)).await;
-        }
-    };
+    configure_cleanup(&db, cleanup_engine.inner());
+    let ready = cleanup_engine.is_loaded();
 
     // If we were on Ollama, stop it (best-effort) — built-in now owns cleanup.
     {
@@ -1639,8 +1607,16 @@ fn get_setting(key: &str, state: tauri::State<'_, Database>) -> Result<Option<St
 }
 
 #[tauri::command]
-fn set_setting(key: &str, value: &str, state: tauri::State<'_, Database>) -> Result<(), String> {
-    state.set_setting(key, value).map_err(|e| e.to_string())
+fn set_setting(key: &str, value: &str, state: tauri::State<'_, Database>, cleanup: tauri::State<'_, SharedCleanupEngine>) -> Result<(), String> {
+    if key == "cleanup_idle_seconds" {
+        let seconds = value.parse::<u64>().map_err(|_| "Cleanup idle time must be a whole number of seconds".to_string())?;
+        if seconds > 86400 { return Err("Cleanup idle time must be between 0 and 86400 seconds".into()); }
+    }
+    state.set_setting(key, value).map_err(|e| e.to_string())?;
+    if matches!(key, "cleanup_idle_seconds" | "cleanup_mode" | "cleanup_backend" | "cleanup_model_path") {
+        configure_cleanup(&state, cleanup.inner());
+    }
+    Ok(())
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Clone)]
@@ -1931,10 +1907,7 @@ async fn start_local_setup(
                     if let Ok(path) = local_setup::get_cleanup_model_path(&cleanup_id) {
                         let path_str = path.to_string_lossy().to_string();
                         let _ = db.set_setting("cleanup_model_path", &path_str);
-                        load_cleanup_engine(
-                            app.state::<SharedCleanupEngine>().inner().clone(),
-                            path_str,
-                        );
+                        configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
                     }
                     if engine == "parakeet" {
                         let _ = db.set_setting(
@@ -2116,40 +2089,27 @@ fn resolve_cleanup_backend(db: &Database) -> String {
     "builtin".into()
 }
 
-fn kick_off_cleanup_load(
-    db: &Database,
-    state: SharedCleanupEngine,
-    config: &local_setup::LocalSetupConfig,
-) {
-    let backend = resolve_cleanup_backend(db);
+/// A zero timeout keeps a used model warm until cleanup is disabled or switched.
+fn cleanup_idle_timeout(db: &Database) -> Option<std::time::Duration> {
+    let seconds = db.get_setting("cleanup_idle_seconds").ok().flatten()
+        .and_then(|s| s.parse::<u64>().ok()).unwrap_or(60);
+    (seconds != 0).then(|| std::time::Duration::from_secs(seconds))
+}
 
-    if backend != "builtin" {
-        return;
-    }
+fn configure_cleanup(db: &Database, state: &SharedCleanupEngine) {
+    let enabled = resolve_cleanup_backend(db) == "builtin"
+        && db.get_setting("cleanup_mode").ok().flatten().as_deref() != Some("off");
+    let config = db.get_local_setup_config().ok();
+    let path = enabled.then(|| resolve_cleanup_model_path(db, config.as_ref())).flatten();
+    state.configure(path.map(Into::into), cleanup_idle_timeout(db));
+}
 
-    let path = db
-        .get_setting("cleanup_model_path")
-        .ok()
-        .flatten()
-        .filter(|p| !p.is_empty())
-        .or_else(|| {
-            local_setup::get_cleanup_model_path(&config.ollama_model)
-                .ok()
-                .filter(|p| p.exists())
-                .map(|p| p.to_string_lossy().into_owned())
-        })
-        .or_else(|| {
-            local_setup::get_cleanup_model_path(local_setup::CLEANUP_QWEN25_05B)
-                .ok()
-                .filter(|p| p.exists())
-                .map(|p| p.to_string_lossy().into_owned())
-        });
-
-    if let Some(path) = path {
-        load_cleanup_engine(state, path);
-    } else {
-        eprintln!("No cleanup GGUF found — download via setup or Settings");
-    }
+fn resolve_cleanup_model_path(db: &Database, config: Option<&local_setup::LocalSetupConfig>) -> Option<String> {
+    db.get_setting("cleanup_model_path").ok().flatten().filter(|p| !p.is_empty())
+        .or_else(|| local_setup::get_cleanup_model_path(&config?.ollama_model).ok()
+            .filter(|p| p.exists()).map(|p| p.to_string_lossy().into_owned()))
+        .or_else(|| local_setup::get_cleanup_model_path(local_setup::CLEANUP_QWEN25_05B).ok()
+            .filter(|p| p.exists()).map(|p| p.to_string_lossy().into_owned()))
 }
 
 fn resolve_stt_load_target(
@@ -2270,7 +2230,7 @@ async fn validate_local_servers(
             .is_ok()
     } else {
         // Builtin: model loaded, or path exists (load may still be in flight).
-        if cleanup::peek_builtin(cleanup_engine.inner()).is_some() {
+        if cleanup_engine.is_loaded() {
             true
         } else {
             local_setup::get_cleanup_model_path(&config.ollama_model)
@@ -2317,7 +2277,7 @@ pub fn run() {
         .manage(PendingCleanup::new())
         .manage::<SharedServerProcesses>(Arc::new(RwLock::new(ServerProcesses::new())))
         .manage::<SharedWhisperProvider>(Arc::new(RwLock::new(None)))
-        .manage::<SharedCleanupEngine>(Arc::new(std::sync::RwLock::new(None)))
+        .manage::<SharedCleanupEngine>(cleanup_engine::new_cleanup_engine())
         .manage(Arc::new(streaming::StreamingCoordinator::new()))
         .invoke_handler(tauri::generate_handler![
             start_recording,
@@ -2383,6 +2343,8 @@ pub fn run() {
                 }
             });
 
+            app.state::<SharedCleanupEngine>().start_idle_monitor();
+
             #[cfg(feature = "memory-bench")]
             if let Some(config) = benchmark {
                 memory_bench::start(app.handle().clone(), config);
@@ -2426,13 +2388,8 @@ pub fn run() {
                     let engine_state = app.state::<SharedLocalEngine>();
                     kick_off_engine_load(&db, engine_state.inner().clone(), &config);
 
-                    // 2. Load in-process cleanup GGUF (or warm Ollama if
-                    //    the user still uses the legacy backend).
-                    kick_off_cleanup_load(
-                        &db,
-                        app.state::<SharedCleanupEngine>().inner().clone(),
-                        &config,
-                    );
+                    // Configure built-in cleanup; the first eligible job loads it.
+                    configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
 
                     // 3. Pre-open the mic stream only for Bluetooth inputs
                     //    so codec negotiation is paid before the first press

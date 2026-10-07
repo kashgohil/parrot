@@ -20,7 +20,14 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 
 /// Shared handle to the cleanup sidecar client. `None` until the sidecar is up.
-pub type SharedCleanupEngine = Arc<std::sync::RwLock<Option<Arc<SidecarCleanupClient>>>>;
+pub type SharedCleanupEngine =
+    Arc<crate::cleanup_lifecycle::CleanupLifecycle<SidecarCleanupClient>>;
+
+pub fn new_cleanup_engine() -> SharedCleanupEngine {
+    crate::cleanup_lifecycle::CleanupLifecycle::new(|model| {
+        SidecarCleanupClient::spawn(&resolve_sidecar_path()?, &model)
+    })
+}
 
 #[derive(Serialize)]
 struct Request<'a> {
@@ -97,12 +104,12 @@ impl SidecarCleanupClient {
     }
 }
 
-impl Drop for SidecarCleanupClient {
+// Own the child at the protocol level: startup errors and automatic restarts
+// must reap the previous process too.
+impl Drop for Proc {
     fn drop(&mut self) {
-        if let Ok(mut proc) = self.proc.lock() {
-            let _ = proc.child.kill();
-            let _ = proc.child.wait();
-        }
+        let _ = self.child.kill();
+        let _ = self.child.wait();
     }
 }
 
@@ -145,13 +152,7 @@ fn spawn_proc(sidecar: &Path, model: &Path) -> Result<Proc> {
 }
 
 /// Send one request and read until the matching-id result comes back.
-fn transact(
-    proc: &mut Proc,
-    id: u64,
-    system: &str,
-    user: &str,
-    max_tokens: i32,
-) -> Result<String> {
+fn transact(proc: &mut Proc, id: u64, system: &str, user: &str, max_tokens: i32) -> Result<String> {
     let req = Request {
         id,
         system,
@@ -174,8 +175,9 @@ fn transact(
                 if ok {
                     return text.ok_or_else(|| anyhow!("sidecar reported ok but sent no text"));
                 }
-                return Err(anyhow!(error
-                    .unwrap_or_else(|| "cleanup failed (no error message)".to_string())));
+                return Err(anyhow!(
+                    error.unwrap_or_else(|| "cleanup failed (no error message)".to_string())
+                ));
             }
             // A result for a different id (e.g. id 0 protocol error) — skip.
             Message::Result { .. } | Message::Ready => continue,
@@ -237,30 +239,6 @@ pub fn resolve_sidecar_path() -> Result<PathBuf> {
     )
 }
 
-/// Start the cleanup sidecar in the background and store the client on success.
-pub fn load_cleanup_engine(state: SharedCleanupEngine, model_path: String) {
-    tauri::async_runtime::spawn(async move {
-        let model = PathBuf::from(model_path);
-        let sidecar = match resolve_sidecar_path() {
-            Ok(p) => p,
-            Err(e) => {
-                eprintln!("Cleanup sidecar unavailable: {e:#}");
-                return;
-            }
-        };
-        match tokio::task::spawn_blocking(move || SidecarCleanupClient::spawn(&sidecar, &model))
-            .await
-        {
-            Ok(Ok(client)) => {
-                *state.write().unwrap() = Some(Arc::new(client));
-                println!("Cleanup sidecar ready");
-            }
-            Ok(Err(e)) => eprintln!("Failed to start cleanup sidecar: {e:#}"),
-            Err(e) => eprintln!("Cleanup sidecar spawn task join error: {e}"),
-        }
-    });
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -285,7 +263,11 @@ mod tests {
 
         // Two sequential requests: proves id correlation and process reuse.
         let out1 = client
-            .cleanup(SYS, "um so like i think we should uh ship it on friday you know", 128)
+            .cleanup(
+                SYS,
+                "um so like i think we should uh ship it on friday you know",
+                128,
+            )
             .expect("first cleanup");
         assert!(!out1.trim().is_empty(), "first cleanup returned empty");
 
