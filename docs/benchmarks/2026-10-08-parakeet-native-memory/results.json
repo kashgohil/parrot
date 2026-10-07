@@ -36,7 +36,7 @@
         "source_size_bytes": 672015,
         "source_sha256": "44cdb8ca2a6ab8d25b1837253e47ff10b9f5b768ae0ea00f8bf4032b7f9412c4",
         "excerpt": "attribution-post_import_idle-heap-excerpt.txt",
-        "excerpt_sha256": "212f0ff54f76246adb407edc25d6836990f58034a6c1ddfc10e5f95332c4b51a"
+        "excerpt_sha256": "54195ca1b2f495108a6d1c39603a673777fd68881e76ae0ecb64d4b518ce42a6"
       },
       {
         "phase": "post_import_idle",
@@ -60,7 +60,7 @@
         "source_size_bytes": 608934,
         "source_sha256": "c003452a370e68cf734abce28933d7d91155754b245c553fb5c73dcfea4dd822",
         "excerpt": "attribution-speech_released_idle-heap-excerpt.txt",
-        "excerpt_sha256": "4085d1927a1ba7273cc6ecaeb2cd28b70c03ad98a532eac58323d872e1834f77"
+        "excerpt_sha256": "0334689fdc0c56a907ed3a9556998459e04d03fd6ab2ae6b47a37604355a2481"
       },
       {
         "phase": "speech_released_idle",
@@ -78,7 +78,8 @@
         "excerpt": "attribution-speech_released_idle-footprint-excerpt.txt",
         "excerpt_sha256": "70de1dcd3d7adaa7193b0a739d92c5b278641c93a298925bdbe3169a4f8a1380"
       }
-    ]
+    ],
+    "excerpt_transform": "Leading report lines; home path sanitized; trailing whitespace removed. Original report hashes remain unchanged."
   },
   "runs": [
     {
@@ -10515,7 +10516,7 @@
         "source_size_bytes": 577476,
         "source_sha256": "8a699df052488b6617d9d709d19b97a0a1d035380fe0e6fa6b152e2dba0ec2ee",
         "excerpt": "final-default-post_import_idle-heap-excerpt.txt",
-        "excerpt_sha256": "80a91d325ef5df27a04e0c8989c55db3b6923209d3fec9ac6ed3691d8a3e0ec3"
+        "excerpt_sha256": "f2dc09e9863e92881573456ce60cdc7b730fbb4602dc7a538d73a5fcf1f5e3e3"
       },
       {
         "phase": "post_import_idle",
@@ -10539,7 +10540,7 @@
         "source_size_bytes": 540044,
         "source_sha256": "7055a33aca9c28a34e7521e3302ede265770715e8b353f675d2daa038aebb7d4",
         "excerpt": "final-default-speech_released_idle-heap-excerpt.txt",
-        "excerpt_sha256": "0b00724918e255a7f38635810e17139b775dee1da27e38e77e92c1fdec273013"
+        "excerpt_sha256": "591dab272e1e8cb04e0340cedc2f286c15009b9827775dd75a856d044c8e84d9"
       },
       {
         "phase": "speech_released_idle",
@@ -12358,6 +12359,7 @@
         "raw_archive_sha256": "242439d191f516b55b3f6a98524058a4a630a48594cf5292a498e8cc6d062f95"
       }
     ],
-    "executable_sha256": "75a1497ed418f9dd327317d767ec8655b6bc70b4f069c8cb4812c03205a5d81a"
+    "executable_sha256": "75a1497ed418f9dd327317d767ec8655b6bc70b4f069c8cb4812c03205a5d81a",
+    "excerpt_transform": "Leading report lines; home path sanitized; trailing whitespace removed. Original report hashes remain unchanged."
   }
 }
