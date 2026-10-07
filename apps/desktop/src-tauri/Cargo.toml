@@ -53,6 +53,7 @@ transcribe-rs = { version = "0.3", default-features = false, features = ["onnx"]
 # main app so its ggml can't collide with whisper-rs's.
 flate2 = "1"
 tar = "0.4"
+unicode-script = "0.5"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 core-graphics = "0.24"
