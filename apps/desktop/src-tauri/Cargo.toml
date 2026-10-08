@@ -9,6 +9,7 @@ resolver = "2"
 
 [package]
 name = "parrot"
+default-run = "parrot"
 version = "0.2.5"
 description = "Voice dictation app"
 authors = ["you"]
@@ -24,6 +25,13 @@ tauri-build = { version = "2", features = [] }
 [features]
 # Opt-in local workload driver. Ordinary builds do not contain benchmark hooks.
 memory-bench = []
+# Local quality worker; no app database, microphone, network or GUI startup.
+quality-eval = []
+
+[[bin]]
+name = "parrot-quality-eval"
+path = "src/bin/quality-eval.rs"
+required-features = ["quality-eval"]
 
 [dependencies]
 tauri = { version = "2", features = ["tray-icon", "image-png", "macos-private-api"] }

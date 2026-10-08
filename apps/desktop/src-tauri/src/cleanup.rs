@@ -99,7 +99,7 @@ async fn cleanup_with_builtin(
 
     // Budget for formatting (newlines, quotes, list markers) — a bit above
     // raw word count so structure isn't truncated.
-    let max_tokens = ((raw_text.split_whitespace().count() as i32) * 2 + 96).clamp(96, 768);
+    let max_tokens = cleanup_token_budget(raw_text);
 
     let engine = Arc::clone(engine);
     let system = system_prompt;
@@ -163,7 +163,11 @@ async fn cleanup_with_ollama(
     Ok(cleaned)
 }
 
-fn build_user_message(raw_text: &str) -> String {
+pub(crate) fn cleanup_token_budget(raw_text: &str) -> i32 {
+    ((raw_text.split_whitespace().count() as i32) * 2 + 96).clamp(96, 768)
+}
+
+pub(crate) fn build_user_message(raw_text: &str) -> String {
     format!(
         "Clean up the following dictated transcript into polished written text.\n\
          Keep the original languages and scripts, including intentional language mixing.\n\
@@ -313,15 +317,20 @@ pub fn build_system_prompt(
 /// Strip model flourishes, leftover pure fillers, and messy whitespace.
 /// Falls back to `raw_fallback` on empty output or detectable language/content loss.
 pub fn finalize_cleanup_output(raw: &str, raw_fallback: &str) -> String {
-    let mut s = strip_model_labels(raw.trim());
-    s = strip_wrapping_quotes(&s);
-    s = strip_pure_filler_tokens(&s);
-    s = normalize_whitespace(&s);
+    let s = cleanup_candidate(raw);
     if s.is_empty() || !preserves_language_structure(raw_fallback, &s) {
         raw_fallback.trim().to_string()
     } else {
         s
     }
+}
+
+pub(crate) fn cleanup_candidate(raw: &str) -> String {
+    let mut s = strip_model_labels(raw.trim());
+    s = strip_wrapping_quotes(&s);
+    s = strip_pure_filler_tokens(&s);
+    s = normalize_whitespace(&s);
+    s
 }
 
 /// Reject observable language/content loss. This is a conservative fallback,

@@ -16,6 +16,8 @@ mod speech_engine;
 mod streaming;
 mod transcription;
 mod vocab;
+#[cfg(feature = "quality-eval")]
+pub mod quality_eval;
 
 use audio::{AudioRecorder, RecordedSamples};
 use db::Database;
