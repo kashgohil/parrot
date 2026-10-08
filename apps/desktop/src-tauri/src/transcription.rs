@@ -60,6 +60,32 @@ impl LocalEngine {
         }
     }
 
+    pub async fn transcribe_import(
+        &self,
+        source: crate::audio_import::AudioSource,
+        opts: TranscribeOpts,
+    ) -> Result<crate::import_transcription::ImportedText> {
+        let engine = self.clone();
+        tokio::task::spawn_blocking(move || match engine {
+            Self::Parakeet(provider) => {
+                let mut model = provider
+                    .model
+                    .lock()
+                    .map_err(|_| anyhow::anyhow!("Parakeet model mutex poisoned"))?;
+                crate::import_transcription::transcribe_source(&mut *model, &source, 30.0, 0.25, 30)
+            }
+            Self::Whisper(provider) => {
+                let mut model = crate::import_transcription::WhisperModel {
+                    ctx: &provider.ctx,
+                    opts,
+                };
+                crate::import_transcription::transcribe_source(&mut model, &source, 25.0, 0.0, 28)
+            }
+        })
+        .await
+        .context("Import task panicked")?
+    }
+
     /// The owned blocking job can borrow prepared PCM from this recording,
     /// including when an async caller is cancelled during native inference.
     pub async fn transcribe_recording(
@@ -88,6 +114,7 @@ impl LocalEngine {
         .context("Speech task panicked")?
     }
 
+    #[cfg(test)]
     pub async fn transcribe_samples(
         &self,
         samples: &[f32],
@@ -130,6 +157,7 @@ impl LocalWhisperProvider {
     /// Transcribe mono `f32` samples at `sample_rate`. Resamples to 16 kHz
     /// when needed. Prefer this over the WAV path — avoids an f32→i16→f32
     /// round trip when the recorder already has floats.
+    #[cfg(test)]
     pub async fn transcribe_samples(
         &self,
         samples: &[f32],
@@ -191,6 +219,7 @@ impl ParakeetProvider {
         })
     }
 
+    #[cfg(test)]
     pub async fn transcribe_samples(
         &self,
         samples: &[f32],
@@ -248,7 +277,7 @@ fn prepare_pcm(samples: &[f32], sample_rate: u32, target_rate: u32) -> Cow<'_, [
     }
 }
 
-fn run_whisper(
+pub(crate) fn run_whisper(
     ctx: &WhisperContext,
     pcm: &[f32],
     language: Option<&str>,
@@ -346,6 +375,7 @@ fn num_cpus_default() -> std::os::raw::c_int {
 /// sample rate (no resample — the engines resample as needed). Symphonia
 /// probes the container from the bytes, so this covers WAV, MP3, M4A/AAC,
 /// FLAC, OGG/Vorbis, AIFF and CAF without relying on the file extension.
+#[cfg(any(test, feature = "memory-bench"))]
 pub fn decode_audio_bytes(data: &[u8]) -> Result<(Vec<f32>, u32)> {
     use symphonia::core::audio::SampleBuffer;
     use symphonia::core::codecs::{DecoderOptions, CODEC_TYPE_NULL, CODEC_TYPE_OPUS};
@@ -423,6 +453,7 @@ pub fn decode_audio_bytes(data: &[u8]) -> Result<(Vec<f32>, u32)> {
     Ok((mono, sample_rate))
 }
 
+#[cfg(any(test, feature = "memory-bench"))]
 fn average_channels(interleaved: &[f32], channels: usize) -> Vec<f32> {
     if channels <= 1 {
         return interleaved.to_vec();
@@ -433,7 +464,7 @@ fn average_channels(interleaved: &[f32], channels: usize) -> Vec<f32> {
         .collect()
 }
 
-fn resample_linear(input: &[f32], from_rate: u32, to_rate: u32) -> Vec<f32> {
+pub(crate) fn resample_linear(input: &[f32], from_rate: u32, to_rate: u32) -> Vec<f32> {
     if input.is_empty() || from_rate == to_rate {
         return input.to_vec();
     }

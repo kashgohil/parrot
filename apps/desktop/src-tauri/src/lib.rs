@@ -1,10 +1,12 @@
 mod audio;
+mod audio_import;
 mod cleanup;
 mod cleanup_engine;
 mod model_lifecycle;
 mod db;
 mod hotkey;
 mod inference_scheduler;
+mod import_transcription;
 mod local_setup;
 #[cfg(feature = "memory-bench")]
 mod memory_bench;
@@ -491,11 +493,11 @@ async fn transcribe_audio_file(
     if data.is_empty() {
         return Err("Empty audio file".into());
     }
-    run_file_transcription(data, filename, None, &db, &engine_state, &app).await
+    run_file_transcription(audio_import::AudioSource::Bytes(Arc::new(data)), filename, &db, &engine_state, &app).await
 }
 
 /// Transcribe an audio file at a filesystem path (drag-drop / native file
-/// picker). Reads the bytes in Rust so large files never cross IPC as a JSON
+/// picker). Streams the file in Rust so large files never cross IPC as a JSON
 /// number array (which freezes the webview and can OOM the content process).
 #[tauri::command]
 async fn transcribe_audio_file_path(
@@ -504,12 +506,10 @@ async fn transcribe_audio_file_path(
     engine_state: tauri::State<'_, SharedLocalEngine>,
     app: tauri::AppHandle,
 ) -> Result<DictationResult, String> {
-    let data = std::fs::read(&file_path)
-        .map_err(|e| format!("Failed to read {}: {}", file_path, e))?;
     let filename = std::path::Path::new(&file_path)
         .file_name()
         .map(|n| n.to_string_lossy().into_owned());
-    run_file_transcription(data, filename, Some(file_path), &db, &engine_state, &app).await
+    run_file_transcription(audio_import::AudioSource::File(file_path.into()), filename, &db, &engine_state, &app).await
 }
 
 #[derive(serde::Serialize, Clone)]
@@ -566,9 +566,8 @@ fn save_file_attachment(
 }
 
 async fn run_file_transcription(
-    data: Vec<u8>,
+    source: audio_import::AudioSource,
     filename: Option<String>,
-    source_path: Option<String>,
     db: &Database,
     engine_state: &SharedLocalEngine,
     app: &tauri::AppHandle,
@@ -588,33 +587,17 @@ async fn run_file_transcription(
 
     emit_file_progress(app, "decoding", 12, &name);
 
-    // Keep bytes only when we can't copy from a source path later.
-    let data_for_save = if source_path.is_none() {
-        Some(data.clone())
-    } else {
-        None
-    };
-
-    // Decoding compressed audio (mp3/m4a/…) is CPU-bound — keep it off the
-    // async worker thread.
-    let (samples, sample_rate) = tokio::task::spawn_blocking(move || {
-        transcription::decode_audio_bytes(&data)
-    })
-    .await
-    .map_err(|e| e.to_string())?
-    .map_err(|e| e.to_string())?;
-    if samples.is_empty() {
-        return Err("Audio file has no samples".into());
-    }
-    let duration_ms = (samples.len() as f64 / sample_rate as f64 * 1000.0) as u64;
-
     emit_file_progress(app, "transcribing", 35, &name);
     let _ = app.emit("transcription-started", ());
     configure_speech(db, engine_state);
     let opts = TranscribeOpts::from_database(db).map_err(|e| e.to_string())?;
     let transcription_start = Instant::now();
-    let speech = engine_state.transcribe_final(samples, sample_rate, opts)
+    let imported = engine_state.transcribe_import(source.clone(), opts)
         .await.map_err(|e| e.to_string())?;
+    let duration_ms = imported.decode.duration_ms();
+    #[cfg(feature = "memory-bench")]
+    let _ = app.emit("import-audio-buffers", &imported.decode);
+    let speech = imported.speech;
     let raw_text = speech.text;
     let transcription_ms = transcription_start.elapsed().as_millis() as i64;
 
@@ -642,13 +625,11 @@ async fn run_file_transcription(
         .map_err(|e| e.to_string())?;
 
     emit_file_progress(app, "saving", 72, &name);
-    let _ = save_file_attachment(
-        db,
-        &id,
-        &name,
-        source_path.as_deref(),
-        data_for_save.as_deref(),
-    );
+    match &source {
+        audio_import::AudioSource::File(path) => { let _ = save_file_attachment(db, &id, &name, path.to_str(), None); }
+        audio_import::AudioSource::Bytes(bytes) => { let _ = save_file_attachment(db, &id, &name, None, Some(bytes.as_slice())); }
+    }
+    drop(source);
 
     let engine_name = speech.engine;
     let model_name = Some(speech.model);

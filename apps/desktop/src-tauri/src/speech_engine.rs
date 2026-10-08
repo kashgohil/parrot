@@ -30,6 +30,11 @@ pub struct SpeechResult {
     pub model: String,
 }
 
+pub struct ImportedSpeech {
+    pub speech: SpeechResult,
+    pub decode: crate::audio_import::DecodeStats,
+}
+
 pub struct SpeechEngine {
     pub models: Arc<ModelLifecycle<LocalEngine, SpeechTarget>>,
     scheduler: Arc<InferenceScheduler>,
@@ -105,6 +110,7 @@ impl SpeechEngine {
         });
     }
 
+    #[cfg(test)]
     pub async fn transcribe_final(
         self: &Arc<Self>,
         samples: Vec<f32>,
@@ -142,6 +148,34 @@ impl SpeechEngine {
                 };
                 drop(lease); // No speech handle escapes into cleanup/history/paste.
                 Ok(result)
+            })
+            .await
+    }
+
+    pub async fn transcribe_import(
+        self: &Arc<Self>,
+        source: crate::audio_import::AudioSource,
+        opts: TranscribeOpts,
+    ) -> Result<ImportedSpeech> {
+        let owner = self.clone();
+        self.scheduler
+            .final_job(async move {
+                owner.prepare_speech().await?;
+                let lease = owner
+                    .models
+                    .acquire_with_timeout(Duration::from_secs(180))
+                    .await?;
+                let imported = lease.client.transcribe_import(source, opts).await?;
+                let speech = SpeechResult {
+                    text: imported.text,
+                    engine: lease.client.engine_id(),
+                    model: lease.client.model_label(),
+                };
+                drop(lease);
+                Ok(ImportedSpeech {
+                    speech,
+                    decode: imported.decode,
+                })
             })
             .await
     }
