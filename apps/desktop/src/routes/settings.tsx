@@ -1,3 +1,5 @@
+import { SpeechLanguagePicker } from "@/components/speech-language-picker";
+import { coverageLabel, EMPTY_MODELS, useSpeechCatalog, type SpeechCapabilities } from "@/lib/speech-catalog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -146,36 +148,34 @@ function SettingsPage() {
 	const keysRef = useRef<Set<string>>(new Set());
 	const recorderRef = useRef<HTMLDivElement>(null);
 
-	const STT_TIERS = [
-		{
-			id: "parakeet-v3",
-			name: "Fast (Parakeet)",
-			desc: "Default. More accurate than models 10× its size. ~80–150ms.",
-			pill: "Fastest",
-			recommended: true,
-		},
-		{
-			id: "large-v3-turbo",
-			name: "Multilingual (Whisper turbo)",
-			desc: "99 languages. Quantized large-v3-turbo on Metal.",
-			pill: "99 languages",
-			recommended: false,
-		},
-		{
-            id: "small-q5_1",
-            name: "Compact multilingual (Whisper small)",
-            desc: "99 languages. Smaller download (~181 MiB); accuracy can differ from turbo. Selecting downloads and switches the model.",
-            pill: "Compact",
-            recommended: false,
-        },
-		{
-			id: "small.en",
-			name: "English only (Whisper small.en)",
-			desc: "English-only model. Choose a multilingual tier for other languages.",
-			pill: "English only",
-			recommended: false,
-		},
-	] as const;
+	const { catalog, error: catalogError, retry: retryCatalog } = useSpeechCatalog();
+	const STT_TIERS = catalog?.models ?? EMPTY_MODELS;
+	const [sttCapabilities, setSttCapabilities] = useState<SpeechCapabilities | null>(null);
+
+	async function switchSpeechModel(modelId: string) {
+		if (sttSwitching) return;
+		setSttSwitching(true);
+		setSttProgress("Starting download…");
+		let unlisten: (() => void) | undefined;
+		try {
+			const { listen } = await import("@tauri-apps/api/event");
+			unlisten = await listen<{message: string; progress: number}>("stt-model-download-progress", event => {
+				setSttProgress(`${event.payload.message} (${Math.round(event.payload.progress)}%)`);
+			});
+			const result = await invoke<{engine: string; model_id: string; ready: boolean; capabilities: SpeechCapabilities}>("switch_stt_model", {modelId});
+			setSttEngine(result.engine);
+			setSttModel(result.model_id);
+			setSttCapabilities(result.capabilities);
+			setSpeechLifecycle({state: result.ready ? "ready" : "unloaded", error: null});
+			setSttProgress(result.ready ? "Ready" : "Saved — loads when you record");
+			setTimeout(() => setSttProgress(null), 2500);
+		} catch (error) {
+			setSttProgress(`Failed: ${String(error)}`);
+		} finally {
+			unlisten?.();
+			setSttSwitching(false);
+		}
+	}
 
 	const CLEANUP_TIERS = [
 		{
@@ -386,12 +386,14 @@ function SettingsPage() {
 				engine: string;
 				model_id: string;
 				language: string;
+				capabilities: SpeechCapabilities;
 				lifecycle: { state: string; error: string | null; idle_seconds: number | null };
 				release_before_cleanup: boolean;
 			}>("get_stt_status");
 			setSttEngine(stt.engine || "whisper");
 			setSttModel(stt.model_id || "");
 			setSttLanguage(stt.language || "auto");
+			setSttCapabilities(stt.capabilities);
 			setSpeechLifecycle(stt.lifecycle);
 			const [lowMemory, normalSpeechIdle, normalSequential] = await Promise.all([
                 invoke<string | null>("get_setting", { key: "low_memory_mode" }),
@@ -628,8 +630,7 @@ function SettingsPage() {
 									Speech model
 								</h2>
 								<p className="text-sm text-muted-foreground">
-									Local transcription engine. Parakeet is faster and more
-									accurate for English; Whisper covers 99 languages.
+									Choose a local speech model for your languages. Selecting a model downloads it if needed and switches immediately.
 								</p>
 							</div>
 						</div>
@@ -644,72 +645,41 @@ function SettingsPage() {
                                 <p className="text-xs text-muted-foreground">Your model and language selections stay the same. For a smaller multilingual setup, select Compact multilingual below and Basic cleanup. Downloads and model switches happen only when you select a model.</p>
                                 {lowMemoryMode && <p className="text-xs text-muted-foreground">Save to apply. Turning this off restores your normal memory preferences. A mode change lets active work finish; previews resume with your next recording.</p>}
                             </div>
+							{!catalog && <p role="status" className="text-xs text-muted-foreground">{catalogError ? "Could not load speech model capabilities." : "Loading speech model capabilities…"}{catalogError && <Button variant="outline" size="sm" onClick={retryCatalog}>Retry</Button>}</p>}
 							{STT_TIERS.map((tier) => {
 								const selected =
 									sttModel === tier.id ||
 									(!sttModel &&
 										tier.id === "parakeet-v3" &&
 										sttEngine === "parakeet");
-								const isLegacyWhisper =
-									sttEngine === "whisper" &&
-									!STT_TIERS.some((t) => t.id === sttModel) &&
-									tier.id === "parakeet-v3";
-								const highlight = selected || isLegacyWhisper;
+								const highlight = selected;
+								const capabilities = selected && sttCapabilities ? sttCapabilities : tier.capabilities;
+								const differentCoverage = selected && (
+									!capabilities.known ||
+									capabilities.languages.length !== tier.capabilities.languages.length ||
+									capabilities.languages.some(code => !tier.capabilities.languages.includes(code))
+								);
 								return (
 									<button
 										key={tier.id}
 										type="button"
-										disabled={sttSwitching}
-										onClick={async () => {
-											if (sttModel === tier.id || sttSwitching) return;
-											setSttSwitching(true);
-											setSttProgress("Starting download…");
-											try {
-												const { listen } = await import("@tauri-apps/api/event");
-												const unsub = await listen<{
-													message: string;
-													progress: number;
-												}>("stt-model-download-progress", (e) => {
-													setSttProgress(
-														`${e.payload.message} (${Math.round(e.payload.progress)}%)`,
-													);
-												});
-												const res = await invoke<{
-													engine: string;
-													model_id: string;
-													ready: boolean;
-												}>("switch_stt_model", { modelId: tier.id });
-												unsub();
-												setSttEngine(res.engine);
-												setSttModel(res.model_id);
-												setSttProgress(res.ready ? "Ready" : "Saved — loads when you record");
-												setTimeout(() => setSttProgress(null), 2500);
-											} catch (e) {
-												console.error(e);
-												setSttProgress(
-													`Failed: ${e instanceof Error ? e.message : String(e)}`,
-												);
-											} finally {
-												setSttSwitching(false);
-											}
-										}}
+										disabled={sttSwitching || !sttCapabilities}
+										onClick={() => void switchSpeechModel(tier.id)}
 										className={cardCls(highlight)}
 									>
 										<div className="flex items-center gap-3">
 											<div className="flex-1 min-w-0">
 												<p className="text-sm font-medium text-foreground flex items-center gap-2 flex-wrap">
 													{tier.name}
-													{isLegacyWhisper ? (
-														<Pill tone="primary">Upgrade available</Pill>
-													) : selected ? (
+													{selected ? (
 														<Pill tone="emerald">Active</Pill>
 													) : tier.recommended ? (
 														<Pill tone="primary">Recommended</Pill>
 													) : null}
-													<Pill tone="muted">{tier.pill}</Pill>
+													<Pill tone="muted">{coverageLabel(capabilities)}</Pill>
 												</p>
 												<p className="text-xs text-muted-foreground mt-0.5">
-													{tier.desc}
+													{differentCoverage ? "The selected model file differs from this catalog tier. The coverage shown here and the language checks use the actual file." : tier.description}
 												</p>
 											</div>
 											<RadioDot selected={highlight} />
@@ -724,8 +694,7 @@ function SettingsPage() {
 									<p className="text-xs text-muted-foreground">
 										Currently using your existing Whisper model (
 										<span className="font-mono">{sttModel || "custom"}</span>
-										). Switch to Fast (Parakeet) for a large speed + accuracy
-										jump.
+										). Language coverage is read from the model file when available.
 									</p>
 								)}
 
@@ -733,44 +702,14 @@ function SettingsPage() {
 								<p className="text-xs text-primary font-medium">{sttProgress}</p>
 							)}
 
-							<div className="space-y-2 pt-2">
-								<Label htmlFor="sttLanguage" className="text-sm font-medium">
-									Language
-								</Label>
-								<Select
-									value={sttLanguage}
-									onValueChange={(v) => {
-										setSttLanguage(v);
-										setDirty(true);
-									}}
-								>
-									<SelectTrigger
-										id="sttLanguage"
-										className="w-full h-10 rounded-xl border-border bg-muted/50"
-									>
-										<SelectValue placeholder="Select language" />
-									</SelectTrigger>
-									<SelectContent position="popper" className="rounded-xl">
-										<SelectItem value="auto">Auto-detect</SelectItem>
-										<SelectItem value="en">English</SelectItem>
-										<SelectItem value="es">Spanish</SelectItem>
-										<SelectItem value="fr">French</SelectItem>
-										<SelectItem value="de">German</SelectItem>
-										<SelectItem value="it">Italian</SelectItem>
-										<SelectItem value="pt">Portuguese</SelectItem>
-										<SelectItem value="nl">Dutch</SelectItem>
-										<SelectItem value="pl">Polish</SelectItem>
-										<SelectItem value="ru">Russian</SelectItem>
-										<SelectItem value="ja">Japanese</SelectItem>
-										<SelectItem value="zh">Chinese</SelectItem>
-										<SelectItem value="ko">Korean</SelectItem>
-									</SelectContent>
-								</Select>
-								<p className="text-xs text-muted-foreground">
-									Whisper uses this for decoding; Parakeet auto-detects. Prefer
-									Auto unless you always dictate in one language.
-								</p>
-							</div>
+							<SpeechLanguagePicker
+								catalog={catalog}
+								capabilities={sttCapabilities}
+								language={sttLanguage}
+								switching={sttSwitching}
+								onLanguageChange={language => { setSttLanguage(language); setDirty(true); }}
+								onSwitchModel={modelId => void switchSpeechModel(modelId)}
+							/>
 							<div className="space-y-2 pt-2">
 								<Label htmlFor="sttIdleSeconds" className="text-sm font-medium">Release speech memory after</Label>
 								<Select disabled={lowMemoryMode} value={lowMemoryMode ? "30" : sttIdleSeconds} onValueChange={(value) => { setSttIdleSeconds(value); setDirty(true); }}>

@@ -651,7 +651,7 @@ function ParakeetUpgradeBanner() {
 			"get_stt_status",
 		)
 			.then((s) => {
-				if (s.engine !== "parakeet") setShow(true);
+				if (s.engine !== "parakeet" && s.can_upgrade_to_parakeet) setShow(true);
 			})
 			.catch(() => {});
 	}, []);
@@ -691,11 +691,11 @@ function ParakeetUpgradeBanner() {
 				<Sparkles className="w-4 h-4 shrink-0 text-sky-600" />
 				<div className="flex-1 min-w-0">
 					<p className="text-sm font-medium leading-tight">
-						Faster, more accurate dictation is available
+						Parakeet dictation is available
 					</p>
 					<p className="text-xs text-sky-900/75 leading-tight mt-0.5">
 						{progress ||
-							"Switch to Parakeet (~450 MB) — more accurate than models 10× its size. Your Whisper model stays on disk."}
+							"Parakeet auto-detects 25 European languages, including English. Language hints do not pin decoding. Your Whisper model stays on disk."}
 					</p>
 				</div>
 				<button

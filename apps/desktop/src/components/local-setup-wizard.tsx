@@ -1,3 +1,4 @@
+import { EMPTY_MODELS, useSpeechCatalog, type SpeechModel } from "@/lib/speech-catalog";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -78,33 +79,6 @@ interface SetupProgress {
 	status: SetupStatus;
 	overall_progress: number;
 }
-
-// STT model tiers — Phase 2: Parakeet is the fast default; Whisper remains
-// for full multilingual coverage and low-RAM machines.
-const WHISPER_MODELS = [
-	{
-		id: "parakeet-v3",
-		name: "Fast",
-		size: "450 MB",
-		description:
-			"Parakeet 0.6B — more accurate than models 10× its size. English + 25 EU languages.",
-		recommended: true,
-	},
-	{
-		id: "large-v3-turbo",
-		name: "Multilingual",
-		size: "600 MB",
-		description: "Whisper large-v3-turbo (quantized). 99 languages via Metal.",
-		recommended: false,
-	},
-	{
-		id: "small.en",
-		name: "Low RAM",
-		size: "500 MB",
-		description: "Whisper small.en — fallback for older Macs with limited memory.",
-		recommended: false,
-	},
-];
 
 // Phase 3: in-process cleanup GGUF (no Ollama install / admin password).
 const CLEANUP_MODELS = [
@@ -467,6 +441,8 @@ function ModelSelectionStep({
 	onSelectWhisper: (id: string) => void;
 	onContinue: () => void;
 }) {
+	const {catalog, error: catalogError, retry: retryCatalog} = useSpeechCatalog();
+	const WHISPER_MODELS = catalog?.models ?? EMPTY_MODELS;
 	const whisperModel = WHISPER_MODELS.find((m) => m.id === selectedWhisper);
 	const cleanupModel = CLEANUP_MODELS.find((m) => m.id === selectedOllama);
 	const [downloadedModels, setDownloadedModels] = useState<{
@@ -477,6 +453,8 @@ function ModelSelectionStep({
 
 	// Check which models are already downloaded
 	useEffect(() => {
+		if (!catalog) return;
+		setIsCheckingModels(true);
 		const checkDownloadedModels = async () => {
 			try {
 				const downloaded = await invoke<{
@@ -498,14 +476,14 @@ function ModelSelectionStep({
 		};
 
 		checkDownloadedModels();
-	}, []);
+	}, [catalog, WHISPER_MODELS]);
 
 	// Parse size strings like "150 MB" or "2 GB" and convert to GB
 	const parseSizeToGB = (sizeStr: string): number => {
-		const num = parseFloat(sizeStr);
+		const num = parseFloat(sizeStr.replace(/^~/, ""));
 		if (sizeStr.includes("GB")) {
 			return num;
-		} else if (sizeStr.includes("MB")) {
+		} else if (/M(?:i)?B/.test(sizeStr)) {
 			return num / 1024; // Convert MB to GB
 		}
 		return num;
@@ -540,6 +518,7 @@ function ModelSelectionStep({
 				</div>
 			)}
 
+			{!catalog && <p role="status">{catalogError ? "Could not load speech models." : "Loading speech models…"}{catalogError && <Button variant="outline" onClick={retryCatalog}>Retry</Button>}</p>}
 			{/* Dictation models */}
 			<div>
 				<div className="flex items-center gap-2 mb-3">
@@ -559,6 +538,7 @@ function ModelSelectionStep({
 				</div>
 			</div>
 
+			<p className="text-xs text-muted-foreground">Language counts describe model coverage. Accuracy for mixed-language recordings is still being evaluated. Download sizes are not memory requirements.</p>
 			<div className="p-4 rounded-xl border border-border bg-muted/40 space-y-1">
 				<div className="flex items-center gap-2">
 					<Brain className="w-4 h-4 text-primary" />
@@ -584,7 +564,7 @@ function ModelSelectionStep({
 			</div>
 
 			<div className="flex justify-end pt-4">
-				<Button onClick={onContinue}>
+				<Button onClick={onContinue} disabled={!catalog}>
 					{!isCheckingModels && !hasDownloads ? "Continue" : "Start Setup"}
 					<Play className="w-4 h-4 ml-1" />
 				</Button>
@@ -599,7 +579,7 @@ function ModelCard({
 	isDownloaded,
 	onSelect,
 }: {
-	model: (typeof WHISPER_MODELS)[0];
+	model: SpeechModel;
 	selected: boolean;
 	isDownloaded?: boolean;
 	onSelect: () => void;
@@ -623,7 +603,7 @@ function ModelCard({
 				</div>
 				<div className="min-w-0 flex-1">
 					<div className="flex items-center flex-wrap gap-x-2 gap-y-1">
-						<span className="font-medium whitespace-nowrap">{model.name}</span>
+						<span className="font-medium">{model.name}</span>
 						{model.recommended && (
 							<span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
 								Recommended
