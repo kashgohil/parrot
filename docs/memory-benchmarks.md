@@ -310,3 +310,30 @@ and proposed thresholds. A proposed RAM tier is a device-validation target,
 not an untested compatibility claim. Memory optimizations must retain source
 content and be compared with the same model pair, build, scenarios, and cache
 conditions; a smaller but truncated transcript is not a successful result.
+
+## Low-memory mode checks
+
+Build the ordinary `memory-bench,tauri/custom-protocol` app and set
+`"low_memory_mode": true` in the isolated benchmark config. No models are
+switched or downloaded automatically. Compare mode off/on using the same model
+pair, fixture duration and idle periods, with two fresh processes per setting.
+A 35-second post-import idle exposes the mode's 30-second timeout while the
+normal 60-second policy still retains speech. Keep cleanup off during the long
+import so short dictations measure the cleanup residency policy separately.
+
+Low-memory runs require **zero** emitted previews and no recording prewarm;
+ordinary runs still require real preview output. The report's preview coverage
+result denotes the configured policy, so inspect `capture_previews` for the
+actual count.
+
+For a separate full regression run, enable `"low_memory_checks": true`,
+`"speech_lifecycle_checks": true`, `"cleanup_lifecycle_checks": true` and
+`"recording_lifecycle_checks": true`. Use at least 65 seconds of combined
+post-import idle. This checks mode changes during native load/inference in both
+directions, on-disk preference persistence, restored normal preferences,
+Ollama raw-text fallback, failed built-in cleanup and recovery, idle speech
+release/reload, completed PCM release, failed speech retry, saved WAV and original
+byte attachments. Policy changes in this run intentionally change residency;
+report it separately from fixed-mode memory comparisons.
+
+See [low-memory mode](low-memory-mode.md) for behavior and device-validation limits.

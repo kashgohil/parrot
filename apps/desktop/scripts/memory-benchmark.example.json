@@ -10,5 +10,7 @@
   "post_idle_seconds": 60,
   "long_import_seconds": 120,
   "speech_lifecycle_checks": true,
-  "stt_release_before_cleanup": false
+  "stt_release_before_cleanup": false,
+  "low_memory_mode": false,
+  "low_memory_checks": false
 }
