@@ -11,6 +11,7 @@ mod import_transcription;
 mod local_setup;
 #[cfg(feature = "memory-bench")]
 mod memory_bench;
+mod speech_capabilities;
 mod speech_engine;
 mod streaming;
 mod transcription;
@@ -1234,17 +1235,29 @@ fn get_timing_stats(db: tauri::State<'_, Database>) -> Result<db::TimingStats, S
     db.timing_stats().map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn get_speech_catalog() -> serde_json::Value {
+    serde_json::json!({
+        "models": speech_capabilities::models(),
+        "languages": speech_capabilities::languages(),
+    })
+}
+
 /// Current STT engine + model tier for Settings / upgrade banners.
 #[tauri::command]
 fn get_stt_status(db: tauri::State<'_, Database>, speech: tauri::State<'_, SharedLocalEngine>) -> Result<serde_json::Value, String> {
     let config = db.get_local_setup_config().map_err(|e| e.to_string())?;
     let (engine, path, model_id) = resolve_stt_load_target(&db, &config);
+    let capabilities = speech_capabilities::for_target(&engine, &model_id, std::path::Path::new(&path));
+    let language = speech_capabilities::normalize_language(db.get_setting("stt_language").ok().flatten().as_deref());
     Ok(serde_json::json!({
         "engine": engine,
         "model_id": model_id,
         "model_path": path,
-        "language": db.get_setting("stt_language").ok().flatten().unwrap_or_else(|| "auto".into()),
-        "can_upgrade_to_parakeet": engine != "parakeet",
+        "language": language,
+        "capabilities": capabilities,
+        "language_error": capabilities.validate(Some(&language)).err().map(|error| error.to_string()),
+        "can_upgrade_to_parakeet": engine != "parakeet" && speech_capabilities::Capabilities::parakeet().supports(&language) == Some(true),
         "lifecycle": speech.models.status(),
         "release_before_cleanup": memory_policy::MemoryPolicy::from_database(&db).sequential,
         "memory_policy": memory_policy::MemoryPolicy::from_database(&db),
@@ -1383,6 +1396,7 @@ async fn switch_stt_model(
         "model_id": model_id,
         "model_path": path_str,
         "ready": ready,
+        "capabilities": speech_capabilities::for_target(engine, &model_id, std::path::Path::new(&path_str)),
     }))
 }
 
@@ -1596,6 +1610,12 @@ fn set_setting(
     }
     if matches!(key, "stt_release_before_cleanup" | "low_memory_mode") && !matches!(value, "true" | "false") {
         return Err("Speech release policy must be true or false".into());
+    }
+    if key == "stt_language" {
+        // Validate the code, but retain incompatible preferences across model switches.
+        // The UI surfaces compatibility and the native engine rejects unsupported decoding.
+        speech_capabilities::Capabilities::whisper_vocab(51866)
+            .validate(Some(value)).map_err(|error| error.to_string())?;
     }
     state.set_setting(key, value).map_err(|e| e.to_string())?;
     if matches!(
@@ -2234,6 +2254,7 @@ pub fn run() {
             apply_pending_cleanup,
             dismiss_pending_cleanup,
             get_timing_stats,
+            get_speech_catalog,
             get_stt_status,
             get_cleanup_status,
             upgrade_cleanup_to_builtin,

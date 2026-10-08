@@ -47,6 +47,14 @@ pub enum LocalEngine {
 }
 
 impl LocalEngine {
+    fn validate_language(&self, opts: &TranscribeOpts) -> Result<()> {
+        let capabilities = match self {
+            Self::Whisper(provider) => crate::speech_capabilities::Capabilities::whisper_vocab(provider.ctx.model_n_vocab()),
+            Self::Parakeet(_) => crate::speech_capabilities::Capabilities::parakeet(),
+        };
+        capabilities.validate(opts.language.as_deref())
+    }
+
     pub fn engine_id(&self) -> &'static str {
         match self {
             LocalEngine::Whisper(_) => "whisper",
@@ -66,6 +74,7 @@ impl LocalEngine {
         source: crate::audio_import::AudioSource,
         opts: TranscribeOpts,
     ) -> Result<crate::import_transcription::ImportedText> {
+        self.validate_language(&opts)?;
         let engine = self.clone();
         tokio::task::spawn_blocking(move || match engine {
             Self::Parakeet(provider) => {
@@ -94,6 +103,7 @@ impl LocalEngine {
         audio: Arc<crate::audio::RecordedSamples>,
         opts: TranscribeOpts,
     ) -> Result<String> {
+        self.validate_language(&opts)?;
         let engine = self.clone();
         tokio::task::spawn_blocking(move || match engine {
             Self::Whisper(provider) => {
@@ -271,6 +281,11 @@ pub(crate) fn run_whisper(
     language: Option<&str>,
     initial_prompt: Option<&str>,
 ) -> Result<String> {
+    // Check the actual loaded model: whisper.cpp can silently force .en models
+    // back to English even when a different language was requested.
+    crate::speech_capabilities::Capabilities::whisper_vocab(ctx.model_n_vocab()).validate(language)?;
+    let normalized_language = crate::speech_capabilities::normalize_language(language);
+
     // whisper.cpp needs at least ~1s of audio internally (it pads to 30s frames
     // from there). Calling `state.full()` with a near-empty buffer surfaces as
     // "Whisper inference failed" — treat sub-threshold input as empty
@@ -296,9 +311,7 @@ pub(crate) fn run_whisper(
     params.set_translate(false);
 
     // Language: "auto"/empty/None → auto-detect; otherwise pin to the code.
-    let lang = language
-        .map(str::trim)
-        .filter(|s| !s.is_empty() && !s.eq_ignore_ascii_case("auto"));
+    let lang = (normalized_language != "auto").then_some(normalized_language.as_str());
     params.set_language(lang);
     // An unset language already triggers automatic detection. Detection-only
     // mode returns before decoding speech, leaving the transcript empty.
