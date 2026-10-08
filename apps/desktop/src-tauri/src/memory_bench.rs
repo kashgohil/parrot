@@ -36,6 +36,10 @@ pub(crate) struct Config {
     pub recording_lifecycle_checks: bool,
     #[serde(default)]
     pub stt_release_before_cleanup: bool,
+    #[serde(default)]
+    pub low_memory_mode: bool,
+    #[serde(default)]
+    pub low_memory_checks: bool,
     /// Diagnostic-only provider override, applied before any model is loaded.
     #[serde(default)]
     pub parakeet_accelerator: Option<String>,
@@ -122,6 +126,7 @@ impl Config {
             email: String::new(),
             onboarding_completed: true,
         })?;
+        db.set_setting("low_memory_mode", if self.low_memory_mode { "true" } else { "false" })?;
         db.set_setting("stt_engine", &self.stt_engine)?;
         db.set_setting(
             "stt_model",
@@ -271,11 +276,7 @@ async fn dictation(app: &AppHandle, events: &Events, scenario: &str, french: boo
         &result.cleaned_text,
         expected,
     );
-    if app
-        .state::<Database>()
-        .get_setting("stt_release_before_cleanup")?
-        .as_deref()
-        == Some("true")
+    if crate::memory_policy::MemoryPolicy::from_database(&app.state::<Database>()).sequential
         && app
             .state::<Database>()
             .get_setting("cleanup_mode")?
@@ -295,6 +296,44 @@ async fn dictation(app: &AppHandle, events: &Events, scenario: &str, french: boo
             "stt_loaded": app.state::<SharedLocalEngine>().models.is_loaded(),
             "cleanup_loaded": app.state::<SharedCleanupEngine>().is_loaded()}),
     );
+    Ok(())
+}
+
+// Exercise the same Settings command while native loading/inference owns a
+// lease. A policy-only change must never invalidate the selected model.
+async fn low_memory_checks(app: &AppHandle, config: &Config, events: &Events) -> Result<()> {
+    anyhow::ensure!(config.low_memory_mode, "low_memory_checks requires low_memory_mode");
+    for (enabled, french) in [(false, false), (true, true)] {
+        let owned_app = app.clone();
+        let owned_events = events.clone();
+        let job = tokio::spawn(async move { dictation(&owned_app, &owned_events, if enabled {"active_mode_enable"} else {"active_mode_disable"}, french).await });
+        let deadline = Instant::now() + Duration::from_secs(30);
+        loop {
+            let state = app.state::<SharedLocalEngine>().models.status().state;
+            if matches!(state, "loading" | "in_use") { break; }
+            anyhow::ensure!(!job.is_finished() && Instant::now() < deadline, "missed active speech for policy change");
+            tokio::time::sleep(Duration::from_millis(1)).await;
+        }
+        crate::set_setting("low_memory_mode", if enabled {"true"} else {"false"}, app.state(), app.state(), app.state()).map_err(anyhow::Error::msg)?;
+        job.await??;
+        events.write("check", "active_mode_change", json!({"enabled":enabled,"active_job_preserved":true}));
+    }
+    // Reopen the isolated on-disk database, as a restart would.
+    let reopened = Database::new()?;
+    anyhow::ensure!(reopened.get_setting("low_memory_mode")?.as_deref() == Some("true"), "mode did not persist");
+    anyhow::ensure!(reopened.get_setting("stt_idle_seconds")?.as_deref() == Some("60"), "normal preference was overwritten");
+    let db = app.state::<Database>();
+    db.set_setting("cleanup_backend", "ollama")?;
+    crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
+    let (samples, rate, expected) = fixture(true);
+    app.state::<RecorderState>().last_audio.store(crate::RecordedSamples { samples, sample_rate: rate }, 3000);
+    let start = Instant::now();
+    let raw = crate::transcribe_last(app.state(), app.state(), app.state(), app.clone()).await.map_err(anyhow::Error::msg)?;
+    anyhow::ensure!(raw.cleaned_text.is_empty() && !raw.raw_text.is_empty(), "legacy cleanup did not return raw text");
+    events.result("legacy_raw_fallback", start, &raw.raw_text, &raw.cleaned_text, expected);
+    db.set_setting("cleanup_backend", "builtin")?;
+    crate::configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
+    events.write("check", "low_memory_persistence", json!({"persisted":true,"normal_preferences_preserved":true,"legacy_raw_fallback":true}));
     Ok(())
 }
 
@@ -375,7 +414,8 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
         "begin",
         "startup",
         json!({"build": if cfg!(debug_assertions) {"debug"} else {"release"},
-            "cleanup_loading": "on_demand", "cleanup_idle_seconds": 60, "speech_loading": "on_demand", "speech_idle_seconds": 60,
+            "cleanup_loading": "on_demand", "cleanup_idle_seconds": if config.low_memory_mode {30} else {60}, "speech_loading": "on_demand", "speech_idle_seconds": if config.low_memory_mode {30} else {60},
+            "low_memory_mode": config.low_memory_mode,
             "cleanup_lifecycle_checks": config.cleanup_lifecycle_checks,
             "speech_lifecycle_checks": config.speech_lifecycle_checks,
             "parakeet_accelerator": transcription::parakeet_accelerator().to_string(),
@@ -487,11 +527,15 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
         "capture_previews",
         json!({"previews": *preview_count.lock().unwrap()}),
     );
-    // A workload with no emitted preview must not silently pass as coverage.
+    if config.low_memory_mode {
+        anyhow::ensure!(*preview_count.lock().unwrap() == 0, "low-memory capture emitted previews");
+        anyhow::ensure!(!app.state::<SharedLocalEngine>().models.is_loaded(), "low-memory capture prewarmed speech");
+    }
+    // Verify explicit suppression in low-memory mode and actual emission otherwise.
     events.result(
         "preview_coverage",
         preview_start,
-        if *preview_count.lock().unwrap() > 0 {
+        if config.low_memory_mode || *preview_count.lock().unwrap() > 0 {
             "preview"
         } else {
             ""
@@ -523,8 +567,8 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
         *phase.lock().unwrap() = "reload".into();
         dictation(app, events, "reload_dictation", true).await?;
         anyhow::ensure!(
-            app.state::<SharedCleanupEngine>().is_loaded(),
-            "first cleanup after idle did not load"
+            app.state::<SharedCleanupEngine>().is_loaded() != crate::memory_policy::MemoryPolicy::from_database(&db).sequential,
+            "cleanup residency after reload did not match policy"
         );
         events
             .idle("cleanup_reloaded_idle", config.idle_seconds, app)
@@ -677,6 +721,7 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
             .await;
     }
     if config.recording_lifecycle_checks { recording_retry_and_save(app, config, events).await?; }
+    if config.low_memory_checks { low_memory_checks(app, config, events).await?; }
     events.write("begin", "complete", json!({}));
     events.write(
         "end",
