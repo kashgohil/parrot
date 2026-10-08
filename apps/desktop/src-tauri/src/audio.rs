@@ -15,14 +15,14 @@ unsafe impl Sync for AudioRecorder {}
 
 impl AudioRecorder {
     /// Replay synthetic PCM through the ordinary capture buffer, without a mic.
-    #[cfg(feature = "memory-bench")]
+    #[cfg(any(test, feature = "memory-bench"))]
     pub(crate) fn begin_fixture(&mut self, sample_rate: u32) {
         self.samples.lock().unwrap().clear();
         self.sample_rate = sample_rate;
         *self.is_recording.lock().unwrap() = true;
     }
 
-    #[cfg(feature = "memory-bench")]
+    #[cfg(any(test, feature = "memory-bench"))]
     pub(crate) fn push_fixture(&mut self, samples: &[f32]) {
         self.samples.lock().unwrap().extend_from_slice(samples);
     }
@@ -150,15 +150,29 @@ impl AudioRecorder {
         *self.is_recording.lock().unwrap()
     }
 
-    /// Clone of the in-flight capture buffer for streaming partials.
-    /// Does not stop recording or clear samples.
-    pub fn snapshot(&self) -> RecordedSamples {
-        let samples = self.samples.lock().unwrap().clone();
-        RecordedSamples {
-            samples,
-            sample_rate: self.sample_rate.max(1),
+    /// Copy only the recent mono audio needed for a preview. The full capture
+    /// remains owned by the recorder until `stop` transfers it to the caller.
+    pub fn snapshot_tail(&self, max_seconds: u32) -> CaptureSnapshot {
+        let sample_rate = self.sample_rate.max(1);
+        let max_samples = (sample_rate as usize).saturating_mul(max_seconds as usize);
+        let capture = self.samples.lock().unwrap();
+        let total_samples = capture.len();
+        let start = total_samples.saturating_sub(max_samples);
+        CaptureSnapshot {
+            audio: RecordedSamples {
+                samples: capture[start..].to_vec(),
+                sample_rate,
+            },
+            total_samples,
         }
     }
+}
+
+/// Total length is independent of the bounded tail so growth checks continue
+/// to work after the preview window fills.
+pub struct CaptureSnapshot {
+    pub audio: RecordedSamples,
+    pub total_samples: usize,
 }
 
 /// Mono float samples captured from the mic, still at the device sample rate.
@@ -189,6 +203,92 @@ pub fn encode_wav(samples: &[f32], sample_rate: u32) -> Result<Vec<u8>> {
     }
     writer.finalize()?;
     Ok(buf.into_inner())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn preview_tail_handles_window_boundaries_at_device_rates() {
+        for rate in [16_000, 44_100, 48_000, 96_000] {
+            let mut recorder = AudioRecorder::new().unwrap();
+            recorder.begin_fixture(rate);
+            assert!(recorder.snapshot_tail(20).audio.samples.is_empty());
+            let window = rate as usize * 20;
+            let source: Vec<f32> = (0..window + 1).map(|i| i as f32).collect();
+            recorder.push_fixture(&source[..window - 1]);
+            assert_eq!(
+                recorder.snapshot_tail(20).audio.samples,
+                source[..window - 1]
+            );
+            recorder.push_fixture(&source[window - 1..window]);
+            assert_eq!(recorder.snapshot_tail(20).audio.samples, source[..window]);
+            recorder.push_fixture(&source[window..]);
+            let snapshot = recorder.snapshot_tail(20);
+            assert_eq!(snapshot.audio.sample_rate, rate);
+            assert_eq!(snapshot.total_samples, window + 1);
+            assert_eq!(snapshot.audio.samples, source[1..]);
+            assert!(recorder.snapshot_tail(0).audio.samples.is_empty());
+            assert_eq!(recorder.stop().unwrap().samples, source);
+        }
+    }
+
+    #[test]
+    fn long_capture_keeps_growing_and_preserves_final_audio_during_previews() {
+        let mut recorder = AudioRecorder::new().unwrap();
+        let rate = 48_000;
+        recorder.begin_fixture(rate);
+        // Five minutes of distinguishable samples; snapshots must stay at 20s.
+        let source: Vec<f32> = (0..rate as usize * 300).map(|i| i as f32).collect();
+        recorder.push_fixture(&source);
+        let first = recorder.snapshot_tail(20);
+        assert_eq!(first.total_samples, source.len());
+        assert_eq!(first.audio.samples.len(), rate as usize * 20);
+        assert_eq!(first.audio.samples.capacity(), rate as usize * 20);
+        assert_eq!(
+            first.audio.samples,
+            source[source.len() - rate as usize * 20..]
+        );
+
+        // The callback shares this exact mutex. Concurrent appends must not be
+        // lost, and each snapshot must describe one consistent capture prefix.
+        let capture = recorder.samples.clone();
+        let initial_len = source.len();
+        let producer = std::thread::spawn(move || {
+            for i in 0..200 {
+                let chunk: Vec<f32> = (initial_len + i * 480..initial_len + (i + 1) * 480)
+                    .map(|j| j as f32)
+                    .collect();
+                capture.lock().unwrap().extend_from_slice(&chunk);
+                std::thread::yield_now();
+            }
+        });
+        for _ in 0..100 {
+            let snapshot = recorder.snapshot_tail(20);
+            assert_eq!(snapshot.audio.samples.len(), rate as usize * 20);
+            let start = snapshot.total_samples - snapshot.audio.samples.len();
+            assert!(snapshot
+                .audio
+                .samples
+                .iter()
+                .enumerate()
+                .all(|(i, &s)| s == (start + i) as f32));
+            std::thread::yield_now();
+        }
+        producer.join().unwrap();
+        let last = recorder.snapshot_tail(20);
+        assert_eq!(last.total_samples - first.total_samples, 200 * 480);
+        let final_audio = recorder.stop().unwrap();
+        assert_eq!(final_audio.samples.len(), source.len() + 200 * 480);
+        assert_eq!(final_audio.samples[..source.len()], source);
+        assert!(final_audio
+            .samples
+            .iter()
+            .enumerate()
+            .all(|(i, &s)| s == i as f32));
+        assert!(recorder.snapshot_tail(20).audio.samples.is_empty());
+    }
 }
 
 /// True when the system default input device uses a Bluetooth transport.

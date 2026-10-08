@@ -42,7 +42,7 @@ const PARTIAL_INTERVAL: Duration = Duration::from_millis(900);
 /// Don't re-run if the buffer grew by less than this many seconds.
 const MIN_GROWTH_SECS: f32 = 0.35;
 /// Cap audio sent for partials (keep latency bounded on long holds).
-const MAX_PARTIAL_SECS: f32 = 20.0;
+const MAX_PARTIAL_SECS: u32 = 20;
 /// RMS energy gate — skip near-silent buffers.
 const MIN_RMS: f32 = 0.008;
 
@@ -71,27 +71,23 @@ pub fn start_partial_loop(app: AppHandle, generation: u64) {
                 if !rec.is_recording() {
                     break;
                 }
-                rec.snapshot()
+                rec.snapshot_tail(MAX_PARTIAL_SECS)
             };
 
-            let rate = snapshot.sample_rate.max(1) as f32;
+            let rate = snapshot.audio.sample_rate as f32;
             let min_samples = (MIN_PARTIAL_SECS * rate) as usize;
             let growth = (MIN_GROWTH_SECS * rate) as usize;
-            let max_samples = (MAX_PARTIAL_SECS * rate) as usize;
 
-            if snapshot.samples.len() >= min_samples
-                && snapshot.samples.len().saturating_sub(last_len) >= growth
+            if snapshot.total_samples >= min_samples
+                && snapshot.total_samples.saturating_sub(last_len) >= growth
             {
-                // Use the tail of long utterances for partial speed.
-                let (samples, sample_rate) = if snapshot.samples.len() > max_samples {
-                    let start = snapshot.samples.len() - max_samples;
-                    (snapshot.samples[start..].to_vec(), snapshot.sample_rate)
-                } else {
-                    (snapshot.samples.clone(), snapshot.sample_rate)
-                };
+                let crate::audio::RecordedSamples {
+                    samples,
+                    sample_rate,
+                } = snapshot.audio;
 
                 if rms(&samples) >= MIN_RMS {
-                    last_len = snapshot.samples.len();
+                    last_len = snapshot.total_samples;
                     let opts =
                         match TranscribeOpts::from_database(&app.state::<crate::db::Database>()) {
                             Ok(opts) => opts,
