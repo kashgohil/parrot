@@ -1,0 +1,40 @@
+{
+  "speech": [
+    {
+      "id": "whisper-turbo",
+      "engine": "whisper",
+      "model": "/absolute/path/to/ggml-large-v3-turbo-q5_0.bin",
+      "quantization": "Q5_0",
+      "language_modes": ["auto", "explicit"]
+    },
+    {
+      "id": "whisper-compact",
+      "engine": "whisper",
+      "model": "/absolute/path/to/ggml-small-q5_1.bin",
+      "quantization": "Q5_1",
+      "language_modes": ["auto", "explicit"]
+    },
+    {
+      "id": "parakeet-v3",
+      "engine": "parakeet",
+      "model": "/absolute/path/to/parakeet-v3",
+      "quantization": "INT8",
+      "language_modes": ["auto"]
+    }
+  ],
+  "cleanup": [
+    {
+      "id": "qwen-0-5b",
+      "model": "/absolute/path/to/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+      "quantization": "Q4_K_M",
+      "tones": ["casual", "neutral", "formal"]
+    },
+    {
+      "id": "qwen-1-5b",
+      "model": "/absolute/path/to/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "quantization": "Q4_K_M",
+      "tones": ["casual", "neutral", "formal"]
+    }
+  ],
+  "pipeline": true
+}

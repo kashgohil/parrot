@@ -9,6 +9,8 @@ lerna-debug.log*
 
 node_modules
 __pycache__/
+# Local evaluation outputs can contain private dictation and review notes.
+quality-results/
 dist
 dist-ssr
 *.local
