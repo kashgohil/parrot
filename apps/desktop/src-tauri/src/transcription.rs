@@ -1,4 +1,5 @@
 use anyhow::{Context, Result};
+#[cfg(test)]
 use std::borrow::Cow;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
@@ -94,20 +95,34 @@ impl LocalEngine {
         opts: TranscribeOpts,
     ) -> Result<String> {
         let engine = self.clone();
-        tokio::task::spawn_blocking(move || {
-            let pcm = prepare_pcm(
-                &audio.samples,
-                audio.sample_rate,
-                WHISPER_TARGET_SAMPLE_RATE,
-            );
-            match engine {
-                Self::Whisper(provider) => run_whisper(
-                    &provider.ctx,
-                    &pcm,
-                    opts.language.as_deref(),
-                    opts.initial_prompt.as_deref(),
-                ),
-                Self::Parakeet(provider) => provider.transcribe_pcm(&pcm),
+        tokio::task::spawn_blocking(move || match engine {
+            Self::Whisper(provider) => {
+                let mut model = crate::import_transcription::WhisperModel {
+                    ctx: &provider.ctx,
+                    opts,
+                };
+                crate::import_transcription::transcribe_recorded(
+                    &mut model,
+                    &audio.samples,
+                    audio.sample_rate,
+                    25.0,
+                    0.0,
+                    28,
+                )
+            }
+            Self::Parakeet(provider) => {
+                let mut model = provider
+                    .model
+                    .lock()
+                    .map_err(|_| anyhow::anyhow!("Parakeet model mutex poisoned"))?;
+                crate::import_transcription::transcribe_recorded(
+                    &mut *model,
+                    &audio.samples,
+                    audio.sample_rate,
+                    30.0,
+                    0.25,
+                    30,
+                )
             }
         })
         .await
@@ -230,45 +245,18 @@ impl ParakeetProvider {
         tokio::task::block_in_place(|| self.transcribe_pcm(&pcm))
     }
 
+    #[cfg(test)]
     fn transcribe_pcm(&self, pcm: &[f32]) -> Result<String> {
-        use transcribe_rs::{SpeechModel, TranscribeOptions};
-        if pcm.len() < 16_000 / 4 {
-            return Ok(String::new());
-        }
-        let mut guard = self
+        let mut model = self
             .model
             .lock()
             .map_err(|_| anyhow::anyhow!("Parakeet model mutex poisoned"))?;
-
-        // Long audio is transcribed in ~30s energy-split chunks. A single
-        // encoder pass over multi-minute files balloons memory into the
-        // tens of GB and macOS jetsam kills the app (exit 137/143).
-        const CHUNK_ABOVE_SAMPLES: usize = 30 * WHISPER_TARGET_SAMPLE_RATE as usize;
-        let result = if pcm.len() > CHUNK_ABOVE_SAMPLES {
-            use transcribe_rs::transcriber::{
-                EnergyAdaptiveChunked, EnergyAdaptiveConfig, Transcriber,
-            };
-            let config = EnergyAdaptiveConfig {
-                target_chunk_secs: 30.0,
-                search_window_secs: 3.0,
-                // Same leading-silence guard the direct path gets, per chunk.
-                padding_secs: 0.25,
-                ..Default::default()
-            };
-            let mut chunker = EnergyAdaptiveChunked::new(config, TranscribeOptions::default());
-            chunker
-                .transcribe(&mut *guard, &pcm)
-                .map_err(|e| anyhow::anyhow!("Parakeet transcription failed: {}", e))?
-        } else {
-            guard
-                .transcribe(&pcm, &TranscribeOptions::default())
-                .map_err(|e| anyhow::anyhow!("Parakeet transcription failed: {}", e))?
-        };
-        Ok(result.text.trim().to_string())
+        crate::import_transcription::transcribe_recorded(&mut *model, pcm, 16_000, 30.0, 0.25, 30)
     }
 }
 
 /// Resample mono f32 to the whisper/parakeet target rate when the device rate differs.
+#[cfg(test)]
 fn prepare_pcm(samples: &[f32], sample_rate: u32, target_rate: u32) -> Cow<'_, [f32]> {
     if sample_rate == target_rate {
         Cow::Borrowed(samples)
@@ -464,6 +452,7 @@ fn average_channels(interleaved: &[f32], channels: usize) -> Vec<f32> {
         .collect()
 }
 
+#[cfg(test)]
 pub(crate) fn resample_linear(input: &[f32], from_rate: u32, to_rate: u32) -> Vec<f32> {
     if input.is_empty() || from_rate == to_rate {
         return input.to_vec();
@@ -502,19 +491,6 @@ pub async fn transcribe_audio(
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn prepared_native_rate_pcm_borrows_the_recording() {
-        let samples = vec![0.25; 16_000];
-        let prepared = prepare_pcm(&samples, 16_000, 16_000);
-        assert!(matches!(prepared, Cow::Borrowed(_)));
-        assert_eq!(prepared.as_ptr(), samples.as_ptr());
-        let converted = prepare_pcm(&samples, 48_000, 16_000);
-        assert_eq!(
-            converted.as_ref(),
-            resample_linear(&samples, 48_000, 16_000)
-        );
-    }
 
     #[test]
     fn transcription_preferences_preserve_auto_and_explicit_languages() {

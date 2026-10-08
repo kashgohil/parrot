@@ -18,6 +18,56 @@ pub fn transcribe_source(
     padding_seconds: f32,
     direct_limit_seconds: usize,
 ) -> Result<ImportedText> {
+    let (text, stats) = with_chunks(
+        model,
+        target_seconds,
+        padding_seconds,
+        direct_limit_seconds,
+        |emit| stream_audio(source, 16_000, emit),
+    )?;
+    anyhow::ensure!(stats.input_frames > 0, "Audio file has no samples");
+    Ok(ImportedText {
+        text,
+        decode: stats,
+    })
+}
+
+pub fn transcribe_recorded(
+    model: &mut dyn SpeechModel,
+    input: &[f32],
+    sample_rate: u32,
+    target_seconds: f32,
+    padding_seconds: f32,
+    direct_limit_seconds: usize,
+) -> Result<String> {
+    if sample_rate == 16_000 && input.len() <= direct_limit_seconds * 16_000 {
+        return if input.len() < 16_000 / 4 {
+            Ok(String::new())
+        } else {
+            Ok(model
+                .transcribe(input, &TranscribeOptions::default())?
+                .text
+                .trim()
+                .to_owned())
+        };
+    }
+    with_chunks(
+        model,
+        target_seconds,
+        padding_seconds,
+        direct_limit_seconds,
+        |emit| crate::audio_import::resample_recording(input, sample_rate, emit),
+    )
+    .map(|(text, ())| text)
+}
+
+fn with_chunks<T>(
+    model: &mut dyn SpeechModel,
+    target_seconds: f32,
+    padding_seconds: f32,
+    direct_limit_seconds: usize,
+    produce: impl FnOnce(&mut dyn FnMut(&[f32]) -> Result<()>) -> Result<T>,
+) -> Result<(String, T)> {
     let config = EnergyAdaptiveConfig {
         target_chunk_secs: target_seconds,
         search_window_secs: 3.0,
@@ -27,7 +77,7 @@ pub fn transcribe_source(
     let mut chunker = EnergyAdaptiveChunked::new(config, TranscribeOptions::default());
     let mut prefix = Vec::new();
     let mut chunked = false;
-    let stats = stream_audio(source, 16_000, |samples| {
+    let metadata = produce(&mut |samples| {
         if chunked {
             chunker
                 .feed(model, samples)
@@ -45,7 +95,6 @@ pub fn transcribe_source(
         }
         Ok(())
     })?;
-    anyhow::ensure!(stats.input_frames > 0, "Audio file has no samples");
     let text = if chunked {
         chunker
             .finish(model)
@@ -59,10 +108,7 @@ pub fn transcribe_source(
             .context("Speech inference failed")?
             .text
     };
-    Ok(ImportedText {
-        text: text.trim().to_owned(),
-        decode: stats,
-    })
+    Ok((text.trim().to_owned(), metadata))
 }
 
 /// Keep the app's language/vocabulary options and Whisper decoding parameters.
@@ -178,6 +224,25 @@ mod tests {
             cursor += index + word.len();
         }
         assert!(result.decode.max_output_samples <= 4096);
+        let (samples, rate) = crate::transcription::decode_audio_bytes(
+            &std::fs::read(dir.join("long-120s.wav")).unwrap(),
+        )
+        .unwrap();
+        let recorded = engine
+            .transcribe_recording(
+                Arc::new(crate::audio::RecordedSamples {
+                    samples,
+                    sample_rate: rate,
+                }),
+                Default::default(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(
+            recorded, result.text,
+            "recording and file chunk boundaries diverged"
+        );
+        eprintln!("long recording matches streamed import exactly");
     }
 
     struct SampleModel {
@@ -229,6 +294,18 @@ mod tests {
                 .collect::<Vec<_>>()
                 .join(" ");
             assert_eq!(result.text, text);
+            let mut recorded_model = SampleModel {
+                captured: Vec::new(),
+                chunks: 0,
+            };
+            let recorded_text =
+                transcribe_recorded(&mut recorded_model, &expected, 16_000, 30.0, 0.25, 30)
+                    .unwrap();
+            assert_eq!(
+                recorded_model.captured, expected,
+                "recorded audio lost/repeated samples"
+            );
+            assert_eq!(recorded_text, result.text);
             assert_eq!(result.decode.duration_ms(), seconds as u64 * 1000);
             assert!(result.decode.max_output_samples <= 4096);
             if seconds <= 30 {
