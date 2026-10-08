@@ -1,0 +1,270 @@
+{
+  "generator": "generate-quality-fixtures.py",
+  "records": [
+    {
+      "id": "en-basic",
+      "audio": "../transcription/english.wav",
+      "sha256": "25099515efd597162712930cc7cb609f33fa2ffb6993209917b9696f3b45d01c",
+      "seconds": 2.73525,
+      "source": {
+        "kind": "existing",
+        "path": "../transcription/english.wav"
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "fr-basic",
+      "audio": "../transcription/french.wav",
+      "sha256": "79458d2a6e15e391ae2661b7f2c29da059029eeace136d1744060402f0f656bf",
+      "seconds": 4.0828125,
+      "source": {
+        "kind": "existing",
+        "path": "../transcription/french.wav"
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "en-facts",
+      "audio": "audio/en-facts.wav",
+      "sha256": "dca8ad5a5203387c127d8a2d8a52fa3403f24b2c2b210026a220639a639f1c5d",
+      "seconds": 6.262,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Samantha",
+            "text": "um Priya did not approve the payment of 25 euros and the API timeout is 300 milliseconds"
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "en-uncertainty",
+      "audio": "audio/en-uncertainty.wav",
+      "sha256": "f07b31289954a8c973732e925324e984aa23fb134c92ca3f244c5165fdf1605a",
+      "seconds": 6.1575625,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Samantha",
+            "text": "uh I think the retry limit might be 3 but I am not sure please do not deploy release 2.1"
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "en-accent-indian",
+      "audio": "audio/en-accent-indian.wav",
+      "sha256": "c7abe200dbb3a7fc7d4d34dd4cfd5c7a41050c0a3f9506b56ee2c14372268f0e",
+      "seconds": 4.1441875,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Rishi",
+            "text": "um Priya did not approve the invoice for 25 euros"
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "en-accent-australian",
+      "audio": "audio/en-accent-australian.wav",
+      "sha256": "06bf5a2f54de840c05756bf10ba784aec7a6eb3537b337192e3f857e3a9a8842",
+      "seconds": 3.720875,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Karen",
+            "text": "um Priya did not approve the invoice for 25 euros"
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "fr-facts",
+      "audio": "audio/fr-facts.wav",
+      "sha256": "9eec08d269eb238ab33df2b60de5cc4930f9fc36416e8bedbda5d9987a7fc3b2",
+      "seconds": 3.0845,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Thomas",
+            "text": "euh Priya n'a pas approuvé le paiement de 25 euros"
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "es-facts",
+      "audio": "audio/es-facts.wav",
+      "sha256": "8ea69274b2ed30f15835bd4fae635087c90bd813dd11187884119890e594f77d",
+      "seconds": 2.3633125,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Mónica",
+            "text": "María no aprobó el pago de 25 euros."
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "hi-facts",
+      "audio": "audio/hi-facts.wav",
+      "sha256": "c5de5d7933b53e59174eb772d7d6e770353a274d9100950c24f3c24b155b4811",
+      "seconds": 2.6819375,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "प्रिया ने 25 रुपये का भुगतान नहीं किया।"
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "hi-en-mix",
+      "audio": "audio/hi-en-mix.wav",
+      "sha256": "2757c94311bf46c749a51237426f76b813d1e1973c579846d1800802ba6f0b8d",
+      "seconds": 3.002,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "शायद प्रिया ने"
+          },
+          {
+            "voice": "Samantha",
+            "text": "invoice approve"
+          },
+          {
+            "voice": "Lekha",
+            "text": "नहीं किया।"
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "zh-facts",
+      "audio": "audio/zh-facts.wav",
+      "sha256": "153fa3506f669c1bd9b32d30888563e50d92ce13eca6f1b236c5c434a2806ab5",
+      "seconds": 3.1235625,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Tingting",
+            "text": "小王没有批准25元的付款。"
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "ja-facts",
+      "audio": "audio/ja-facts.wav",
+      "sha256": "15405718555b05863ac736cd9525ac569e3086e978f51c175a32f99aab8e84be",
+      "seconds": 4.7125625,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Kyoko",
+            "text": "田中さんは25円の支払いを承認していません。"
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "silence",
+      "audio": "audio/silence.wav",
+      "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+      "seconds": 2.0,
+      "source": {
+        "kind": "silence",
+        "seconds": 2
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "short-input",
+      "audio": "audio/short-input.wav",
+      "sha256": "2976da01e205a110c9fa41d47659e238a5c6d3c3f3137582f2949853faa201dd",
+      "seconds": 0.1,
+      "source": {
+        "kind": "silence",
+        "seconds": 0.1
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "long-120s",
+      "audio": "audio/long-120s.wav",
+      "sha256": "fb0a29ef54d00ab48158aeed92fd655612662fb7a2b05a56f110176805b0700d",
+      "seconds": 120.0,
+      "source": {
+        "kind": "repeat_with_silent_tail",
+        "path": "../transcription/long-import.wav",
+        "cycles": 2,
+        "seconds": 120
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    }
+  ]
+}
