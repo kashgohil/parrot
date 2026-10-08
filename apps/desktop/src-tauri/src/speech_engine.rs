@@ -40,6 +40,7 @@ pub struct SpeechEngine {
     scheduler: Arc<InferenceScheduler>,
     cleanup: SharedCleanupEngine,
     sequential: AtomicBool,
+    previews: AtomicBool,
 }
 
 impl SpeechEngine {
@@ -51,6 +52,7 @@ impl SpeechEngine {
             scheduler: Arc::new(InferenceScheduler::new()),
             cleanup,
             sequential: AtomicBool::new(false),
+            previews: AtomicBool::new(true),
         })
     }
 
@@ -62,6 +64,14 @@ impl SpeechEngine {
     ) {
         self.sequential.store(sequential, Ordering::SeqCst);
         self.models.configure(target, idle);
+    }
+
+    pub fn set_previews_enabled(&self, enabled: bool) {
+        self.previews.store(enabled, Ordering::SeqCst);
+    }
+
+    pub fn previews_enabled(&self) -> bool {
+        self.previews.load(Ordering::SeqCst)
     }
 
     async fn prepare_speech(&self) -> Result<()> {
@@ -91,7 +101,7 @@ impl SpeechEngine {
             let scheduler = owner.scheduler.clone();
             let result = scheduler
                 .final_job(async move {
-                    if coordinator.current() != generation {
+                    if coordinator.current() != generation || !owner.previews_enabled() {
                         return Ok(());
                     }
                     owner.prepare_speech().await?;
@@ -192,7 +202,7 @@ impl SpeechEngine {
         let result = self
             .scheduler
             .preview_job(async move {
-                if coordinator.current() != generation {
+                if coordinator.current() != generation || !owner.previews_enabled() {
                     return Ok(None);
                 }
                 owner.prepare_speech().await?;
@@ -200,7 +210,7 @@ impl SpeechEngine {
                     .models
                     .acquire_with_timeout(Duration::from_secs(180))
                     .await?;
-                if coordinator.current() != generation {
+                if coordinator.current() != generation || !owner.previews_enabled() {
                     return Ok(None);
                 }
                 let text = lease
@@ -213,7 +223,10 @@ impl SpeechEngine {
                         opts,
                     )
                     .await?;
-                Ok((coordinator.current() == generation).then_some(text))
+                Ok(
+                    (coordinator.current() == generation && owner.previews_enabled())
+                        .then_some(text),
+                )
             })
             .await?;
         Ok(result.flatten())
@@ -252,6 +265,35 @@ impl SpeechEngine {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn disabled_previews_do_not_load_even_for_current_capture() {
+        let owner = SpeechEngine::new(crate::cleanup_engine::new_cleanup_engine());
+        owner.configure(
+            Some(SpeechTarget {
+                engine: "whisper".into(),
+                path: "/missing/low-memory-preview".into(),
+                label: "test".into(),
+            }),
+            None,
+            false,
+        );
+        owner.set_previews_enabled(false);
+        let coordinator = Arc::new(StreamingCoordinator::new());
+        let generation = coordinator.next_generation();
+        assert!(owner
+            .transcribe_preview(
+                vec![0.1; 16000],
+                16000,
+                TranscribeOpts::default(),
+                coordinator,
+                generation
+            )
+            .await
+            .unwrap()
+            .is_none());
+        assert_eq!(owner.models.status().state, "unloaded");
+    }
 
     #[tokio::test]
     async fn obsolete_previews_do_not_load_a_model() {

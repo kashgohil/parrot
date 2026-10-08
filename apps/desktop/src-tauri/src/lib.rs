@@ -3,6 +3,7 @@ mod audio_import;
 mod cleanup;
 mod cleanup_engine;
 mod model_lifecycle;
+mod memory_policy;
 mod db;
 mod hotkey;
 mod inference_scheduler;
@@ -422,6 +423,11 @@ async fn run_cleanup(
     raw_text: &str,
     profile: &db::EffectiveProfile,
 ) -> String {
+    // Legacy Ollama residency is external to this mode. Keep raw text usable
+    // without issuing a cleanup request or changing the user's backend.
+    if memory_policy::MemoryPolicy::from_database(db).skip_cleanup {
+        return String::new();
+    }
     let speech = app.state::<SharedLocalEngine>();
     configure_speech(db, speech.inner());
     let sequential_permit = match speech.before_cleanup().await {
@@ -1240,7 +1246,8 @@ fn get_stt_status(db: tauri::State<'_, Database>, speech: tauri::State<'_, Share
         "language": db.get_setting("stt_language").ok().flatten().unwrap_or_else(|| "auto".into()),
         "can_upgrade_to_parakeet": engine != "parakeet",
         "lifecycle": speech.models.status(),
-        "release_before_cleanup": db.get_setting("stt_release_before_cleanup").ok().flatten().as_deref() == Some("true"),
+        "release_before_cleanup": memory_policy::MemoryPolicy::from_database(&db).sequential,
+        "memory_policy": memory_policy::MemoryPolicy::from_database(&db),
     }))
 }
 
@@ -1587,19 +1594,21 @@ fn set_setting(
             return Err("Model idle time must be between 0 and 86400 seconds".into());
         }
     }
-    if key == "stt_release_before_cleanup" && !matches!(value, "true" | "false") {
+    if matches!(key, "stt_release_before_cleanup" | "low_memory_mode") && !matches!(value, "true" | "false") {
         return Err("Speech release policy must be true or false".into());
     }
     state.set_setting(key, value).map_err(|e| e.to_string())?;
     if matches!(
         key,
-        "cleanup_idle_seconds" | "cleanup_mode" | "cleanup_backend" | "cleanup_model_path"
+        "low_memory_mode" | "cleanup_idle_seconds" | "cleanup_mode" | "cleanup_backend" | "cleanup_model_path"
     ) {
         configure_cleanup(&state, cleanup.inner());
     }
     if matches!(
         key,
-        "stt_idle_seconds"
+        "low_memory_mode"
+            | "cleanup_backend"
+            | "stt_idle_seconds"
             | "stt_release_before_cleanup"
             | "stt_engine"
             | "stt_model"
@@ -1997,21 +2006,9 @@ fn configure_speech(db: &Database, state: &SharedLocalEngine) {
             label,
         })
     });
-    let seconds = db
-        .get_setting("stt_idle_seconds")
-        .ok()
-        .flatten()
-        .and_then(|s| s.parse::<u64>().ok())
-        .filter(|s| *s <= 86400)
-        .unwrap_or(60);
-    let idle = (seconds != 0).then(|| std::time::Duration::from_secs(seconds));
-    let sequential = db
-        .get_setting("stt_release_before_cleanup")
-        .ok()
-        .flatten()
-        .as_deref()
-        == Some("true") && resolve_cleanup_backend(db) == "builtin";
-    state.configure(target, idle, sequential);
+    let policy = memory_policy::MemoryPolicy::from_database(db);
+    state.set_previews_enabled(policy.previews);
+    state.configure(target, policy.speech_idle, policy.sequential);
 }
 
 fn resolve_cleanup_backend(db: &Database) -> String {
@@ -2044,14 +2041,7 @@ fn resolve_cleanup_backend(db: &Database) -> String {
 
 /// A zero timeout keeps a used model warm until cleanup is disabled or switched.
 fn cleanup_idle_timeout(db: &Database) -> Option<std::time::Duration> {
-    let seconds = db
-        .get_setting("cleanup_idle_seconds")
-        .ok()
-        .flatten()
-        .and_then(|s| s.parse::<u64>().ok())
-        .filter(|seconds| *seconds <= 86400)
-        .unwrap_or(60);
-    (seconds != 0).then(|| std::time::Duration::from_secs(seconds))
+    memory_policy::MemoryPolicy::from_database(db).cleanup_idle
 }
 
 fn configure_cleanup(db: &Database, state: &SharedCleanupEngine) {

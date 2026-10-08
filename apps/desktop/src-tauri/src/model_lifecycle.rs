@@ -291,6 +291,37 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn idle_policy_change_preserves_pending_load_and_active_job() {
+        let (started_tx, started_rx) = std::sync::mpsc::channel();
+        let (resume_tx, resume_rx) = std::sync::mpsc::channel();
+        let resume = Mutex::new(resume_rx);
+        let owner = ModelLifecycle::new(move |p: PathBuf| {
+            started_tx.send(()).unwrap();
+            resume.lock().unwrap().recv().unwrap();
+            Ok(p)
+        });
+        owner.configure(Some("same-model".into()), None);
+        let loading = {
+            let owner = owner.clone();
+            tokio::spawn(async move { owner.acquire().await })
+        };
+        tokio::task::spawn_blocking(move || started_rx.recv().unwrap())
+            .await
+            .unwrap();
+        owner.configure(Some("same-model".into()), Some(Duration::from_secs(30)));
+        resume_tx.send(()).unwrap();
+        let active = loading.await.unwrap().unwrap();
+        assert_eq!(*active.client, PathBuf::from("same-model"));
+        assert!(!owner.release_if_idle(Instant::now() + Duration::from_secs(60)));
+        owner.configure(Some("same-model".into()), None);
+        assert_eq!(owner.status().state, "in_use");
+        drop(active);
+        assert!(owner.is_loaded());
+        owner.configure(Some("same-model".into()), Some(Duration::from_secs(30)));
+        assert!(owner.release_if_idle(Instant::now() + Duration::from_secs(60)));
+    }
+
+    #[tokio::test]
     async fn concurrent_loads_reuse_and_idle_waits_for_final_owner() {
         let loads = Arc::new(AtomicUsize::new(0));
         let count = loads.clone();

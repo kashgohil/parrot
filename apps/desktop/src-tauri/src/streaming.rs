@@ -50,6 +50,11 @@ const MIN_RMS: f32 = 0.008;
 pub fn start_partial_loop(app: AppHandle, generation: u64) {
     let speech = app.state::<SharedLocalEngine>();
     crate::configure_speech(&app.state::<crate::db::Database>(), speech.inner());
+    // In low-memory mode, recording only captures audio. Load speech after
+    // capture ends; enabling previews again takes effect on the next capture.
+    if !speech.previews_enabled() {
+        return;
+    }
     speech.prewarm(
         app.state::<Arc<StreamingCoordinator>>().inner().clone(),
         generation,
@@ -61,7 +66,8 @@ pub fn start_partial_loop(app: AppHandle, generation: u64) {
 
         loop {
             let coord = app.state::<Arc<StreamingCoordinator>>();
-            if coord.current() != generation {
+            if coord.current() != generation || !app.state::<SharedLocalEngine>().previews_enabled()
+            {
                 break;
             }
 
@@ -106,7 +112,9 @@ pub fn start_partial_loop(app: AppHandle, generation: u64) {
                             generation,
                         )
                         .await;
-                    if app.state::<Arc<StreamingCoordinator>>().current() != generation {
+                    if app.state::<Arc<StreamingCoordinator>>().current() != generation
+                        || !app.state::<SharedLocalEngine>().previews_enabled()
+                    {
                         break;
                     }
                     match text {
