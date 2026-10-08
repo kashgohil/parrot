@@ -123,6 +123,7 @@ function SettingsPage() {
 	const [sttModel, setSttModel] = useState("");
 	const [sttLanguage, setSttLanguage] = useState("auto");
 	const [sttIdleSeconds, setSttIdleSeconds] = useState("60");
+	const [lowMemoryMode, setLowMemoryMode] = useState(false);
 	const [releaseSpeechBeforeCleanup, setReleaseSpeechBeforeCleanup] = useState(false);
 	const [speechLifecycle, setSpeechLifecycle] = useState<{ state: string; error: string | null } | null>(null);
 	const [sttSwitching, setSttSwitching] = useState(false);
@@ -161,10 +162,17 @@ function SettingsPage() {
 			recommended: false,
 		},
 		{
+            id: "small-q5_1",
+            name: "Compact multilingual (Whisper small)",
+            desc: "99 languages. Smaller download (~181 MiB); accuracy can differ from turbo. Selecting downloads and switches the model.",
+            pill: "Compact",
+            recommended: false,
+        },
+		{
 			id: "small.en",
-			name: "Low RAM (Whisper small.en)",
-			desc: "Fallback for older machines with limited memory.",
-			pill: "Low RAM",
+			name: "English only (Whisper small.en)",
+			desc: "English-only model. Choose a multilingual tier for other languages.",
+			pill: "English only",
 			recommended: false,
 		},
 	] as const;
@@ -385,8 +393,14 @@ function SettingsPage() {
 			setSttModel(stt.model_id || "");
 			setSttLanguage(stt.language || "auto");
 			setSpeechLifecycle(stt.lifecycle);
-			setSttIdleSeconds(String(stt.lifecycle.idle_seconds ?? 0));
-			setReleaseSpeechBeforeCleanup(stt.release_before_cleanup);
+			const [lowMemory, normalSpeechIdle, normalSequential] = await Promise.all([
+                invoke<string | null>("get_setting", { key: "low_memory_mode" }),
+                invoke<string | null>("get_setting", { key: "stt_idle_seconds" }),
+                invoke<string | null>("get_setting", { key: "stt_release_before_cleanup" }),
+            ]);
+            setLowMemoryMode(lowMemory === "true");
+            setSttIdleSeconds(normalSpeechIdle !== null && /^\d+$/.test(normalSpeechIdle) && Number(normalSpeechIdle) <= 86400 ? String(Number(normalSpeechIdle)) : "60");
+            setReleaseSpeechBeforeCleanup(normalSequential === "true");
 			const [cleanup, idleSeconds] = await Promise.all([
 				invoke<{
 					backend: string;
@@ -443,7 +457,8 @@ function SettingsPage() {
 
 			await invoke("set_setting", { key: "stt_idle_seconds", value: sttIdleSeconds });
 			await invoke("set_setting", { key: "stt_release_before_cleanup", value: releaseSpeechBeforeCleanup ? "true" : "false" });
-			const profile = await invoke<Profile>("get_profile");
+			await invoke("set_setting", { key: "low_memory_mode", value: lowMemoryMode ? "true" : "false" });
+            const profile = await invoke<Profile>("get_profile");
 			await invoke("update_profile", {
 				customWords: profile.custom_words,
 				contextPrompt,
@@ -620,6 +635,15 @@ function SettingsPage() {
 						</div>
 
 						<div className="space-y-3">
+                            <div className="p-3 rounded-xl border border-border bg-muted/30 space-y-2">
+                                <label className="flex items-center gap-2 text-sm font-medium">
+                                    <input type="checkbox" checked={lowMemoryMode} onChange={(event) => { setLowMemoryMode(event.target.checked); setDirty(true); }} />
+                                    Low-memory mode
+                                </label>
+                                <p className="text-xs text-muted-foreground">Turns off live previews and loads speech after recording ends. Releases idle models after 30 seconds and uses speech and built-in cleanup one at a time. Each dictation can take longer while models reload.</p>
+                                <p className="text-xs text-muted-foreground">Your model and language selections stay the same. For a smaller multilingual setup, select Compact multilingual below and Basic cleanup. Downloads and model switches happen only when you select a model.</p>
+                                {lowMemoryMode && <p className="text-xs text-muted-foreground">Save to apply. Turning this off restores your normal memory preferences. A mode change lets active work finish; previews resume with your next recording.</p>}
+                            </div>
 							{STT_TIERS.map((tier) => {
 								const selected =
 									sttModel === tier.id ||
@@ -749,7 +773,7 @@ function SettingsPage() {
 							</div>
 							<div className="space-y-2 pt-2">
 								<Label htmlFor="sttIdleSeconds" className="text-sm font-medium">Release speech memory after</Label>
-								<Select value={sttIdleSeconds} onValueChange={(value) => { setSttIdleSeconds(value); setDirty(true); }}>
+								<Select disabled={lowMemoryMode} value={lowMemoryMode ? "30" : sttIdleSeconds} onValueChange={(value) => { setSttIdleSeconds(value); setDirty(true); }}>
 									<SelectTrigger id="sttIdleSeconds" className="w-full h-10 rounded-xl border-border bg-muted/50"><SelectValue /></SelectTrigger>
 									<SelectContent position="popper" className="rounded-xl">
 										<SelectItem value="30">30 seconds idle</SelectItem>
@@ -759,12 +783,12 @@ function SettingsPage() {
 										{!["0", "30", "60", "300"].includes(sttIdleSeconds) && <SelectItem value={sttIdleSeconds}>{sttIdleSeconds} seconds idle</SelectItem>}
 									</SelectContent>
 								</Select>
-								<p className="text-xs text-muted-foreground">Loads when recording starts or you import audio. Releasing memory can add several seconds to your next transcription. Active transcription always finishes first.</p>
+								<p className="text-xs text-muted-foreground">Loads when needed. Low-memory mode waits until recording ends. Releasing memory can add several seconds to your next transcription. Active transcription always finishes first.</p>
 								<p className="text-xs text-muted-foreground" role="status">
 									{speechLifecycle?.state === "loading" ? "Loading speech model…" : speechLifecycle?.state === "in_use" ? "Transcribing…" : speechLifecycle?.state === "ready" ? "Speech model is ready" : speechLifecycle?.state === "failed" ? `Speech unavailable: ${speechLifecycle.error ?? "Load failed"}` : "Speech model is unloaded"}
 								</p>
 								<label className="flex items-center gap-2 text-sm">
-									<input type="checkbox" disabled={cleanupBackend !== "builtin"} checked={releaseSpeechBeforeCleanup} onChange={(event) => { setReleaseSpeechBeforeCleanup(event.target.checked); setDirty(true); }} />
+									<input type="checkbox" disabled={lowMemoryMode || cleanupBackend !== "builtin"} checked={lowMemoryMode ? cleanupBackend === "builtin" : releaseSpeechBeforeCleanup} onChange={(event) => { setReleaseSpeechBeforeCleanup(event.target.checked); setDirty(true); }} />
 									Release speech memory before cleanup
 								</label>
 								<p className="text-xs text-muted-foreground">Uses speech and built-in cleanup models one at a time. Saves memory between stages, but reloads the speech model for each dictation.</p>
@@ -804,10 +828,11 @@ function SettingsPage() {
 								</p>
 							</div>
 
-							{cleanupBackend === "builtin" && (
+							{lowMemoryMode && cleanupBackend === "ollama" && <p className="text-xs text-muted-foreground">Low-memory mode skips Ollama cleanup and keeps your raw transcript. Select a built-in cleanup model below to enable cleanup. An external Ollama app may still use memory.</p>}
+                            {cleanupBackend === "builtin" && (
 								<div className="space-y-2">
 									<Label htmlFor="cleanupIdleSeconds" className="text-sm font-medium">Release cleanup memory after</Label>
-									<Select value={cleanupIdleSeconds} onValueChange={(value) => { setCleanupIdleSeconds(value); setDirty(true); }}>
+									<Select disabled={lowMemoryMode} value={lowMemoryMode ? "30" : cleanupIdleSeconds} onValueChange={(value) => { setCleanupIdleSeconds(value); setDirty(true); }}>
 										<SelectTrigger id="cleanupIdleSeconds" className="w-full h-10 rounded-xl border-border bg-muted/50"><SelectValue /></SelectTrigger>
 										<SelectContent position="popper" className="rounded-xl">
 											<SelectItem value="30">30 seconds idle</SelectItem>
