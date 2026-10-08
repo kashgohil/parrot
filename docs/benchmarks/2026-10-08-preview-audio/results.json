@@ -1401,24 +1401,25 @@
   "validation_logs": [
     {
       "file": "unit.log",
-      "sha256": "ca9f72004b5653e098723a60198ac11ea985e685a6331525fa9e276aacf75d01"
+      "sha256": "258baba9ec4bf79cb794725e49239c5d4b7a9d9969411f3db72a995be8740bef"
     },
     {
       "file": "feature.log",
-      "sha256": "56bfd80a43a28e03189c487964f6bc8d1ece6822755e801f92afc025c10d0034"
+      "sha256": "d8312fe2fabdec79e6fd45ec232eab5b71eac35dcac6355689273c4c8d19c10b"
     },
     {
       "file": "real-preview-parakeet.log",
-      "sha256": "8b0f2373a50f4dc92cc999848e6d1bfe2f28ee46a817f945b007907e50f7b071"
+      "sha256": "8c5e0a4e74af4ca4d303e918b04a23ad805f9fb28324226e33f12f86482b5fc7"
     },
     {
       "file": "real-preview-whisper.log",
-      "sha256": "8fe4efa72fccd101fb7d2df2662c608a628f5a3cbb0dcbd3046fffc5a16663bd"
+      "sha256": "30d5924cc1d130bde76c6b186a1b40f83dc2b8391b11fbd2fcae46a33f64fdc2"
     },
     {
       "file": "release-app.log",
       "sha256": "56b28c6eb5c3225f973ab8aca7c1d0686fb113331db4974937b54b02c50d574e"
     }
   ],
-  "matched_final_transcripts_identical": true
+  "matched_final_transcripts_identical": true,
+  "validation_log_transform": "Home paths replaced with ~; trailing blank lines removed."
 }

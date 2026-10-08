@@ -1,0 +1,855 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.18s
+     Running unittests src/lib.rs (apps/desktop/src-tauri/target/debug/deps/parrot_lib-00a57d9a40bfac91)
+
+running 1 test
+whisper_init_from_file_with_params_no_state: loading model from '~/Library/Application Support/com.kash.parrot/models/ggml-large-v3-turbo-q5_0.bin'
+whisper_init_with_params_no_state: use gpu    = 1
+whisper_init_with_params_no_state: flash attn = 0
+whisper_init_with_params_no_state: gpu_device = 0
+whisper_init_with_params_no_state: dtw        = 0
+whisper_init_with_params_no_state: devices    = 3
+whisper_init_with_params_no_state: backends   = 3
+whisper_model_load: loading model
+whisper_model_load: n_vocab       = 51866
+whisper_model_load: n_audio_ctx   = 1500
+whisper_model_load: n_audio_state = 1280
+whisper_model_load: n_audio_head  = 20
+whisper_model_load: n_audio_layer = 32
+whisper_model_load: n_text_ctx    = 448
+whisper_model_load: n_text_state  = 1280
+whisper_model_load: n_text_head   = 20
+whisper_model_load: n_text_layer  = 4
+whisper_model_load: n_mels        = 128
+whisper_model_load: ftype         = 8
+whisper_model_load: qntvr         = 2
+whisper_model_load: type          = 5 (large v3)
+whisper_model_load: adding 1609 extra tokens
+whisper_model_load: n_langs       = 100
+whisper_default_buffer_type: using device Metal (Apple M4 Pro)
+whisper_model_load:    Metal total size =   573.40 MB
+whisper_model_load: model size    =  573.40 MB
+whisper_backend_init_gpu: using Metal backend
+ggml_metal_init: allocating
+ggml_metal_init: picking default device: Apple M4 Pro
+ggml_metal_init: using embedded metal library
+ggml_metal_init: GPU name:   Apple M4 Pro
+ggml_metal_init: GPU family: MTLGPUFamilyApple9  (1009)
+ggml_metal_init: GPU family: MTLGPUFamilyCommon3 (3003)
+ggml_metal_init: GPU family: MTLGPUFamilyMetal4  (5002)
+ggml_metal_init: simdgroup reduction   = true
+ggml_metal_init: simdgroup matrix mul. = true
+ggml_metal_init: has bfloat            = true
+ggml_metal_init: use bfloat            = false
+ggml_metal_init: hasUnifiedMemory      = true
+ggml_metal_init: recommendedMaxWorkingSetSize  = 19069.67 MB
+ggml_metal_init: loaded kernel_add                                    0x108900aa0 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_add_row                                0x108900e20 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sub                                    0x108902480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sub_row                                0x108902d00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul                                    0x108903580 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_row                                0x108903900 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_div                                    0x108903c80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_div_row                                0x108904000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_repeat_f32                             0x108904380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_repeat_f16                             0x93c4f4000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_repeat_i32                             0x93c4f4380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_repeat_i16                             0x93c4f4700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_scale                                  0x93c4f4a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_scale_4                                0x93c4f4e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_clamp                                  0x93c4f5180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_tanh                                   0x93c4f5500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_relu                                   0x93c4f5880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sigmoid                                0x93c4f5c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_gelu                                   0x93c4f5f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_gelu_4                                 0x93c4f6300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_gelu_quick                             0x93c4f6680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_gelu_quick_4                           0x93c4f6a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_silu                                   0x93c4f6d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_silu_4                                 0x93c4f7100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_elu                                    0x93c4f7480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_soft_max_f16                           0x93c4f7800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_soft_max_f16_4                         0x93c4f7b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_soft_max_f32                           0x93c524000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_soft_max_f32_4                         0x93c524380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_diag_mask_inf                          0x93c524700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_diag_mask_inf_8                        0x93c524a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_f32                           0x93c524e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_f16                           0x93c525180 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_get_rows_bf16                     (not supported)
+ggml_metal_init: loaded kernel_get_rows_q4_0                          0x93c525500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q4_1                          0x93c525880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q5_0                          0x93c525c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q5_1                          0x93c525f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q8_0                          0x93c526300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q2_K                          0x93c526680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q3_K                          0x93c526a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q4_K                          0x93c526d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q5_K                          0x93c527100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q6_K                          0x93c527480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq2_xxs                       0x93c527800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq2_xs                        0x93c527b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq3_xxs                       0x93c564000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq3_s                         0x93c564380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq2_s                         0x93c564700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq1_s                         0x93c564a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq1_m                         0x93c564e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq4_nl                        0x93c565180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq4_xs                        0x93c565500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_i32                           0x93c565880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rms_norm                               0x93c565c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_group_norm                             0x93c565f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_norm                                   0x93c566300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_ssm_conv_f32                           0x93c566680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_ssm_scan_f32                           0x93c566a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_f32_f32                         0x93c566d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_mul_mv_bf16_f32                   (not supported)
+ggml_metal_init: skipping kernel_mul_mv_bf16_f32_1row              (not supported)
+ggml_metal_init: skipping kernel_mul_mv_bf16_f32_l4                (not supported)
+ggml_metal_init: skipping kernel_mul_mv_bf16_bf16                  (not supported)
+ggml_metal_init: loaded kernel_mul_mv_f16_f32                         0x93c567100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_f16_f32_1row                    0x93c567480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_f16_f32_l4                      0x93c567800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_f16_f16                         0x93c567b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q4_0_f32                        0x93c5a0000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q4_1_f32                        0x93c5a0380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q5_0_f32                        0x93c5a0700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q5_1_f32                        0x93c5a0a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q8_0_f32                        0x93c5a0e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_f16_f32_r1_2                0x93c5a1180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_f16_f32_r1_3                0x93c5a1500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_f16_f32_r1_4                0x93c5a1880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_f16_f32_r1_5                0x93c5a1c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_0_f32_r1_2               0x93c5a1f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_0_f32_r1_3               0x93c5a2300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_0_f32_r1_4               0x93c5a2680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_0_f32_r1_5               0x93c5a2a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_1_f32_r1_2               0x93c5a2d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_1_f32_r1_3               0x93c5a3100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_1_f32_r1_4               0x93c5a3480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_1_f32_r1_5               0x93c5a3800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_0_f32_r1_2               0x93c5a3b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_0_f32_r1_3               0x93c600000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_0_f32_r1_4               0x93c600380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_0_f32_r1_5               0x93c600700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_1_f32_r1_2               0x93c600a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_1_f32_r1_3               0x93c600e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_1_f32_r1_4               0x93c601180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_1_f32_r1_5               0x93c601500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q8_0_f32_r1_2               0x93c601880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q8_0_f32_r1_3               0x93c601c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q8_0_f32_r1_4               0x93c601f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q8_0_f32_r1_5               0x93c602300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_K_f32_r1_2               0x93c602680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_K_f32_r1_3               0x93c602a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_K_f32_r1_4               0x93c602d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_K_f32_r1_5               0x93c603100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_K_f32_r1_2               0x93c603480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_K_f32_r1_3               0x93c603800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_K_f32_r1_4               0x93c603b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_K_f32_r1_5               0x93c648000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q6_K_f32_r1_2               0x93c648380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q6_K_f32_r1_3               0x93c648700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q6_K_f32_r1_4               0x93c648a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q6_K_f32_r1_5               0x93c648e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_iq4_nl_f32_r1_2             0x93c649180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_iq4_nl_f32_r1_3             0x93c649500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_iq4_nl_f32_r1_4             0x93c649880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_iq4_nl_f32_r1_5             0x93c649c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q2_K_f32                        0x93c649f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q3_K_f32                        0x93c64a300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q4_K_f32                        0x93c64a680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q5_K_f32                        0x93c64aa00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q6_K_f32                        0x93c64ad80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq2_xxs_f32                     0x93c64b100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq2_xs_f32                      0x93c64b480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq3_xxs_f32                     0x93c64b800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq3_s_f32                       0x93c64bb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq2_s_f32                       0x93c67c000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq1_s_f32                       0x93c67c380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq1_m_f32                       0x93c67c700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq4_nl_f32                      0x93c67ca80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq4_xs_f32                      0x93c67ce00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_f32_f32                      0x93c67d180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_f16_f32                      0x93c67d500 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_mul_mv_id_bf16_f32                (not supported)
+ggml_metal_init: loaded kernel_mul_mv_id_q4_0_f32                     0x93c67d880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q4_1_f32                     0x93c67dc00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q5_0_f32                     0x93c67df80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q5_1_f32                     0x93c67e300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q8_0_f32                     0x93c67e680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q2_K_f32                     0x93c67ea00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q3_K_f32                     0x93c67ed80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q4_K_f32                     0x93c67f100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q5_K_f32                     0x93c67f480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q6_K_f32                     0x93c67f800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq2_xxs_f32                  0x93c67fb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq2_xs_f32                   0x93c6b8000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq3_xxs_f32                  0x93c6b8380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq3_s_f32                    0x93c6b8700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq2_s_f32                    0x93c6b8a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq1_s_f32                    0x93c6b8e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq1_m_f32                    0x93c6b9180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq4_nl_f32                   0x93c6b9500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq4_xs_f32                   0x93c6b9880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_f32_f32                         0x93c6b9c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_f16_f32                         0x93c6b9f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_mul_mm_bf16_f32                   (not supported)
+ggml_metal_init: loaded kernel_mul_mm_q4_0_f32                        0x93c6ba300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q4_1_f32                        0x93c6ba680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q5_0_f32                        0x93c6baa00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q5_1_f32                        0x93c6bad80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q8_0_f32                        0x93c6bb100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q2_K_f32                        0x93c6bb480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q3_K_f32                        0x93c6bb800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q4_K_f32                        0x93c6bbb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q5_K_f32                        0x93c6f4000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q6_K_f32                        0x93c6f4380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq2_xxs_f32                     0x93c6f4700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq2_xs_f32                      0x93c6f4a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq3_xxs_f32                     0x93c6f4e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq3_s_f32                       0x93c6f5180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq2_s_f32                       0x93c6f5500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq1_s_f32                       0x93c6f5880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq1_m_f32                       0x93c6f5c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq4_nl_f32                      0x93c6f5f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq4_xs_f32                      0x93c6f6300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_f32_f32                      0x93c6f6680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_f16_f32                      0x93c6f6a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_mul_mm_id_bf16_f32                (not supported)
+ggml_metal_init: loaded kernel_mul_mm_id_q4_0_f32                     0x93c6f6d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q4_1_f32                     0x93c6f7100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q5_0_f32                     0x93c6f7480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q5_1_f32                     0x93c6f7800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q8_0_f32                     0x93c6f7b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q2_K_f32                     0x93c70c000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q3_K_f32                     0x93c70c380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q4_K_f32                     0x93c70c700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q5_K_f32                     0x93c70ca80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q6_K_f32                     0x93c70ce00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq2_xxs_f32                  0x93c70d180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq2_xs_f32                   0x93c70d500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq3_xxs_f32                  0x93c70d880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq3_s_f32                    0x93c70dc00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq2_s_f32                    0x93c70df80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq1_s_f32                    0x93c70e300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq1_m_f32                    0x93c70e680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq4_nl_f32                   0x93c70ea00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq4_xs_f32                   0x93c70ed80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rope_norm_f32                          0x93c70f100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rope_norm_f16                          0x93c70f480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rope_neox_f32                          0x93c70f800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rope_neox_f16                          0x93c70fb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_im2col_f16                             0x93c74c000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_im2col_f32                             0x93c74c380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_im2col_ext_f16                         0x93c74c700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_im2col_ext_f32                         0x93c74ca80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_conv_transpose_1d_f32_f32              0x93c74ce00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_conv_transpose_1d_f16_f32              0x93c74d180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_upscale_f32                            0x93c74d500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_pad_f32                                0x93c74d880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_pad_reflect_1d_f32                     0x93c74dc00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_timestep_embedding_f32                 0x93c74df80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_arange_f32                             0x93c74e300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_argsort_f32_i32_asc                    0x93c74e680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_argsort_f32_i32_desc                   0x93c74ea00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_leaky_relu_f32                         0x93c74ed80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h64                 0x93c74f100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h80                 0x93c74f480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h96                 0x93c74f800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h112                0x93c74fb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h128                0x93c798000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h256                0x93c798380 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h64           (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h80           (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h96           (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h112          (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h128          (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h256          (not supported)
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h64                0x93c798700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h80                0x93c798a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h96                0x93c798e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h112               0x93c799180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h128               0x93c799500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h256               0x93c799880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h64                0x93c799c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h80                0x93c799f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h96                0x93c79a300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h112               0x93c79a680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h128               0x93c79aa00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h256               0x93c79ad80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h64                0x93c79b100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h80                0x93c79b480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h96                0x93c79b800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h112               0x93c79bb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h128               0x93c7d4000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h256               0x93c7d4380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h64                0x93c7d4700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h80                0x93c7d4a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h96                0x93c7d4e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h112               0x93c7d5180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h128               0x93c7d5500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h256               0x93c7d5880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h64                0x93c7d5c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h80                0x93c7d5f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h96                0x93c7d6300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h112               0x93c7d6680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h128               0x93c7d6a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h256               0x93c7d6d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_f16_h128            0x93c7d7100 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_flash_attn_ext_vec_bf16_h128      (not supported)
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q4_0_h128           0x93c7d7480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q4_1_h128           0x93c7d7800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q5_0_h128           0x93c7d7b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q5_1_h128           0x93c7f4000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q8_0_h128           0x93c7f4380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_f16_h256            0x93c7f4700 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_flash_attn_ext_vec_bf16_h256      (not supported)
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q4_0_h256           0x93c7f4a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q4_1_h256           0x93c7f4e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q5_0_h256           0x93c7f5180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q5_1_h256           0x93c7f5500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q8_0_h256           0x93c7f5880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_set_f32                                0x93c7f5c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_set_i32                                0x93c7f5f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_f32                            0x93c7f6300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_f16                            0x93c7f6680 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_cpy_f32_bf16                      (not supported)
+ggml_metal_init: loaded kernel_cpy_f16_f32                            0x93c7f6a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f16_f16                            0x93c7f6d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_cpy_bf16_f32                      (not supported)
+ggml_metal_init: skipping kernel_cpy_bf16_bf16                     (not supported)
+ggml_metal_init: loaded kernel_cpy_f32_q8_0                           0x93c7f7100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_q4_0                           0x93c7f7480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_q4_1                           0x93c7f7800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_q5_0                           0x93c7f7b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_q5_1                           0x93c82c000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_iq4_nl                         0x93c82c380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_concat                                 0x93c82c700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sqr                                    0x93c82ca80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sqrt                                   0x93c82ce00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sin                                    0x93c82d180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cos                                    0x93c82d500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sum_rows                               0x93c82d880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_argmax                                 0x93c82dc00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_pool_2d_avg_f32                        0x93c82df80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_pool_2d_max_f32                        0x93c82e300 | th_max = 1024 | th_width =   32
+whisper_backend_init: using BLAS backend
+whisper_init_state: kv self size  =   10.49 MB
+whisper_init_state: kv cross size =   31.46 MB
+whisper_init_state: kv pad  size  =    7.86 MB
+whisper_init_state: compute buffer (conv)   =   37.67 MB
+whisper_init_state: compute buffer (encode) =  212.29 MB
+whisper_init_state: compute buffer (cross)  =    9.25 MB
+whisper_init_state: compute buffer (decode) =  100.03 MB
+whisper_full_with_state: auto-detected language: en (p = 0.999871)
+
+whisper_full_with_state: strategy = 1, decoding with 3 decoders, temperature = 0.00
+
+
+whisper_full_with_state: prompt[0] = [_SOT_]
+whisper_full_with_state: prompt[1] = [_LANG_en]
+whisper_full_with_state: prompt[2] = [_TRANSCRIBE_]
+
+
+whisper_full_with_state: recreating KV cache: n_decoders_cur = 3
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =    [_BEG_], plog = -0.25280, sum_logprobs = -0.25280
+whisper_full_with_state: beam search: decoder 1: from decoder 0: token =    [_BEG_], plog = -0.25280, sum_logprobs = -0.25280
+whisper_full_with_state: beam search: decoder 2: from decoder 0: token =    [_BEG_], plog = -0.25280, sum_logprobs = -0.25280
+whisper_full_with_state: id =   0, decoder = 0, token =  50365, p =  0.777, ts =    [_BEG_],  0.777, result_len =    0 '[_BEG_]'
+whisper_full_with_state: id =   0, decoder = 1, token =  50365, p =  0.777, ts =    [_BEG_],  0.777, result_len =    0 '[_BEG_]'
+whisper_full_with_state: id =   0, decoder = 2, token =  50365, p =  0.777, ts =    [_BEG_],  0.777, result_len =    0 '[_BEG_]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =     Please, plog = -0.80798, sum_logprobs = -1.06078
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =      click, plog = -5.24089, sum_logprobs = -5.49370
+whisper_full_with_state: beam search: decoder 2: from decoder 1: token =     forget, plog = -11.05296, sum_logprobs = -11.30577
+whisper_full_with_state: id =   1, decoder = 0, token =   2555, p =  0.446, ts =        [?],  0.000, result_len =    0 ' Please'
+whisper_full_with_state: id =   1, decoder = 1, token =   2052, p =  0.005, ts =        [?],  0.000, result_len =    0 ' click'
+whisper_full_with_state: id =   1, decoder = 2, token =   2870, p =  0.000, ts =        [?],  0.000, result_len =    0 ' forget'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =        put, plog = -0.02508, sum_logprobs = -1.08587
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =        the, plog = -1.07459, sum_logprobs = -6.56828
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =         to, plog = -0.23704, sum_logprobs = -11.54281
+whisper_full_with_state: id =   2, decoder = 0, token =    829, p =  0.975, ts =        [?],  0.038, result_len =    0 ' put'
+whisper_full_with_state: id =   2, decoder = 1, token =    264, p =  0.341, ts =        [?],  0.005, result_len =    0 ' the'
+whisper_full_with_state: id =   2, decoder = 2, token =    281, p =  0.789, ts =        [?],  0.005, result_len =    0 ' to'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =        the, plog = -0.00436, sum_logprobs = -1.09022
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =       blue, plog = -1.07052, sum_logprobs = -7.63881
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =      click, plog = -1.84694, sum_logprobs = -13.38974
+whisper_full_with_state: id =   3, decoder = 0, token =    264, p =  0.996, ts =        [?],  0.081, result_len =    0 ' the'
+whisper_full_with_state: id =   3, decoder = 1, token =   3344, p =  0.343, ts =        [?],  0.003, result_len =    0 ' blue'
+whisper_full_with_state: id =   3, decoder = 2, token =   2052, p =  0.158, ts =        [?],  0.003, result_len =    0 ' click'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =       blue, plog = -0.03121, sum_logprobs = -1.12144
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =   notebook, plog = -0.25774, sum_logprobs = -7.89655
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =        the, plog = -1.01998, sum_logprobs = -14.40972
+whisper_full_with_state: id =   4, decoder = 0, token =   3344, p =  0.969, ts =        [?],  0.028, result_len =    0 ' blue'
+whisper_full_with_state: id =   4, decoder = 1, token =  21060, p =  0.773, ts =        [?],  0.009, result_len =    0 ' notebook'
+whisper_full_with_state: id =   4, decoder = 2, token =    264, p =  0.361, ts =        [?],  0.004, result_len =    0 ' the'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =   notebook, plog = -0.02473, sum_logprobs = -1.14617
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =         on, plog = -0.83245, sum_logprobs = -8.72900
+whisper_full_with_state: beam search: decoder 2: from decoder 1: token =        for, plog = -3.87442, sum_logprobs = -11.77097
+whisper_full_with_state: id =   5, decoder = 0, token =  21060, p =  0.976, ts =        [?],  0.073, result_len =    0 ' notebook'
+whisper_full_with_state: id =   5, decoder = 1, token =    322, p =  0.435, ts =        [?],  0.017, result_len =    0 ' on'
+whisper_full_with_state: id =   5, decoder = 2, token =    337, p =  0.021, ts =        [?],  0.017, result_len =    0 ' for'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =         on, plog = -0.01426, sum_logprobs = -1.16042
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =        the, plog = -0.08509, sum_logprobs = -8.81409
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =        the, plog = -0.93582, sum_logprobs = -12.70680
+whisper_full_with_state: id =   6, decoder = 0, token =    322, p =  0.986, ts =        [?],  0.057, result_len =    0 ' on'
+whisper_full_with_state: id =   6, decoder = 1, token =    264, p =  0.918, ts =        [?],  0.010, result_len =    0 ' the'
+whisper_full_with_state: id =   6, decoder = 2, token =    264, p =  0.392, ts =        [?],  0.002, result_len =    0 ' the'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =        the, plog = -0.00379, sum_logprobs = -1.16421
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =    kitchen, plog = -0.25457, sum_logprobs = -9.06866
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =    kitchen, plog = -1.15310, sum_logprobs = -13.85990
+whisper_full_with_state: id =   7, decoder = 0, token =    264, p =  0.996, ts =        [?],  0.085, result_len =    0 ' the'
+whisper_full_with_state: id =   7, decoder = 1, token =   6525, p =  0.775, ts =        [?],  0.006, result_len =    0 ' kitchen'
+whisper_full_with_state: id =   7, decoder = 2, token =   6525, p =  0.316, ts =        [?],  0.003, result_len =    0 ' kitchen'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =    kitchen, plog = -0.00668, sum_logprobs = -1.17089
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =      table, plog = -0.03617, sum_logprobs = -9.10484
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =      table, plog = -0.34094, sum_logprobs = -14.20084
+whisper_full_with_state: id =   8, decoder = 0, token =   6525, p =  0.993, ts =        [?],  0.049, result_len =    0 ' kitchen'
+whisper_full_with_state: id =   8, decoder = 1, token =   3199, p =  0.964, ts =        [?],  0.024, result_len =    0 ' table'
+whisper_full_with_state: id =   8, decoder = 2, token =   3199, p =  0.711, ts =        [?],  0.012, result_len =    0 ' table'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =      table, plog = -0.00276, sum_logprobs = -1.17365
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token = [_TT_1028], plog = -5.87494, sum_logprobs = -14.97977
+whisper_full_with_state: beam search: decoder 2: from decoder 1: token =  [_TT_970], plog = -6.44163, sum_logprobs = -15.54646
+whisper_full_with_state: id =   9, decoder = 0, token =   3199, p =  0.997, ts =        [?],  0.092, result_len =    0 ' table'
+whisper_full_with_state: id =   9, decoder = 1, token =  51393, p =  0.003, ts =        [?],  0.003, result_len =   10 '[_TT_1028]'
+whisper_full_with_state: decoder 1 completed
+whisper_full_with_state: id =   9, decoder = 2, token =  51335, p =  0.002, ts =        [?],  0.002, result_len =   10 '[_TT_970]'
+whisper_full_with_state: decoder 2 completed
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =  [_TT_994], plog = -4.23739, sum_logprobs = -5.41103
+whisper_full_with_state: id =  10, decoder = 0, token =  51359, p =  0.014, ts =        [?],  0.014, result_len =   11 '[_TT_994]'
+whisper_full_with_state: decoder 0 completed
+whisper_full_with_state: decoder  0: score = -0.49191, result_len =  11, avg_logprobs = -0.49191, entropy =  2.27187
+whisper_full_with_state: decoder  1: score = -1.49798, result_len =  10, avg_logprobs = -1.49798, entropy =  2.16396
+whisper_full_with_state: decoder  2: score = -1.55465, result_len =  10, avg_logprobs = -1.55465, entropy =  2.16396
+whisper_full_with_state: best decoder = 0
+single timestamp ending - skip entire chunk
+seek = 1999, seek_delta = 1999
+ggml_metal_free: deallocating
+bounded preview: Please put the blue notebook on the kitchen table
+whisper_backend_init_gpu: using Metal backend
+ggml_metal_init: allocating
+ggml_metal_init: picking default device: Apple M4 Pro
+ggml_metal_init: using embedded metal library
+ggml_metal_init: GPU name:   Apple M4 Pro
+ggml_metal_init: GPU family: MTLGPUFamilyApple9  (1009)
+ggml_metal_init: GPU family: MTLGPUFamilyCommon3 (3003)
+ggml_metal_init: GPU family: MTLGPUFamilyMetal4  (5002)
+ggml_metal_init: simdgroup reduction   = true
+ggml_metal_init: simdgroup matrix mul. = true
+ggml_metal_init: has bfloat            = true
+ggml_metal_init: use bfloat            = false
+ggml_metal_init: hasUnifiedMemory      = true
+ggml_metal_init: recommendedMaxWorkingSetSize  = 19069.67 MB
+ggml_metal_init: loaded kernel_add                                    0x93c82c000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_add_row                                0x93c82c380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sub                                    0x93c82c700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sub_row                                0x93c82ca80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul                                    0x93c82ce00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_row                                0x93c82d180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_div                                    0x93c82d500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_div_row                                0x93c82d880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_repeat_f32                             0x93c82dc00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_repeat_f16                             0x93c82df80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_repeat_i32                             0x93c82e300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_repeat_i16                             0x93c82e680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_scale                                  0x93c82ea00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_scale_4                                0x93c82ed80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_clamp                                  0x93c82f100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_tanh                                   0x93c82f480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_relu                                   0x93c82f800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sigmoid                                0x93c82fb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_gelu                                   0x93c7f4000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_gelu_4                                 0x93c7f4380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_gelu_quick                             0x93c7f4700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_gelu_quick_4                           0x93c7f4a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_silu                                   0x93c7f4e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_silu_4                                 0x93c7f5180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_elu                                    0x93c7f5500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_soft_max_f16                           0x93c7f5880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_soft_max_f16_4                         0x93c7f5c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_soft_max_f32                           0x93c7f5f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_soft_max_f32_4                         0x93c7f6300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_diag_mask_inf                          0x93c7f6680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_diag_mask_inf_8                        0x93c7f6a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_f32                           0x93c7f6d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_f16                           0x93c7f7100 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_get_rows_bf16                     (not supported)
+ggml_metal_init: loaded kernel_get_rows_q4_0                          0x93c7f7480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q4_1                          0x93c7f7800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q5_0                          0x93c7f7b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q5_1                          0x93c7d4000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q8_0                          0x93c7d4380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q2_K                          0x93c7d4700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q3_K                          0x93c7d4a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q4_K                          0x93c7d4e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q5_K                          0x93c7d5180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_q6_K                          0x93c7d5500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq2_xxs                       0x93c7d5880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq2_xs                        0x93c7d5c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq3_xxs                       0x93c7d5f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq3_s                         0x93c7d6300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq2_s                         0x93c7d6680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq1_s                         0x93c7d6a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq1_m                         0x93c7d6d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq4_nl                        0x93c7d7100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_iq4_xs                        0x93c7d7480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_get_rows_i32                           0x93c7d7800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rms_norm                               0x93c7d7b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_group_norm                             0x93c798000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_norm                                   0x93c798380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_ssm_conv_f32                           0x93c798700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_ssm_scan_f32                           0x93c798a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_f32_f32                         0x93c798e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_mul_mv_bf16_f32                   (not supported)
+ggml_metal_init: skipping kernel_mul_mv_bf16_f32_1row              (not supported)
+ggml_metal_init: skipping kernel_mul_mv_bf16_f32_l4                (not supported)
+ggml_metal_init: skipping kernel_mul_mv_bf16_bf16                  (not supported)
+ggml_metal_init: loaded kernel_mul_mv_f16_f32                         0x93c799180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_f16_f32_1row                    0x93c799500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_f16_f32_l4                      0x93c799880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_f16_f16                         0x93c799c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q4_0_f32                        0x93c799f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q4_1_f32                        0x93c79a300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q5_0_f32                        0x93c79a680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q5_1_f32                        0x93c79aa00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q8_0_f32                        0x93c79ad80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_f16_f32_r1_2                0x93c79b100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_f16_f32_r1_3                0x93c79b480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_f16_f32_r1_4                0x93c79b800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_f16_f32_r1_5                0x93c79bb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_0_f32_r1_2               0x93c74c000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_0_f32_r1_3               0x93c74c380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_0_f32_r1_4               0x93c74c700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_0_f32_r1_5               0x93c74ca80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_1_f32_r1_2               0x93c74ce00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_1_f32_r1_3               0x93c74d180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_1_f32_r1_4               0x93c74d500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_1_f32_r1_5               0x93c74d880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_0_f32_r1_2               0x93c74dc00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_0_f32_r1_3               0x93c74df80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_0_f32_r1_4               0x93c74e300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_0_f32_r1_5               0x93c74e680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_1_f32_r1_2               0x93c74ea00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_1_f32_r1_3               0x93c74ed80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_1_f32_r1_4               0x93c74f100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_1_f32_r1_5               0x93c74f480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q8_0_f32_r1_2               0x93c74f800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q8_0_f32_r1_3               0x93c74fb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q8_0_f32_r1_4               0x93c4f4000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q8_0_f32_r1_5               0x93c4f4380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_K_f32_r1_2               0x93c4f4700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_K_f32_r1_3               0x93c4f4a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_K_f32_r1_4               0x93c4f4e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q4_K_f32_r1_5               0x93c4f5180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_K_f32_r1_2               0x93c4f5500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_K_f32_r1_3               0x93c4f5880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_K_f32_r1_4               0x93c4f5c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q5_K_f32_r1_5               0x93c4f5f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q6_K_f32_r1_2               0x93c4f6300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q6_K_f32_r1_3               0x93c4f6680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q6_K_f32_r1_4               0x93c4f6a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_q6_K_f32_r1_5               0x93c4f6d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_iq4_nl_f32_r1_2             0x93c4f7100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_iq4_nl_f32_r1_3             0x93c4f7480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_iq4_nl_f32_r1_4             0x93c4f7800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_ext_iq4_nl_f32_r1_5             0x93c4f7b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q2_K_f32                        0x93c524000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q3_K_f32                        0x93c524380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q4_K_f32                        0x93c524700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q5_K_f32                        0x93c524a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_q6_K_f32                        0x93c524e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq2_xxs_f32                     0x93c525180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq2_xs_f32                      0x93c525500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq3_xxs_f32                     0x93c525880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq3_s_f32                       0x93c525c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq2_s_f32                       0x93c525f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq1_s_f32                       0x93c526300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq1_m_f32                       0x93c526680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq4_nl_f32                      0x93c526a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_iq4_xs_f32                      0x93c526d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_f32_f32                      0x93c527100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_f16_f32                      0x93c527480 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_mul_mv_id_bf16_f32                (not supported)
+ggml_metal_init: loaded kernel_mul_mv_id_q4_0_f32                     0x93c527800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q4_1_f32                     0x93c527b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q5_0_f32                     0x93c564000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q5_1_f32                     0x93c564380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q8_0_f32                     0x93c564700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q2_K_f32                     0x93c564a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q3_K_f32                     0x93c564e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q4_K_f32                     0x93c565180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q5_K_f32                     0x93c565500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_q6_K_f32                     0x93c565880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq2_xxs_f32                  0x93c565c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq2_xs_f32                   0x93c565f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq3_xxs_f32                  0x93c566300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq3_s_f32                    0x93c566680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq2_s_f32                    0x93c566a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq1_s_f32                    0x93c566d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq1_m_f32                    0x93c567100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq4_nl_f32                   0x93c567480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mv_id_iq4_xs_f32                   0x93c567800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_f32_f32                         0x93c567b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_f16_f32                         0x93c5a0000 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_mul_mm_bf16_f32                   (not supported)
+ggml_metal_init: loaded kernel_mul_mm_q4_0_f32                        0x93c5a0380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q4_1_f32                        0x93c5a0700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q5_0_f32                        0x93c5a0a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q5_1_f32                        0x93c5a0e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q8_0_f32                        0x93c5a1180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q2_K_f32                        0x93c5a1500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q3_K_f32                        0x93c5a1880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q4_K_f32                        0x93c5a1c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q5_K_f32                        0x93c5a1f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_q6_K_f32                        0x93c5a2300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq2_xxs_f32                     0x93c5a2680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq2_xs_f32                      0x93c5a2a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq3_xxs_f32                     0x93c5a2d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq3_s_f32                       0x93c5a3100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq2_s_f32                       0x93c5a3480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq1_s_f32                       0x93c5a3800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq1_m_f32                       0x93c5a3b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq4_nl_f32                      0x93c600000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_iq4_xs_f32                      0x93c600380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_f32_f32                      0x93c600700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_f16_f32                      0x93c600a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_mul_mm_id_bf16_f32                (not supported)
+ggml_metal_init: loaded kernel_mul_mm_id_q4_0_f32                     0x93c600e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q4_1_f32                     0x93c601180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q5_0_f32                     0x93c601500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q5_1_f32                     0x93c601880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q8_0_f32                     0x93c601c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q2_K_f32                     0x93c601f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q3_K_f32                     0x93c602300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q4_K_f32                     0x93c602680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q5_K_f32                     0x93c602a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_q6_K_f32                     0x93c602d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq2_xxs_f32                  0x93c603100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq2_xs_f32                   0x93c603480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq3_xxs_f32                  0x93c603800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq3_s_f32                    0x93c603b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq2_s_f32                    0x93c648000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq1_s_f32                    0x93c648380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq1_m_f32                    0x93c648700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq4_nl_f32                   0x93c648a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_mul_mm_id_iq4_xs_f32                   0x93c648e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rope_norm_f32                          0x93c649180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rope_norm_f16                          0x93c649500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rope_neox_f32                          0x93c649880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_rope_neox_f16                          0x93c649c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_im2col_f16                             0x93c649f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_im2col_f32                             0x93c64a300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_im2col_ext_f16                         0x93c64a680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_im2col_ext_f32                         0x93c64aa00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_conv_transpose_1d_f32_f32              0x93c64ad80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_conv_transpose_1d_f16_f32              0x93c64b100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_upscale_f32                            0x93c64b480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_pad_f32                                0x93c64b800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_pad_reflect_1d_f32                     0x93c64bb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_timestep_embedding_f32                 0x93c67c000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_arange_f32                             0x93c67c380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_argsort_f32_i32_asc                    0x93c67c700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_argsort_f32_i32_desc                   0x93c67ca80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_leaky_relu_f32                         0x93c67ce00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h64                 0x93c67d180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h80                 0x93c67d500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h96                 0x93c67d880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h112                0x93c67dc00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h128                0x93c67df80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_f16_h256                0x93c67e300 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h64           (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h80           (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h96           (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h112          (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h128          (not supported)
+ggml_metal_init: skipping kernel_flash_attn_ext_bf16_h256          (not supported)
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h64                0x93c67e680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h80                0x93c67ea00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h96                0x93c67ed80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h112               0x93c67f100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h128               0x93c67f480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_0_h256               0x93c67f800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h64                0x93c67fb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h80                0x93c6b8000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h96                0x93c6b8380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h112               0x93c6b8700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h128               0x93c6b8a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q4_1_h256               0x93c6b8e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h64                0x93c6b9180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h80                0x93c6b9500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h96                0x93c6b9880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h112               0x93c6b9c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h128               0x93c6b9f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_0_h256               0x93c6ba300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h64                0x93c6ba680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h80                0x93c6baa00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h96                0x93c6bad80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h112               0x93c6bb100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h128               0x93c6bb480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q5_1_h256               0x93c6bb800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h64                0x93c6bbb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h80                0x93c6f4000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h96                0x93c6f4380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h112               0x93c6f4700 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h128               0x93c6f4a80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_q8_0_h256               0x93c6f4e00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_f16_h128            0x93c6f5180 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_flash_attn_ext_vec_bf16_h128      (not supported)
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q4_0_h128           0x93c6f5500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q4_1_h128           0x93c6f5880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q5_0_h128           0x93c6f5c00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q5_1_h128           0x93c6f5f80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q8_0_h128           0x93c6f6300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_f16_h256            0x93c6f6680 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_flash_attn_ext_vec_bf16_h256      (not supported)
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q4_0_h256           0x93c6f6a00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q4_1_h256           0x93c6f6d80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q5_0_h256           0x93c6f7100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q5_1_h256           0x93c6f7480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_flash_attn_ext_vec_q8_0_h256           0x93c6f7800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_set_f32                                0x93c6f7b80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_set_i32                                0x93c70c000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_f32                            0x93c70c380 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_f16                            0x93c70c700 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_cpy_f32_bf16                      (not supported)
+ggml_metal_init: loaded kernel_cpy_f16_f32                            0x93c70ca80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f16_f16                            0x93c70ce00 | th_max = 1024 | th_width =   32
+ggml_metal_init: skipping kernel_cpy_bf16_f32                      (not supported)
+ggml_metal_init: skipping kernel_cpy_bf16_bf16                     (not supported)
+ggml_metal_init: loaded kernel_cpy_f32_q8_0                           0x93c70d180 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_q4_0                           0x93c70d500 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_q4_1                           0x93c70d880 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_q5_0                           0x93c70dc00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_q5_1                           0x93c70df80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cpy_f32_iq4_nl                         0x93c70e300 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_concat                                 0x93c70e680 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sqr                                    0x93c70ea00 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sqrt                                   0x93c70ed80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sin                                    0x93c70f100 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_cos                                    0x93c70f480 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_sum_rows                               0x93c70f800 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_argmax                                 0x93c70fb80 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_pool_2d_avg_f32                        0x93dc50000 | th_max = 1024 | th_width =   32
+ggml_metal_init: loaded kernel_pool_2d_max_f32                        0x93dc50380 | th_max = 1024 | th_width =   32
+whisper_backend_init: using BLAS backend
+whisper_init_state: kv self size  =   10.49 MB
+whisper_init_state: kv cross size =   31.46 MB
+whisper_init_state: kv pad  size  =    7.86 MB
+whisper_init_state: compute buffer (conv)   =   37.67 MB
+whisper_init_state: compute buffer (encode) =  212.29 MB
+whisper_init_state: compute buffer (cross)  =    9.25 MB
+whisper_init_state: compute buffer (decode) =  100.03 MB
+whisper_full_with_state: auto-detected language: fr (p = 0.998843)
+
+whisper_full_with_state: strategy = 1, decoding with 3 decoders, temperature = 0.00
+
+
+whisper_full_with_state: prompt[0] = [_SOT_]
+whisper_full_with_state: prompt[1] = [_LANG_fr]
+whisper_full_with_state: prompt[2] = [_TRANSCRIBE_]
+
+
+whisper_full_with_state: recreating KV cache: n_decoders_cur = 3
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =    [_BEG_], plog = -0.10832, sum_logprobs = -0.10832
+whisper_full_with_state: beam search: decoder 1: from decoder 0: token =    [_BEG_], plog = -0.10832, sum_logprobs = -0.10832
+whisper_full_with_state: beam search: decoder 2: from decoder 0: token =    [_BEG_], plog = -0.10832, sum_logprobs = -0.10832
+whisper_full_with_state: id =   0, decoder = 0, token =  50365, p =  0.897, ts =    [_BEG_],  0.897, result_len =    0 '[_BEG_]'
+whisper_full_with_state: id =   0, decoder = 1, token =  50365, p =  0.897, ts =    [_BEG_],  0.897, result_len =    0 '[_BEG_]'
+whisper_full_with_state: id =   0, decoder = 2, token =  50365, p =  0.897, ts =    [_BEG_],  0.897, result_len =    0 '[_BEG_]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =    Bonjour, plog = -0.98328, sum_logprobs = -1.09160
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =        ..., plog = -1.12251, sum_logprobs = -1.23083
+whisper_full_with_state: beam search: decoder 2: from decoder 0: token =    Bonjour, plog = -0.98328, sum_logprobs = -1.09160
+whisper_full_with_state: id =   1, decoder = 0, token =  25431, p =  0.374, ts =        [?],  0.000, result_len =    0 ' Bonjour'
+whisper_full_with_state: id =   1, decoder = 1, token =   1097, p =  0.325, ts =        [?],  0.000, result_len =    0 ' ...'
+whisper_full_with_state: id =   1, decoder = 2, token =  25431, p =  0.374, ts =        [?],  0.000, result_len =    0 ' Bonjour'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =          ,, plog = -0.02034, sum_logprobs = -1.11194
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =    [_TT_7], plog = -5.17957, sum_logprobs = -6.41040
+whisper_full_with_state: beam search: decoder 2: from decoder 1: token =   [_TT_60], plog = -6.60771, sum_logprobs = -7.83855
+whisper_full_with_state: id =   2, decoder = 0, token =     11, p =  0.980, ts =  [_TT_816],  0.153, result_len =    0 ','
+whisper_full_with_state: id =   2, decoder = 1, token =  50372, p =  0.006, ts =        [?],  0.006, result_len =    3 '[_TT_7]'
+whisper_full_with_state: id =   2, decoder = 2, token =  50425, p =  0.001, ts =        [?],  0.001, result_len =    3 '[_TT_60]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =         je, plog = -0.01319, sum_logprobs = -1.12513
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =    [_TT_7], plog = -0.06328, sum_logprobs = -6.47368
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =   [_TT_60], plog = -0.40479, sum_logprobs = -8.24334
+whisper_full_with_state: id =   3, decoder = 0, token =   1506, p =  0.987, ts =  [_TT_816],  0.148, result_len =    0 ' je'
+whisper_full_with_state: id =   3, decoder = 1, token =  50372, p =  0.939, ts =    [_TT_7],  0.939, result_len =    4 '[_TT_7]'
+whisper_full_with_state: id =   3, decoder = 2, token =  50425, p =  0.667, ts =   [_TT_60],  0.667, result_len =    4 '[_TT_60]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =       voud, plog = -0.00071, sum_logprobs = -1.12584
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =    Bonjour, plog = -0.23082, sum_logprobs = -6.70451
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =        ..., plog = -0.62713, sum_logprobs = -8.87047
+whisper_full_with_state: id =   4, decoder = 0, token =  39520, p =  0.999, ts =        [?],  0.067, result_len =    0 ' voud'
+whisper_full_with_state: id =   4, decoder = 1, token =  25431, p =  0.794, ts =        [?],  0.000, result_len =    4 ' Bonjour'
+whisper_full_with_state: id =   4, decoder = 2, token =   1097, p =  0.534, ts =        [?],  0.000, result_len =    4 ' ...'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =       rais, plog = -0.00256, sum_logprobs = -1.12840
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =          ,, plog = -0.01168, sum_logprobs = -6.71619
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =  [_TT_644], plog = -7.31515, sum_logprobs = -16.18562
+whisper_full_with_state: id =   5, decoder = 0, token =  20769, p =  0.997, ts =        [?],  0.006, result_len =    0 'rais'
+whisper_full_with_state: id =   5, decoder = 1, token =     11, p =  0.988, ts =  [_TT_815],  0.147, result_len =    4 ','
+whisper_full_with_state: id =   5, decoder = 2, token =  51009, p =  0.001, ts =        [?],  0.001, result_len =    6 '[_TT_644]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =       rés, plog = -0.00749, sum_logprobs = -1.13588
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =         je, plog = -0.01197, sum_logprobs = -6.72816
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =  [_TT_644], plog = -0.22511, sum_logprobs = -16.41073
+whisper_full_with_state: id =   6, decoder = 0, token =  14415, p =  0.993, ts =  [_TT_878],  0.347, result_len =    0 ' rés'
+whisper_full_with_state: id =   6, decoder = 1, token =   1506, p =  0.988, ts =  [_TT_814],  0.187, result_len =    4 ' je'
+whisper_full_with_state: id =   6, decoder = 2, token =  51009, p =  0.798, ts =  [_TT_644],  0.798, result_len =    7 '[_TT_644]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =      erver, plog = -0.00047, sum_logprobs = -1.13636
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =       voud, plog = -0.00014, sum_logprobs = -6.72830
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =        ..., plog = -0.52387, sum_logprobs = -16.93460
+whisper_full_with_state: id =   7, decoder = 0, token =  38241, p =  1.000, ts =        [?],  0.005, result_len =    0 'erver'
+whisper_full_with_state: id =   7, decoder = 1, token =  39520, p =  1.000, ts =        [?],  0.090, result_len =    4 ' voud'
+whisper_full_with_state: id =   7, decoder = 2, token =   1097, p =  0.592, ts =        [?],  0.000, result_len =    7 ' ...'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =        une, plog = -0.00648, sum_logprobs = -1.14283
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =       rais, plog = -0.00180, sum_logprobs = -6.73010
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =  [_TT_717], plog = -4.90989, sum_logprobs = -21.84448
+whisper_full_with_state: id =   8, decoder = 0, token =   2251, p =  0.994, ts =  [_TT_903],  0.546, result_len =    0 ' une'
+whisper_full_with_state: id =   8, decoder = 1, token =  20769, p =  0.998, ts =        [?],  0.004, result_len =    4 'rais'
+whisper_full_with_state: id =   8, decoder = 2, token =  51082, p =  0.007, ts =        [?],  0.007, result_len =    9 '[_TT_717]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =      table, plog = -0.00102, sum_logprobs = -1.14385
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =       rés, plog = -0.00399, sum_logprobs = -6.73409
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =  [_TT_717], plog = -0.04735, sum_logprobs = -21.89183
+whisper_full_with_state: id =   9, decoder = 0, token =   3199, p =  0.999, ts =  [_TT_916],  0.143, result_len =    0 ' table'
+whisper_full_with_state: id =   9, decoder = 1, token =  14415, p =  0.996, ts =  [_TT_878],  0.468, result_len =    4 ' rés'
+whisper_full_with_state: id =   9, decoder = 2, token =  51082, p =  0.954, ts =  [_TT_717],  0.954, result_len =   10 '[_TT_717]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =       pour, plog = -0.00473, sum_logprobs = -1.14859
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =      erver, plog = -0.00042, sum_logprobs = -6.73451
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =        ..., plog = -0.65257, sum_logprobs = -22.54440
+whisper_full_with_state: id =  10, decoder = 0, token =   2016, p =  0.995, ts =  [_TT_932],  0.516, result_len =    0 ' pour'
+whisper_full_with_state: id =  10, decoder = 1, token =  38241, p =  1.000, ts =        [?],  0.005, result_len =    4 'erver'
+whisper_full_with_state: id =  10, decoder = 2, token =   1097, p =  0.521, ts =        [?],  0.000, result_len =   10 ' ...'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =     demain, plog = -0.00352, sum_logprobs = -1.15211
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =        une, plog = -0.00620, sum_logprobs = -6.74071
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =  [_TT_765], plog = -4.74080, sum_logprobs = -27.28520
+whisper_full_with_state: id =  11, decoder = 0, token =  44389, p =  0.996, ts =  [_TT_948],  0.251, result_len =    0 ' demain'
+whisper_full_with_state: id =  11, decoder = 1, token =   2251, p =  0.994, ts =  [_TT_903],  0.654, result_len =    4 ' une'
+whisper_full_with_state: id =  11, decoder = 2, token =  51130, p =  0.009, ts =        [?],  0.009, result_len =   12 '[_TT_765]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =       soir, plog = -0.00229, sum_logprobs = -1.15440
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =      table, plog = -0.00040, sum_logprobs = -6.74111
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =  [_TT_765], plog = -0.11186, sum_logprobs = -27.39706
+whisper_full_with_state: id =  12, decoder = 0, token =  27105, p =  0.998, ts =  [_TT_963],  0.266, result_len =    0 ' soir'
+whisper_full_with_state: id =  12, decoder = 1, token =   3199, p =  1.000, ts =  [_TT_916],  0.193, result_len =    4 ' table'
+whisper_full_with_state: id =  12, decoder = 2, token =  51130, p =  0.894, ts =  [_TT_765],  0.894, result_len =   13 '[_TT_765]'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =          ., plog = -0.05371, sum_logprobs = -1.20810
+whisper_full_with_state: beam search: decoder 1: from decoder 1: token =       pour, plog = -0.00315, sum_logprobs = -6.74426
+whisper_full_with_state: beam search: decoder 2: from decoder 2: token =        ..., plog = -0.62222, sum_logprobs = -28.01928
+whisper_full_with_state: id =  13, decoder = 0, token =     13, p =  0.948, ts =  [_TT_993],  0.378, result_len =    0 '.'
+whisper_full_with_state: id =  13, decoder = 1, token =   2016, p =  0.997, ts =  [_TT_932],  0.655, result_len =    4 ' pour'
+whisper_full_with_state: id =  13, decoder = 2, token =   1097, p =  0.537, ts =        [?],  0.000, result_len =   13 ' ...'
+whisper_full_with_state: beam search: decoder 0: from decoder 0: token =  [_TT_993], plog = -0.79169, sum_logprobs = -1.99980
+whisper_full_with_state: beam search: decoder 1: from decoder 0: token =  [_TT_983], plog = -3.66764, sum_logprobs = -4.87574
+whisper_full_with_state: beam search: decoder 2: from decoder 0: token =  [_TT_995], plog = -3.76855, sum_logprobs = -4.97666
+whisper_full_with_state: id =  14, decoder = 0, token =  51358, p =  0.453, ts =  [_TT_993],  0.453, result_len =   15 '[_TT_993]'
+whisper_full_with_state: decoder 0 completed
+whisper_full_with_state: id =  14, decoder = 1, token =  51348, p =  0.026, ts =        [?],  0.026, result_len =   15 '[_TT_983]'
+whisper_full_with_state: decoder 1 completed
+whisper_full_with_state: id =  14, decoder = 2, token =  51360, p =  0.023, ts =        [?],  0.023, result_len =   15 '[_TT_995]'
+whisper_full_with_state: decoder 2 completed
+whisper_full_with_state: decoder  0: score = -0.13332, result_len =  15, avg_logprobs = -0.13332, entropy =  2.70805
+whisper_full_with_state: decoder  1: score = -0.32505, result_len =  15, avg_logprobs = -0.32505, entropy =  2.70805
+whisper_full_with_state: decoder  2: score = -0.33178, result_len =  15, avg_logprobs = -0.33178, entropy =  2.70805
+whisper_full_with_state: best decoder = 0
+single timestamp ending - skip entire chunk
+seek = 1999, seek_delta = 1999
+ggml_metal_free: deallocating
+bounded preview: Bonjour, je voudrais réserver une table pour demain soir.
+test streaming::tests::bounded_previews_keep_recent_english_and_french_speech ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 43 filtered out; finished in 2.93s
