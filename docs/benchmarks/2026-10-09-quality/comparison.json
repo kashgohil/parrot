@@ -1,0 +1,7 @@
+{
+  "regression_check_pass": true,
+  "semantic_release_qualified": false,
+  "max_rate_increase": 0.02,
+  "regressions": [],
+  "note": "Compares worst repeat per case. Existing baseline failures remain unresolved; passing this check does not qualify release quality."
+}

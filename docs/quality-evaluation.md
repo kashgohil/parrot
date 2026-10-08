@@ -6,6 +6,9 @@ English, French, Spanish, Hindi, Hindi–English mixing, Chinese, Japanese, acce
 proxies, silence, names, numbers, negation, uncertainty, technical vocabulary,
 instructions spoken as content and long input.
 
+Release priorities are **English, Hindi and Hindi–English mixing**, as confirmed
+by the user. French, Spanish, Chinese and Japanese remain regression coverage.
+
 The opt-in worker uses production transcription, prompts, token budgets and
 cleanup finalization. It does not launch the app, open its database, access the
 microphone or download models. Cleanup remains in the existing separate sidecar;

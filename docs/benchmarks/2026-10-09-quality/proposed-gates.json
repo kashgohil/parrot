@@ -1,0 +1,825 @@
+{
+  "status": "proposed, not approved release thresholds",
+  "schema_version": 1,
+  "measured_repeats": 2,
+  "identical_text_across_repeats": true,
+  "release_conditions": {
+    "inference_errors": 0,
+    "silence_insertions": 0,
+    "human_confirmed_critical_semantic_errors": 0,
+    "unreviewed_property_flags": 0,
+    "missing_long_reference_topic_occurrences": 0
+  },
+  "regression_conditions": {
+    "maximum_primary_rate_increase": 0.02,
+    "new_property_flags_require_review": true,
+    "same_corpus_normalization_and_coverage": true
+  },
+  "qualification": false,
+  "limitations": [
+    "Synthetic seed, no consented real-speaker recordings",
+    "Non-English audio/reference review pending",
+    "Existing failed baselines are not approved behavior",
+    "24 GiB M4 Pro only; no low-RAM or physical microphone validation"
+  ],
+  "asr_observations": {
+    "whisper-turbo/en-basic/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/en-basic/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/fr-basic/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/fr-basic/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/en-facts/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.11764705882352941,
+        0.11764705882352941
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.11764705882352941,
+      "best_rate": 0.11764705882352941
+    },
+    "whisper-turbo/en-facts/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.11764705882352941,
+        0.11764705882352941
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.11764705882352941,
+      "best_rate": 0.11764705882352941
+    },
+    "whisper-turbo/en-uncertainty/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/en-uncertainty/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/en-accent-indian/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.2,
+        0.2
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.2,
+      "best_rate": 0.2
+    },
+    "whisper-turbo/en-accent-indian/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.2,
+        0.2
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.2,
+      "best_rate": 0.2
+    },
+    "whisper-turbo/en-accent-australian/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.2,
+        0.2
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.2,
+      "best_rate": 0.2
+    },
+    "whisper-turbo/en-accent-australian/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.2,
+        0.2
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.2,
+      "best_rate": 0.2
+    },
+    "whisper-turbo/fr-facts/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.1,
+        0.1
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.1,
+      "best_rate": 0.1
+    },
+    "whisper-turbo/fr-facts/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.1,
+        0.1
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.1,
+      "best_rate": 0.1
+    },
+    "whisper-turbo/es-facts/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/es-facts/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/hi-facts/auto/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.0967741935483871,
+        0.0967741935483871
+      ],
+      "reference_facts_failed": [
+        "currency",
+        "payment"
+      ],
+      "worst_rate": 0.0967741935483871,
+      "best_rate": 0.0967741935483871
+    },
+    "whisper-turbo/hi-facts/explicit/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.0967741935483871,
+        0.0967741935483871
+      ],
+      "reference_facts_failed": [
+        "currency",
+        "payment"
+      ],
+      "worst_rate": 0.0967741935483871,
+      "best_rate": 0.0967741935483871
+    },
+    "whisper-turbo/hi-en-mix/auto/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.6176470588235294,
+        0.6176470588235294
+      ],
+      "reference_facts_failed": [
+        "english-approve",
+        "name",
+        "negation",
+        "uncertainty"
+      ],
+      "worst_rate": 0.6176470588235294,
+      "best_rate": 0.6176470588235294
+    },
+    "whisper-turbo/hi-en-mix/explicit/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.6470588235294118,
+        0.6470588235294118
+      ],
+      "reference_facts_failed": [
+        "english-approve",
+        "english-invoice",
+        "negation"
+      ],
+      "worst_rate": 0.6470588235294118,
+      "best_rate": 0.6470588235294118
+    },
+    "whisper-turbo/zh-facts/auto/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/zh-facts/explicit/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/ja-facts/auto/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/ja-facts/explicit/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-turbo/silence/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "whisper-turbo/silence/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "whisper-turbo/short-input/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "whisper-turbo/short-input/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "whisper-turbo/long-120s/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0136986301369863,
+        0.0136986301369863
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0136986301369863,
+      "best_rate": 0.0136986301369863
+    },
+    "whisper-turbo/long-120s/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0136986301369863,
+        0.0136986301369863
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0136986301369863,
+      "best_rate": 0.0136986301369863
+    },
+    "whisper-compact/en-basic/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-compact/en-basic/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-compact/fr-basic/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-compact/fr-basic/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-compact/en-facts/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.29411764705882354,
+        0.29411764705882354
+      ],
+      "reference_facts_failed": [
+        "currency",
+        "name",
+        "timeout"
+      ],
+      "worst_rate": 0.29411764705882354,
+      "best_rate": 0.29411764705882354
+    },
+    "whisper-compact/en-facts/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.29411764705882354,
+        0.29411764705882354
+      ],
+      "reference_facts_failed": [
+        "currency",
+        "name",
+        "timeout"
+      ],
+      "worst_rate": 0.29411764705882354,
+      "best_rate": 0.29411764705882354
+    },
+    "whisper-compact/en-uncertainty/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.047619047619047616,
+        0.047619047619047616
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.047619047619047616,
+      "best_rate": 0.047619047619047616
+    },
+    "whisper-compact/en-uncertainty/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.047619047619047616,
+        0.047619047619047616
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.047619047619047616,
+      "best_rate": 0.047619047619047616
+    },
+    "whisper-compact/en-accent-indian/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.2,
+        0.2
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.2,
+      "best_rate": 0.2
+    },
+    "whisper-compact/en-accent-indian/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.2,
+        0.2
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.2,
+      "best_rate": 0.2
+    },
+    "whisper-compact/en-accent-australian/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.3,
+        0.3
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.3,
+      "best_rate": 0.3
+    },
+    "whisper-compact/en-accent-australian/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.3,
+        0.3
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.3,
+      "best_rate": 0.3
+    },
+    "whisper-compact/fr-facts/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.1,
+        0.1
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.1,
+      "best_rate": 0.1
+    },
+    "whisper-compact/fr-facts/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.1,
+        0.1
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.1,
+      "best_rate": 0.1
+    },
+    "whisper-compact/es-facts/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.25,
+        0.25
+      ],
+      "reference_facts_failed": [
+        "name",
+        "negation"
+      ],
+      "worst_rate": 0.25,
+      "best_rate": 0.25
+    },
+    "whisper-compact/es-facts/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.25,
+        0.25
+      ],
+      "reference_facts_failed": [
+        "name",
+        "negation"
+      ],
+      "worst_rate": 0.25,
+      "best_rate": 0.25
+    },
+    "whisper-compact/hi-facts/auto/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.1935483870967742,
+        0.1935483870967742
+      ],
+      "reference_facts_failed": [
+        "currency",
+        "name",
+        "payment"
+      ],
+      "worst_rate": 0.1935483870967742,
+      "best_rate": 0.1935483870967742
+    },
+    "whisper-compact/hi-facts/explicit/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.1935483870967742,
+        0.1935483870967742
+      ],
+      "reference_facts_failed": [
+        "currency",
+        "name",
+        "payment"
+      ],
+      "worst_rate": 0.1935483870967742,
+      "best_rate": 0.1935483870967742
+    },
+    "whisper-compact/hi-en-mix/auto/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.5882352941176471,
+        0.5882352941176471
+      ],
+      "reference_facts_failed": [
+        "english-approve",
+        "english-invoice",
+        "name",
+        "negation",
+        "uncertainty"
+      ],
+      "worst_rate": 0.5882352941176471,
+      "best_rate": 0.5882352941176471
+    },
+    "whisper-compact/hi-en-mix/explicit/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.4411764705882353,
+        0.4411764705882353
+      ],
+      "reference_facts_failed": [
+        "english-approve",
+        "english-invoice",
+        "name",
+        "uncertainty"
+      ],
+      "worst_rate": 0.4411764705882353,
+      "best_rate": 0.4411764705882353
+    },
+    "whisper-compact/zh-facts/auto/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.08333333333333333,
+        0.08333333333333333
+      ],
+      "reference_facts_failed": [
+        "negation"
+      ],
+      "worst_rate": 0.08333333333333333,
+      "best_rate": 0.08333333333333333
+    },
+    "whisper-compact/zh-facts/explicit/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.08333333333333333,
+        0.08333333333333333
+      ],
+      "reference_facts_failed": [
+        "negation"
+      ],
+      "worst_rate": 0.08333333333333333,
+      "best_rate": 0.08333333333333333
+    },
+    "whisper-compact/ja-facts/auto/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-compact/ja-facts/explicit/asr": {
+      "primary_metric": "cer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "whisper-compact/silence/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "whisper-compact/silence/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "whisper-compact/short-input/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "whisper-compact/short-input/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "whisper-compact/long-120s/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0136986301369863,
+        0.0136986301369863
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0136986301369863,
+      "best_rate": 0.0136986301369863
+    },
+    "whisper-compact/long-120s/explicit/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0136986301369863,
+        0.0136986301369863
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0136986301369863,
+      "best_rate": 0.0136986301369863
+    },
+    "parakeet-v3/en-basic/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "parakeet-v3/fr-basic/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "parakeet-v3/en-facts/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.17647058823529413,
+        0.17647058823529413
+      ],
+      "reference_facts_failed": [
+        "currency",
+        "name"
+      ],
+      "worst_rate": 0.17647058823529413,
+      "best_rate": 0.17647058823529413
+    },
+    "parakeet-v3/en-uncertainty/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "parakeet-v3/en-accent-indian/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.2,
+        0.2
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.2,
+      "best_rate": 0.2
+    },
+    "parakeet-v3/en-accent-australian/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.2,
+        0.2
+      ],
+      "reference_facts_failed": [
+        "currency",
+        "name"
+      ],
+      "worst_rate": 0.2,
+      "best_rate": 0.2
+    },
+    "parakeet-v3/fr-facts/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.2,
+        0.2
+      ],
+      "reference_facts_failed": [
+        "name"
+      ],
+      "worst_rate": 0.2,
+      "best_rate": 0.2
+    },
+    "parakeet-v3/es-facts/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0,
+        0.0
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0,
+      "best_rate": 0.0
+    },
+    "parakeet-v3/silence/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "parakeet-v3/short-input/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        null,
+        null
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": null,
+      "best_rate": null
+    },
+    "parakeet-v3/long-120s/auto/asr": {
+      "primary_metric": "wer",
+      "rates": [
+        0.0136986301369863,
+        0.0136986301369863
+      ],
+      "reference_facts_failed": [],
+      "worst_rate": 0.0136986301369863,
+      "best_rate": 0.0136986301369863
+    }
+  },
+  "release_priority_languages": [
+    "en",
+    "hi",
+    "hi+en"
+  ],
+  "other_language_cases": "French, Spanish, Chinese and Japanese remain regression coverage"
+}
