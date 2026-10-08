@@ -49,7 +49,9 @@ pub enum LocalEngine {
 impl LocalEngine {
     fn validate_language(&self, opts: &TranscribeOpts) -> Result<()> {
         let capabilities = match self {
-            Self::Whisper(provider) => crate::speech_capabilities::Capabilities::whisper_vocab(provider.ctx.model_n_vocab()),
+            Self::Whisper(provider) => crate::speech_capabilities::Capabilities::whisper_vocab(
+                provider.ctx.model_n_vocab(),
+            ),
             Self::Parakeet(_) => crate::speech_capabilities::Capabilities::parakeet(),
         };
         capabilities.validate(opts.language.as_deref())
@@ -146,6 +148,7 @@ impl LocalEngine {
         sample_rate: u32,
         opts: TranscribeOpts,
     ) -> Result<String> {
+        self.validate_language(&opts)?;
         match self {
             LocalEngine::Whisper(p) => p.transcribe_samples(samples, sample_rate, opts).await,
             LocalEngine::Parakeet(p) => p.transcribe_samples(samples, sample_rate, opts).await,
@@ -283,7 +286,8 @@ pub(crate) fn run_whisper(
 ) -> Result<String> {
     // Check the actual loaded model: whisper.cpp can silently force .en models
     // back to English even when a different language was requested.
-    crate::speech_capabilities::Capabilities::whisper_vocab(ctx.model_n_vocab()).validate(language)?;
+    crate::speech_capabilities::Capabilities::whisper_vocab(ctx.model_n_vocab())
+        .validate(language)?;
     let normalized_language = crate::speech_capabilities::normalize_language(language);
 
     // whisper.cpp needs at least ~1s of audio internally (it pads to 30s frames
@@ -593,6 +597,82 @@ mod tests {
     #[test]
     fn rejects_garbage_bytes() {
         assert!(decode_audio_bytes(b"not audio at all").is_err());
+    }
+
+    /// Check real model metadata and both owned decoding paths without downloading models.
+    #[tokio::test]
+    #[ignore = "requires PARROT_TEST_WHISPER_MODEL pointing to a local Whisper model"]
+    async fn whisper_loaded_model_capabilities() {
+        let model_path = std::env::var_os("PARROT_TEST_WHISPER_MODEL").unwrap();
+        let path = Path::new(&model_path);
+        let provider = LocalWhisperProvider::load(path).unwrap();
+        let actual =
+            crate::speech_capabilities::Capabilities::whisper_vocab(provider.ctx.model_n_vocab());
+        let header =
+            crate::speech_capabilities::for_target("whisper", "deliberately-stale-id", path);
+        assert!(actual.known);
+        assert_eq!(header.languages, actual.languages);
+        assert_eq!(header.multilingual, Some(provider.ctx.is_multilingual()));
+        eprintln!("SPEECH_CATALOG={}", crate::get_speech_catalog());
+        eprintln!(
+            "ACTUAL_MODEL_CAPABILITIES={}",
+            serde_json::to_string(&actual).unwrap()
+        );
+        let engine = LocalEngine::Whisper(Arc::new(provider));
+        let wav = include_bytes!("../tests/fixtures/transcription/english.wav");
+        let (samples, rate) = decode_audio_bytes(wav).unwrap();
+        let audio = Arc::new(crate::audio::RecordedSamples {
+            samples,
+            sample_rate: rate,
+        });
+        let unsupported = if !actual.multilingual.unwrap() {
+            "fr"
+        } else if actual.languages.len() == 99 {
+            "yue"
+        } else {
+            "zz"
+        };
+        let opts = TranscribeOpts {
+            language: Some(unsupported.into()),
+            initial_prompt: None,
+        };
+        let error = engine
+            .transcribe_recording(audio.clone(), opts.clone())
+            .await
+            .unwrap_err();
+        assert!(error.to_string().contains("Settings"));
+        let error = engine
+            .transcribe_import(
+                crate::audio_import::AudioSource::Bytes(Arc::new(wav.to_vec())),
+                opts,
+            )
+            .await
+            .err()
+            .unwrap();
+        assert!(error.to_string().contains("Settings"));
+        eprintln!("Rejected {unsupported} for recording and import before native decoding");
+        for language in [None, Some(" AUTO "), Some(" EN ")] {
+            let opts = TranscribeOpts {
+                language: language.map(str::to_owned),
+                initial_prompt: None,
+            };
+            let recorded = engine
+                .transcribe_recording(audio.clone(), opts.clone())
+                .await
+                .unwrap();
+            let imported = engine
+                .transcribe_import(
+                    crate::audio_import::AudioSource::Bytes(Arc::new(wav.to_vec())),
+                    opts,
+                )
+                .await
+                .unwrap();
+            assert_eq!(recorded, imported.text);
+            for word in ["blue", "notebook", "kitchen", "table"] {
+                assert!(recorded.to_lowercase().contains(word), "{recorded}");
+            }
+            eprintln!("PASS recording/import language={language:?}: {recorded}");
+        }
     }
 
     /// Run with a downloaded multilingual model (never fetched by the test):
