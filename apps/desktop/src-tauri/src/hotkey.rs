@@ -89,6 +89,7 @@ pub fn begin_recording(app: &AppHandle) {
         eprintln!("Failed to start recording: {}", e);
         return;
     }
+    state.last_audio.clear();
     *state.recording_start.lock().unwrap() = Some(Instant::now());
     drop(recorder);
 
@@ -121,8 +122,7 @@ pub fn end_recording(app: &AppHandle) {
         .unwrap_or(0);
     match recorder.stop() {
         Ok(audio) => {
-            *state.last_duration_ms.lock().unwrap() = duration_ms;
-            *state.last_audio.lock().unwrap() = Some(audio);
+            state.last_audio.store(audio, duration_ms);
             let _ = app.emit("recording-stopped", duration_ms);
         }
         Err(e) => eprintln!("Failed to stop recording: {}", e),

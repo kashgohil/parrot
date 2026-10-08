@@ -180,7 +180,6 @@ pub struct CaptureSnapshot {
 }
 
 /// Mono float samples captured from the mic, still at the device sample rate.
-#[derive(Clone)]
 pub struct RecordedSamples {
     pub samples: Vec<f32>,
     pub sample_rate: u32,
@@ -190,28 +189,128 @@ impl RecordedSamples {
     pub fn encode_wav(&self) -> Result<Vec<u8>> {
         encode_wav(&self.samples, self.sample_rate)
     }
+
+    /// Write incrementally instead of constructing another full WAV in RAM.
+    pub fn save_wav(&self, path: &std::path::Path) -> Result<()> {
+        let file = std::io::BufWriter::new(std::fs::File::create(path)?);
+        write_wav(file, &self.samples, self.sample_rate)
+    }
 }
 
 pub fn encode_wav(samples: &[f32], sample_rate: u32) -> Result<Vec<u8>> {
     let mut buf = std::io::Cursor::new(Vec::new());
+    write_wav(&mut buf, samples, sample_rate)?;
+    Ok(buf.into_inner())
+}
+
+fn write_wav<W: std::io::Write + std::io::Seek>(
+    writer: W,
+    samples: &[f32],
+    sample_rate: u32,
+) -> Result<()> {
     let spec = hound::WavSpec {
         channels: 1,
         sample_rate,
         bits_per_sample: 16,
         sample_format: hound::SampleFormat::Int,
     };
-    let mut writer = hound::WavWriter::new(&mut buf, spec)?;
+    let mut writer = hound::WavWriter::new(writer, spec)?;
     for &sample in samples {
         let s = (sample * 32767.0).clamp(-32768.0, 32767.0) as i16;
         writer.write_sample(s)?;
     }
     writer.finalize()?;
-    Ok(buf.into_inner())
+    Ok(())
+}
+
+#[derive(Clone)]
+pub struct CompletedRecording {
+    pub audio: Arc<RecordedSamples>,
+    pub duration_ms: u64,
+}
+
+/// Keep failed/cancelled requests retryable without copying PCM. A completed
+/// request may only clear its own recording, never a newer capture.
+#[derive(Default)]
+pub struct RecordingCache(Mutex<Option<CompletedRecording>>);
+
+impl RecordingCache {
+    pub fn store(&self, audio: RecordedSamples, duration_ms: u64) {
+        *self.0.lock().unwrap() = Some(CompletedRecording {
+            audio: Arc::new(audio),
+            duration_ms,
+        });
+    }
+
+    pub fn get(&self) -> Option<CompletedRecording> {
+        self.0.lock().unwrap().clone()
+    }
+
+    pub fn clear(&self) {
+        self.0.lock().unwrap().take();
+    }
+
+    pub fn release_completed(&self, audio: &Arc<RecordedSamples>) {
+        let mut current = self.0.lock().unwrap();
+        if current
+            .as_ref()
+            .is_some_and(|r| Arc::ptr_eq(&r.audio, audio))
+        {
+            current.take();
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn completed_recordings_share_pcm_and_only_release_their_own_cache_entry() {
+        let cache = RecordingCache::default();
+        cache.store(
+            RecordedSamples {
+                samples: vec![0.25; 100],
+                sample_rate: 16_000,
+            },
+            6,
+        );
+        let first = cache.get().unwrap();
+        let retry = cache.get().unwrap();
+        assert!(Arc::ptr_eq(&first.audio, &retry.audio));
+        assert_eq!(retry.duration_ms, 6);
+        let weak = Arc::downgrade(&first.audio);
+        cache.store(
+            RecordedSamples {
+                samples: vec![0.5; 200],
+                sample_rate: 16_000,
+            },
+            12,
+        );
+        cache.release_completed(&first.audio);
+        let newer = cache.get().unwrap();
+        assert_eq!(newer.duration_ms, 12);
+        assert_eq!(newer.audio.samples, vec![0.5; 200]);
+        drop((first, retry));
+        assert!(weak.upgrade().is_none());
+        cache.release_completed(&newer.audio);
+        assert!(cache.get().is_none());
+        // Jobs already holding the Arc remain valid after release.
+        assert_eq!(newer.audio.samples.len(), 200);
+    }
+
+    #[test]
+    fn saved_wav_matches_legacy_encoded_bytes() {
+        let audio = RecordedSamples {
+            samples: vec![-1.1, -0.5, 0.0, 0.25, 1.1],
+            sample_rate: 44_100,
+        };
+        let path = std::env::temp_dir().join(format!("parrot-wav-{}.wav", uuid::Uuid::new_v4()));
+        audio.save_wav(&path).unwrap();
+        let saved = std::fs::read(&path).unwrap();
+        std::fs::remove_file(path).unwrap();
+        assert_eq!(saved, audio.encode_wav().unwrap());
+    }
 
     #[test]
     fn preview_tail_handles_window_boundaries_at_device_rates() {

@@ -34,8 +34,7 @@ pub struct RecorderState {
     recording_start: Mutex<Option<Instant>>,
     /// Raw f32 samples from the last capture. Encoded to WAV only when
     /// needed for save-audio, never for the local STT path.
-    last_audio: Mutex<Option<RecordedSamples>>,
-    last_duration_ms: Mutex<u64>,
+    last_audio: audio::RecordingCache,
 }
 
 /// Most recent background-cleanup result that differs from the raw paste.
@@ -142,13 +141,8 @@ fn stop_recording(
 ) -> Result<Vec<u8>, String> {
     hotkey::end_recording(&app);
     // Return last capture as WAV for any legacy UI callers.
-    let audio = state
-        .last_audio
-        .lock()
-        .unwrap()
-        .clone()
-        .ok_or_else(|| "Not recording".to_string())?;
-    audio.encode_wav().map_err(|e| e.to_string())
+    let recording = state.last_audio.get().ok_or_else(|| "Not recording".to_string())?;
+    recording.audio.encode_wav().map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -185,21 +179,29 @@ async fn transcribe_last(
     engine_state: tauri::State<'_, SharedLocalEngine>,
     app: tauri::AppHandle,
 ) -> Result<DictationResult, String> {
-    let audio = recorder_state
-        .last_audio
-        .lock()
-        .unwrap()
-        .clone()
+    let recording = recorder_state.last_audio.get()
         .ok_or_else(|| "No audio data available".to_string())?;
-    let duration_ms = *recorder_state.last_duration_ms.lock().unwrap();
+    let result = transcribe_recorded(recording.audio.clone(), recording.duration_ms, &db, &engine_state, app).await;
+    if result.is_ok() {
+        recorder_state.last_audio.release_completed(&recording.audio);
+    }
+    result
+}
 
+async fn transcribe_recorded(
+    audio: Arc<RecordedSamples>,
+    duration_ms: u64,
+    db: &Database,
+    engine_state: &SharedLocalEngine,
+    app: tauri::AppHandle,
+) -> Result<DictationResult, String> {
     // Step 1: Transcribe (local-only)
     let _ = app.emit("transcription-started", ());
     let pipeline_start = Instant::now();
-    configure_speech(&db, engine_state.inner());
+    configure_speech(db, engine_state);
     let opts = TranscribeOpts::from_database(&db).map_err(|e| e.to_string())?;
     let transcription_start = Instant::now();
-    let speech = engine_state.transcribe_final(audio.samples.clone(), audio.sample_rate, opts)
+    let speech = engine_state.transcribe_recording(audio.clone(), opts)
         .await.map_err(|e| e.to_string())?;
     let raw_text = speech.text;
 
@@ -241,11 +243,10 @@ async fn transcribe_last(
         .unwrap_or_else(|| "false".to_string());
 
     if save_audio == "true" {
-        let wav_bytes = audio.encode_wav().map_err(|e| e.to_string())?;
         let audio_dir = Database::audio_dir().map_err(|e| e.to_string())?;
         std::fs::create_dir_all(&audio_dir).map_err(|e| e.to_string())?;
         let audio_path = audio_dir.join(format!("{}.wav", id));
-        std::fs::write(&audio_path, &wav_bytes).map_err(|e| e.to_string())?;
+        audio.save_wav(&audio_path).map_err(|e| e.to_string())?;
         let _ = db.update_dictation_audio_path(&id, &audio_path.to_string_lossy());
     }
 
@@ -2234,8 +2235,7 @@ pub fn run() {
     let recorder_state = RecorderState {
         recorder: Mutex::new(recorder),
         recording_start: Mutex::new(None),
-        last_audio: Mutex::new(None),
-        last_duration_ms: Mutex::new(0),
+        last_audio: audio::RecordingCache::default(),
     };
 
     tauri::Builder::default()

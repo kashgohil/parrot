@@ -250,11 +250,8 @@ fn fixture(french: bool) -> (Vec<f32>, u32, &'static [&'static str]) {
 async fn dictation(app: &AppHandle, events: &Events, scenario: &str, french: bool) -> Result<()> {
     let (samples, rate, expected) = fixture(french);
     let recorder = app.state::<RecorderState>();
-    *recorder.last_duration_ms.lock().unwrap() = (samples.len() as u64 * 1000) / rate as u64;
-    *recorder.last_audio.lock().unwrap() = Some(crate::RecordedSamples {
-        samples,
-        sample_rate: rate,
-    });
+    let duration_ms = (samples.len() as u64 * 1000) / rate as u64;
+    recorder.last_audio.store(crate::RecordedSamples { samples, sample_rate: rate }, duration_ms);
     let start = Instant::now();
     events.write(
         "begin",

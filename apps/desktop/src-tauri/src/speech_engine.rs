@@ -111,6 +111,21 @@ impl SpeechEngine {
         rate: u32,
         opts: TranscribeOpts,
     ) -> Result<SpeechResult> {
+        self.transcribe_recording(
+            Arc::new(crate::audio::RecordedSamples {
+                samples,
+                sample_rate: rate,
+            }),
+            opts,
+        )
+        .await
+    }
+
+    pub async fn transcribe_recording(
+        self: &Arc<Self>,
+        audio: Arc<crate::audio::RecordedSamples>,
+        opts: TranscribeOpts,
+    ) -> Result<SpeechResult> {
         let owner = self.clone();
         self.scheduler
             .final_job(async move {
@@ -119,10 +134,7 @@ impl SpeechEngine {
                     .models
                     .acquire_with_timeout(Duration::from_secs(180))
                     .await?;
-                let text = lease
-                    .client
-                    .transcribe_samples(&samples, rate, opts)
-                    .await?;
+                let text = lease.client.transcribe_recording(audio, opts).await?;
                 let result = SpeechResult {
                     text,
                     engine: lease.client.engine_id(),
@@ -159,7 +171,13 @@ impl SpeechEngine {
                 }
                 let text = lease
                     .client
-                    .transcribe_samples(&samples, rate, opts)
+                    .transcribe_recording(
+                        Arc::new(crate::audio::RecordedSamples {
+                            samples,
+                            sample_rate: rate,
+                        }),
+                        opts,
+                    )
                     .await?;
                 Ok((coordinator.current() == generation).then_some(text))
             })
