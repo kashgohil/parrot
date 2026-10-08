@@ -13,6 +13,10 @@ pub struct AudioRecorder {
 unsafe impl Send for AudioRecorder {}
 unsafe impl Sync for AudioRecorder {}
 
+#[cfg(test)]
+#[path = "preview_buffer_bench.rs"]
+mod preview_buffer_bench;
+
 impl AudioRecorder {
     /// Replay synthetic PCM through the ordinary capture buffer, without a mic.
     #[cfg(any(test, feature = "memory-bench"))]

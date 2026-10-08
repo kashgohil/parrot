@@ -216,6 +216,49 @@ other apps, descendant discovery, duplicate roots, simultaneous peaks, and
 incomplete samples. Actual release-app runs are required to validate native
 ownership, engine loading, event stages, sidecar cleanup and quality checks.
 
+## Isolate preview copies and capture-lock contention
+
+Previews copy at most 20 seconds of mono audio at the device sample rate.
+The snapshot reports total capture length separately; final transcription
+still receives the full recording. At 48 kHz, the preview vector contains at
+most 960,000 floats (3,840,000 bytes), independent of recording duration.
+Prepared/resampled inference buffers and the full recording are separate.
+
+The opt-in Rust test benchmark compares the old full-snapshot-plus-tail copies
+with the bounded snapshot in fresh native processes. It fills 1-, 5-, and
+10-minute captures, measures live vector capacities and macOS physical
+footprint, and stresses the capture mutex with 10 ms appends and previews every
+10 ms (production attempts previews every 900 ms). All appended samples must
+survive `stop()`. Capture capacity is reserved up front to isolate preview
+copies from recording-vector growth. No speech model is loaded.
+
+```sh
+cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --locked \
+  --release -p parrot --lib --no-run --message-format=json > /tmp/parrot-preview-tests.jsonl
+python3 - <<'PY'
+import json, subprocess
+from pathlib import Path
+records = [json.loads(line) for line in Path('/tmp/parrot-preview-tests.jsonl').read_text().splitlines()]
+binary, = [r['executable'] for r in records if r.get('reason') == 'compiler-artifact'
+           and r.get('profile', {}).get('test') and r.get('target', {}).get('name') == 'parrot_lib']
+subprocess.run(['python3', 'apps/desktop/scripts/preview-buffer-benchmark.py',
+                '--test-binary', binary, '--out', '/tmp/parrot-preview-copies'], check=True)
+PY
+```
+
+The output includes native test logs, per-process footprint samples, copy and
+callback timings, binary hash, hardware, and revision. This compares two paths
+inside one test binary; it is not a whole-app before/after measurement. Timing
+and footprint samples can miss short spikes. Use the regular app benchmark
+to check preview events, final transcripts, and total app footprint. Synthetic
+callback contention does not validate a physical microphone or Bluetooth codec.
+
+For a copy-frequency comparison at the normal preview interval, pass
+`--seconds 300 --interval-ms 900 --copies 10` to the Python runner, using a
+different output directory. Allocator retention during the 10 ms stress run
+can greatly exceed live vector capacity; do not present its process peak as
+normal app memory savings.
+
 ## Baseline and proposed targets
 
 See the dated report in `docs/benchmarks/` for measured results, limitations,

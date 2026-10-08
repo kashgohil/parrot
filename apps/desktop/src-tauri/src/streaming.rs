@@ -164,6 +164,61 @@ mod tests {
         assert_eq!(coordinator.current(), next_recording);
     }
 
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    #[ignore = "needs PARROT_TEST_STT_MODEL pointing to Whisper or Parakeet"]
+    async fn bounded_previews_keep_recent_english_and_french_speech() {
+        let path = std::path::PathBuf::from(std::env::var("PARROT_TEST_STT_MODEL").unwrap());
+        let engine = Arc::new(
+            crate::load_engine_blocking(
+                if path.is_dir() { "parakeet" } else { "whisper" },
+                &path,
+                "bounded preview test",
+            )
+            .unwrap(),
+        );
+        let db = crate::db::Database::in_memory().unwrap();
+        for (wav, expected) in [
+            (
+                include_bytes!("../tests/fixtures/transcription/english.wav").as_slice(),
+                &["blue", "notebook", "kitchen", "table"][..],
+            ),
+            (
+                include_bytes!("../tests/fixtures/transcription/french.wav").as_slice(),
+                &["bonjour", "réserver", "table", "demain", "soir"][..],
+            ),
+        ] {
+            let (samples, rate) = decode_audio_bytes(wav).unwrap();
+            let mut recorder = crate::audio::AudioRecorder::new().unwrap();
+            recorder.begin_fixture(rate);
+            recorder.push_fixture(&vec![0.0; rate as usize * 120]);
+            recorder.push_fixture(&samples);
+            let preview = recorder.snapshot_tail(MAX_PARTIAL_SECS);
+            assert_eq!(preview.total_samples, rate as usize * 120 + samples.len());
+            assert_eq!(
+                preview.audio.samples.len(),
+                rate as usize * MAX_PARTIAL_SECS as usize
+            );
+            let text = transcribe_partial(
+                engine.clone(),
+                preview.audio.samples,
+                preview.audio.sample_rate,
+                &db,
+            )
+            .await
+            .unwrap();
+            eprintln!("bounded preview: {text}");
+            for word in expected {
+                assert!(text.to_lowercase().contains(word), "missing {word}: {text}");
+            }
+            let final_audio = recorder.stop().unwrap();
+            assert_eq!(
+                final_audio.samples.len(),
+                rate as usize * 120 + samples.len()
+            );
+            assert_eq!(&final_audio.samples[rate as usize * 120..], samples);
+        }
+    }
+
     /// Run with PARROT_TEST_WHISPER_MODEL set to a multilingual Whisper model.
     #[tokio::test]
     #[ignore = "requires a local multilingual Whisper model"]
