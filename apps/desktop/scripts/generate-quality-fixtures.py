@@ -17,7 +17,7 @@ def main():
     parser.add_argument('--force', action='store_true')
     args = parser.parse_args()
     root = args.manifest.resolve().parent
-    manifest = json.loads(args.manifest.read_text())
+    manifest = json.loads(args.manifest.read_text(encoding='utf-8'))
     records = []
     for case in manifest['cases']:
         source = case['source']
@@ -58,7 +58,7 @@ def main():
                             'seconds': audio.getnframes() / audio.getframerate(), 'source': source,
                             'channels': audio.getnchannels(), 'sample_rate': audio.getframerate(), 'sample_width': audio.getsampwidth()})
         print(f'Prepared {case["id"]}', flush=True)
-    (root / 'provenance.json').write_text(json.dumps({'generator': 'generate-quality-fixtures.py', 'records': records}, ensure_ascii=False, indent=2) + '\n')
+    (root / 'provenance.json').write_text(json.dumps({'generator': 'generate-quality-fixtures.py', 'records': records}, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 
 if __name__ == '__main__':

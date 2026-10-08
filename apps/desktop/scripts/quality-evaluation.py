@@ -156,11 +156,11 @@ def fingerprint(path):
 
 
 def write_json(path, data):
-    Path(path).write_text(json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + '\n')
+    Path(path).write_text(json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')
 
 
 def read_manifest(path):
-    manifest = json.loads(path.read_text())
+    manifest = json.loads(path.read_text(encoding='utf-8'))
     if manifest.get('schema_version') != 1 or not manifest.get('cases'):
         raise ValueError('Unsupported or empty manifest')
     ids = set()
@@ -201,7 +201,7 @@ def run_worker(binary, output, name, request, timeout):
             raise
     if code:
         raise RuntimeError(f'Worker {name} failed with exit {code}; see its stderr log')
-    rows = [json.loads(line) for line in rows_path.read_text().splitlines()]
+    rows = [json.loads(line) for line in rows_path.read_text(encoding='utf-8').splitlines()]
     expected = sum(len(case['tones']) if request['engine'] == 'cleanup' else 1 for case in request['cases'])
     results = [row for row in rows if row.get('kind') == 'result']
     if len(results) != expected:
@@ -219,7 +219,7 @@ def command_output(args):
 def run(args):
     manifest = read_manifest(args.manifest.resolve())
     corpus_root = args.manifest.resolve().parent
-    config = json.loads(args.config.read_text())
+    config = json.loads(args.config.read_text(encoding='utf-8'))
     if not 1 <= args.repeats <= 10:
         raise ValueError('Repeats must be 1..10')
     variants = config.get('speech', []) + config.get('cleanup', [])
@@ -320,9 +320,9 @@ def run(args):
 
 
 def score(output, reviews_path):
-    metadata = json.loads((output / 'results.json').read_text())
+    metadata = json.loads((output / 'results.json').read_text(encoding='utf-8'))
     cases = {case['id']: case for case in metadata['manifest']['cases']}
-    reviews = json.loads(reviews_path.read_text()) if reviews_path else {}
+    reviews = json.loads(reviews_path.read_text(encoding='utf-8')) if reviews_path else {}
     known_keys = {row['key'] for row in metadata['rows']}
     if set(reviews) - known_keys:
         raise ValueError('Review file contains unknown result keys')
@@ -398,7 +398,7 @@ def score(output, reviews_path):
                   'Fact/script flags screen for regressions. Review source and output before judging meaning or cleanup usefulness.',
                   f'Skipped unsupported combinations: {len(metadata["skipped"])}. These are not passing evaluations.',
                   'This synthetic seed does not qualify any model or language for release.', ''])
-    (output / 'summary.md').write_text('\n'.join(lines))
+    (output / 'summary.md').write_text('\n'.join(lines), encoding='utf-8')
     print(f'Wrote {output / "summary.md"}', flush=True)
 
 
@@ -440,7 +440,7 @@ def main():
 def compare(baseline, candidate, max_rate_increase=0.02, allow_model_changes=False):
     if not 0 <= max_rate_increase <= 1:
         raise ValueError('Rate increase must be a fraction between 0 and 1')
-    metadata = [json.loads((path / 'results.json').read_text()) for path in (baseline, candidate)]
+    metadata = [json.loads((path / 'results.json').read_text(encoding='utf-8')) for path in (baseline, candidate)]
     for field in ['manifest_sha256', 'normalization', 'unicode_version']:
         if metadata[0][field] != metadata[1][field]:
             raise ValueError(f'Cannot compare different {field}; establish a new baseline')
@@ -450,7 +450,7 @@ def compare(baseline, candidate, max_rate_increase=0.02, allow_model_changes=Fal
                                   for key, model in value['models'].items()}
     if not allow_model_changes and model_hashes(metadata[0]) != model_hashes(metadata[1]):
         raise ValueError('Model bytes changed; use --allow-model-changes for an explicit model comparison')
-    reports = [json.loads((path / 'scores.json').read_text()) for path in (baseline, candidate)]
+    reports = [json.loads((path / 'scores.json').read_text(encoding='utf-8')) for path in (baseline, candidate)]
     if any(report.get('results_sha256') != sha256(path / 'results.json') for report, path in zip(reports, (baseline, candidate))):
         raise ValueError('Scores are stale; run score on each current results file before comparing')
     indexed = []

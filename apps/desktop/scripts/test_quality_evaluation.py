@@ -95,7 +95,7 @@ class PropertyTests(unittest.TestCase):
 
     def test_seed_audio_hashes_and_long_reference_duration(self):
         import wave
-        provenance = json.loads(quality.DEFAULT_MANIFEST.with_name('provenance.json').read_text())
+        provenance = json.loads(quality.DEFAULT_MANIFEST.with_name('provenance.json').read_text(encoding='utf-8'))
         for record in provenance['records']:
             path = quality.DEFAULT_MANIFEST.parent / record['audio']
             self.assertEqual(quality.sha256(path), record['sha256'])
@@ -113,7 +113,7 @@ class PropertyTests(unittest.TestCase):
             (path / 'results.json').write_text(json.dumps({'manifest': {'cases': [{'id': 'case', 'primary_metric': 'wer', 'languages':['en'], **self.CASE}]},
                                                          'complete': True, 'normalization': quality.NORMALIZATION, 'skipped': [], 'rows': [row]}))
             quality.score(path, None)
-            report = json.loads((path / 'scores.json').read_text())
+            report = json.loads((path / 'scores.json').read_text(encoding='utf-8'))
             self.assertFalse(report['semantic_release_qualified'])
             self.assertEqual(report['groups'][0]['human_pending'], 1)
             self.assertTrue(report['rows'][0]['candidate_properties']['introduced_regression'])
@@ -122,7 +122,7 @@ class PropertyTests(unittest.TestCase):
             reviews.write_text(json.dumps({row['key']: {'decision': 'reject', 'notes': 'No useful cleanup',
                                                        'output_sha256': quality.hashlib.sha256(row['text'].encode()).hexdigest()}}))
             quality.score(path, reviews)
-            report = json.loads((path / 'scores.json').read_text())
+            report = json.loads((path / 'scores.json').read_text(encoding='utf-8'))
             self.assertEqual(report['groups'][0]['human_rejected'], 1)
             self.assertFalse(report['semantic_release_qualified'])
 
@@ -150,7 +150,7 @@ class ComparisonTests(unittest.TestCase):
 
     def test_dropped_negation_fails_comparison(self):
         path = self.paths[1] / 'results.json'
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding='utf-8'))
         data['rows'][0]['text'] = 'Do deploy'
         quality.write_json(path, data)
         quality.score(self.paths[1], None)
@@ -160,14 +160,14 @@ class ComparisonTests(unittest.TestCase):
 
     def test_missing_coverage_fails_comparison(self):
         path = self.paths[1] / 'scores.json'
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding='utf-8'))
         data['rows'] = []
         quality.write_json(path, data)
         self.assertFalse(quality.compare(*self.paths)['regression_check_pass'])
 
     def test_changed_corpus_or_incomplete_run_cannot_be_compared(self):
         path = self.paths[1] / 'results.json'
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding='utf-8'))
         data['manifest_sha256'] = 'changed'
         quality.write_json(path, data)
         with self.assertRaises(ValueError):
