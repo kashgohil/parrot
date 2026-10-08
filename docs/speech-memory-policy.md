@@ -30,7 +30,7 @@ Preview snapshots copy at most the last 20 seconds of mono capture at the device
 sample rate. That vector moves into inference without another tail copy. Growth
 checks use the total capture length, and `stop()` still returns all recorded
 audio for final transcription. At 48 kHz the preview copy is bounded to 3.84 MB;
-the full recording, resampled PCM, and native model allocations are separate.
+the full recording, bounded resampled PCM, and native model allocations are separate.
 See the [preview measurements](benchmarks/2026-10-08-preview-audio.md) for long-buffer
 allocation, capture-lock contention, real-engine content checks, and limitations.
 
@@ -108,3 +108,8 @@ The [original lifecycle report](benchmarks/2026-10-08-speech-memory.md) compares
 release-app runs per residency policy using the previous automatic/CoreML provider.
 Its timings and footprints predate the CPU provider change in
 [ISSUE-1070](https://rezee.app/kash/plan/1070).
+
+Final dictations and imports now use bounded resampling and inference chunks.
+Whisper long inputs stay within its single-window budget; Parakeet retains its
+energy split/padding policy. See the [audio memory policy](audio-memory-policy.md)
+for completed recording release, failed-request retry, and saved audio behavior.

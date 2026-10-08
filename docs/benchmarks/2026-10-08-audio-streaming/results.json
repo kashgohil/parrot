@@ -1,0 +1,4895 @@
+{
+  "implementation_commits": [
+    "722457c",
+    "bdac579",
+    "227ac7c",
+    "29e8a10"
+  ],
+  "comparison_source": "227ac7c",
+  "final_source": "29e8a10",
+  "scope": "native buffer isolation and app measurements are separate; two known Whisper baseline count/order failures retained",
+  "native": {
+    "metadata": {
+      "binary_sha256": "43389336aa5686f14988733e0cbdf6af23b68debf5e434ec9176d11b784a2ff5",
+      "revision": "29e8a10732d37770edb3862b7f66c623d179350b",
+      "working_tree": "?? docs/geo-aieo-plan.md\n?? docs/seo-ranking-plan.md",
+      "hardware": "Mac16,7",
+      "ram_bytes": "25769803776",
+      "os": "macOS-26.6.2-arm64-arm-64bit",
+      "files": [
+        {
+          "name": "long-120s.wav",
+          "bytes": 23040078,
+          "sha256": "7a3368a71d0cf1ad6577cd225bf44da5965b809eb78a14f5df0cf4b2dddab703"
+        },
+        {
+          "name": "long-1200s.wav",
+          "bytes": 230400078,
+          "sha256": "57b47f3c4f73e599db086ce1500ce4c25d943c19e4fbee8d7b76b6f079d1f83a"
+        }
+      ],
+      "scope": "native buffer test process, no model inference, no WebKit",
+      "requested_interval_ms": 25
+    },
+    "runs": [
+      {
+        "label": "long-120s-legacy-1",
+        "event": {
+          "buffers": {
+            "native_mono_capacity_bytes": 37748736,
+            "prepared_pcm_capacity_bytes": 7680000,
+            "sample_rate": 48000
+          },
+          "chunks": 4,
+          "elapsed_ms_including_500ms_hold": 530.997917,
+          "mode": "legacy",
+          "sample_fingerprint": "3640f64728fffd25",
+          "source_samples": 1920000,
+          "text": "chunk1 chunk2 chunk3 chunk4"
+        },
+        "sample_count": 33,
+        "incomplete_samples": 0,
+        "sampled_peak_footprint_bytes": 100008488,
+        "observed_lifetime_peak_footprint_bytes": 100008488
+      },
+      {
+        "label": "long-120s-streaming-1",
+        "event": {
+          "buffers": {
+            "input_frames": 5760000,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1152,
+            "output_samples": 1920000,
+            "sample_rate": 48000
+          },
+          "chunks": 4,
+          "elapsed_ms_including_500ms_hold": 530.3529169999999,
+          "mode": "streaming",
+          "sample_fingerprint": "3640f64728fffd25",
+          "source_samples": 1920000,
+          "text": "chunk1 chunk2 chunk3 chunk4"
+        },
+        "sample_count": 33,
+        "incomplete_samples": 0,
+        "sampled_peak_footprint_bytes": 23462392,
+        "observed_lifetime_peak_footprint_bytes": 23462392
+      },
+      {
+        "label": "long-120s-streaming-2",
+        "event": {
+          "buffers": {
+            "input_frames": 5760000,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1152,
+            "output_samples": 1920000,
+            "sample_rate": 48000
+          },
+          "chunks": 4,
+          "elapsed_ms_including_500ms_hold": 531.317959,
+          "mode": "streaming",
+          "sample_fingerprint": "3640f64728fffd25",
+          "source_samples": 1920000,
+          "text": "chunk1 chunk2 chunk3 chunk4"
+        },
+        "sample_count": 33,
+        "incomplete_samples": 0,
+        "sampled_peak_footprint_bytes": 21660152,
+        "observed_lifetime_peak_footprint_bytes": 21660152
+      },
+      {
+        "label": "long-120s-legacy-2",
+        "event": {
+          "buffers": {
+            "native_mono_capacity_bytes": 37748736,
+            "prepared_pcm_capacity_bytes": 7680000,
+            "sample_rate": 48000
+          },
+          "chunks": 4,
+          "elapsed_ms_including_500ms_hold": 531.934833,
+          "mode": "legacy",
+          "sample_fingerprint": "3640f64728fffd25",
+          "source_samples": 1920000,
+          "text": "chunk1 chunk2 chunk3 chunk4"
+        },
+        "sample_count": 33,
+        "incomplete_samples": 0,
+        "sampled_peak_footprint_bytes": 99959336,
+        "observed_lifetime_peak_footprint_bytes": 99959336
+      },
+      {
+        "label": "long-1200s-legacy-1",
+        "event": {
+          "buffers": {
+            "native_mono_capacity_bytes": 301989888,
+            "prepared_pcm_capacity_bytes": 76800000,
+            "sample_rate": 48000
+          },
+          "chunks": 41,
+          "elapsed_ms_including_500ms_hold": 837.789334,
+          "mode": "legacy",
+          "sample_fingerprint": "781fc7a8c6f0f525",
+          "source_samples": 19200000,
+          "text": "chunk1 chunk2 chunk3 chunk4 chunk5 chunk6 chunk7 chunk8 chunk9 chunk10 chunk11 chunk12 chunk13 chunk14 chunk15 chunk16 chunk17 chunk18 chunk19 chunk20 chunk21 chunk22 chunk23 chunk24 chunk25 chunk26 chunk27 chunk28 chunk29 chunk30 chunk31 chunk32 chunk33 chunk34 chunk35 chunk36 chunk37 chunk38 chunk39 chunk40 chunk41"
+        },
+        "sample_count": 44,
+        "incomplete_samples": 0,
+        "sampled_peak_footprint_bytes": 868992104,
+        "observed_lifetime_peak_footprint_bytes": 868992104
+      },
+      {
+        "label": "long-1200s-streaming-1",
+        "event": {
+          "buffers": {
+            "input_frames": 57600000,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1152,
+            "output_samples": 19200000,
+            "sample_rate": 48000
+          },
+          "chunks": 41,
+          "elapsed_ms_including_500ms_hold": 746.999709,
+          "mode": "streaming",
+          "sample_fingerprint": "781fc7a8c6f0f525",
+          "source_samples": 19200000,
+          "text": "chunk1 chunk2 chunk3 chunk4 chunk5 chunk6 chunk7 chunk8 chunk9 chunk10 chunk11 chunk12 chunk13 chunk14 chunk15 chunk16 chunk17 chunk18 chunk19 chunk20 chunk21 chunk22 chunk23 chunk24 chunk25 chunk26 chunk27 chunk28 chunk29 chunk30 chunk31 chunk32 chunk33 chunk34 chunk35 chunk36 chunk37 chunk38 chunk39 chunk40 chunk41"
+        },
+        "sample_count": 41,
+        "incomplete_samples": 0,
+        "sampled_peak_footprint_bytes": 25936376,
+        "observed_lifetime_peak_footprint_bytes": 25936376
+      },
+      {
+        "label": "long-1200s-streaming-2",
+        "event": {
+          "buffers": {
+            "input_frames": 57600000,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1152,
+            "output_samples": 19200000,
+            "sample_rate": 48000
+          },
+          "chunks": 41,
+          "elapsed_ms_including_500ms_hold": 748.966584,
+          "mode": "streaming",
+          "sample_fingerprint": "781fc7a8c6f0f525",
+          "source_samples": 19200000,
+          "text": "chunk1 chunk2 chunk3 chunk4 chunk5 chunk6 chunk7 chunk8 chunk9 chunk10 chunk11 chunk12 chunk13 chunk14 chunk15 chunk16 chunk17 chunk18 chunk19 chunk20 chunk21 chunk22 chunk23 chunk24 chunk25 chunk26 chunk27 chunk28 chunk29 chunk30 chunk31 chunk32 chunk33 chunk34 chunk35 chunk36 chunk37 chunk38 chunk39 chunk40 chunk41"
+        },
+        "sample_count": 41,
+        "incomplete_samples": 0,
+        "sampled_peak_footprint_bytes": 19775968,
+        "observed_lifetime_peak_footprint_bytes": 19775968
+      },
+      {
+        "label": "long-1200s-legacy-2",
+        "event": {
+          "buffers": {
+            "native_mono_capacity_bytes": 301989888,
+            "prepared_pcm_capacity_bytes": 76800000,
+            "sample_rate": 48000
+          },
+          "chunks": 41,
+          "elapsed_ms_including_500ms_hold": 825.1451669999999,
+          "mode": "legacy",
+          "sample_fingerprint": "781fc7a8c6f0f525",
+          "source_samples": 19200000,
+          "text": "chunk1 chunk2 chunk3 chunk4 chunk5 chunk6 chunk7 chunk8 chunk9 chunk10 chunk11 chunk12 chunk13 chunk14 chunk15 chunk16 chunk17 chunk18 chunk19 chunk20 chunk21 chunk22 chunk23 chunk24 chunk25 chunk26 chunk27 chunk28 chunk29 chunk30 chunk31 chunk32 chunk33 chunk34 chunk35 chunk36 chunk37 chunk38 chunk39 chunk40 chunk41"
+        },
+        "sample_count": 43,
+        "incomplete_samples": 0,
+        "sampled_peak_footprint_bytes": 868762728,
+        "observed_lifetime_peak_footprint_bytes": 868762728
+      }
+    ],
+    "archive": {
+      "file": "native-buffers.jsonl.gz",
+      "sha256": "48851ecc47beca53f2f2773183c3da05771b2cad42934cd411da17ce21dd0f7a",
+      "bytes": 5649
+    }
+  },
+  "app": [
+    {
+      "label": "parakeet-before-1",
+      "engine": "parakeet",
+      "mode": "before",
+      "binary_sha256": "d2afd04b1d9bed1d857ff58abc4c98ca862babdcdc9939c7ccfdd114474f8063",
+      "source_note": "Retained pre-ISSUE-1056 binary, production code identical to 9b6c238",
+      "sample_count": 250,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 3166821024,
+      "phases": {
+        "startup": {
+          "samples": 14,
+          "complete_samples": 14,
+          "median_footprint_bytes": 81992.0,
+          "peak_footprint_bytes": 18547696,
+          "peak_rss_bytes": 86900736,
+          "role_peak_footprint_bytes": {
+            "app": 18547696,
+            "cleanup": 0,
+            "webview": 0,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 366833480.0,
+          "peak_footprint_bytes": 371806024,
+          "peak_rss_bytes": 345620480,
+          "role_peak_footprint_bytes": {
+            "app": 49628216,
+            "cleanup": 0,
+            "webview": 322226960,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 7,
+          "complete_samples": 7,
+          "median_footprint_bytes": 1374541056,
+          "peak_footprint_bytes": 2048104400,
+          "peak_rss_bytes": 1945075712,
+          "role_peak_footprint_bytes": {
+            "app": 1924500672,
+            "cleanup": 0,
+            "webview": 308300560,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 5,
+          "complete_samples": 5,
+          "median_footprint_bytes": 2387909568,
+          "peak_footprint_bytes": 2391628736,
+          "peak_rss_bytes": 2491662336,
+          "role_peak_footprint_bytes": {
+            "app": 1925696704,
+            "cleanup": 196527088,
+            "webview": 269962000,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2397207512.0,
+          "peak_footprint_bytes": 2402638808,
+          "peak_rss_bytes": 2489499648,
+          "role_peak_footprint_bytes": {
+            "app": 1925762240,
+            "cleanup": 196805616,
+            "webview": 280070952,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 126,
+          "complete_samples": 126,
+          "median_footprint_bytes": 2275408952.0,
+          "peak_footprint_bytes": 2483543264,
+          "peak_rss_bytes": 2821619712,
+          "role_peak_footprint_bytes": {
+            "app": 2253934048,
+            "cleanup": 112919536,
+            "webview": 268913448,
+            "extra": 0
+          }
+        },
+        "warm_01_stt": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2483772640,
+          "peak_footprint_bytes": 2483772640,
+          "peak_rss_bytes": 2822537216,
+          "role_peak_footprint_bytes": {
+            "app": 2254261728,
+            "cleanup": 109904880,
+            "webview": 119606032,
+            "extra": 0
+          }
+        },
+        "warm_01_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2688802016,
+          "peak_footprint_bytes": 2688802016,
+          "peak_rss_bytes": 2823585792,
+          "role_peak_footprint_bytes": {
+            "app": 2254343648,
+            "cleanup": 196854768,
+            "webview": 237603600,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2719038688.0,
+          "peak_footprint_bytes": 2719063264,
+          "peak_rss_bytes": 2833940480,
+          "role_peak_footprint_bytes": {
+            "app": 2254409184,
+            "cleanup": 196854768,
+            "webview": 267815696,
+            "extra": 0
+          }
+        },
+        "warm_02_stt": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2713066720,
+          "peak_footprint_bytes": 2713066720,
+          "peak_rss_bytes": 2834087936,
+          "role_peak_footprint_bytes": {
+            "app": 2254425568,
+            "cleanup": 196854768,
+            "webview": 261786384,
+            "extra": 0
+          }
+        },
+        "warm_02_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2711674080,
+          "peak_footprint_bytes": 2711674080,
+          "peak_rss_bytes": 2834628608,
+          "role_peak_footprint_bytes": {
+            "app": 2254458336,
+            "cleanup": 197084144,
+            "webview": 260131600,
+            "extra": 0
+          }
+        },
+        "warm_02_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 2715098336,
+          "peak_footprint_bytes": 2717015264,
+          "peak_rss_bytes": 2835906560,
+          "role_peak_footprint_bytes": {
+            "app": 2254474720,
+            "cleanup": 197084144,
+            "webview": 265456400,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2496421088.0,
+          "peak_footprint_bytes": 2714868960,
+          "peak_rss_bytes": 2835906560,
+          "role_peak_footprint_bytes": {
+            "app": 2254441952,
+            "cleanup": 197051376,
+            "webview": 263375632,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 26,
+          "complete_samples": 26,
+          "median_footprint_bytes": 2845932024.0,
+          "peak_footprint_bytes": 3024427680,
+          "peak_rss_bytes": 2863382528,
+          "role_peak_footprint_bytes": {
+            "app": 2896793488,
+            "cleanup": 0,
+            "webview": 278137616,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 3166657184,
+          "peak_footprint_bytes": 3166821024,
+          "peak_rss_bytes": 2858221568,
+          "role_peak_footprint_bytes": {
+            "app": 2888372112,
+            "cleanup": 0,
+            "webview": 278448912,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 3016792736.0,
+          "peak_footprint_bytes": 3163232928,
+          "peak_rss_bytes": 2858090496,
+          "role_peak_footprint_bytes": {
+            "app": 2888290192,
+            "cleanup": 0,
+            "webview": 274942736,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.13808341600000018,
+      "webview_pids_seen": [
+        14782,
+        14783,
+        14784,
+        14785
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "quality_failures": [],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1213.037208,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475306745
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13220.867583000001,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475320968
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 160.472791,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475321129
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 206.049375,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791475322337
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 2680.796791,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes.",
+          "scenario": "long_import",
+          "time_ms": 1791475327028
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 1507.292792,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook up."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475309255
+        },
+        {
+          "details": {
+            "elapsed_ms": 2485.7732499999997,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475310233
+        },
+        {
+          "details": {
+            "elapsed_ms": 3485.035542,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the table on the table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475311232
+        },
+        {
+          "details": {
+            "elapsed_ms": 4507.493333,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the table table table table table"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475312255
+        },
+        {
+          "details": {
+            "elapsed_ms": 5552.995958,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475313300
+        },
+        {
+          "details": {
+            "elapsed_ms": 6611.133750000001,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue note."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475314358
+        },
+        {
+          "details": {
+            "elapsed_ms": 7689.343625,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475315437
+        },
+        {
+          "details": {
+            "elapsed_ms": 8787.072291999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475316534
+        },
+        {
+          "details": {
+            "elapsed_ms": 9923.486625000001,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475317671
+        },
+        {
+          "details": {
+            "elapsed_ms": 11082.125,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475318829
+        }
+      ],
+      "buffer_events": [],
+      "recording_checks": [],
+      "archive": {
+        "file": "app-parakeet-before-1.jsonl.gz",
+        "sha256": "7f9632277c8a4d39601d3e3446f23cb30c4c1f323d54c8315a2e566a9bdb672b",
+        "bytes": 45424
+      }
+    },
+    {
+      "label": "parakeet-after-1",
+      "engine": "parakeet",
+      "mode": "after",
+      "binary_sha256": "f01431f9e845a0430c640c04da334cc15234d7e408659b36fc690304fa792381",
+      "source_note": "227ac7c",
+      "sample_count": 245,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 3139853176,
+      "phases": {
+        "startup": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 81992.0,
+          "peak_footprint_bytes": 19596296,
+          "peak_rss_bytes": 89489408,
+          "role_peak_footprint_bytes": {
+            "app": 19596296,
+            "cleanup": 0,
+            "webview": 0,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 376803360.0,
+          "peak_footprint_bytes": 379392032,
+          "peak_rss_bytes": 333529088,
+          "role_peak_footprint_bytes": {
+            "app": 48301136,
+            "cleanup": 0,
+            "webview": 331123664,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 6,
+          "complete_samples": 6,
+          "median_footprint_bytes": 1401918816.0,
+          "peak_footprint_bytes": 2053298320,
+          "peak_rss_bytes": 2216329216,
+          "role_peak_footprint_bytes": {
+            "app": 1922092224,
+            "cleanup": 0,
+            "webview": 319818704,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 5,
+          "complete_samples": 5,
+          "median_footprint_bytes": 2381651072,
+          "peak_footprint_bytes": 2385943680,
+          "peak_rss_bytes": 2846261248,
+          "role_peak_footprint_bytes": {
+            "app": 1922305216,
+            "cleanup": 195036144,
+            "webview": 268635088,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 2378570880,
+          "peak_footprint_bytes": 2381732992,
+          "peak_rss_bytes": 2849751040,
+          "role_peak_footprint_bytes": {
+            "app": 1922321600,
+            "cleanup": 195036144,
+            "webview": 264375248,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 128,
+          "complete_samples": 128,
+          "median_footprint_bytes": 2258975968.0,
+          "peak_footprint_bytes": 2467962272,
+          "peak_rss_bytes": 3179626496,
+          "role_peak_footprint_bytes": {
+            "app": 2252393976,
+            "cleanup": 195036144,
+            "webview": 257952720,
+            "extra": 0
+          }
+        },
+        "warm_01_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2483707320,
+          "peak_footprint_bytes": 2483707320,
+          "peak_rss_bytes": 3180527616,
+          "role_peak_footprint_bytes": {
+            "app": 2252803576,
+            "cleanup": 108217328,
+            "webview": 122686416,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2699517368.0,
+          "peak_footprint_bytes": 2699582904,
+          "peak_rss_bytes": 3184476160,
+          "role_peak_footprint_bytes": {
+            "app": 2252869112,
+            "cleanup": 195118064,
+            "webview": 251612112,
+            "extra": 0
+          }
+        },
+        "warm_02_stt": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2593299896,
+          "peak_footprint_bytes": 2593299896,
+          "peak_rss_bytes": 3184607232,
+          "role_peak_footprint_bytes": {
+            "app": 2252869112,
+            "cleanup": 108233712,
+            "webview": 232197072,
+            "extra": 0
+          }
+        },
+        "warm_02_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2682346936,
+          "peak_footprint_bytes": 2682346936,
+          "peak_rss_bytes": 3186868224,
+          "role_peak_footprint_bytes": {
+            "app": 2252869112,
+            "cleanup": 197133296,
+            "webview": 232344528,
+            "extra": 0
+          }
+        },
+        "warm_02_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 2697207224,
+          "peak_footprint_bytes": 2697305528,
+          "peak_rss_bytes": 3188047872,
+          "role_peak_footprint_bytes": {
+            "app": 2252934648,
+            "cleanup": 197133296,
+            "webview": 247237584,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2478628280.0,
+          "peak_footprint_bytes": 2697076152,
+          "peak_rss_bytes": 3188080640,
+          "role_peak_footprint_bytes": {
+            "app": 2252918264,
+            "cleanup": 197133296,
+            "webview": 247024592,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 26,
+          "complete_samples": 26,
+          "median_footprint_bytes": 2782010088.0,
+          "peak_footprint_bytes": 3004799864,
+          "peak_rss_bytes": 3206348800,
+          "role_peak_footprint_bytes": {
+            "app": 2891501480,
+            "cleanup": 0,
+            "webview": 255773648,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 3137182584,
+          "peak_footprint_bytes": 3139853176,
+          "peak_rss_bytes": 3199352832,
+          "role_peak_footprint_bytes": {
+            "app": 2883080104,
+            "cleanup": 0,
+            "webview": 256773072,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2996771680.0,
+          "peak_footprint_bytes": 3136953184,
+          "peak_rss_bytes": 3199270912,
+          "role_peak_footprint_bytes": {
+            "app": 2883030952,
+            "cleanup": 0,
+            "webview": 253922232,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.1385236670000003,
+      "webview_pids_seen": [
+        15285,
+        15286,
+        15287,
+        15288
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "quality_failures": [],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1110.458333,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475359833
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13232.384042,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475374074
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 146.90675000000002,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475374221
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 203.798917,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791475375427
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 2651.578792,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes.",
+          "scenario": "long_import",
+          "time_ms": 1791475380090
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 1510.903667,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook up."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475362348
+        },
+        {
+          "details": {
+            "elapsed_ms": 2487.1836670000002,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475363324
+        },
+        {
+          "details": {
+            "elapsed_ms": 3489.495167,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the table on the table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475364327
+        },
+        {
+          "details": {
+            "elapsed_ms": 4511.546792,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the table table table table table"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475365350
+        },
+        {
+          "details": {
+            "elapsed_ms": 5552.761625,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475366391
+        },
+        {
+          "details": {
+            "elapsed_ms": 6612.859667000001,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue note."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475367452
+        },
+        {
+          "details": {
+            "elapsed_ms": 7695.150958,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475368535
+        },
+        {
+          "details": {
+            "elapsed_ms": 8797.1375,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475369637
+        },
+        {
+          "details": {
+            "elapsed_ms": 9933.401082999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475370774
+        },
+        {
+          "details": {
+            "elapsed_ms": 11082.544167,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475371923
+        }
+      ],
+      "buffer_events": [
+        {
+          "details": {
+            "input_frames": 1920000,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1153,
+            "output_samples": 1920000,
+            "sample_rate": 16000
+          },
+          "kind": "buffers",
+          "scenario": "long_import",
+          "time_ms": 1791475380088
+        }
+      ],
+      "recording_checks": [],
+      "archive": {
+        "file": "app-parakeet-after-1.jsonl.gz",
+        "sha256": "b2051f39dde4d07310ed5b7157b1b4ea1f2db88ceb75f12145279bc6ed2c80e6",
+        "bytes": 44741
+      }
+    },
+    {
+      "label": "parakeet-after-2",
+      "engine": "parakeet",
+      "mode": "after",
+      "binary_sha256": "f01431f9e845a0430c640c04da334cc15234d7e408659b36fc690304fa792381",
+      "source_note": "227ac7c",
+      "sample_count": 238,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 3158923888,
+      "phases": {
+        "startup": {
+          "samples": 3,
+          "complete_samples": 3,
+          "median_footprint_bytes": 17024008,
+          "peak_footprint_bytes": 50809184,
+          "peak_rss_bytes": 139329536,
+          "role_peak_footprint_bytes": {
+            "app": 37733384,
+            "cleanup": 0,
+            "webview": 13075800,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 368086808,
+          "peak_footprint_bytes": 370904880,
+          "peak_rss_bytes": 346505216,
+          "role_peak_footprint_bytes": {
+            "app": 50087016,
+            "cleanup": 0,
+            "webview": 320817864,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 6,
+          "complete_samples": 6,
+          "median_footprint_bytes": 1366668268.0,
+          "peak_footprint_bytes": 2041534392,
+          "peak_rss_bytes": 2226601984,
+          "role_peak_footprint_bytes": {
+            "app": 1921387760,
+            "cleanup": 0,
+            "webview": 312347336,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 4,
+          "complete_samples": 4,
+          "median_footprint_bytes": 2309487360.0,
+          "peak_footprint_bytes": 2374802368,
+          "peak_rss_bytes": 2854273024,
+          "role_peak_footprint_bytes": {
+            "app": 1921649904,
+            "cleanup": 191661064,
+            "webview": 261868232,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2381478848.0,
+          "peak_footprint_bytes": 2383535040,
+          "peak_rss_bytes": 2858139648,
+          "role_peak_footprint_bytes": {
+            "app": 1921666288,
+            "cleanup": 191923208,
+            "webview": 269961928,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 127,
+          "complete_samples": 127,
+          "median_footprint_bytes": 2256280608,
+          "peak_footprint_bytes": 2464324808,
+          "peak_rss_bytes": 3183460352,
+          "role_peak_footprint_bytes": {
+            "app": 2247069200,
+            "cleanup": 191923208,
+            "webview": 263260872,
+            "extra": 0
+          }
+        },
+        "warm_01_stt": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2463898824,
+          "peak_footprint_bytes": 2463898824,
+          "peak_rss_bytes": 3183984640,
+          "role_peak_footprint_bytes": {
+            "app": 2247347728,
+            "cleanup": 105022472,
+            "webview": 111528624,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2695961800.0,
+          "peak_footprint_bytes": 2697567432,
+          "peak_rss_bytes": 3189981184,
+          "role_peak_footprint_bytes": {
+            "app": 2247429648,
+            "cleanup": 193872904,
+            "webview": 256264880,
+            "extra": 0
+          }
+        },
+        "warm_02_stt": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2590743752,
+          "peak_footprint_bytes": 2590743752,
+          "peak_rss_bytes": 3190095872,
+          "role_peak_footprint_bytes": {
+            "app": 2247429648,
+            "cleanup": 106988552,
+            "webview": 236325552,
+            "extra": 0
+          }
+        },
+        "warm_02_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2677890248,
+          "peak_footprint_bytes": 2677890248,
+          "peak_rss_bytes": 3190521856,
+          "role_peak_footprint_bytes": {
+            "app": 2247429648,
+            "cleanup": 194003976,
+            "webview": 236456624,
+            "extra": 0
+          }
+        },
+        "warm_02_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2692480200.0,
+          "peak_footprint_bytes": 2692504776,
+          "peak_rss_bytes": 3191521280,
+          "role_peak_footprint_bytes": {
+            "app": 2247446032,
+            "cleanup": 194003976,
+            "webview": 251071152,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 2473876680,
+          "peak_footprint_bytes": 2591628488,
+          "peak_rss_bytes": 3191537664,
+          "role_peak_footprint_bytes": {
+            "app": 2247429648,
+            "cleanup": 107086856,
+            "webview": 237128368,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 27,
+          "complete_samples": 27,
+          "median_footprint_bytes": 2778274272,
+          "peak_footprint_bytes": 3003538032,
+          "peak_rss_bytes": 3213508608,
+          "role_peak_footprint_bytes": {
+            "app": 2886897600,
+            "cleanup": 0,
+            "webview": 254839472,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 3153926768.0,
+          "peak_footprint_bytes": 3158923888,
+          "peak_rss_bytes": 3214802944,
+          "role_peak_footprint_bytes": {
+            "app": 2886913984,
+            "cleanup": 0,
+            "webview": 272009904,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 3004627568.0,
+          "peak_footprint_bytes": 3026918000,
+          "peak_rss_bytes": 3214835712,
+          "role_peak_footprint_bytes": {
+            "app": 2886913984,
+            "cleanup": 0,
+            "webview": 140020400,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.1252287919999997,
+      "webview_pids_seen": [
+        15650,
+        15651,
+        15652,
+        15655
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "quality_failures": [],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1004.1259170000001,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475384983
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13233.08875,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475399219
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 143.44379099999998,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475399362
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 199.857583,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791475400565
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 2807.501084,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes.",
+          "scenario": "long_import",
+          "time_ms": 1791475405382
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 1520.4308330000001,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook up."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475387505
+        },
+        {
+          "details": {
+            "elapsed_ms": 2498.331375,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475388483
+        },
+        {
+          "details": {
+            "elapsed_ms": 3497.501083,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the table on the table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475389482
+        },
+        {
+          "details": {
+            "elapsed_ms": 4519.500292,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the table table table table table"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475390504
+        },
+        {
+          "details": {
+            "elapsed_ms": 5559.83025,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475391545
+        },
+        {
+          "details": {
+            "elapsed_ms": 6622.505958,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue note."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475392608
+        },
+        {
+          "details": {
+            "elapsed_ms": 7702.9845000000005,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475393688
+        },
+        {
+          "details": {
+            "elapsed_ms": 8807.995458000001,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475394793
+        },
+        {
+          "details": {
+            "elapsed_ms": 9933.635375,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475395919
+        },
+        {
+          "details": {
+            "elapsed_ms": 11081.234332999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475397067
+        }
+      ],
+      "buffer_events": [
+        {
+          "details": {
+            "input_frames": 1920000,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1153,
+            "output_samples": 1920000,
+            "sample_rate": 16000
+          },
+          "kind": "buffers",
+          "scenario": "long_import",
+          "time_ms": 1791475405380
+        }
+      ],
+      "recording_checks": [],
+      "archive": {
+        "file": "app-parakeet-after-2.jsonl.gz",
+        "sha256": "7b3553da13aa3a454773f297bf2284ac98c2c928ebecb02cea6d89a58c8cc254",
+        "bytes": 44652
+      }
+    },
+    {
+      "label": "parakeet-before-2",
+      "engine": "parakeet",
+      "mode": "before",
+      "binary_sha256": "d2afd04b1d9bed1d857ff58abc4c98ca862babdcdc9939c7ccfdd114474f8063",
+      "source_note": "Retained pre-ISSUE-1056 binary, production code identical to 9b6c238",
+      "sample_count": 238,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 2962152216,
+      "phases": {
+        "startup": {
+          "samples": 3,
+          "complete_samples": 3,
+          "median_footprint_bytes": 13681480,
+          "peak_footprint_bytes": 46532936,
+          "peak_rss_bytes": 134594560,
+          "role_peak_footprint_bytes": {
+            "app": 33473544,
+            "cleanup": 0,
+            "webview": 13059392,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 370380736,
+          "peak_footprint_bytes": 372953024,
+          "peak_rss_bytes": 345636864,
+          "role_peak_footprint_bytes": {
+            "app": 48350336,
+            "cleanup": 0,
+            "webview": 325077824,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 7,
+          "complete_samples": 7,
+          "median_footprint_bytes": 1316770880,
+          "peak_footprint_bytes": 2045990984,
+          "peak_rss_bytes": 2231779328,
+          "role_peak_footprint_bytes": {
+            "app": 1925844232,
+            "cleanup": 0,
+            "webview": 314985280,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 4,
+          "complete_samples": 4,
+          "median_footprint_bytes": 2408930396.0,
+          "peak_footprint_bytes": 2414025832,
+          "peak_rss_bytes": 2861727744,
+          "role_peak_footprint_bytes": {
+            "app": 1926253832,
+            "cleanup": 193905672,
+            "webview": 293899096,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 2419645544,
+          "peak_footprint_bytes": 2420038760,
+          "peak_rss_bytes": 2864529408,
+          "role_peak_footprint_bytes": {
+            "app": 1926270216,
+            "cleanup": 193905672,
+            "webview": 299862872,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 127,
+          "complete_samples": 127,
+          "median_footprint_bytes": 2230082736,
+          "peak_footprint_bytes": 2411093096,
+          "peak_rss_bytes": 3161407488,
+          "role_peak_footprint_bytes": {
+            "app": 2133855688,
+            "cleanup": 193905672,
+            "webview": 290982744,
+            "extra": 0
+          }
+        },
+        "warm_01_stt": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2254675312,
+          "peak_footprint_bytes": 2254675312,
+          "peak_rss_bytes": 3162095616,
+          "role_peak_footprint_bytes": {
+            "app": 2036616744,
+            "cleanup": 107004936,
+            "webview": 111053632,
+            "extra": 0
+          }
+        },
+        "warm_01_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2459622768,
+          "peak_footprint_bytes": 2459622768,
+          "peak_rss_bytes": 3162439680,
+          "role_peak_footprint_bytes": {
+            "app": 2036715048,
+            "cleanup": 193922056,
+            "webview": 228985664,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2483371376.0,
+          "peak_footprint_bytes": 2483428720,
+          "peak_rss_bytes": 3166175232,
+          "role_peak_footprint_bytes": {
+            "app": 2036731432,
+            "cleanup": 193922056,
+            "webview": 252775232,
+            "extra": 0
+          }
+        },
+        "warm_02_stt": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2379505008,
+          "peak_footprint_bytes": 2379505008,
+          "peak_rss_bytes": 3166289920,
+          "role_peak_footprint_bytes": {
+            "app": 2036731432,
+            "cleanup": 107037704,
+            "webview": 235735872,
+            "extra": 0
+          }
+        },
+        "warm_02_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2468535664,
+          "peak_footprint_bytes": 2468535664,
+          "peak_rss_bytes": 3168567296,
+          "role_peak_footprint_bytes": {
+            "app": 2036731432,
+            "cleanup": 195920904,
+            "webview": 235883328,
+            "extra": 0
+          }
+        },
+        "warm_02_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 2485296496,
+          "peak_footprint_bytes": 2485329264,
+          "peak_rss_bytes": 3169484800,
+          "role_peak_footprint_bytes": {
+            "app": 2036747816,
+            "cleanup": 195920904,
+            "webview": 252660544,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2266758512.0,
+          "peak_footprint_bytes": 2485181808,
+          "peak_rss_bytes": 3169484800,
+          "role_peak_footprint_bytes": {
+            "app": 2036731432,
+            "cleanup": 195920904,
+            "webview": 252529472,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 26,
+          "complete_samples": 26,
+          "median_footprint_bytes": 2599934600.0,
+          "peak_footprint_bytes": 2819627800,
+          "peak_rss_bytes": 3216654336,
+          "role_peak_footprint_bytes": {
+            "app": 2702872536,
+            "cleanup": 0,
+            "webview": 255920960,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2961373976.0,
+          "peak_footprint_bytes": 2962152216,
+          "peak_rss_bytes": 3218276352,
+          "role_peak_footprint_bytes": {
+            "app": 2702921688,
+            "cleanup": 0,
+            "webview": 259230528,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 2821004056,
+          "peak_footprint_bytes": 2960546584,
+          "peak_rss_bytes": 3218259968,
+          "role_peak_footprint_bytes": {
+            "app": 2702921688,
+            "cleanup": 0,
+            "webview": 257624896,
+            "extra": 0
+          }
+        },
+        "complete": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 1732778080,
+          "peak_footprint_bytes": 1732778080,
+          "peak_rss_bytes": 2131197952,
+          "role_peak_footprint_bytes": {
+            "app": 1614761248,
+            "cleanup": 0,
+            "webview": 118016832,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.1112731250000003,
+      "webview_pids_seen": [
+        16009,
+        16011,
+        16012,
+        16014
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "quality_failures": [],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1049.430833,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475410355
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13220.97725,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475424579
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 153.776125,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475424733
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 201.376333,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791475425937
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 2722.906834,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes.",
+          "scenario": "long_import",
+          "time_ms": 1791475430670
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 1512.9801249999998,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook up."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475412871
+        },
+        {
+          "details": {
+            "elapsed_ms": 2492.256625,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475413850
+        },
+        {
+          "details": {
+            "elapsed_ms": 3492.823542,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the table on the table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475414851
+        },
+        {
+          "details": {
+            "elapsed_ms": 4518.473292000001,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the table table table table table"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475415876
+        },
+        {
+          "details": {
+            "elapsed_ms": 5558.737083999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475416917
+        },
+        {
+          "details": {
+            "elapsed_ms": 6621.0645,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue note."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475417979
+        },
+        {
+          "details": {
+            "elapsed_ms": 7698.663667,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475419057
+        },
+        {
+          "details": {
+            "elapsed_ms": 8812.609959,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475420171
+        },
+        {
+          "details": {
+            "elapsed_ms": 9950.430209,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475421308
+        },
+        {
+          "details": {
+            "elapsed_ms": 11103.497583999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475422461
+        }
+      ],
+      "buffer_events": [],
+      "recording_checks": [],
+      "archive": {
+        "file": "app-parakeet-before-2.jsonl.gz",
+        "sha256": "ccd680c41f5646dc1349d5b7d1944d2b7092cbed6188115cedff64bcda755b56",
+        "bytes": 44795
+      }
+    },
+    {
+      "label": "parakeet-final-smoke",
+      "engine": "parakeet",
+      "mode": "final",
+      "binary_sha256": "adb336f8537667298e092b17f6bec8ada492889eb4e275a9b6a93e7184c6245d",
+      "source_note": "29e8a10",
+      "sample_count": 228,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 2707216912,
+      "phases": {
+        "startup": {
+          "samples": 11,
+          "complete_samples": 11,
+          "median_footprint_bytes": 81992,
+          "peak_footprint_bytes": 46320016,
+          "peak_rss_bytes": 133152768,
+          "role_peak_footprint_bytes": {
+            "app": 33244168,
+            "cleanup": 0,
+            "webview": 13075848,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 362909680.0,
+          "peak_footprint_bytes": 376475632,
+          "peak_rss_bytes": 343146496,
+          "role_peak_footprint_bytes": {
+            "app": 47989888,
+            "cleanup": 0,
+            "webview": 328502128,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 6,
+          "complete_samples": 6,
+          "median_footprint_bytes": 1542927736.0,
+          "peak_footprint_bytes": 2043844704,
+          "peak_rss_bytes": 2225799168,
+          "role_peak_footprint_bytes": {
+            "app": 1919274224,
+            "cleanup": 0,
+            "webview": 311774064,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 5,
+          "complete_samples": 5,
+          "median_footprint_bytes": 2399870056,
+          "peak_footprint_bytes": 2401016936,
+          "peak_rss_bytes": 2833219584,
+          "role_peak_footprint_bytes": {
+            "app": 1919306992,
+            "cleanup": 189940744,
+            "webview": 291769200,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2409544808.0,
+          "peak_footprint_bytes": 2411666536,
+          "peak_rss_bytes": 2817507328,
+          "role_peak_footprint_bytes": {
+            "app": 1919405296,
+            "cleanup": 193102856,
+            "webview": 299158384,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 127,
+          "complete_samples": 127,
+          "median_footprint_bytes": 2259328200,
+          "peak_footprint_bytes": 2462899568,
+          "peak_rss_bytes": 3142565888,
+          "role_peak_footprint_bytes": {
+            "app": 2244447760,
+            "cleanup": 193102856,
+            "webview": 292735856,
+            "extra": 0
+          }
+        },
+        "warm_01_stt": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2463145328,
+          "peak_footprint_bytes": 2463145328,
+          "peak_rss_bytes": 3143106560,
+          "role_peak_footprint_bytes": {
+            "app": 2244742672,
+            "cleanup": 106202120,
+            "webview": 112200536,
+            "extra": 0
+          }
+        },
+        "warm_01_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 2668141936,
+          "peak_footprint_bytes": 2668141936,
+          "peak_rss_bytes": 3143548928,
+          "role_peak_footprint_bytes": {
+            "app": 2244759056,
+            "cleanup": 193152008,
+            "webview": 230230872,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 2693979504,
+          "peak_footprint_bytes": 2694061424,
+          "peak_rss_bytes": 3147120640,
+          "role_peak_footprint_bytes": {
+            "app": 2244759056,
+            "cleanup": 193152008,
+            "webview": 256150360,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2470501744.0,
+          "peak_footprint_bytes": 2690932080,
+          "peak_rss_bytes": 3147120640,
+          "role_peak_footprint_bytes": {
+            "app": 2244742672,
+            "cleanup": 193152008,
+            "webview": 253037400,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 11,
+          "complete_samples": 11,
+          "median_footprint_bytes": 2691717624,
+          "peak_footprint_bytes": 2697189880,
+          "peak_rss_bytes": 2726166528,
+          "role_peak_footprint_bytes": {
+            "app": 2440089248,
+            "cleanup": 0,
+            "webview": 257641304,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 2706676240.0,
+          "peak_footprint_bytes": 2707216912,
+          "peak_rss_bytes": 2729197568,
+          "role_peak_footprint_bytes": {
+            "app": 2440089248,
+            "cleanup": 0,
+            "webview": 267127664,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 2559105552,
+          "peak_footprint_bytes": 2706643472,
+          "peak_rss_bytes": 2729197568,
+          "role_peak_footprint_bytes": {
+            "app": 2440089248,
+            "cleanup": 0,
+            "webview": 266570608,
+            "extra": 0
+          }
+        },
+        "after_import_stt": {
+          "samples": 8,
+          "complete_samples": 8,
+          "median_footprint_bytes": 1329387244.0,
+          "peak_footprint_bytes": 2015418632,
+          "peak_rss_bytes": 2413314048,
+          "role_peak_footprint_bytes": {
+            "app": 1754107288,
+            "cleanup": 0,
+            "webview": 261311344,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.18122262499999975,
+      "webview_pids_seen": [
+        19752,
+        19753,
+        19754,
+        19759
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 1,
+          "observed_occurrences": {
+            "notebook": 1,
+            "garden": 1,
+            "umbrella": 1,
+            "ticket": 1,
+            "museum": 1,
+            "bicycle": 1,
+            "telescope": 1,
+            "saturday": 1,
+            "atlas": 1,
+            "camera": 1,
+            "suitcase": 1,
+            "waterfall": 1
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "quality_failures": [],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1203.764292,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475852164
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13226.880584,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475866393
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 166.833,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475866560
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 1126.7427089999999,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables, the librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+          "scenario": "long_import",
+          "time_ms": 1791475869696
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 629.405125,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "recording_retry",
+          "time_ms": 1791475872372
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 118.65125,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "byte_import",
+          "time_ms": 1791475872492
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 1511.799042,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook up."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475854678
+        },
+        {
+          "details": {
+            "elapsed_ms": 2490.4040840000002,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475855657
+        },
+        {
+          "details": {
+            "elapsed_ms": 3492.244292,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the table on the table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475856659
+        },
+        {
+          "details": {
+            "elapsed_ms": 4515.802709,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the table table table table table"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475857682
+        },
+        {
+          "details": {
+            "elapsed_ms": 5557.655084,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475858724
+        },
+        {
+          "details": {
+            "elapsed_ms": 6619.841834,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue note."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475859786
+        },
+        {
+          "details": {
+            "elapsed_ms": 7699.831084,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475860866
+        },
+        {
+          "details": {
+            "elapsed_ms": 8812.0455,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please"
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475861979
+        },
+        {
+          "details": {
+            "elapsed_ms": 9956.961249999998,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475863123
+        },
+        {
+          "details": {
+            "elapsed_ms": 11118.152084,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475864285
+        }
+      ],
+      "buffer_events": [
+        {
+          "details": {
+            "input_frames": 809093,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1153,
+            "output_samples": 809093,
+            "sample_rate": 16000
+          },
+          "kind": "buffers",
+          "scenario": "long_import",
+          "time_ms": 1791475869694
+        },
+        {
+          "details": {
+            "input_frames": 65325,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1153,
+            "output_samples": 65325,
+            "sample_rate": 16000
+          },
+          "kind": "buffers",
+          "scenario": "long_import",
+          "time_ms": 1791475872490
+        }
+      ],
+      "recording_checks": [
+        {
+          "details": {
+            "completed_pcm_released": true,
+            "failed_capture_preserved": true,
+            "saved_wav_matches": true
+          },
+          "kind": "end",
+          "scenario": "recording_retry",
+          "time_ms": 1791475872373
+        },
+        {
+          "details": {
+            "failed_import_saved_no_partial_history": true,
+            "original_attachment_preserved": true
+          },
+          "kind": "end",
+          "scenario": "byte_import",
+          "time_ms": 1791475872492
+        }
+      ],
+      "archive": {
+        "file": "app-parakeet-final-smoke.jsonl.gz",
+        "sha256": "a8e7cc5604f0632b0998099df84752723a13271dc7a02c85c7956de8db5de636",
+        "bytes": 41611
+      }
+    },
+    {
+      "label": "whisper-before-1",
+      "engine": "whisper",
+      "mode": "before",
+      "binary_sha256": "d2afd04b1d9bed1d857ff58abc4c98ca862babdcdc9939c7ccfdd114474f8063",
+      "source_note": "Retained pre-ISSUE-1056 binary, production code identical to 9b6c238",
+      "sample_count": 355,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 1290835488,
+      "phases": {
+        "startup": {
+          "samples": 3,
+          "complete_samples": 3,
+          "median_footprint_bytes": 16778224,
+          "peak_footprint_bytes": 50628936,
+          "peak_rss_bytes": 138985472,
+          "role_peak_footprint_bytes": {
+            "app": 37553136,
+            "cleanup": 0,
+            "webview": 13075800,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 367562664,
+          "peak_footprint_bytes": 369774480,
+          "peak_rss_bytes": 344096768,
+          "role_peak_footprint_bytes": {
+            "app": 50103400,
+            "cleanup": 0,
+            "webview": 319736616,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 30,
+          "complete_samples": 30,
+          "median_footprint_bytes": 750702960.0,
+          "peak_footprint_bytes": 939331952,
+          "peak_rss_bytes": 1008861184,
+          "role_peak_footprint_bytes": {
+            "app": 800786160,
+            "cleanup": 0,
+            "webview": 308136792,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 61,
+          "complete_samples": 61,
+          "median_footprint_bytes": 783160312,
+          "peak_footprint_bytes": 978458072,
+          "peak_rss_bytes": 1593769984,
+          "role_peak_footprint_bytes": {
+            "app": 657311376,
+            "cleanup": 201573360,
+            "webview": 253004632,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1122129392.0,
+          "peak_footprint_bytes": 1125684720,
+          "peak_rss_bytes": 1602043904,
+          "role_peak_footprint_bytes": {
+            "app": 656869008,
+            "cleanup": 203850736,
+            "webview": 264964976,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 127,
+          "complete_samples": 127,
+          "median_footprint_bytes": 1018697176,
+          "peak_footprint_bytes": 1118819800,
+          "peak_rss_bytes": 1730953216,
+          "role_peak_footprint_bytes": {
+            "app": 875480864,
+            "cleanup": 203850736,
+            "webview": 258132824,
+            "extra": 0
+          }
+        },
+        "warm_01_stt": {
+          "samples": 15,
+          "complete_samples": 15,
+          "median_footprint_bytes": 1065014816,
+          "peak_footprint_bytes": 1107400296,
+          "peak_rss_bytes": 1736441856,
+          "role_peak_footprint_bytes": {
+            "app": 880690976,
+            "cleanup": 116868080,
+            "webview": 109841240,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1143338480.0,
+          "peak_footprint_bytes": 1144428016,
+          "peak_rss_bytes": 1641136128,
+          "role_peak_footprint_bytes": {
+            "app": 692192960,
+            "cleanup": 203817968,
+            "webview": 248466240,
+            "extra": 0
+          }
+        },
+        "warm_02_stt": {
+          "samples": 8,
+          "complete_samples": 8,
+          "median_footprint_bytes": 1072895520.0,
+          "peak_footprint_bytes": 1290835488,
+          "peak_rss_bytes": 1695629312,
+          "role_peak_footprint_bytes": {
+            "app": 838829808,
+            "cleanup": 203817968,
+            "webview": 248417088,
+            "extra": 0
+          }
+        },
+        "warm_02_cleanup": {
+          "samples": 2,
+          "complete_samples": 2,
+          "median_footprint_bytes": 1081185776.0,
+          "peak_footprint_bytes": 1123374576,
+          "peak_rss_bytes": 1641086976,
+          "role_peak_footprint_bytes": {
+            "app": 691160768,
+            "cleanup": 201704432,
+            "webview": 230558528,
+            "extra": 0
+          }
+        },
+        "warm_02_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1150989856.0,
+          "peak_footprint_bytes": 1151145504,
+          "peak_rss_bytes": 1646100480,
+          "role_peak_footprint_bytes": {
+            "app": 691177152,
+            "cleanup": 205865968,
+            "webview": 254102384,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 993949216.0,
+          "peak_footprint_bytes": 1097405984,
+          "peak_rss_bytes": 1646100480,
+          "role_peak_footprint_bytes": {
+            "app": 691160768,
+            "cleanup": 152503280,
+            "webview": 253741936,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 41,
+          "complete_samples": 41,
+          "median_footprint_bytes": 1105384200,
+          "peak_footprint_bytes": 1143771816,
+          "peak_rss_bytes": 1210384384,
+          "role_peak_footprint_bytes": {
+            "app": 989300632,
+            "cleanup": 0,
+            "webview": 263015280,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 1049793192,
+          "peak_footprint_bytes": 1049825960,
+          "peak_rss_bytes": 1111752704,
+          "role_peak_footprint_bytes": {
+            "app": 780732192,
+            "cleanup": 0,
+            "webview": 269093768,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 910701224.0,
+          "peak_footprint_bytes": 1049776808,
+          "peak_rss_bytes": 1111834624,
+          "role_peak_footprint_bytes": {
+            "app": 780732192,
+            "cleanup": 0,
+            "webview": 269061000,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.11213583400000005,
+      "webview_pids_seen": [
+        16363,
+        16364,
+        16365,
+        16367
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": false,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 7,
+            "umbrella": 2,
+            "ticket": 2,
+            "museum": 2,
+            "bicycle": 1,
+            "telescope": 1,
+            "saturday": 1,
+            "atlas": 1,
+            "camera": 2,
+            "suitcase": 1,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": false
+        }
+      ],
+      "quality_failures": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": false,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 7,
+            "umbrella": 2,
+            "ticket": 2,
+            "museum": 2,
+            "bicycle": 1,
+            "telescope": 1,
+            "saturday": 1,
+            "atlas": 1,
+            "camera": 2,
+            "suitcase": 1,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": false
+        }
+      ],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 9459.054125,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475444011
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13226.616167,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475458240
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1542.900791,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475459783
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 1108.04125,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791475461894
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 4247.423042,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. On Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. The gardener will plant yellow flowers on the moon. The gardener will lift the window to the gardener with the camera from the shop after her meeting. The gardener will collect yellow flowers beside the wooden fence tomorrow morning. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 9.",
+          "scenario": "long_import",
+          "time_ms": 1791475468151
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 2255.873042,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475447269
+        },
+        {
+          "details": {
+            "elapsed_ms": 4012.2053749999995,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475449026
+        },
+        {
+          "details": {
+            "elapsed_ms": 5833.481875,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475450847
+        },
+        {
+          "details": {
+            "elapsed_ms": 7775.935625,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475452789
+        },
+        {
+          "details": {
+            "elapsed_ms": 9782.15125,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475454796
+        },
+        {
+          "details": {
+            "elapsed_ms": 11787.58575,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475456801
+        }
+      ],
+      "buffer_events": [],
+      "recording_checks": [],
+      "archive": {
+        "file": "app-whisper-before-1.jsonl.gz",
+        "sha256": "95673d539a40241ed3ed37b007237271e2e61bcb3cefdf81e2c318909e8050af",
+        "bytes": 50463
+      }
+    },
+    {
+      "label": "whisper-after-1",
+      "engine": "whisper",
+      "mode": "after",
+      "binary_sha256": "f01431f9e845a0430c640c04da334cc15234d7e408659b36fc690304fa792381",
+      "source_note": "227ac7c",
+      "sample_count": 310,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 1285723728,
+      "phases": {
+        "startup": {
+          "samples": 3,
+          "complete_samples": 3,
+          "median_footprint_bytes": 12714824,
+          "peak_footprint_bytes": 39881056,
+          "peak_rss_bytes": 126681088,
+          "role_peak_footprint_bytes": {
+            "app": 26854408,
+            "cleanup": 0,
+            "webview": 13026648,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 366849960.0,
+          "peak_footprint_bytes": 371838864,
+          "peak_rss_bytes": 343425024,
+          "role_peak_footprint_bytes": {
+            "app": 48546944,
+            "cleanup": 0,
+            "webview": 323521320,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 921866776,
+          "peak_footprint_bytes": 1098453528,
+          "peak_rss_bytes": 1011220480,
+          "role_peak_footprint_bytes": {
+            "app": 800081648,
+            "cleanup": 0,
+            "webview": 312970024,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 4,
+          "complete_samples": 4,
+          "median_footprint_bytes": 1054143960.0,
+          "peak_footprint_bytes": 1107400152,
+          "peak_rss_bytes": 1589198848,
+          "role_peak_footprint_bytes": {
+            "app": 656656064,
+            "cleanup": 194675696,
+            "webview": 256199464,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 1115280880,
+          "peak_footprint_bytes": 1119737328,
+          "peak_rss_bytes": 1592655872,
+          "role_peak_footprint_bytes": {
+            "app": 656656064,
+            "cleanup": 194675696,
+            "webview": 268438336,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 128,
+          "complete_samples": 128,
+          "median_footprint_bytes": 963565064.0,
+          "peak_footprint_bytes": 1112741360,
+          "peak_rss_bytes": 1716649984,
+          "role_peak_footprint_bytes": {
+            "app": 869975864,
+            "cleanup": 194675696,
+            "webview": 260623168,
+            "extra": 0
+          }
+        },
+        "warm_01_stt": {
+          "samples": 14,
+          "complete_samples": 14,
+          "median_footprint_bytes": 1057019472.0,
+          "peak_footprint_bytes": 1100076672,
+          "peak_rss_bytes": 1726709760,
+          "role_peak_footprint_bytes": {
+            "app": 880150376,
+            "cleanup": 107774960,
+            "webview": 112233256,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1139684872.0,
+          "peak_footprint_bytes": 1139774984,
+          "peak_rss_bytes": 1632026624,
+          "role_peak_footprint_bytes": {
+            "app": 690210544,
+            "cleanup": 194823152,
+            "webview": 254757672,
+            "extra": 0
+          }
+        },
+        "warm_02_stt": {
+          "samples": 8,
+          "complete_samples": 8,
+          "median_footprint_bytes": 1065236048.0,
+          "peak_footprint_bytes": 1285723728,
+          "peak_rss_bytes": 1687404544,
+          "role_peak_footprint_bytes": {
+            "app": 838059832,
+            "cleanup": 194823152,
+            "webview": 253070120,
+            "extra": 0
+          }
+        },
+        "warm_02_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 1119131144,
+          "peak_footprint_bytes": 1119131144,
+          "peak_rss_bytes": 1633517568,
+          "role_peak_footprint_bytes": {
+            "app": 691455728,
+            "cleanup": 194921456,
+            "webview": 232753960,
+            "extra": 0
+          }
+        },
+        "warm_02_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1140774408.0,
+          "peak_footprint_bytes": 1140856328,
+          "peak_rss_bytes": 1635516416,
+          "role_peak_footprint_bytes": {
+            "app": 690407152,
+            "cleanup": 196756464,
+            "webview": 253692712,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 919983624.0,
+          "peak_footprint_bytes": 1053677064,
+          "peak_rss_bytes": 1635467264,
+          "role_peak_footprint_bytes": {
+            "app": 690390768,
+            "cleanup": 109839344,
+            "webview": 253446952,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 74,
+          "complete_samples": 74,
+          "median_footprint_bytes": 978522732.0,
+          "peak_footprint_bytes": 1116164752,
+          "peak_rss_bytes": 1136951296,
+          "role_peak_footprint_bytes": {
+            "app": 919881600,
+            "cleanup": 0,
+            "webview": 261081896,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 991629920.0,
+          "peak_footprint_bytes": 994595424,
+          "peak_rss_bytes": 1043005440,
+          "role_peak_footprint_bytes": {
+            "app": 714164000,
+            "cleanup": 0,
+            "webview": 280431424,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 843420256.0,
+          "peak_footprint_bytes": 871027296,
+          "peak_rss_bytes": 1043005440,
+          "role_peak_footprint_bytes": {
+            "app": 714098464,
+            "cleanup": 0,
+            "webview": 156928832,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.10866595799999956,
+      "webview_pids_seen": [
+        16883,
+        16884,
+        16885,
+        16887
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "quality_failures": [],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1326.223541,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475473344
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13232.904958000001,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475487579
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1511.714625,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475489091
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 967.742459,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791475491063
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 7749.548,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. at the end of the walk we stopped for coffee beside the waterfall please put the blue notebook on the kitchen table before lunch the gardener will plant yellow flowers beside the wooden fence tomorrow morning remember to bring your umbrella because heavy rain is expected this evening I booked a train ticket for the journey to the coast next Friday the museum opens at 9 and closes a",
+          "scenario": "long_import",
+          "time_ms": 1791475500821
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 2256.778166,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475476603
+        },
+        {
+          "details": {
+            "elapsed_ms": 3985.135208,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475478332
+        },
+        {
+          "details": {
+            "elapsed_ms": 5804.520291,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475480151
+        },
+        {
+          "details": {
+            "elapsed_ms": 7671.039708,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475482017
+        },
+        {
+          "details": {
+            "elapsed_ms": 9675.801915999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475484022
+        },
+        {
+          "details": {
+            "elapsed_ms": 11739.920082999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475486086
+        }
+      ],
+      "buffer_events": [
+        {
+          "details": {
+            "input_frames": 1920000,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1153,
+            "output_samples": 1920000,
+            "sample_rate": 16000
+          },
+          "kind": "buffers",
+          "scenario": "long_import",
+          "time_ms": 1791475500819
+        }
+      ],
+      "recording_checks": [],
+      "archive": {
+        "file": "app-whisper-after-1.jsonl.gz",
+        "sha256": "4009eb3ac669fc4d25faacf86fe31736c3773a1c6da4c2922d1d650666d49677",
+        "bytes": 47655
+      }
+    },
+    {
+      "label": "whisper-after-2",
+      "engine": "whisper",
+      "mode": "after",
+      "binary_sha256": "f01431f9e845a0430c640c04da334cc15234d7e408659b36fc690304fa792381",
+      "source_note": "227ac7c",
+      "sample_count": 307,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 1189238328,
+      "phases": {
+        "startup": {
+          "samples": 3,
+          "complete_samples": 3,
+          "median_footprint_bytes": 16647152,
+          "peak_footprint_bytes": 50514320,
+          "peak_rss_bytes": 138985472,
+          "role_peak_footprint_bytes": {
+            "app": 37422112,
+            "cleanup": 0,
+            "webview": 13092208,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 368218072,
+          "peak_footprint_bytes": 373460928,
+          "peak_rss_bytes": 346226688,
+          "role_peak_footprint_bytes": {
+            "app": 48186496,
+            "cleanup": 0,
+            "webview": 325323584,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 919466592.0,
+          "peak_footprint_bytes": 1098011208,
+          "peak_rss_bytes": 1060388864,
+          "role_peak_footprint_bytes": {
+            "app": 848381776,
+            "cleanup": 0,
+            "webview": 312839000,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 3,
+          "complete_samples": 3,
+          "median_footprint_bytes": 1099027928,
+          "peak_footprint_bytes": 1103648216,
+          "peak_rss_bytes": 1587691520,
+          "role_peak_footprint_bytes": {
+            "app": 658278056,
+            "cleanup": 189776856,
+            "webview": 255675224,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1115551216.0,
+          "peak_footprint_bytes": 1117787632,
+          "peak_rss_bytes": 1594785792,
+          "role_peak_footprint_bytes": {
+            "app": 658294440,
+            "cleanup": 192955352,
+            "webview": 266537840,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 127,
+          "complete_samples": 127,
+          "median_footprint_bytes": 910611976,
+          "peak_footprint_bytes": 1113560560,
+          "peak_rss_bytes": 1721909248,
+          "role_peak_footprint_bytes": {
+            "app": 874891064,
+            "cleanup": 192955352,
+            "webview": 262327152,
+            "extra": 0
+          }
+        },
+        "warm_01_stt": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 1050891832,
+          "peak_footprint_bytes": 1051154000,
+          "peak_rss_bytes": 1680719872,
+          "role_peak_footprint_bytes": {
+            "app": 833390368,
+            "cleanup": 106054616,
+            "webview": 111709016,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1132008920.0,
+          "peak_footprint_bytes": 1132041688,
+          "peak_rss_bytes": 1628127232,
+          "role_peak_footprint_bytes": {
+            "app": 685885096,
+            "cleanup": 193037272,
+            "webview": 253135704,
+            "extra": 0
+          }
+        },
+        "warm_02_stt": {
+          "samples": 8,
+          "complete_samples": 8,
+          "median_footprint_bytes": 1058477636.0,
+          "peak_footprint_bytes": 1189238328,
+          "peak_rss_bytes": 1683521536,
+          "role_peak_footprint_bytes": {
+            "app": 833767200,
+            "cleanup": 106152920,
+            "webview": 249695064,
+            "extra": 0
+          }
+        },
+        "warm_02_cleanup": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 1112757744,
+          "peak_footprint_bytes": 1112757744,
+          "peak_rss_bytes": 1630011392,
+          "role_peak_footprint_bytes": {
+            "app": 687261376,
+            "cleanup": 193381336,
+            "webview": 232115032,
+            "extra": 0
+          }
+        },
+        "warm_02_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 1130370520,
+          "peak_footprint_bytes": 1131091440,
+          "peak_rss_bytes": 1630584832,
+          "role_peak_footprint_bytes": {
+            "app": 686933696,
+            "cleanup": 193397720,
+            "webview": 250841944,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 912086488.0,
+          "peak_footprint_bytes": 1130288600,
+          "peak_rss_bytes": 1630126080,
+          "role_peak_footprint_bytes": {
+            "app": 686163624,
+            "cleanup": 193397720,
+            "webview": 250727256,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 78,
+          "complete_samples": 78,
+          "median_footprint_bytes": 974901904.0,
+          "peak_footprint_bytes": 1107546768,
+          "peak_rss_bytes": 1137000448,
+          "role_peak_footprint_bytes": {
+            "app": 917522280,
+            "cleanup": 0,
+            "webview": 258001752,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 988385840.0,
+          "peak_footprint_bytes": 989565488,
+          "peak_rss_bytes": 1041924096,
+          "role_peak_footprint_bytes": {
+            "app": 711706328,
+            "cleanup": 0,
+            "webview": 277859160,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 840045104,
+          "peak_footprint_bytes": 976474672,
+          "peak_rss_bytes": 1041956864,
+          "role_peak_footprint_bytes": {
+            "app": 711689944,
+            "cleanup": 0,
+            "webview": 264801112,
+            "extra": 0
+          }
+        },
+        "complete": {
+          "samples": 1,
+          "complete_samples": 1,
+          "median_footprint_bytes": 266080384,
+          "peak_footprint_bytes": 266080384,
+          "peak_rss_bytes": 468287488,
+          "role_peak_footprint_bytes": {
+            "app": 137757992,
+            "cleanup": 0,
+            "webview": 128322392,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.1111291250000015,
+      "webview_pids_seen": [
+        17339,
+        17340,
+        17341,
+        17343
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "quality_failures": [],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1344.375792,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475506035
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13230.752833,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475520267
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 919.959916,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475521188
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 953.439583,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791475523143
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 8103.9722919999995,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. at the end of the walk we stopped for coffee beside the waterfall please put the blue notebook on the kitchen table before lunch the gardener will plant yellow flowers beside the wooden fence tomorrow morning remember to bring your umbrella because heavy rain is expected this evening I booked a train ticket for the journey to the coast next Friday the museum opens at 9 and closes a",
+          "scenario": "long_import",
+          "time_ms": 1791475533256
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 2258.2292079999997,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475509295
+        },
+        {
+          "details": {
+            "elapsed_ms": 4026.704208,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475511063
+        },
+        {
+          "details": {
+            "elapsed_ms": 5868.158416,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475512905
+        },
+        {
+          "details": {
+            "elapsed_ms": 7855.150583000001,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475514892
+        },
+        {
+          "details": {
+            "elapsed_ms": 9886.299333,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475516923
+        },
+        {
+          "details": {
+            "elapsed_ms": 11976.339375,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475519013
+        }
+      ],
+      "buffer_events": [
+        {
+          "details": {
+            "input_frames": 1920000,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1153,
+            "output_samples": 1920000,
+            "sample_rate": 16000
+          },
+          "kind": "buffers",
+          "scenario": "long_import",
+          "time_ms": 1791475533254
+        }
+      ],
+      "recording_checks": [],
+      "archive": {
+        "file": "app-whisper-after-2.jsonl.gz",
+        "sha256": "9eaf9b792c521bfaeb93783b23de485db3c9d64c0fdfc1037d055752a297db67",
+        "bytes": 48964
+      }
+    },
+    {
+      "label": "whisper-before-2",
+      "engine": "whisper",
+      "mode": "before",
+      "binary_sha256": "d2afd04b1d9bed1d857ff58abc4c98ca862babdcdc9939c7ccfdd114474f8063",
+      "source_note": "Retained pre-ISSUE-1056 binary, production code identical to 9b6c238",
+      "sample_count": 272,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 1282332072,
+      "phases": {
+        "startup": {
+          "samples": 2,
+          "complete_samples": 2,
+          "median_footprint_bytes": 11150068.0,
+          "peak_footprint_bytes": 17482736,
+          "peak_rss_bytes": 84836352,
+          "role_peak_footprint_bytes": {
+            "app": 17482736,
+            "cleanup": 0,
+            "webview": 0,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 356061060.0,
+          "peak_footprint_bytes": 359747472,
+          "peak_rss_bytes": 344719360,
+          "role_peak_footprint_bytes": {
+            "app": 48727168,
+            "cleanup": 0,
+            "webview": 311020304,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 923292088.0,
+          "peak_footprint_bytes": 1086656952,
+          "peak_rss_bytes": 1058881536,
+          "role_peak_footprint_bytes": {
+            "app": 848791256,
+            "cleanup": 0,
+            "webview": 302254864,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 3,
+          "complete_samples": 3,
+          "median_footprint_bytes": 1101419872,
+          "peak_footprint_bytes": 1105106272,
+          "peak_rss_bytes": 1584414720,
+          "role_peak_footprint_bytes": {
+            "app": 658736760,
+            "cleanup": 189285336,
+            "webview": 257149712,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1114215800.0,
+          "peak_footprint_bytes": 1114592632,
+          "peak_rss_bytes": 1591017472,
+          "role_peak_footprint_bytes": {
+            "app": 658720376,
+            "cleanup": 192316376,
+            "webview": 263555880,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 127,
+          "complete_samples": 127,
+          "median_footprint_bytes": 960533976,
+          "peak_footprint_bytes": 1111299448,
+          "peak_rss_bytes": 1722318848,
+          "role_peak_footprint_bytes": {
+            "app": 879445768,
+            "cleanup": 192054232,
+            "webview": 260557608,
+            "extra": 0
+          }
+        },
+        "warm_01_stt": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 1054168488,
+          "peak_footprint_bytes": 1096816112,
+          "peak_rss_bytes": 1723252736,
+          "role_peak_footprint_bytes": {
+            "app": 880117512,
+            "cleanup": 105415640,
+            "webview": 111282960,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1136358776.0,
+          "peak_footprint_bytes": 1138103672,
+          "peak_rss_bytes": 1628241920,
+          "role_peak_footprint_bytes": {
+            "app": 690259600,
+            "cleanup": 192398296,
+            "webview": 255445776,
+            "extra": 0
+          }
+        },
+        "warm_02_stt": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 1061918144,
+          "peak_footprint_bytes": 1282332072,
+          "peak_rss_bytes": 1726087168,
+          "role_peak_footprint_bytes": {
+            "app": 880592648,
+            "cleanup": 192398296,
+            "webview": 252218128,
+            "extra": 0
+          }
+        },
+        "warm_02_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1135727992.0,
+          "peak_footprint_bytes": 1135809912,
+          "peak_rss_bytes": 1631961088,
+          "role_peak_footprint_bytes": {
+            "app": 690423440,
+            "cleanup": 194397144,
+            "webview": 250989328,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 917239160.0,
+          "peak_footprint_bytes": 1135498616,
+          "peak_rss_bytes": 1631977472,
+          "role_peak_footprint_bytes": {
+            "app": 690407056,
+            "cleanup": 194364376,
+            "webview": 250727184,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 43,
+          "complete_samples": 43,
+          "median_footprint_bytes": 1087460008,
+          "peak_footprint_bytes": 1148899888,
+          "peak_rss_bytes": 1204748288,
+          "role_peak_footprint_bytes": {
+            "app": 972801944,
+            "cleanup": 0,
+            "webview": 269208360,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 1053889072,
+          "peak_footprint_bytes": 1055363656,
+          "peak_rss_bytes": 1107558400,
+          "role_peak_footprint_bytes": {
+            "app": 779847432,
+            "cleanup": 0,
+            "webview": 275516224,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 909414960.0,
+          "peak_footprint_bytes": 1052250672,
+          "peak_rss_bytes": 1107558400,
+          "role_peak_footprint_bytes": {
+            "app": 779831024,
+            "cleanup": 0,
+            "webview": 272436032,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.10905212500000161,
+      "webview_pids_seen": [
+        17792,
+        17793,
+        17794,
+        17795
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": false,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 7,
+            "umbrella": 2,
+            "ticket": 2,
+            "museum": 2,
+            "bicycle": 1,
+            "telescope": 1,
+            "saturday": 1,
+            "atlas": 1,
+            "camera": 2,
+            "suitcase": 1,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": false
+        }
+      ],
+      "quality_failures": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": false,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 7,
+            "umbrella": 2,
+            "ticket": 2,
+            "museum": 2,
+            "bicycle": 1,
+            "telescope": 1,
+            "saturday": 1,
+            "atlas": 1,
+            "camera": 2,
+            "suitcase": 1,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": false
+        }
+      ],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1384.2000839999998,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475538471
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13223.071416,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475552697
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 929.103958,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475553627
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 1009.951708,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791475555639
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 4461.618291,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. On Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. The gardener will plant yellow flowers on the moon. The gardener will lift the window to the gardener with the camera from the shop after her meeting. The gardener will collect yellow flowers beside the wooden fence tomorrow morning. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 9.",
+          "scenario": "long_import",
+          "time_ms": 1791475562111
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 2280.5561660000003,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475541755
+        },
+        {
+          "details": {
+            "elapsed_ms": 4085.212041,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475543559
+        },
+        {
+          "details": {
+            "elapsed_ms": 5958.262125,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475545433
+        },
+        {
+          "details": {
+            "elapsed_ms": 7958.519666,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475547433
+        },
+        {
+          "details": {
+            "elapsed_ms": 10002.336833,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475549477
+        },
+        {
+          "details": {
+            "elapsed_ms": 12135.933333,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475551610
+        }
+      ],
+      "buffer_events": [],
+      "recording_checks": [],
+      "archive": {
+        "file": "app-whisper-before-2.jsonl.gz",
+        "sha256": "9a895a7164815e0668efeb3caa3a4734673436d08f12649065c074c486e8a5b2",
+        "bytes": 46428
+      }
+    },
+    {
+      "label": "whisper-final-smoke",
+      "engine": "whisper",
+      "mode": "final",
+      "binary_sha256": "adb336f8537667298e092b17f6bec8ada492889eb4e275a9b6a93e7184c6245d",
+      "source_note": "29e8a10",
+      "sample_count": 252,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 1136907688,
+      "phases": {
+        "startup": {
+          "samples": 3,
+          "complete_samples": 3,
+          "median_footprint_bytes": 16647152,
+          "peak_footprint_bytes": 50907512,
+          "peak_rss_bytes": 139329536,
+          "role_peak_footprint_bytes": {
+            "app": 37798896,
+            "cleanup": 0,
+            "webview": 13108616,
+            "extra": 0
+          }
+        },
+        "ready_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 367513512,
+          "peak_footprint_bytes": 373084072,
+          "peak_rss_bytes": 347275264,
+          "role_peak_footprint_bytes": {
+            "app": 48006248,
+            "cleanup": 0,
+            "webview": 325094208,
+            "extra": 0
+          }
+        },
+        "cold_stt": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 919851532.0,
+          "peak_footprint_bytes": 1112920576,
+          "peak_rss_bytes": 1059209216,
+          "role_peak_footprint_bytes": {
+            "app": 846333728,
+            "cleanup": 0,
+            "webview": 315919168,
+            "extra": 0
+          }
+        },
+        "cold_cleanup": {
+          "samples": 3,
+          "complete_samples": 3,
+          "median_footprint_bytes": 1102157200,
+          "peak_footprint_bytes": 1107400080,
+          "peak_rss_bytes": 1591492608,
+          "role_peak_footprint_bytes": {
+            "app": 655984248,
+            "cleanup": 195085272,
+            "webview": 256363328,
+            "extra": 0
+          }
+        },
+        "after_cold_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1116689808.0,
+          "peak_footprint_bytes": 1119901072,
+          "peak_rss_bytes": 1598390272,
+          "role_peak_footprint_bytes": {
+            "app": 655984248,
+            "cleanup": 198296536,
+            "webview": 265653056,
+            "extra": 0
+          }
+        },
+        "capture_previews": {
+          "samples": 128,
+          "complete_samples": 128,
+          "median_footprint_bytes": 915207604.0,
+          "peak_footprint_bytes": 1115592080,
+          "peak_rss_bytes": 1719697408,
+          "role_peak_footprint_bytes": {
+            "app": 866617120,
+            "cleanup": 198296536,
+            "webview": 260574016,
+            "extra": 0
+          }
+        },
+        "warm_01_stt": {
+          "samples": 8,
+          "complete_samples": 8,
+          "median_footprint_bytes": 1056994824.0,
+          "peak_footprint_bytes": 1099437624,
+          "peak_rss_bytes": 1729511424,
+          "role_peak_footprint_bytes": {
+            "app": 876365600,
+            "cleanup": 111395800,
+            "webview": 111676224,
+            "extra": 0
+          }
+        },
+        "warm_01_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 1136833960.0,
+          "peak_footprint_bytes": 1136907688,
+          "peak_rss_bytes": 1634959360,
+          "role_peak_footprint_bytes": {
+            "app": 686753424,
+            "cleanup": 198362072,
+            "webview": 251792192,
+            "extra": 0
+          }
+        },
+        "after_repeats_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 917083560.0,
+          "peak_footprint_bytes": 1135252904,
+          "peak_rss_bytes": 1634942976,
+          "role_peak_footprint_bytes": {
+            "app": 686737040,
+            "cleanup": 198362072,
+            "webview": 250153792,
+            "extra": 0
+          }
+        },
+        "long_import_stt": {
+          "samples": 30,
+          "complete_samples": 30,
+          "median_footprint_bytes": 1000002192.0,
+          "peak_footprint_bytes": 1094390344,
+          "peak_rss_bytes": 1117929472,
+          "role_peak_footprint_bytes": {
+            "app": 883902288,
+            "cleanup": 0,
+            "webview": 255839040,
+            "extra": 0
+          }
+        },
+        "post_import_idle": {
+          "samples": 10,
+          "complete_samples": 10,
+          "median_footprint_bytes": 960754200.0,
+          "peak_footprint_bytes": 963236400,
+          "peak_rss_bytes": 1024049152,
+          "role_peak_footprint_bytes": {
+            "app": 694929112,
+            "cleanup": 0,
+            "webview": 268307288,
+            "extra": 0
+          }
+        },
+        "post_idle": {
+          "samples": 9,
+          "complete_samples": 9,
+          "median_footprint_bytes": 810471960,
+          "peak_footprint_bytes": 956289560,
+          "peak_rss_bytes": 1023197184,
+          "role_peak_footprint_bytes": {
+            "app": 693831360,
+            "cleanup": 0,
+            "webview": 262458200,
+            "extra": 0
+          }
+        },
+        "after_import_stt": {
+          "samples": 12,
+          "complete_samples": 12,
+          "median_footprint_bytes": 958214776.0,
+          "peak_footprint_bytes": 1120473696,
+          "peak_rss_bytes": 1078738944,
+          "role_peak_footprint_bytes": {
+            "app": 841860896,
+            "cleanup": 0,
+            "webview": 280283992,
+            "extra": 0
+          }
+        }
+      },
+      "max_sample_gap_seconds": 0.11451674999999994,
+      "webview_pids_seen": [
+        20094,
+        20095,
+        20096,
+        20098
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 1,
+          "observed_occurrences": {
+            "notebook": 1,
+            "garden": 1,
+            "umbrella": 1,
+            "ticket": 1,
+            "museum": 1,
+            "bicycle": 1,
+            "telescope": 1,
+            "saturday": 1,
+            "atlas": 1,
+            "camera": 1,
+            "suitcase": 1,
+            "waterfall": 1
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "quality_failures": [],
+      "results": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1364.8926669999998,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791475875701
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "preview"
+          ],
+          "kind": "result",
+          "latency_ms": 13226.812708000001,
+          "quality_ok": true,
+          "raw_text": "preview",
+          "scenario": "preview_coverage",
+          "time_ms": 1791475889931
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 880.962541,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791475890812
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 3164.314417,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+          "scenario": "long_import",
+          "time_ms": 1791475895987
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 1001.2805000000001,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "recording_retry",
+          "time_ms": 1791475899006
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 235.603459,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "byte_import",
+          "time_ms": 1791475899242
+        }
+      ],
+      "previews": [
+        {
+          "details": {
+            "elapsed_ms": 2290.666458,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475878995
+        },
+        {
+          "details": {
+            "elapsed_ms": 4098.204708,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475880803
+        },
+        {
+          "details": {
+            "elapsed_ms": 6003.521540999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475882708
+        },
+        {
+          "details": {
+            "elapsed_ms": 8010.619207999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475884715
+        },
+        {
+          "details": {
+            "elapsed_ms": 9987.891791,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475886692
+        },
+        {
+          "details": {
+            "elapsed_ms": 12048.390749999999,
+            "payload": {
+              "generation": 1,
+              "text": "Please put the blue notebook on the kitchen table."
+            }
+          },
+          "kind": "preview",
+          "scenario": "capture_previews",
+          "time_ms": 1791475888753
+        }
+      ],
+      "buffer_events": [
+        {
+          "details": {
+            "input_frames": 809093,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1153,
+            "output_samples": 809093,
+            "sample_rate": 16000
+          },
+          "kind": "buffers",
+          "scenario": "long_import",
+          "time_ms": 1791475895985
+        },
+        {
+          "details": {
+            "input_frames": 65325,
+            "max_decoder_frames": 1152,
+            "max_output_samples": 4096,
+            "max_resampler_pending_samples": 1153,
+            "output_samples": 65325,
+            "sample_rate": 16000
+          },
+          "kind": "buffers",
+          "scenario": "long_import",
+          "time_ms": 1791475899240
+        }
+      ],
+      "recording_checks": [
+        {
+          "details": {
+            "completed_pcm_released": true,
+            "failed_capture_preserved": true,
+            "saved_wav_matches": true
+          },
+          "kind": "end",
+          "scenario": "recording_retry",
+          "time_ms": 1791475899006
+        },
+        {
+          "details": {
+            "failed_import_saved_no_partial_history": true,
+            "original_attachment_preserved": true
+          },
+          "kind": "end",
+          "scenario": "byte_import",
+          "time_ms": 1791475899242
+        }
+      ],
+      "archive": {
+        "file": "app-whisper-final-smoke.jsonl.gz",
+        "sha256": "eba7d876ae258105937d195883c0708e3d8466d6ab47f55c50f6337314783161",
+        "bytes": 43804
+      }
+    }
+  ],
+  "validation": [
+    {
+      "file": "parrot-1056-final-source-unit.log",
+      "original_sha256": "447728ccd1b2614d21aeda2dbb413210f811dd18e5629e794b811d4d41b6275e",
+      "transformed_sha256": "58f06b699d2c0f2f160f261c1a747c36ee6bf4cb80d50c66a8585dae81a944ba"
+    },
+    {
+      "file": "parrot-1056-final-source-feature.log",
+      "original_sha256": "e9fff81dd568b8e1192c7952a724ac15c589264f3c1afa79fb258086b54ca4ca",
+      "transformed_sha256": "30f3293bc84503ea377819dfad71a95588e7821e7d97e5448ec8d5226b5a8b56"
+    },
+    {
+      "file": "parrot-1056-final-source-formats.log",
+      "original_sha256": "3fd0117f2b09baf2fd9a102d7e0795d9f76da5b720d895bef5d542e04c61f3f5",
+      "transformed_sha256": "b06834576f1b2d9fdec26818c91c4c5cf925a33d7a62014a7b1c5c873ec9f8f4"
+    },
+    {
+      "file": "parrot-1056-final-source-real-parakeet.log",
+      "original_sha256": "9b05967c8f2c9f41412277c63dfc2147457fdca59360c1de8f1de84502077d7a",
+      "transformed_sha256": "1af21861e8ea5d3916e857372a6b79c1bb688e9bde92ccfed9e60905555326c7"
+    },
+    {
+      "file": "parrot-1056-final-source-real-whisper.log",
+      "original_sha256": "7b4eb15a8ada95e9ad028565aa38159dba53774bd24142dc9522eb2f3cc7b473",
+      "transformed_sha256": "849e9cdd5310ac160c0b4971b78702b074c3109f4a0cec702d28175903282394"
+    },
+    {
+      "file": "parrot-1056-final-source-release-unit.log",
+      "original_sha256": "9ef69284669bd38bdb8104a5d1b1179a5a884c7d68b2a14cbf7818c37e2fbbb3",
+      "transformed_sha256": "a5c6bbf75a63adfe4c5db1c9b8f633c4be5c9f17c255d5f977d1f92925cfc57c"
+    },
+    {
+      "file": "parrot-1056-final-source-release.log",
+      "original_sha256": "fd26d34844e1deede37c968a052529fd0e7a14294dcae31a932489cec8abbc32",
+      "transformed_sha256": "263414126f8cbacdbde2884ca55273df87f2ebdc6600bbf3b0f5f471957ecd5b"
+    },
+    {
+      "file": "parrot-1056-final-source-native.log",
+      "original_sha256": "4e68defe073a44eae6d19dea950b7f84301f15e390cbcda7a4accdcc41caf6c9",
+      "transformed_sha256": "4e68defe073a44eae6d19dea950b7f84301f15e390cbcda7a4accdcc41caf6c9"
+    },
+    {
+      "file": "parrot-1056-final-source-accounting.log",
+      "original_sha256": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1",
+      "transformed_sha256": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1"
+    }
+  ],
+  "validation_log_transform": "Home paths sanitized; trailing blank lines normalized.",
+  "validation_archive": {
+    "file": "validation.jsonl.gz",
+    "sha256": "28d61bda0789d6d64e91a2180168a825faa30d378ee206c178641818fdaaca18",
+    "bytes": 103651
+  },
+  "fixtures": [
+    {
+      "file": "french.aac",
+      "bytes": 66481,
+      "sha256": "3f79fc6c99f1a696499365180a71b958ef1af39258867251bd81141ab6e927b8"
+    },
+    {
+      "file": "french.aif",
+      "bytes": 720266,
+      "sha256": "788cbfddfd0e75b6f3b69275f2cceec2819b875cd11b7a7687c5dd7842a456ed"
+    },
+    {
+      "file": "french.aiff",
+      "bytes": 720266,
+      "sha256": "788cbfddfd0e75b6f3b69275f2cceec2819b875cd11b7a7687c5dd7842a456ed"
+    },
+    {
+      "file": "french.caf",
+      "bytes": 720342,
+      "sha256": "2a1185e60a954368997e61119c8fe4ab07453ee7e07df8265bf7a52beb12a60d"
+    },
+    {
+      "file": "french.flac",
+      "bytes": 226840,
+      "sha256": "3a7f135102221d0eabced94e394984aa778114e030522e00545ac51749980e48"
+    },
+    {
+      "file": "french.m4a",
+      "bytes": 66757,
+      "sha256": "33dad4132f09de52c2951af346761c6ceb4a813b2ed6b34f046e14101d5fcf1a"
+    },
+    {
+      "file": "french.mov",
+      "bytes": 66808,
+      "sha256": "b2b055b3296ff0d94d9fc7ea52f82d48d6c5529cbfb38538ae18d2f0d272f432"
+    },
+    {
+      "file": "french.mp3",
+      "bytes": 66290,
+      "sha256": "b2ae2fe60555a03978d426c7e871ae174c30aa6effc4aa73b1035cb1a851f684"
+    },
+    {
+      "file": "french.mp4",
+      "bytes": 66777,
+      "sha256": "31d5c3de71dfb8872f797cb826428baab8a44ba736af2095ea390992d1f4a6d9"
+    },
+    {
+      "file": "french.oga",
+      "bytes": 58739,
+      "sha256": "a1f25a452908bf58b5487cf207c7d5a5936f7c1d11ddf9561849df04eb2ff416"
+    },
+    {
+      "file": "french.ogg",
+      "bytes": 58739,
+      "sha256": "33571ae617d84f504037aafd17f17340de451c332d47b593d355c639cd813bbb"
+    },
+    {
+      "file": "french.wav",
+      "bytes": 720290,
+      "sha256": "3c602ceec9aefd1c8603d7ab5951d6dd017df2ade7cd459ad86aab36ed4d4e34"
+    },
+    {
+      "file": "long-1200s.wav",
+      "bytes": 230400078,
+      "sha256": "57b47f3c4f73e599db086ce1500ce4c25d943c19e4fbee8d7b76b6f079d1f83a"
+    },
+    {
+      "file": "long-120s.wav",
+      "bytes": 23040078,
+      "sha256": "7a3368a71d0cf1ad6577cd225bf44da5965b809eb78a14f5df0cf4b2dddab703"
+    },
+    {
+      "file": "manifest.json",
+      "bytes": 387,
+      "sha256": "fdb31e7cba5e993f5129cd28ab74a436faa96b963de7c08b0f24350c124337a9"
+    },
+    {
+      "file": "unsupported-opus.ogg",
+      "bytes": 42085,
+      "sha256": "e36fdd82a45f625a9487d67014e4ef34c363ddf25f7ea0596c1cd40fc15413a2"
+    },
+    {
+      "file": "video-only.mp4",
+      "bytes": 1235,
+      "sha256": "b2f9fb65ea1ef4983747e310c2c16f2001a278ffb82285a46ab35518242d88f2"
+    }
+  ],
+  "ffmpeg_version": "ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers"
+}

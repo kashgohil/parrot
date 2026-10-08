@@ -71,7 +71,7 @@ Private attribution APIs may change; an unavailable API is not zero memory.
 | After repeats | 10 seconds idle | Residency after allocations have warmed |
 | Model switch | Select already-local alternate speech and cleanup paths without loading them | Selection latency, release peak, 10-second alternate idle |
 | Model restore | Restore the original pair | Include allocations retained across switches |
-| Long import | At least 120 seconds of varied synthetic English speech through the file-path command | Decoder/full-file buffers, STT peak, source-topic coverage |
+| Long import | At least 120 seconds of varied synthetic English speech through the file-path command | Streaming decoder/chunk buffers, STT peak, source-topic coverage |
 | Post import | 10 seconds idle after the import returns | Retained buffers and inference resources |
 | Post idle | 60 seconds with production idle/off policy | Which models remain loaded; sustained footprint |
 
@@ -258,6 +258,50 @@ For a copy-frequency comparison at the normal preview interval, pass
 different output directory. Allocator retention during the 10 ms stress run
 can greatly exceed live vector capacity; do not present its process peak as
 normal app memory savings.
+
+## Streaming import and recording checks
+
+The [audio policy](audio-memory-policy.md) describes shared capture ownership,
+retry/release behavior, streaming WAV saving, and bounded import/recording PCM.
+The [ISSUE-1056 report](benchmarks/2026-10-08-audio-streaming.md) includes codec
+checks, repeated buffer measurements, app comparisons, and known baseline failures.
+
+Generate synthetic test inputs with an installed ffmpeg (development only):
+
+```sh
+python3 apps/desktop/scripts/generate-import-fixtures.py \
+  --out /tmp/parrot-import-fixtures --long-seconds 120 1200
+PARROT_TEST_IMPORT_DIR=/tmp/parrot-import-fixtures \
+cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --locked -p parrot --lib \
+  supported_formats_match_batch_decode_and_resampling -- --ignored --nocapture
+PARROT_TEST_IMPORT_DIR=/tmp/parrot-import-fixtures \
+PARROT_TEST_STT_MODEL=/absolute/path/to/Whisper.bin-or-Parakeet-directory \
+cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --locked -p parrot --lib \
+  real_streamed_imports_preserve_languages_and_long_topic_order -- --ignored --nocapture
+```
+
+Build release Rust tests with `--no-run --message-format=json` as in the preview
+copy instructions. Pass the `parrot_lib` test executable to:
+
+```sh
+python3 apps/desktop/scripts/import-buffer-benchmark.py \
+  --test-binary /absolute/path/to/parrot_lib-test-executable \
+  --files /tmp/parrot-import-fixtures/long-120s.wav /tmp/parrot-import-fixtures/long-1200s.wav \
+  --out /tmp/parrot-import-buffers
+```
+
+This compares old/new audio-buffer paths in fresh native processes with no speech
+model. Source fingerprints, counts, chunk tags, samples, and footprint peaks are
+retained. Its artificial 500 ms inference-stage hold is not app latency. Use the
+ordinary memory runner for total app/sidecar/WebKit measurements. Long Whisper
+baseline omission/repetition must remain a failed quality gate in comparisons.
+
+Add `"recording_lifecycle_checks": true` to a benchmark config for missing-model
+failure/retry, completed PCM release, streaming saved-WAV equivalence, malformed
+import recovery, and original byte attachment checks. Benchmark builds also emit
+import buffer statistics. These are synthetic tests; they do not open a microphone
+or establish target-hardware support. The normal dictation/import commands and
+isolated history/attachment directories are used.
 
 ## Baseline and proposed targets
 
