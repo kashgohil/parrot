@@ -1,0 +1,1424 @@
+{
+  "scope": "ISSUE-1055 bounded preview copies; app measurements remain separate from isolated native tests",
+  "implementation_commit": "f0bf935",
+  "validation_commit": "dc80f6b",
+  "native": [
+    {
+      "label": "stress",
+      "metadata": {
+        "binary_sha256": "2d9e0ef88c0cf44fb84bda6ff140dc44ebf05ac9bc3d85bf5b850def3d5fabee",
+        "revision": "f0bf935cb9438b707d8b2574dc4461b70a9ab695",
+        "working_tree": "M apps/desktop/src-tauri/src/audio.rs\n M apps/desktop/src-tauri/src/streaming.rs\n?? apps/desktop/scripts/preview-buffer-benchmark.py\n?? apps/desktop/src-tauri/src/preview_buffer_bench.rs\n?? docs/geo-aieo-plan.md\n?? docs/seo-ranking-plan.md",
+        "hardware": "Mac16,7",
+        "ram_bytes": "25769803776",
+        "os": "macOS-26.6.2-arm64-arm-64bit",
+        "seconds": [
+          60,
+          300,
+          600
+        ],
+        "repeats": 2,
+        "requested_sample_interval_ms": 25,
+        "scope": "native test process only, no inference or microphone"
+      },
+      "runs": [
+        {
+          "label": "60s-legacy-1",
+          "events": [
+            {
+              "capture_capacity_bytes": 11904000,
+              "mode": "legacy",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 60
+            },
+            {
+              "copy_capacity_bytes": 15360000,
+              "mode": "legacy",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 60,
+              "total_samples": 2880000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 2.956625,
+                "median_ms": 0.001625,
+                "p95_ms": 0.991458
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 2.9554579999999997,
+                "median_ms": 0.000292,
+                "p95_ms": 0.990542
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 4.405916,
+                "median_ms": 1.5541669999999999,
+                "p95_ms": 3.2589170000000003
+              },
+              "final_samples": 2976000,
+              "mode": "legacy",
+              "phase": "complete",
+              "seconds": 60
+            }
+          ],
+          "sample_count": 152,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 242238136,
+          "observed_lifetime_peak_footprint_bytes": 242238136
+        },
+        {
+          "label": "60s-bounded-1",
+          "events": [
+            {
+              "capture_capacity_bytes": 11904000,
+              "mode": "bounded",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 60
+            },
+            {
+              "copy_capacity_bytes": 3840000,
+              "mode": "bounded",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 60,
+              "total_samples": 2880000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 0.399166,
+                "median_ms": 0.001375,
+                "p95_ms": 0.035583000000000004
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 0.39795800000000003,
+                "median_ms": 0.00020800000000000001,
+                "p95_ms": 0.004459
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 0.780708,
+                "median_ms": 0.335334,
+                "p95_ms": 0.463625
+              },
+              "final_samples": 2976000,
+              "mode": "bounded",
+              "phase": "complete",
+              "seconds": 60
+            }
+          ],
+          "sample_count": 107,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 19874320,
+          "observed_lifetime_peak_footprint_bytes": 19874320
+        },
+        {
+          "label": "60s-bounded-2",
+          "events": [
+            {
+              "capture_capacity_bytes": 11904000,
+              "mode": "bounded",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 60
+            },
+            {
+              "copy_capacity_bytes": 3840000,
+              "mode": "bounded",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 60,
+              "total_samples": 2880000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 0.363917,
+                "median_ms": 0.001333,
+                "p95_ms": 0.025541
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 0.363084,
+                "median_ms": 0.000167,
+                "p95_ms": 0.001083
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 0.915709,
+                "median_ms": 0.340459,
+                "p95_ms": 0.442041
+              },
+              "final_samples": 2976000,
+              "mode": "bounded",
+              "phase": "complete",
+              "seconds": 60
+            }
+          ],
+          "sample_count": 107,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 19841552,
+          "observed_lifetime_peak_footprint_bytes": 19841552
+        },
+        {
+          "label": "60s-legacy-2",
+          "events": [
+            {
+              "capture_capacity_bytes": 11904000,
+              "mode": "legacy",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 60
+            },
+            {
+              "copy_capacity_bytes": 15360000,
+              "mode": "legacy",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 60,
+              "total_samples": 2880000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 1.571333,
+                "median_ms": 0.001375,
+                "p95_ms": 0.034541
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 1.570083,
+                "median_ms": 0.00020800000000000001,
+                "p95_ms": 0.0011250000000000001
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 4.078125,
+                "median_ms": 1.45675,
+                "p95_ms": 3.172583
+              },
+              "final_samples": 2976000,
+              "mode": "legacy",
+              "phase": "complete",
+              "seconds": 60
+            }
+          ],
+          "sample_count": 108,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 254313168,
+          "observed_lifetime_peak_footprint_bytes": 254329552
+        },
+        {
+          "label": "300s-legacy-1",
+          "events": [
+            {
+              "capture_capacity_bytes": 57984000,
+              "mode": "legacy",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 300
+            },
+            {
+              "copy_capacity_bytes": 61440000,
+              "mode": "legacy",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 300,
+              "total_samples": 14400000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 8.422625,
+                "median_ms": 0.001167,
+                "p95_ms": 3.9357079999999995
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 8.422,
+                "median_ms": 8.4e-05,
+                "p95_ms": 3.9352909999999994
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 12.487917,
+                "median_ms": 3.366042,
+                "p95_ms": 8.3185
+              },
+              "final_samples": 14496000,
+              "mode": "legacy",
+              "phase": "complete",
+              "seconds": 300
+            }
+          ],
+          "sample_count": 108,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 1454114328,
+          "observed_lifetime_peak_footprint_bytes": 1454491160
+        },
+        {
+          "label": "300s-bounded-1",
+          "events": [
+            {
+              "capture_capacity_bytes": 57984000,
+              "mode": "bounded",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 300
+            },
+            {
+              "copy_capacity_bytes": 3840000,
+              "mode": "bounded",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 300,
+              "total_samples": 14400000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 0.408959,
+                "median_ms": 0.0013340000000000001,
+                "p95_ms": 0.028083
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 0.408042,
+                "median_ms": 0.000167,
+                "p95_ms": 0.000916
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 0.866958,
+                "median_ms": 0.348792,
+                "p95_ms": 0.456958
+              },
+              "final_samples": 14496000,
+              "mode": "bounded",
+              "phase": "complete",
+              "seconds": 300
+            }
+          ],
+          "sample_count": 109,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 65929792,
+          "observed_lifetime_peak_footprint_bytes": 66306624
+        },
+        {
+          "label": "300s-bounded-2",
+          "events": [
+            {
+              "capture_capacity_bytes": 57984000,
+              "mode": "bounded",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 300
+            },
+            {
+              "copy_capacity_bytes": 3840000,
+              "mode": "bounded",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 300,
+              "total_samples": 14400000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 0.32087499999999997,
+                "median_ms": 0.0014169999999999999,
+                "p95_ms": 0.023917
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 0.319916,
+                "median_ms": 0.000209,
+                "p95_ms": 0.001458
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 0.6498339999999999,
+                "median_ms": 0.33675000000000005,
+                "p95_ms": 0.43270800000000004
+              },
+              "final_samples": 14496000,
+              "mode": "bounded",
+              "phase": "complete",
+              "seconds": 300
+            }
+          ],
+          "sample_count": 108,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 65978920,
+          "observed_lifetime_peak_footprint_bytes": 65978920
+        },
+        {
+          "label": "300s-legacy-2",
+          "events": [
+            {
+              "capture_capacity_bytes": 57984000,
+              "mode": "legacy",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 300
+            },
+            {
+              "copy_capacity_bytes": 61440000,
+              "mode": "legacy",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 300,
+              "total_samples": 14400000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 6.495583,
+                "median_ms": 0.000958,
+                "p95_ms": 2.9635
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 6.495208,
+                "median_ms": 8.3e-05,
+                "p95_ms": 2.9631250000000002
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 11.462708000000001,
+                "median_ms": 2.612708,
+                "p95_ms": 10.428625
+              },
+              "final_samples": 14496000,
+              "mode": "legacy",
+              "phase": "complete",
+              "seconds": 300
+            }
+          ],
+          "sample_count": 110,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 1396082176,
+          "observed_lifetime_peak_footprint_bytes": 1396442624
+        },
+        {
+          "label": "600s-legacy-1",
+          "events": [
+            {
+              "capture_capacity_bytes": 115584000,
+              "mode": "legacy",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 600
+            },
+            {
+              "copy_capacity_bytes": 119040000,
+              "mode": "legacy",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 600,
+              "total_samples": 28800000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 12.77625,
+                "median_ms": 0.000875,
+                "p95_ms": 4.990833
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 12.775875000000001,
+                "median_ms": 8.4e-05,
+                "p95_ms": 4.9905
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 14.497875,
+                "median_ms": 2.8985,
+                "p95_ms": 12.895959
+              },
+              "final_samples": 28896000,
+              "mode": "legacy",
+              "phase": "complete",
+              "seconds": 600
+            }
+          ],
+          "sample_count": 112,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 2895317560,
+          "observed_lifetime_peak_footprint_bytes": 2895350328
+        },
+        {
+          "label": "600s-bounded-1",
+          "events": [
+            {
+              "capture_capacity_bytes": 115584000,
+              "mode": "bounded",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 600
+            },
+            {
+              "copy_capacity_bytes": 3840000,
+              "mode": "bounded",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 600,
+              "total_samples": 28800000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 0.392959,
+                "median_ms": 0.0014160000000000002,
+                "p95_ms": 0.028333
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 0.39175,
+                "median_ms": 0.00020800000000000001,
+                "p95_ms": 0.001084
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 0.672875,
+                "median_ms": 0.341375,
+                "p95_ms": 0.457459
+              },
+              "final_samples": 28896000,
+              "mode": "bounded",
+              "phase": "complete",
+              "seconds": 600
+            }
+          ],
+          "sample_count": 109,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 123945560,
+          "observed_lifetime_peak_footprint_bytes": 123945560
+        },
+        {
+          "label": "600s-bounded-2",
+          "events": [
+            {
+              "capture_capacity_bytes": 115584000,
+              "mode": "bounded",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 600
+            },
+            {
+              "copy_capacity_bytes": 3840000,
+              "mode": "bounded",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 600,
+              "total_samples": 28800000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 0.433542,
+                "median_ms": 0.0013340000000000001,
+                "p95_ms": 0.049666999999999996
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 0.43270800000000004,
+                "median_ms": 0.000167,
+                "p95_ms": 0.002417
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 0.623583,
+                "median_ms": 0.354709,
+                "p95_ms": 0.45679200000000003
+              },
+              "final_samples": 28896000,
+              "mode": "bounded",
+              "phase": "complete",
+              "seconds": 600
+            }
+          ],
+          "sample_count": 108,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 123880024,
+          "observed_lifetime_peak_footprint_bytes": 123880024
+        },
+        {
+          "label": "600s-legacy-2",
+          "events": [
+            {
+              "capture_capacity_bytes": 115584000,
+              "mode": "legacy",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 600
+            },
+            {
+              "copy_capacity_bytes": 119040000,
+              "mode": "legacy",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 600,
+              "total_samples": 28800000
+            },
+            {
+              "callback": {
+                "count": 200,
+                "max_ms": 10.014624999999999,
+                "median_ms": 0.000959,
+                "p95_ms": 4.77975
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 200,
+                "max_ms": 10.014458000000001,
+                "median_ms": 8.4e-05,
+                "p95_ms": 4.779542
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 120,
+                "max_ms": 16.299333,
+                "median_ms": 2.896042,
+                "p95_ms": 10.929708
+              },
+              "final_samples": 28896000,
+              "mode": "legacy",
+              "phase": "complete",
+              "seconds": 600
+            }
+          ],
+          "sample_count": 110,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 2895252024,
+          "observed_lifetime_peak_footprint_bytes": 2895284792
+        }
+      ],
+      "archive": {
+        "file": "native-stress.jsonl.gz",
+        "sha256": "a9c1fee0f1d0ad6905ae3dfdca94a3ca4c92f9293380f92e2f477424875c43c7",
+        "bytes": 21806
+      }
+    },
+    {
+      "label": "cadence",
+      "metadata": {
+        "binary_sha256": "12d075e05d0a4638e5444f35729ab92cd3840fa1c682ea1002cc462465ff00a9",
+        "revision": "f0bf935cb9438b707d8b2574dc4461b70a9ab695",
+        "working_tree": "M apps/desktop/src-tauri/src/audio.rs\n M apps/desktop/src-tauri/src/streaming.rs\n M docs/memory-benchmarks.md\n?? apps/desktop/scripts/preview-buffer-benchmark.py\n?? apps/desktop/src-tauri/src/preview_buffer_bench.rs\n?? docs/geo-aieo-plan.md\n?? docs/seo-ranking-plan.md",
+        "hardware": "Mac16,7",
+        "ram_bytes": "25769803776",
+        "os": "macOS-26.6.2-arm64-arm-64bit",
+        "seconds": [
+          300
+        ],
+        "repeats": 2,
+        "copy_interval_ms": 900,
+        "copies": 10,
+        "requested_sample_interval_ms": 25,
+        "scope": "native test process only, no inference or microphone"
+      },
+      "runs": [
+        {
+          "label": "300s-legacy-1",
+          "events": [
+            {
+              "capture_capacity_bytes": 59424000,
+              "copy_interval_ms": 900,
+              "mode": "legacy",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 300
+            },
+            {
+              "copy_capacity_bytes": 61440000,
+              "mode": "legacy",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 300,
+              "total_samples": 14400000
+            },
+            {
+              "callback": {
+                "count": 950,
+                "max_ms": 2.4607919999999996,
+                "median_ms": 0.000209,
+                "p95_ms": 0.0050420000000000005
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 950,
+                "max_ms": 2.460417,
+                "median_ms": 4.2e-05,
+                "p95_ms": 0.000292
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 10,
+                "max_ms": 7.944209000000001,
+                "median_ms": 3.409709,
+                "p95_ms": 7.944209000000001
+              },
+              "final_samples": 14856000,
+              "mode": "legacy",
+              "phase": "complete",
+              "seconds": 300
+            }
+          ],
+          "sample_count": 326,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 651772888,
+          "observed_lifetime_peak_footprint_bytes": 651772888
+        },
+        {
+          "label": "300s-bounded-1",
+          "events": [
+            {
+              "capture_capacity_bytes": 59424000,
+              "copy_interval_ms": 900,
+              "mode": "bounded",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 300
+            },
+            {
+              "copy_capacity_bytes": 3840000,
+              "mode": "bounded",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 300,
+              "total_samples": 14400000
+            },
+            {
+              "callback": {
+                "count": 950,
+                "max_ms": 0.012209,
+                "median_ms": 0.000209,
+                "p95_ms": 0.006667
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 950,
+                "max_ms": 0.0014169999999999999,
+                "median_ms": 4.2e-05,
+                "p95_ms": 0.00020800000000000001
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 10,
+                "max_ms": 0.19766599999999998,
+                "median_ms": 0.065625,
+                "p95_ms": 0.19766599999999998
+              },
+              "final_samples": 14856000,
+              "mode": "bounded",
+              "phase": "complete",
+              "seconds": 300
+            }
+          ],
+          "sample_count": 322,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 67387944,
+          "observed_lifetime_peak_footprint_bytes": 67387944
+        },
+        {
+          "label": "300s-bounded-2",
+          "events": [
+            {
+              "capture_capacity_bytes": 59424000,
+              "copy_interval_ms": 900,
+              "mode": "bounded",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 300
+            },
+            {
+              "copy_capacity_bytes": 3840000,
+              "mode": "bounded",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 300,
+              "total_samples": 14400000
+            },
+            {
+              "callback": {
+                "count": 950,
+                "max_ms": 0.01575,
+                "median_ms": 0.000209,
+                "p95_ms": 0.005582999999999999
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 950,
+                "max_ms": 0.000625,
+                "median_ms": 4.2e-05,
+                "p95_ms": 0.000125
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 10,
+                "max_ms": 0.229125,
+                "median_ms": 0.080125,
+                "p95_ms": 0.229125
+              },
+              "final_samples": 14856000,
+              "mode": "bounded",
+              "phase": "complete",
+              "seconds": 300
+            }
+          ],
+          "sample_count": 322,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 67158520,
+          "observed_lifetime_peak_footprint_bytes": 67158520
+        },
+        {
+          "label": "300s-legacy-2",
+          "events": [
+            {
+              "capture_capacity_bytes": 59424000,
+              "copy_interval_ms": 900,
+              "mode": "legacy",
+              "phase": "capture_ready",
+              "sample_rate": 48000,
+              "seconds": 300
+            },
+            {
+              "copy_capacity_bytes": 61440000,
+              "mode": "legacy",
+              "phase": "snapshot_live",
+              "preview_samples": 960000,
+              "seconds": 300,
+              "total_samples": 14400000
+            },
+            {
+              "callback": {
+                "count": 950,
+                "max_ms": 12.353416000000001,
+                "median_ms": 0.001166,
+                "p95_ms": 0.020083
+              },
+              "callback_budget_ms": 10,
+              "callback_lock_wait": {
+                "count": 950,
+                "max_ms": 12.352500000000001,
+                "median_ms": 0.000167,
+                "p95_ms": 0.00075
+              },
+              "capture_preserved": true,
+              "copy": {
+                "count": 10,
+                "max_ms": 12.895916999999999,
+                "median_ms": 10.231625,
+                "p95_ms": 12.895916999999999
+              },
+              "final_samples": 14856000,
+              "mode": "legacy",
+              "phase": "complete",
+              "seconds": 300
+            }
+          ],
+          "sample_count": 330,
+          "incomplete_samples": 0,
+          "sampled_peak_footprint_bytes": 651805656,
+          "observed_lifetime_peak_footprint_bytes": 652198872
+        }
+      ],
+      "archive": {
+        "file": "native-cadence.jsonl.gz",
+        "sha256": "47269c5a8d7d8464e8a73c4aafc4f70450b3f040b4d64da11b720ebca8227494",
+        "bytes": 22173
+      }
+    }
+  ],
+  "app": [
+    {
+      "label": "before-1",
+      "binary_sha256": "75a1497ed418f9dd327317d767ec8655b6bc70b4f069c8cb4812c03205a5d81a",
+      "source_note": "Retained ISSUE-1070 final binary, production code identical to 2177aee",
+      "sample_count": 244,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 3114883912,
+      "preview_phase": {
+        "samples": 124,
+        "complete_samples": 124,
+        "median_footprint_bytes": 2234588408.0,
+        "peak_footprint_bytes": 2442780088,
+        "peak_rss_bytes": 2869592064,
+        "role_peak_footprint_bytes": {
+          "app": 2239942160,
+          "cleanup": 192595000,
+          "webview": 232508272,
+          "extra": 0
+        }
+      },
+      "max_sample_gap_seconds": 0.14918929199999997,
+      "webview_pids_seen": [
+        2774,
+        2775,
+        2776,
+        2777
+      ],
+      "first_preview_ms": 1510.1672079999998,
+      "preview_count": 10,
+      "final_preview": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table.",
+      "transcripts": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1645.869,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791473125803
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 148.654708,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791473140280
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 201.98908400000002,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791473141485
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 2617.955458,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes.",
+          "scenario": "long_import",
+          "time_ms": 1791473146114
+        }
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "archive": {
+        "file": "app-before-1.jsonl.gz",
+        "sha256": "b93cad50b8ad93d9d80ce2b124e116d9009666442c06e85b4ebc2bd4fcf7ccf0",
+        "bytes": 37872
+      }
+    },
+    {
+      "label": "after-1",
+      "binary_sha256": "d2afd04b1d9bed1d857ff58abc4c98ca862babdcdc9939c7ccfdd114474f8063",
+      "source_note": "Built at dc80f6b",
+      "sample_count": 242,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 3163658984,
+      "preview_phase": {
+        "samples": 124,
+        "complete_samples": 124,
+        "median_footprint_bytes": 2222283880.0,
+        "peak_footprint_bytes": 2616810816,
+        "peak_rss_bytes": 2582265856,
+        "role_peak_footprint_bytes": {
+          "app": 2282851880,
+          "cleanup": 111674400,
+          "webview": 227199736,
+          "extra": 0
+        }
+      },
+      "max_sample_gap_seconds": 0.3185294590000005,
+      "webview_pids_seen": [
+        3507,
+        3508,
+        3509,
+        3513
+      ],
+      "first_preview_ms": 1558.3678750000001,
+      "preview_count": 10,
+      "final_preview": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table.",
+      "transcripts": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 1155.9573329999998,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791473185989
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 142.008666,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791473435655
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 210.329291,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791473436868
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 2667.0120420000003,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes.",
+          "scenario": "long_import",
+          "time_ms": 1791473441547
+        }
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "archive": {
+        "file": "app-after-1.jsonl.gz",
+        "sha256": "e178fcf49f3ac08d9174386364462601089d5cd30d611fbb043fb5baad0e3194",
+        "bytes": 39572
+      }
+    },
+    {
+      "label": "after-2",
+      "binary_sha256": "d2afd04b1d9bed1d857ff58abc4c98ca862babdcdc9939c7ccfdd114474f8063",
+      "source_note": "Built at dc80f6b",
+      "sample_count": 236,
+      "incomplete_samples": 1,
+      "peak_footprint_bytes": 3182221984,
+      "preview_phase": {
+        "samples": 128,
+        "complete_samples": 128,
+        "median_footprint_bytes": 2280193080.0,
+        "peak_footprint_bytes": 2490424544,
+        "peak_rss_bytes": 3207806976,
+        "role_peak_footprint_bytes": {
+          "app": 2270268896,
+          "cleanup": 195576864,
+          "webview": 262261472,
+          "extra": 0
+        }
+      },
+      "max_sample_gap_seconds": 0.12404054200000014,
+      "webview_pids_seen": [
+        4531,
+        4533,
+        4534,
+        4536
+      ],
+      "first_preview_ms": 1518.846416,
+      "preview_count": 10,
+      "final_preview": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table.",
+      "transcripts": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 933.272583,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791473446390
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 148.396625,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791473460770
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 208.45175,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791473461982
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 2615.619125,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes.",
+          "scenario": "long_import",
+          "time_ms": 1791473466608
+        }
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "archive": {
+        "file": "app-after-2.jsonl.gz",
+        "sha256": "aaae1b283d9e7f8bf03f886712c3d5e47143982f36dd1beec43e83cbba462538",
+        "bytes": 38589
+      }
+    },
+    {
+      "label": "before-2",
+      "binary_sha256": "75a1497ed418f9dd327317d767ec8655b6bc70b4f069c8cb4812c03205a5d81a",
+      "source_note": "Retained ISSUE-1070 final binary, production code identical to 2177aee",
+      "sample_count": 237,
+      "incomplete_samples": 0,
+      "peak_footprint_bytes": 2938624624,
+      "preview_phase": {
+        "samples": 127,
+        "complete_samples": 127,
+        "median_footprint_bytes": 2259311768,
+        "peak_footprint_bytes": 2473073984,
+        "peak_rss_bytes": 3188801536,
+        "role_peak_footprint_bytes": {
+          "app": 2257718776,
+          "cleanup": 191972384,
+          "webview": 258558784,
+          "extra": 0
+        }
+      },
+      "max_sample_gap_seconds": 0.11728450000000024,
+      "webview_pids_seen": [
+        4987,
+        4988,
+        4989,
+        4991
+      ],
+      "first_preview_ms": 1516.5882910000003,
+      "preview_count": 10,
+      "final_preview": "Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table. Please put the blue notebook on the kitchen table.",
+      "transcripts": [
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 940.791292,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "cold_dictation",
+          "time_ms": 1791473471395
+        },
+        {
+          "cleaned_text": "Please put the blue notebook on the kitchen table.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "blue",
+            "notebook",
+            "kitchen",
+            "table"
+          ],
+          "kind": "result",
+          "latency_ms": 156.071333,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table.",
+          "scenario": "warm_01_dictation",
+          "time_ms": 1791473485787
+        },
+        {
+          "cleaned_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "bonjour",
+            "réserver",
+            "table",
+            "demain",
+            "soir"
+          ],
+          "kind": "result",
+          "latency_ms": 210.766791,
+          "quality_ok": true,
+          "raw_text": "Bonjour, je voudrais réserver une table pour demain soir.",
+          "scenario": "warm_02_dictation",
+          "time_ms": 1791473487002
+        },
+        {
+          "cleaned_text": "",
+          "cleanup_unchanged": true,
+          "expected_words": [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall"
+          ],
+          "kind": "result",
+          "latency_ms": 2713.855583,
+          "quality_ok": true,
+          "raw_text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes.",
+          "scenario": "long_import",
+          "time_ms": 1791473491725
+        }
+      ],
+      "quality_checks": [
+        {
+          "kind": "quality_check",
+          "scenario": "long_import_occurrences",
+          "quality_ok": true,
+          "minimum_occurrences": 2,
+          "observed_occurrences": {
+            "notebook": 3,
+            "garden": 3,
+            "umbrella": 3,
+            "ticket": 3,
+            "museum": 3,
+            "bicycle": 2,
+            "telescope": 2,
+            "saturday": 2,
+            "atlas": 2,
+            "camera": 2,
+            "suitcase": 2,
+            "waterfall": 2
+          },
+          "source_topic_order_ok": true
+        }
+      ],
+      "archive": {
+        "file": "app-before-2.jsonl.gz",
+        "sha256": "afdc14df43e011e07c7da3b690c69df893f89cbd13178f90a3aeac31cb1de307",
+        "bytes": 38789
+      }
+    }
+  ],
+  "validation_logs": [
+    {
+      "file": "unit.log",
+      "sha256": "ca9f72004b5653e098723a60198ac11ea985e685a6331525fa9e276aacf75d01"
+    },
+    {
+      "file": "feature.log",
+      "sha256": "56bfd80a43a28e03189c487964f6bc8d1ece6822755e801f92afc025c10d0034"
+    },
+    {
+      "file": "real-preview-parakeet.log",
+      "sha256": "8b0f2373a50f4dc92cc999848e6d1bfe2f28ee46a817f945b007907e50f7b071"
+    },
+    {
+      "file": "real-preview-whisper.log",
+      "sha256": "8fe4efa72fccd101fb7d2df2662c608a628f5a3cbb0dcbd3046fffc5a16663bd"
+    },
+    {
+      "file": "release-app.log",
+      "sha256": "56b28c6eb5c3225f973ab8aca7c1d0686fb113331db4974937b54b02c50d574e"
+    }
+  ],
+  "matched_final_transcripts_identical": true
+}

@@ -26,6 +26,14 @@ checks reject obsolete previews before loading, before inference, and before
 publishing output. An already-running native preview cannot be interrupted safely;
 final transcription waits for that single operation, rather than a preview queue.
 
+Preview snapshots copy at most the last 20 seconds of mono capture at the device
+sample rate. That vector moves into inference without another tail copy. Growth
+checks use the total capture length, and `stop()` still returns all recorded
+audio for final transcription. At 48 kHz the preview copy is bounded to 3.84 MB;
+the full recording, resampled PCM, and native model allocations are separate.
+See the [preview measurements](benchmarks/2026-10-08-preview-audio.md) for long-buffer
+allocation, capture-lock contention, real-engine content checks, and limitations.
+
 Selecting a different model invalidates stale load results. An active job finishes
 with its previous model; no previous-model handle escapes into cleanup, history,
 or paste. Old and new models can briefly coexist during a model change while
