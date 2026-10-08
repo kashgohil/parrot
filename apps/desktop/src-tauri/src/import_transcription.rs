@@ -103,9 +103,82 @@ impl SpeechModel for WhisperModel<'_> {
 }
 
 #[cfg(test)]
+#[path = "import_buffer_bench.rs"]
+mod buffer_bench;
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use std::sync::Arc;
+
+    #[tokio::test]
+    #[ignore = "needs PARROT_TEST_STT_MODEL and PARROT_TEST_IMPORT_DIR"]
+    async fn real_streamed_imports_preserve_languages_and_long_topic_order() {
+        let path = std::path::PathBuf::from(std::env::var("PARROT_TEST_STT_MODEL").unwrap());
+        let engine = crate::load_engine_blocking(
+            if path.is_dir() { "parakeet" } else { "whisper" },
+            &path,
+            "streaming import test",
+        )
+        .unwrap();
+        for (name, bytes, expected) in [
+            (
+                "English",
+                include_bytes!("../tests/fixtures/transcription/english.wav").as_slice(),
+                &["blue", "notebook", "kitchen", "table"][..],
+            ),
+            (
+                "French",
+                include_bytes!("../tests/fixtures/transcription/french.wav").as_slice(),
+                &["bonjour", "réserver", "table", "demain", "soir"][..],
+            ),
+        ] {
+            let result = engine
+                .transcribe_import(
+                    AudioSource::Bytes(Arc::new(bytes.to_vec())),
+                    Default::default(),
+                )
+                .await
+                .unwrap();
+            eprintln!("{name}: {}", result.text);
+            for word in expected {
+                assert!(result.text.to_lowercase().contains(word), "missing {word}");
+            }
+        }
+        let dir = std::path::PathBuf::from(std::env::var("PARROT_TEST_IMPORT_DIR").unwrap());
+        let result = engine
+            .transcribe_import(
+                AudioSource::File(dir.join("long-120s.wav")),
+                Default::default(),
+            )
+            .await
+            .unwrap();
+        eprintln!("long streamed import: {}", result.text);
+        assert_eq!(result.decode.duration_ms(), 120_000);
+        let lower = result.text.to_lowercase();
+        let words = [
+            "notebook",
+            "garden",
+            "umbrella",
+            "ticket",
+            "museum",
+            "bicycle",
+            "telescope",
+            "saturday",
+            "atlas",
+            "camera",
+            "suitcase",
+            "waterfall",
+        ];
+        let mut cursor = 0;
+        for word in words.into_iter().cycle().take(24) {
+            let index = lower[cursor..]
+                .find(word)
+                .unwrap_or_else(|| panic!("lost or reordered {word}: {}", result.text));
+            cursor += index + word.len();
+        }
+        assert!(result.decode.max_output_samples <= 4096);
+    }
 
     struct SampleModel {
         captured: Vec<f32>,

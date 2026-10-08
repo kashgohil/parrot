@@ -33,6 +33,8 @@ pub(crate) struct Config {
     #[serde(default)]
     pub speech_lifecycle_checks: bool,
     #[serde(default)]
+    pub recording_lifecycle_checks: bool,
+    #[serde(default)]
     pub stt_release_before_cleanup: bool,
     /// Diagnostic-only provider override, applied before any model is loaded.
     #[serde(default)]
@@ -261,6 +263,7 @@ async fn dictation(app: &AppHandle, events: &Events, scenario: &str, french: boo
     let result = crate::transcribe_last(app.state(), app.state(), app.state(), app.clone())
         .await
         .map_err(anyhow::Error::msg)?;
+    anyhow::ensure!(recorder.last_audio.get().is_none(), "successful dictation retained PCM");
     events.result(
         scenario,
         start,
@@ -295,6 +298,47 @@ async fn dictation(app: &AppHandle, events: &Events, scenario: &str, french: boo
     Ok(())
 }
 
+async fn recording_retry_and_save(app: &AppHandle, config: &Config, events: &Events) -> Result<()> {
+    let (samples, rate, expected) = fixture(true);
+    let recorder = app.state::<RecorderState>();
+    let duration_ms = samples.len() as u64 * 1000 / rate as u64;
+    recorder.last_audio.store(crate::RecordedSamples { samples, sample_rate: rate }, duration_ms);
+    let held = recorder.last_audio.get().unwrap();
+    let weak = Arc::downgrade(&held.audio);
+    events.write("begin", "recording_retry", json!({}));
+    switch_models(app, &config.stt_engine, Path::new("/nonexistent/parrot-retry-model"), &config.cleanup_model).await?;
+    let failed = crate::transcribe_last(app.state(), app.state(), app.state(), app.clone()).await;
+    anyhow::ensure!(failed.is_err(), "missing speech model unexpectedly succeeded");
+    anyhow::ensure!(Arc::ptr_eq(&held.audio, &recorder.last_audio.get().context("failed capture was lost")?.audio), "retry copied or replaced capture");
+    switch_models(app, &config.stt_engine, &config.stt_model, &config.cleanup_model).await?;
+    app.state::<Database>().set_setting("save_audio", "true")?;
+    app.state::<Database>().set_setting("cleanup_mode", "off")?;
+    let start = Instant::now();
+    let result = crate::transcribe_last(app.state(), app.state(), app.state(), app.clone()).await.map_err(anyhow::Error::msg)?;
+    anyhow::ensure!(recorder.last_audio.get().is_none(), "retry success retained capture");
+    let attachment = app.state::<Database>().get_history()?.into_iter().filter(|entry| entry.provider == "local").find_map(|entry| entry.audio_path).context("retry did not save audio")?;
+    anyhow::ensure!(std::fs::read(attachment)? == held.audio.encode_wav()?, "saved retry audio changed");
+    drop(held);
+    anyhow::ensure!(weak.upgrade().is_none(), "completed recording still has an owner");
+    events.result("recording_retry", start, &result.raw_text, &result.cleaned_text, expected);
+    events.write("end", "recording_retry", json!({"failed_capture_preserved":true,"saved_wav_matches":true,"completed_pcm_released":true}));
+    let bytes = include_bytes!("../tests/fixtures/transcription/french.wav");
+    let before = app.state::<Database>().get_history()?.len();
+    let malformed = crate::transcribe_audio_file(b"invalid audio".to_vec(), Some("invalid.wav".into()), app.state(), app.state(), app.clone()).await;
+    anyhow::ensure!(malformed.is_err() && app.state::<Database>().get_history()?.len() == before, "failed import saved a partial result");
+    app.state::<Database>().set_setting("stt_language", "fr")?;
+    let start = Instant::now();
+    let imported = crate::transcribe_audio_file(bytes.to_vec(), Some("memory-french.wav".into()), app.state(), app.state(), app.clone()).await.map_err(anyhow::Error::msg)?;
+    let attachment = app.state::<Database>().get_history()?.into_iter().filter_map(|entry| entry.audio_path).find(|path|path.ends_with("memory-french.wav")).context("byte import attachment missing")?;
+    anyhow::ensure!(std::fs::read(attachment)? == bytes, "byte import attachment changed");
+    events.result("byte_import", start, &imported.raw_text, &imported.cleaned_text, expected);
+    events.write("end", "byte_import", json!({"original_attachment_preserved":true,"failed_import_saved_no_partial_history":true}));
+    app.state::<Database>().set_setting("stt_language", "auto")?;
+    app.state::<Database>().set_setting("save_audio", "false")?;
+    app.state::<Database>().set_setting("cleanup_mode", "blocking")?;
+    Ok(())
+}
+
 async fn switch_models(
     app: &AppHandle,
     engine: &str,
@@ -322,6 +366,10 @@ async fn switch_models(
 }
 
 async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<()> {
+    let buffer_events = events.clone();
+    app.listen("import-audio-buffers", move |event| {
+        buffer_events.write("buffers", "long_import", serde_json::from_str(event.payload()).unwrap());
+    });
     let started = Instant::now();
     events.write(
         "begin",
@@ -540,7 +588,7 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
         events.write("end", "model_restore", json!({}));
     }
 
-    // Exercise the production file decoder, full-file buffers, STT, history,
+    // Exercise the production streaming file decoder, STT, history,
     // and attachment copy. Long-file cleanup is off to isolate STT residency;
     // short dictations above measure cleanup separately with quality checks.
     *phase.lock().unwrap() = "long_import".into();
@@ -628,6 +676,7 @@ async fn workload(app: &AppHandle, config: &Config, events: &Events) -> Result<(
             .idle("speech_reloaded_idle", config.idle_seconds, app)
             .await;
     }
+    if config.recording_lifecycle_checks { recording_retry_and_save(app, config, events).await?; }
     events.write("begin", "complete", json!({}));
     events.write(
         "end",
