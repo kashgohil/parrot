@@ -15,10 +15,23 @@ pub struct TranscribeOpts {
     pub language: Option<String>,
     /// Whisper-only initial prompt for custom vocabulary biasing.
     pub initial_prompt: Option<String>,
+    /// Explicit opt-in style hint; does not translate or change the language setting.
+    pub prompt_style: SpeechPromptStyle,
     /// Evaluation-only ablation; ordinary app builds have no override.
     #[cfg(feature = "quality-eval")]
     pub whisper_decode_profile: WhisperDecodeProfile,
 }
+
+#[derive(Debug, Clone, Copy, Default, serde::Deserialize, serde::Serialize, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub enum SpeechPromptStyle {
+    #[default]
+    Default,
+    HindiEnglish,
+}
+
+// A held-out example of mixed writing, not an instruction or a fixture answer.
+const HINDI_ENGLISH_STYLE_HINT: &str = "आज meeting में project status पर discussion होगा।";
 
 #[cfg(feature = "quality-eval")]
 #[derive(Debug, Clone, Copy, Default, serde::Deserialize, serde::Serialize, PartialEq, Eq)]
@@ -43,11 +56,47 @@ impl TranscribeOpts {
         let initial_prompt = db.get_profile().ok().and_then(|profile| {
             crate::vocab::whisper_initial_prompt(&crate::vocab::parse(&profile.custom_words))
         });
+        let prompt_style = match db.get_setting("stt_prompt_style")?.as_deref() {
+            None | Some("") | Some("default") => SpeechPromptStyle::Default,
+            Some("hindi-english") => SpeechPromptStyle::HindiEnglish,
+            Some(_) => anyhow::bail!("Unknown speech hint. Choose a hint in Settings → Speech."),
+        };
         Ok(Self {
             language,
             initial_prompt,
+            prompt_style,
             ..Default::default()
         })
+    }
+
+    pub(crate) fn resolved_initial_prompt(&self) -> Option<String> {
+        match self.prompt_style {
+            SpeechPromptStyle::Default => self.initial_prompt.clone(),
+            SpeechPromptStyle::HindiEnglish => Some(
+                match self
+                    .initial_prompt
+                    .as_deref()
+                    .filter(|p| !p.trim().is_empty())
+                {
+                    Some(vocabulary) => format!("{HINDI_ENGLISH_STYLE_HINT}\n{vocabulary}"),
+                    None => HINDI_ENGLISH_STYLE_HINT.to_owned(),
+                },
+            ),
+        }
+    }
+
+    fn validate_prompt_style(
+        &self,
+        capabilities: &crate::speech_capabilities::Capabilities,
+    ) -> Result<()> {
+        if self.prompt_style == SpeechPromptStyle::HindiEnglish {
+            anyhow::ensure!(
+                capabilities.explicit_language_hints && capabilities.supports("hi") == Some(true)
+                    && matches!(crate::speech_capabilities::normalize_language(self.language.as_deref()).as_str(), "auto" | "hi"),
+                "The Hindi–English hint requires a multilingual Whisper model and Auto-detect or Hindi. Change the model, language or hint in Settings → Speech."
+            );
+        }
+        Ok(())
     }
 }
 
@@ -69,7 +118,8 @@ impl LocalEngine {
             ),
             Self::Parakeet(_) => crate::speech_capabilities::Capabilities::parakeet(),
         };
-        capabilities.validate(opts.language.as_deref())
+        capabilities.validate(opts.language.as_deref())?;
+        opts.validate_prompt_style(&capabilities)
     }
 
     pub fn engine_id(&self) -> &'static str {
@@ -294,11 +344,12 @@ pub(crate) fn run_whisper(
     opts: &TranscribeOpts,
 ) -> Result<String> {
     let language = opts.language.as_deref();
-    let initial_prompt = opts.initial_prompt.as_deref();
+    let initial_prompt = opts.resolved_initial_prompt();
     // Check the actual loaded model: whisper.cpp can silently force .en models
     // back to English even when a different language was requested.
-    crate::speech_capabilities::Capabilities::whisper_vocab(ctx.model_n_vocab())
-        .validate(language)?;
+    let capabilities = crate::speech_capabilities::Capabilities::whisper_vocab(ctx.model_n_vocab());
+    capabilities.validate(language)?;
+    opts.validate_prompt_style(&capabilities)?;
     let normalized_language = crate::speech_capabilities::normalize_language(language);
 
     // whisper.cpp needs at least ~1s of audio internally (it pads to 30s frames
@@ -344,7 +395,7 @@ pub(crate) fn run_whisper(
     // silence edges and mic noise.
     params.set_suppress_nst(true);
     params.set_audio_ctx(audio_ctx);
-    if let Some(prompt) = initial_prompt.filter(|p| !p.is_empty()) {
+    if let Some(prompt) = initial_prompt.as_deref().filter(|p| !p.is_empty()) {
         params.set_initial_prompt(prompt);
     }
 
@@ -544,6 +595,63 @@ pub async fn transcribe_audio(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn mixed_hint_is_explicit_and_preserves_vocabulary_and_language_preferences() {
+        let db = crate::db::Database::in_memory().unwrap();
+        let default = TranscribeOpts::from_database(&db).unwrap();
+        assert_eq!(default.prompt_style, SpeechPromptStyle::Default);
+        assert!(default.resolved_initial_prompt().is_none());
+        db.set_setting("stt_prompt_style", "hindi-english").unwrap();
+        db.set_setting("stt_language", " AUTO ").unwrap();
+        db.update_profile(
+            r#"["Kubernetes", {"term":"Parrot","context":"product"}]"#,
+            "",
+            "",
+        )
+        .unwrap();
+        let opts = TranscribeOpts::from_database(&db).unwrap();
+        assert_eq!(opts.language.as_deref(), Some(" AUTO "));
+        assert_eq!(
+            opts.resolved_initial_prompt().as_deref(),
+            Some("आज meeting में project status पर discussion होगा।\nVocabulary hints: Kubernetes.")
+        );
+        assert_eq!(opts.prompt_style, SpeechPromptStyle::HindiEnglish);
+        let turbo = crate::speech_capabilities::Capabilities::whisper_vocab(51866);
+        assert!(opts.validate_prompt_style(&turbo).is_ok());
+        for caps in [
+            crate::speech_capabilities::Capabilities::parakeet(),
+            crate::speech_capabilities::Capabilities::whisper_vocab(51864),
+        ] {
+            assert!(opts.validate_prompt_style(&caps).is_err());
+        }
+        for language in ["hi", " HI ", "auto", ""] {
+            let opts = TranscribeOpts {
+                language: Some(language.into()),
+                prompt_style: SpeechPromptStyle::HindiEnglish,
+                ..Default::default()
+            };
+            assert!(opts.validate_prompt_style(&turbo).is_ok());
+        }
+        for language in ["fr", "en"] {
+            let opts = TranscribeOpts {
+                language: Some(language.into()),
+                prompt_style: SpeechPromptStyle::HindiEnglish,
+                ..Default::default()
+            };
+            assert!(opts.validate_prompt_style(&turbo).is_err());
+        }
+        db.set_setting("stt_prompt_style", "typo").unwrap();
+        assert!(TranscribeOpts::from_database(&db).is_err());
+        db.set_setting("stt_prompt_style", "default").unwrap();
+        assert_eq!(
+            TranscribeOpts::from_database(&db)
+                .unwrap()
+                .resolved_initial_prompt()
+                .as_deref(),
+            Some("Vocabulary hints: Kubernetes.")
+        );
+    }
 
     #[cfg(feature = "quality-eval")]
     #[test]

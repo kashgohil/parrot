@@ -22,7 +22,7 @@ let browser;
    if(cmd==='set_setting'){window.__settings[args.key]=args.value;localStorage.setItem('validation_settings',JSON.stringify(window.__settings));return null;}
    if(cmd==='get_local_user')return {name:'UI validation',email:'',onboarding_completed:!window.__testState.onboarding};
    if(cmd==='get_default_dictation_hotkey')return {default:'Alt+Space',platform:'macos'};
-   if(cmd==='get_stt_status'){const model=window.__catalog.models.find(m=>m.id===window.__settings.stt_model);return {engine:model?.id==='parakeet-v3'?'parakeet':'whisper',model_id:window.__settings.stt_model,language:window.__settings.stt_language,capabilities:window.__testState.capabilities||model?.capabilities||{known:false,multilingual:null,explicit_language_hints:false,languages:[],mixed_language_evaluated:false},lifecycle:{state:'unloaded',error:null,idle_seconds:30},release_before_cleanup:true,can_upgrade_to_parakeet:false};}
+   if(cmd==='get_stt_status'){const model=window.__catalog.models.find(m=>m.id===window.__settings.stt_model);return {engine:model?.id==='parakeet-v3'?'parakeet':'whisper',model_id:window.__settings.stt_model,language:window.__settings.stt_language,prompt_style:window.__settings.stt_prompt_style||'default',capabilities:window.__testState.capabilities||model?.capabilities||{known:false,multilingual:null,explicit_language_hints:false,languages:[],mixed_language_evaluated:false},lifecycle:{state:'unloaded',error:null,idle_seconds:30},release_before_cleanup:true,can_upgrade_to_parakeet:false};}
    if(cmd==='switch_stt_model'){if(window.__failSwitch)throw Error('Download failed');const model=window.__catalog.models.find(m=>m.id===args.modelId);window.__settings.stt_model=model.id;localStorage.setItem('validation_settings',JSON.stringify(window.__settings));return {engine:model.id==='parakeet-v3'?'parakeet':'whisper',model_id:model.id,ready:false,capabilities:model.capabilities};}
    if(cmd==='get_cleanup_status')return {backend:'builtin',can_upgrade_to_builtin:false,active_model_id:'qwen2.5-0.5b-instruct-q4_k_m',lifecycle:{state:'unloaded',error:null,idle_seconds:30}};
    if(cmd==='check_system_requirements')return {macos_version:'26.6.2',macos_supported:true,free_space_gb:50,architecture:'arm64'};
@@ -110,6 +110,37 @@ let browser;
  await page.evaluate(()=>window.__failCatalog=false);
  await speech.getByRole('button',{name:'Retry',exact:true}).click();
  await page.waitForFunction(()=>!document.querySelector('#sttLanguage').disabled);
+ // Opt-in mixed writing hint uses ordinary saved Settings and stays off by default.
+ await reset({...settings,stt_model:'large-v3-turbo',stt_language:'auto',stt_prompt_style:'default'});
+ await page.waitForFunction(()=>document.querySelector('#sttLanguage')?.textContent==='Auto-detect');
+ assert((await page.locator('#sttPromptStyle').innerText()).includes('Default'));
+ await page.locator('#sttPromptStyle').click();
+ await page.getByRole('option',{name:'Hindi–English mixing (experimental)',exact:true}).click();
+ assert.equal((await calls()).length,0);
+ await page.getByRole('button',{name:/Save changes/}).click();
+ await page.waitForFunction(()=>window.__settings.stt_prompt_style==='hindi-english');
+ await page.reload();
+ await page.waitForFunction(()=>document.querySelector('#sttPromptStyle')?.textContent.includes('Hindi–English'));
+ assert.equal(await speech.getByRole('alert').count(),0);
+ assert.equal(await page.evaluate(()=>window.__settings.low_memory_mode),'true');
+ await speech.getByRole('button',{name:/^Fast \(Parakeet\)/}).click();
+ await speech.getByRole('alert').waitFor();
+ assert((await speech.getByRole('alert').innerText()).includes('saved recognition hint'));
+ await page.locator('#sttPromptStyle').click();
+ assert.equal(await page.getByRole('option',{name:'Hindi–English mixing (experimental)',exact:true}).getAttribute('aria-disabled'),'true');
+ await page.getByRole('option',{name:'Default (no language style hint)',exact:true}).click();
+ assert.equal(await speech.getByRole('alert').count(),0);
+ await page.getByRole('button',{name:/Save changes/}).click();
+ await page.waitForFunction(()=>window.__settings.stt_prompt_style==='default');
+ await reset({...settings,stt_model:'large-v3-turbo',stt_language:'fr',stt_prompt_style:'hindi-english'});
+ await speech.getByRole('alert').waitFor();
+ assert((await speech.getByRole('alert').innerText()).includes('saved recognition hint'));
+ await reset({...settings,stt_model:'small-q5_1',stt_language:'hi',stt_prompt_style:'hindi-english'});
+ await page.waitForFunction(()=>document.querySelector('#sttLanguage')?.textContent==='Hindi');
+ assert.equal(await speech.getByRole('alert').count(),0);
+ await reset({...settings,stt_model:'large-v3-turbo',stt_language:'hi',stt_prompt_style:'typo'});
+ await speech.getByRole('alert').waitFor();
+ assert((await page.locator('#sttPromptStyle').innerText()).includes('unknown saved hint'));
  await reset({...settings},{onboarding:true,failCatalog:true});
  await page.goto(`${baseURL}/local-setup`);
  await page.getByRole('button',{name:'Next Step',exact:true}).click();
@@ -126,6 +157,6 @@ let browser;
  const setup=await page.evaluate(()=>window.__calls.find(c=>c.cmd==='start_local_setup'));
  assert.equal(setup.args.request.whisperModel,'small-q5_1');
  assert.deepEqual(errors,[]);
- console.log('PASS: 101 language options, Parakeet auto-only semantics, Hindi offers no automatic download, explicit compact switch, persisted preferences, .en incompatibility and English Auto, Cantonese tier boundary, failed switch recovery/listener cleanup, and low-memory preferences retained. Custom/stale file coverage, unknown saved language, catalog failure/retry, shared four-tier onboarding and explicit compact setup also pass. IPC mocked; catalog exported from native test.');
+ console.log('PASS: Optional Hindi-English hint defaults off, persists without model downloads, retains memory preferences and reports incompatible/unknown saved hints. 101 language options, Parakeet auto-only semantics, Hindi offers no automatic download, explicit compact switch, persisted preferences, .en incompatibility and English Auto, Cantonese tier boundary, failed switch recovery/listener cleanup, and low-memory preferences retained. Custom/stale file coverage, unknown saved language, catalog failure/retry, shared four-tier onboarding and explicit compact setup also pass. IPC mocked; catalog exported from native test.');
  await browser.close();
 })().catch(async e=>{console.error(e);await browser?.close();process.exitCode=1;});

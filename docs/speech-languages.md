@@ -121,3 +121,29 @@ does not access the user's Parrot database or start real downloads.
   defines the vocabulary-based multilingual and language-count contract.
 - The bundled [whisper.cpp implementation](https://github.com/ggml-org/whisper.cpp/blob/master/src/whisper.cpp)
   supplies the native language list and vocabulary behavior used by Parrot.
+
+## Experimental Hindi–English recognition hint
+
+Settings → Speech → Recognition hint offers an optional mixed writing example.
+The default adds no style hint. Hindi–English is explicit, experimental and
+requires a compatible multilingual Whisper model with Auto-detect or Hindi.
+It leaves the language preference, model tier and memory policy unchanged.
+Saved incompatible hints remain visible and block native decoding until the
+user chooses Default or compatible model/language settings. Parakeet, English-only
+Whisper and unknown custom coverage cannot be presented as compatible. The
+Parakeet upgrade banner is suppressed while a nondefault hint is saved.
+
+`stt_prompt_style=hindi-english` is read through the shared `TranscribeOpts` loader
+for previews, final dictation and imports. The held-out mixed writing example is
+prepended to existing unconditional vocabulary hints; conditional vocabulary
+still belongs to cleanup. The quality worker can set `prompt_style` per case,
+and the Python runner per speech variant; results record the exact resolved
+prompt. No fixture answer, transcript or cleanup instruction is included.
+
+The synthetic comparison supports trying this hint with turbo, but does not
+establish real-speaker accuracy. Compact still has major recognition errors.
+Names, spelling, amounts and English word forms can remain wrong; the hint
+cannot guarantee negation retention. Reviewed audio and consented real-speaker
+validation are tracked separately in ISSUE-1077. Physical-device qualification
+remains ISSUE-1072. Full encoder context and native segmentation remain diagnostic
+ablations, not new app defaults.

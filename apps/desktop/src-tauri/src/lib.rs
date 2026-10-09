@@ -1252,14 +1252,16 @@ fn get_stt_status(db: tauri::State<'_, Database>, speech: tauri::State<'_, Share
     let (engine, path, model_id) = resolve_stt_load_target(&db, &config);
     let capabilities = speech_capabilities::for_target(&engine, &model_id, std::path::Path::new(&path));
     let language = speech_capabilities::normalize_language(db.get_setting("stt_language").ok().flatten().as_deref());
+    let prompt_style = db.get_setting("stt_prompt_style").map_err(|e| e.to_string())?.filter(|value| !value.is_empty()).unwrap_or_else(|| "default".into());
     Ok(serde_json::json!({
         "engine": engine,
         "model_id": model_id,
         "model_path": path,
         "language": language,
+        "prompt_style": prompt_style,
         "capabilities": capabilities,
         "language_error": capabilities.validate(Some(&language)).err().map(|error| error.to_string()),
-        "can_upgrade_to_parakeet": engine != "parakeet" && speech_capabilities::Capabilities::parakeet().supports(&language) == Some(true),
+        "can_upgrade_to_parakeet": engine != "parakeet" && prompt_style == "default" && speech_capabilities::Capabilities::parakeet().supports(&language) == Some(true),
         "lifecycle": speech.models.status(),
         "release_before_cleanup": memory_policy::MemoryPolicy::from_database(&db).sequential,
         "memory_policy": memory_policy::MemoryPolicy::from_database(&db),

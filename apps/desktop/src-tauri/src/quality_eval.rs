@@ -31,6 +31,7 @@ struct Case {
     audio: Option<PathBuf>,
     language: Option<String>,
     initial_prompt: Option<String>,
+    prompt_style: Option<transcription::SpeechPromptStyle>,
     whisper_decode_profile: Option<transcription::WhisperDecodeProfile>,
     input: Option<String>,
     stage: Option<String>,
@@ -70,7 +71,10 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
     for case in &config.cases {
         ensure!(ids.insert(&case.id), "Duplicate case ID: {}", case.id);
         ensure!(
-            config.engine == "whisper" || case.whisper_decode_profile.is_none(),
+            config.engine == "whisper"
+                || (case.whisper_decode_profile.is_none()
+                    && case.prompt_style.unwrap_or_default()
+                        == transcription::SpeechPromptStyle::Default),
             "Whisper decoding profiles require the Whisper engine"
         );
         if config.engine == "cleanup" {
@@ -182,13 +186,15 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
             let opts = transcription::TranscribeOpts {
                 language: case.language.clone(),
                 initial_prompt: case.initial_prompt.clone(),
+                prompt_style: case.prompt_style.unwrap_or_default(),
                 whisper_decode_profile: case.whisper_decode_profile.unwrap_or_default(),
             };
+            let resolved_prompt = opts.resolved_initial_prompt();
             let result = engine
                 .transcribe_import(AudioSource::File(case.audio.unwrap()), opts)
                 .await;
             let mut row = json!({"kind":"result", "id":case.id, "stage":"asr", "language":case.language,
-                "initial_prompt":case.initial_prompt, "whisper_decode_profile":case.whisper_decode_profile.unwrap_or_default(), "latency_ms":started.elapsed().as_secs_f64()*1000.0});
+                "initial_prompt":resolved_prompt, "prompt_style":case.prompt_style.unwrap_or_default(), "whisper_decode_profile":case.whisper_decode_profile.unwrap_or_default(), "latency_ms":started.elapsed().as_secs_f64()*1000.0});
             match result {
                 Ok(result) => row["text"] = json!(result.text),
                 Err(error) => row["error"] = json!(format!("{error:#}")),

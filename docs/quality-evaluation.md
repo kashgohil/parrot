@@ -28,7 +28,8 @@ Copy `apps/desktop/scripts/quality-evaluation.example.json` to a local config an
 replace model paths with existing files. Remove variants you do not want to
 evaluate. A speech-only config needs no sidecar; a cleanup-only config needs no
 speech model. `quantization` is a caller-supplied label, while model SHA-256 hashes
-identify the actual bytes. Speech variants can set `initial_prompt`; cleanup
+identify the actual bytes. Speech variants can set `initial_prompt` and `prompt_style` (`default` or
+`hindi-english`); cleanup
 variants can set `custom_words`, `context_prompt` and `writing_style`.
 
 From the repository root:

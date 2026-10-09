@@ -18,6 +18,8 @@ export function SpeechLanguagePicker({
 	catalog,
 	capabilities,
 	language,
+	promptStyle,
+	onPromptStyleChange,
 	switching,
 	onLanguageChange,
 	onSwitchModel,
@@ -25,6 +27,8 @@ export function SpeechLanguagePicker({
 	catalog: SpeechCatalog | null;
 	capabilities: SpeechCapabilities | null;
 	language: string;
+	promptStyle: string;
+	onPromptStyleChange: (style: string) => void;
 	switching: boolean;
 	onLanguageChange: (language: string) => void;
 	onSwitchModel: (modelId: string) => void;
@@ -32,6 +36,8 @@ export function SpeechLanguagePicker({
 	const selectedLanguage = catalog?.languages.find(item => item.code === language);
 	const unknownLanguage = language !== "auto" && catalog && !selectedLanguage;
 	const unsupported = supportsLanguage(capabilities, language) === false || unknownLanguage;
+	const canUseMixedHint = capabilities?.explicit_language_hints && supportsLanguage(capabilities, "hi") === true && (language === "auto" || language === "hi");
+	const unknownHint = !["default", "hindi-english"].includes(promptStyle);
 	const alternatives = catalog?.models.filter(model =>
 		model.capabilities.multilingual && supportsLanguage(model.capabilities, language) === true,
 	) ?? [];
@@ -81,6 +87,19 @@ export function SpeechLanguagePicker({
 					</div>
 				</div>
 			)}
+            <Label htmlFor="sttPromptStyle" className="text-sm font-medium">Recognition hint</Label>
+            <Select disabled={!capabilities || switching} value={promptStyle} onValueChange={onPromptStyleChange}>
+                <SelectTrigger id="sttPromptStyle" className="w-full h-10 rounded-xl border-border bg-muted/50"><SelectValue /></SelectTrigger>
+                <SelectContent position="popper" className="rounded-xl">
+                    <SelectItem value="default">Default (no language style hint)</SelectItem>
+                    <SelectItem value="hindi-english" disabled={!canUseMixedHint}>Hindi–English mixing (experimental)</SelectItem>
+                    {unknownHint && <SelectItem value={promptStyle}>{promptStyle} — unknown saved hint</SelectItem>}
+                </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">The optional Hindi–English hint uses a mixed writing example. It requires multilingual Whisper with Auto-detect or Hindi. Best tried with Whisper turbo; check names, numbers and negation. Real-speaker validation is pending.</p>
+            {(unknownHint || (promptStyle !== "default" && !canUseMixedHint)) && (
+                <p role="alert" className="text-xs text-amber-600 dark:text-amber-400">This saved recognition hint cannot run with the current model or language. Choose Default, or multilingual Whisper with Auto-detect or Hindi.</p>
+            )}
 			<p className="text-xs text-muted-foreground">Language coverage does not guarantee accuracy when languages are mixed in one recording. Broader mixed-language evaluation is still pending.</p>
 		</div>
 	);

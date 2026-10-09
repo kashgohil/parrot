@@ -124,6 +124,7 @@ function SettingsPage() {
 	const [sttEngine, setSttEngine] = useState("whisper");
 	const [sttModel, setSttModel] = useState("");
 	const [sttLanguage, setSttLanguage] = useState("auto");
+	const [sttPromptStyle, setSttPromptStyle] = useState("default");
 	const [sttIdleSeconds, setSttIdleSeconds] = useState("60");
 	const [lowMemoryMode, setLowMemoryMode] = useState(false);
 	const [releaseSpeechBeforeCleanup, setReleaseSpeechBeforeCleanup] = useState(false);
@@ -386,6 +387,7 @@ function SettingsPage() {
 				engine: string;
 				model_id: string;
 				language: string;
+				prompt_style?: string;
 				capabilities: SpeechCapabilities;
 				lifecycle: { state: string; error: string | null; idle_seconds: number | null };
 				release_before_cleanup: boolean;
@@ -393,6 +395,7 @@ function SettingsPage() {
 			setSttEngine(stt.engine || "whisper");
 			setSttModel(stt.model_id || "");
 			setSttLanguage(stt.language || "auto");
+			setSttPromptStyle(stt.prompt_style || "default");
 			setSttCapabilities(stt.capabilities);
 			setSpeechLifecycle(stt.lifecycle);
 			const [lowMemory, normalSpeechIdle, normalSequential] = await Promise.all([
@@ -456,6 +459,8 @@ function SettingsPage() {
 				key: "stt_language",
 				value: sttLanguage,
 			});
+
+			await invoke("set_setting", { key: "stt_prompt_style", value: sttPromptStyle });
 
 			await invoke("set_setting", { key: "stt_idle_seconds", value: sttIdleSeconds });
 			await invoke("set_setting", { key: "stt_release_before_cleanup", value: releaseSpeechBeforeCleanup ? "true" : "false" });
@@ -706,6 +711,8 @@ function SettingsPage() {
 								catalog={catalog}
 								capabilities={sttCapabilities}
 								language={sttLanguage}
+								promptStyle={sttPromptStyle}
+								onPromptStyleChange={style => { setSttPromptStyle(style); setDirty(true); }}
 								switching={sttSwitching}
 								onLanguageChange={language => { setSttLanguage(language); setDirty(true); }}
 								onSwitchModel={modelId => void switchSpeechModel(modelId)}

@@ -243,6 +243,9 @@ def run(args):
     if not variants or len({variant['id'] for variant in variants}) != len(variants):
         raise ValueError('Provide models with unique variant IDs')
     for variant in variants:
+        style = variant.get('prompt_style', 'default')
+        if style not in ('default', 'hindi-english') or (style != 'default' and variant.get('engine') != 'whisper'):
+            raise ValueError('Speech prompt style must be default or Whisper-only hindi-english')
         profile = variant.get('whisper_decode_profile')
         if profile is not None and (variant.get('engine') != 'whisper' or profile not in ('production', 'full-context', 'segmented', 'full-context-segmented')):
             raise ValueError('Whisper decode profile must be a supported Whisper-only ablation')
@@ -297,7 +300,8 @@ def run(args):
                     key = f'{case["id"]}/{mode}'
                     cases.append({'id': key, 'audio': str((corpus_root / case['audio']).resolve()),
                                   'language': 'auto' if mode == 'auto' else case['languages'][0], 'initial_prompt': variant.get('initial_prompt'),
-                                  'whisper_decode_profile': variant.get('whisper_decode_profile')})
+                                  'whisper_decode_profile': variant.get('whisper_decode_profile'),
+                                  'prompt_style': variant.get('prompt_style')})
                     mapping[key] = case['id']
             if not cases:
                 continue
