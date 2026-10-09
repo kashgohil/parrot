@@ -212,13 +212,15 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
                         }
                         let model_output = &completion.text;
                         let candidate = cleanup::cleanup_candidate(&model_output, &input);
-                        let text = cleanup::finalize_completion(
+                        let (guarded, text) = cleanup::finalize_completion_parts(
                             &completion,
                             &input,
                             cleanup::Formality::from_setting(tone),
                             &case.writing_style,
                         );
-                        row["fallback"] = json!(candidate != text);
+                        row["fallback"] = json!(candidate != guarded);
+                        row["formatting_applied"] = json!(guarded != text);
+                        row["unformatted_text"] = json!(guarded);
                         row["model_output"] = json!(model_output);
                         row["candidate"] = json!(candidate);
                         row["text"] = json!(text);

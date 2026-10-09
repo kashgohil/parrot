@@ -108,6 +108,44 @@ pub(crate) fn finalize_completion(
     formality: Formality,
     writing_style: &str,
 ) -> String {
+    finalize_completion_parts(cleaned, raw_text, formality, writing_style).1
+}
+
+/// Keep guard fallback and subsequent formatting distinct in evaluation.
+pub(crate) fn finalize_completion_parts(
+    cleaned: &crate::cleanup_engine::protocol::Completion,
+    raw_text: &str,
+    formality: Formality,
+    writing_style: &str,
+) -> (String, String) {
+    if !cleaned.is_complete() {
+        return (raw_text.to_owned(), raw_text.to_owned());
+    }
+    if !cleaned.segments.is_empty() {
+        let source = resolve_clear_disfluencies(raw_text);
+        let mut end = 0;
+        let covered = cleaned.segments.iter().all(|segment| {
+            let valid = segment.start_byte == end
+                && segment.end_byte > end
+                && source.get(segment.start_byte..segment.end_byte).is_some();
+            end = segment.end_byte;
+            valid
+        });
+        if !covered || end != source.len() {
+            return (raw_text.to_owned(), raw_text.to_owned());
+        }
+    }
+    let safe = finalize_completion_unformatted(cleaned, raw_text, formality, writing_style);
+    let text = crate::cleanup_formatting::format_completed(&safe, raw_text);
+    (safe, text)
+}
+
+fn finalize_completion_unformatted(
+    cleaned: &crate::cleanup_engine::protocol::Completion,
+    raw_text: &str,
+    formality: Formality,
+    writing_style: &str,
+) -> String {
     if !cleaned.is_complete() {
         eprintln!(
             "cleanup incomplete: {:?}; retaining transcript",
@@ -181,7 +219,10 @@ async fn cleanup_with_ollama(
         options: OllamaChatOptions { temperature: 0.1 },
     };
 
-    let response = session.owner.chat(session.port, serde_json::to_value(request)?).await?;
+    let response = session
+        .owner
+        .chat(session.port, serde_json::to_value(request)?)
+        .await?;
     let chat_resp: OllamaChatResponse = serde_json::from_value(response)?;
     Ok(finalize_ollama_response(
         chat_resp,
@@ -211,7 +252,7 @@ fn finalize_ollama_response(
         return raw_text.to_string();
     }
 
-    cleaned
+    crate::cleanup_formatting::format_completed(&cleaned, raw_text)
 }
 
 pub(crate) fn build_user_message(raw_text: &str) -> String {
@@ -824,6 +865,7 @@ mod tests {
                         | "english-uh"
                         | "english-repeated-pause"
                         | "english-question" => candidate,
+                        "hindi-english-interior" => "प्रिया ने um invoice approve नहीं किया।",
                         _ => case["expected_deterministic"].as_str().unwrap(),
                     };
                     let completion = Completion {
@@ -1109,6 +1151,104 @@ mod tests {
         let hindi = "प्रिया ने भुगतान नहीं किया";
         assert_eq!(faithful("प्रिा ने भुगतान नहीं किया", hindi), hindi);
         assert_eq!(faithful("प्रिया ने भुगतान किया", hindi), hindi);
+    }
+
+    #[test]
+    fn formatting_fixture_is_accepted_only_for_complete_results_in_both_backends() {
+        use crate::cleanup_engine::protocol::{Completion, FinishReason};
+        let fixture: serde_json::Value = serde_json::from_str(include_str!(
+            "../tests/fixtures/quality/cleanup-formatting.json"
+        ))
+        .unwrap();
+        for case in fixture["cases"].as_array().unwrap() {
+            let source = case["cleanup_input"].as_str().unwrap();
+            let formatted = case["reference"].as_str().unwrap();
+            // Include whitespace that a completed result may normalize but a
+            // truncated response must preserve byte for byte.
+            let exact_source = format!("  {source}\n");
+            for tone in [Formality::Casual, Formality::Neutral, Formality::Formal] {
+                for complete in [true, false] {
+                    let completion = Completion {
+                        text: formatted.into(),
+                        complete,
+                        finish_reason: if complete {
+                            FinishReason::EndOfGeneration
+                        } else {
+                            FinishReason::TokenLimit
+                        },
+                        segments: Vec::new(),
+                        hints_truncated: false,
+                    };
+                    let response = OllamaChatResponse {
+                        message: ChatMessage {
+                            role: "assistant".into(),
+                            content: formatted.into(),
+                        },
+                        done: true,
+                        done_reason: Some(if complete { "stop" } else { "length" }.into()),
+                    };
+                    let expected = if complete { formatted } else { &exact_source };
+                    assert_eq!(
+                        finalize_completion(&completion, &exact_source, tone, ""),
+                        expected,
+                        "builtin {}",
+                        case["id"]
+                    );
+                    assert_eq!(
+                        finalize_ollama_response(response, &exact_source, tone, ""),
+                        expected,
+                        "ollama {}",
+                        case["id"]
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn rejected_model_words_cannot_enter_formatted_fallbacks() {
+        use crate::cleanup_engine::protocol::{Completion, FinishReason};
+        for (source, rejected, expected) in [
+            ("maybe Priya did not approve invoice 25", "Priya approved invoice 25.",
+                "Maybe Priya did not approve invoice 25."),
+            ("शायद प्रिया ने invoice approve नहीं किया", "Priya approved the invoice.",
+                "शायद प्रिया ने invoice approve नहीं किया।"),
+            ("priya said \"i did not approve it\"", "Priya approved it.",
+                "priya said \"i did not approve it\""),
+        ] {
+            for tone in [Formality::Casual, Formality::Neutral, Formality::Formal] {
+                let completion = Completion {
+                    text: rejected.into(), complete: true,
+                    finish_reason: FinishReason::EndOfGeneration,
+                    segments: Vec::new(), hints_truncated: false,
+                };
+                let (guarded, text) = finalize_completion_parts(&completion, source, tone, "");
+                assert_eq!(guarded, source, "guard fallback remains distinct");
+                assert_eq!(text, expected);
+                let response = OllamaChatResponse {
+                    message: ChatMessage { role: "assistant".into(), content: rejected.into() },
+                    done: true, done_reason: Some("stop".into()),
+                };
+                assert_eq!(finalize_ollama_response(response, source, tone, ""), expected);
+            }
+        }
+    }
+
+    #[test]
+    fn invalid_segment_coverage_retains_exact_unformatted_source() {
+        let source = "priya did not approve invoice 25";
+        for (start, end) in [(1, source.len()), (0, source.len() - 1), (0, source.len() + 1)] {
+            let completion = serde_json::from_value(serde_json::json!({
+                "text":"Priya did not approve invoice 25.", "complete":true,
+                "finish_reason":"end_of_generation", "segments":[{
+                    "start_byte":start,"end_byte":end,"prompt_tokens":300,"context_tokens":2048,
+                    "input_tokens":12,"output_budget":96,"generated_tokens":12,"reused_tokens":0,
+                    "decoded_tokens":300,"prefill_ms":1,"generation_ms":1,"complete":true,
+                    "finish_reason":"end_of_generation","text":"Priya did not approve invoice 25."
+                }]
+            })).unwrap();
+            assert_eq!(finalize_completion(&completion, source, Formality::Neutral, ""), source);
+        }
     }
 
     #[test]
