@@ -28,6 +28,9 @@ def main():
         if source['kind'] != 'existing' and (args.force or not output.exists()):
             pcm = bytearray()
             if source['kind'] == 'tts':
+                gap_ms = source.get('segment_gap_ms', 100)
+                if type(gap_ms) is not int or not 0 <= gap_ms <= 1000:
+                    raise ValueError('TTS segment_gap_ms must be an integer from 0 to 1000')
                 with tempfile.TemporaryDirectory(prefix='parrot-quality-') as temp:
                     for index, segment in enumerate(source['segments']):
                         aiff = Path(temp) / f'{index}.aiff'
@@ -37,7 +40,7 @@ def main():
                         with wave.open(str(wav), 'rb') as audio:
                             pcm.extend(audio.readframes(audio.getnframes()))
                         if index + 1 < len(source['segments']):
-                            pcm.extend(b'\0' * 3200)  # 100 ms between explicitly voiced language segments.
+                            pcm.extend(b'\0' * (gap_ms * 32))  # 16 kHz, 16-bit mono.
             elif source['kind'] == 'silence':
                 pcm.extend(b'\0' * round(source['seconds'] * 32000))
             elif source['kind'] == 'repeat_with_silent_tail':

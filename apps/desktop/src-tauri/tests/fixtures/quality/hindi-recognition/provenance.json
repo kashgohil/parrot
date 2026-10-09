@@ -1,0 +1,227 @@
+{
+  "generator": "generate-quality-fixtures.py",
+  "records": [
+    {
+      "id": "hi-facts",
+      "audio": "../audio/hi-facts.wav",
+      "sha256": "c5de5d7933b53e59174eb772d7d6e770353a274d9100950c24f3c24b155b4811",
+      "seconds": 2.6819375,
+      "source": {
+        "kind": "tts",
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "प्रिया ने 25 रुपये का भुगतान नहीं किया।"
+          }
+        ],
+        "rate": 150
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "hi-en-mix",
+      "audio": "../audio/hi-en-mix.wav",
+      "sha256": "2757c94311bf46c749a51237426f76b813d1e1973c579846d1800802ba6f0b8d",
+      "seconds": 3.002,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "शायद प्रिया ने"
+          },
+          {
+            "voice": "Samantha",
+            "text": "invoice approve"
+          },
+          {
+            "voice": "Lekha",
+            "text": "नहीं किया।"
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "mix-negative-single-voice",
+      "audio": "mix-negative-single-voice.wav",
+      "sha256": "ed3b8fd7d3ecde45be9647008a926946b13d8e0849dbd4b4eb18d47752f9dd24",
+      "seconds": 2.63075,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segment_gap_ms": 100,
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "शायद प्रिया ने invoice approve नहीं किया।"
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "mix-positive-single-voice",
+      "audio": "mix-positive-single-voice.wav",
+      "sha256": "ef218afc76e58742665bcbe57ae7a80b674987d09bf73f768c260083407dd232",
+      "seconds": 2.2825,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segment_gap_ms": 100,
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "शायद प्रिया ने invoice approve किया।"
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "mix-negative-zero-gap",
+      "audio": "mix-negative-zero-gap.wav",
+      "sha256": "1a41d0d7ee221c4e5b04b1f2da4a9a4327538eef7554b221f5128278a137d798",
+      "seconds": 2.802,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segment_gap_ms": 0,
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "शायद प्रिया ने"
+          },
+          {
+            "voice": "Samantha",
+            "text": "invoice approve"
+          },
+          {
+            "voice": "Lekha",
+            "text": "नहीं किया।"
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "mix-positive-voice-switch",
+      "audio": "mix-positive-voice-switch.wav",
+      "sha256": "e85d7686c8a0c135c3fea3581d0939383539cef571cb19a3f189d0d3de6b02ca",
+      "seconds": 2.586,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segment_gap_ms": 100,
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "शायद प्रिया ने"
+          },
+          {
+            "voice": "Samantha",
+            "text": "invoice approve"
+          },
+          {
+            "voice": "Lekha",
+            "text": "किया।"
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "mix-amount-negative",
+      "audio": "mix-amount-negative.wav",
+      "sha256": "22de23057581410648058b70c31c7f5a5ac4cacc97e6d4f727d90bfeec470fcd",
+      "seconds": 3.0370625,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segment_gap_ms": 100,
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "रवि ने 35 रुपये का payment नहीं किया।"
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "mix-technical-prohibition",
+      "audio": "mix-technical-prohibition.wav",
+      "sha256": "997392796d7ff87fcd8a75a6549f019d272476d0cc75a8576ec7126a9262ef13",
+      "seconds": 5.0688125,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segment_gap_ms": 100,
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "शायद API timeout 300 milliseconds है, अभी release deploy मत करो।"
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "hi-negative-control",
+      "audio": "hi-negative-control.wav",
+      "sha256": "65c251f20d0de9ed0858eab3580bb257fe6132b5236d4fd65d16b212905d568e",
+      "seconds": 2.387,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segment_gap_ms": 100,
+        "segments": [
+          {
+            "voice": "Lekha",
+            "text": "शायद प्रिया ने बिल स्वीकृत नहीं किया।"
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    },
+    {
+      "id": "en-negative-control",
+      "audio": "en-negative-control.wav",
+      "sha256": "18585430e3c7db53798722b188555bbfbfc21871f21f48e2417bba348174a158",
+      "seconds": 2.3356875,
+      "source": {
+        "kind": "tts",
+        "rate": 150,
+        "segment_gap_ms": 100,
+        "segments": [
+          {
+            "voice": "Samantha",
+            "text": "Maybe Priya did not approve the invoice."
+          }
+        ]
+      },
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2
+    }
+  ]
+}
