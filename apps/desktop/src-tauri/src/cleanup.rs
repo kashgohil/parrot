@@ -313,18 +313,69 @@ fn transcript_words(text: &str) -> Vec<TranscriptWord> {
     let mut words = Vec::new();
     let mut start = None;
     for (index, character) in text.char_indices() {
-        let numeric_separator = matches!(character, '.' | ',')
-            && start.is_some()
-            && text[..index]
-                .chars()
-                .next_back()
-                .is_some_and(|c| c.is_ascii_digit())
+        let numeric_separator = matches!(character, '.' | ',' | '-' | '+')
+            && (matches!(character, '-' | '+')
+                || start.is_none()
+                || text[..index]
+                    .chars()
+                    .next_back()
+                    .is_some_and(|c| c.is_ascii_digit()))
             && text[index + character.len_utf8()..]
                 .chars()
                 .next()
                 .is_some_and(|c| c.is_ascii_digit());
+        // Allow layout punctuation, while retaining currency, percentage,
+        // mathematical and emoji symbols that can carry substantive meaning.
+        // Unknown punctuation stays protected rather than silently discarded.
+        let layout = matches!(
+            character,
+            '.' | ','
+                | ':'
+                | ';'
+                | '!'
+                | '?'
+                | '\''
+                | '"'
+                | '-'
+                | '—'
+                | '–'
+                | '…'
+                | '('
+                | ')'
+                | '['
+                | ']'
+                | '{'
+                | '}'
+                | '<'
+                | '>'
+                | '`'
+                | '‘'
+                | '’'
+                | '“'
+                | '”'
+                | '«'
+                | '»'
+                | '，'
+                | '。'
+                | '、'
+                | '：'
+                | '；'
+                | '！'
+                | '？'
+                | '（'
+                | '）'
+                | '「'
+                | '」'
+                | '『'
+                | '』'
+                | '।'
+                | '॥'
+                | '،'
+                | '؛'
+                | '؟'
+        );
         let content = character.is_alphanumeric()
-            || (!character.is_whitespace() && character.script() != Script::Common)
+            || (!character.is_whitespace() && !layout)
             || numeric_separator;
         if content {
             start.get_or_insert(index);
@@ -748,6 +799,14 @@ mod tests {
                 "I like it.",
             ),
             ("Send the draft to Priya.", "Send the draft to Ravi."),
+            ("Priya paid $25.", "Priya paid €25."),
+            (
+                "Keep the change at -25 percent.",
+                "Keep the change at 25 percent.",
+            ),
+            ("Use .5 percent.", "Use 5 percent."),
+            ("It increased 25%.", "It increased 25."),
+            ("I approve 👍", "I approve 👎"),
         ] {
             assert_eq!(faithful(candidate, source), source);
         }
