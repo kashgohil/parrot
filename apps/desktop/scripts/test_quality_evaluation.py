@@ -12,6 +12,36 @@ SPEC.loader.exec_module(quality)
 
 
 class CleanupDiagnosticsTests(unittest.TestCase):
+    def test_formatting_contract_distinguishes_case_terminal_and_fidelity(self):
+        english = dict(format_check=dict(terminal=['?'], initial_uppercase=True))
+        self.assertEqual(quality.formatting_check(english, 'Can Priya deploy 2.1?'),
+                         dict(terminal=True, initial_case=True, passed=True))
+        self.assertFalse(quality.formatting_check(english, 'Can Priya deploy 2.1.')['terminal'])
+        self.assertFalse(quality.formatting_check(english, 'can Priya deploy 2.1?')['initial_case'])
+        self.assertFalse(quality.formatting_check(english, '')['passed'])
+        hindi = dict(format_check=dict(terminal=['।', '.']))
+        self.assertTrue(quality.formatting_check(hindi, '  प्रिया ने भुगतान नहीं किया।\n')['passed'])
+        self.assertFalse(quality.formatting_check(hindi, 'प्रिया ने भुगतान नहीं किया')['passed'])
+        self.assertIsNone(quality.formatting_check({}, 'on it'))
+        # A well-punctuated omission is still a fidelity failure. Surface checks
+        # must neither replace the fact screen nor approve meaning.
+        case = dict(reference='शायद प्रिया ने भुगतान नहीं किया।', languages=['hi'],
+                    facts=[dict(id='negation', any_of=['नहीं'])], **hindi)
+        damaged = 'प्रिया ने भुगतान किया।'
+        self.assertTrue(quality.formatting_check(case, damaged)['passed'])
+        self.assertTrue(quality.properties(case, damaged, case['reference'])['introduced_regression'])
+
+    def test_manifest_rejects_malformed_format_contracts(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / 'manifest.json'
+            for contract in [None, {}, dict(terminal=[]), dict(terminal='.'),
+                             dict(terminal=['word']), dict(terminal=['.'], initial_uppercase='yes')]:
+                quality.write_json(path, dict(schema_version=1, cases=[dict(
+                    id='format', languages=['en'], primary_metric='wer', reference='Ready.',
+                    format_check=contract)]))
+                with self.assertRaisesRegex(ValueError, 'Formatting contract'):
+                    quality.read_manifest(path)
+
     def test_asr_pipeline_run_accepts_native_bypass_without_inventing_a_prompt(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

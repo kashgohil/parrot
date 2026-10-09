@@ -159,6 +159,17 @@ def write_json(path, data):
     Path(path).write_text(json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')
 
 
+def formatting_check(case, text):
+    """Check only the declared surface contract; do not infer semantic quality."""
+    contract = case.get('format_check')
+    if contract is None:
+        return None
+    text = text.strip()
+    terminal = any(text.endswith(mark) for mark in contract['terminal'])
+    initial_case = not contract.get('initial_uppercase', False) or text[:1].isupper()
+    return dict(terminal=terminal, initial_case=initial_case, passed=terminal and initial_case)
+
+
 def read_manifest(path):
     manifest = json.loads(path.read_text(encoding='utf-8'))
     if manifest.get('schema_version') != 1 or not manifest.get('cases'):
@@ -170,6 +181,13 @@ def read_manifest(path):
         ids.add(case['id'])
         if case['primary_metric'] not in ('wer', 'cer') or not case['languages']:
             raise ValueError('Case needs a primary metric and languages')
+        if 'format_check' in case:
+            contract = case['format_check']
+            if (not isinstance(contract, dict) or not isinstance(contract.get('terminal'), list)
+                    or not contract['terminal'] or any(not isinstance(mark, str) or len(mark) != 1
+                                                      for mark in contract['terminal'])
+                    or type(contract.get('initial_uppercase', False)) is not bool):
+                raise ValueError('Formatting contract needs terminal characters and an optional initial-case boolean')
         for fact in case.get('facts', []):
             if not fact.get('any_of') or fact.get('min_count', 1) < 1:
                 raise ValueError('Fact needs alternatives and a positive minimum count')
@@ -396,9 +414,12 @@ def score(output, reviews_path):
         item['metrics'] = metrics(case['reference'], row['text'])
         item['properties'] = properties(case, row['text'], source)
         item['reference_languages'] = case['languages']
+        if 'format_check' in case:
+            item['formatting'] = formatting_check(case, row['text'])
         if row['stage'] != 'asr':
             item['candidate_properties'] = properties(case, row['candidate'], source)
             item['fallback'] = row['fallback']
+            item['formatting_applied'] = row.get('formatting_applied', False)
             item['complete'] = row.get('complete')
             item['finish_reason'] = row.get('finish_reason')
             item['hints_truncated'] = row.get('hints_truncated', False)
@@ -418,6 +439,8 @@ def score(output, reviews_path):
                              'output_sha256': output_hash,
                              'source': source, 'reference': case['reference'], 'output': row['text'], 'model_output': row.get('model_output'),
                              'checks': item['properties'], 'criteria': 'Check meaning, language/script, names, amounts, negation, uncertainty, omissions, additions and useful cleanup. Flags are screening checks, not semantic proof.'}
+        if 'formatting' in item:
+            queue[row['key']]['formatting'] = item['formatting']
         scored.append(item)
         groups[(row['variant'], row['stage'], row.get('tone'), row.get('language'), '+'.join(case['languages']) if row['stage'] == 'asr' else 'all', (row.get('source_key') or '').split('/')[0])].append(item)
     summaries = []
