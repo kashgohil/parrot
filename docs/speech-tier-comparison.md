@@ -4,6 +4,12 @@ ISSUE-1045 compares multilingual base Q5_1, small Q5_1 and turbo Q5_0.
 The existing Compact multilingual option uses **small-q5_1**, not **small.en**.
 Base is an evaluation candidate; this config does not add it to Settings.
 
+The [measured comparison](benchmarks/2026-10-09-speech-tiers.md) retains compact
+and excludes base after Hindi script/amount and long-input screening failures.
+Compact saves speech-worker memory on the measured Mac but is not equivalent
+to turbo in recognition quality. Settings exposes the storage cost and the
+observed accuracy tradeoff; saved choices and defaults stay the same.
+
 Use the [speech-only example](../apps/desktop/scripts/speech-tier-comparison.example.json)
 with absolute paths to downloaded GGML artifacts. Build the worker as described
 in [quality-evaluation.md](quality-evaluation.md), then run both unchanged corpora:
