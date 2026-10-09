@@ -134,14 +134,22 @@ style; pronouns, negation, order and the remaining words stay protected. Arbitra
 paraphrases still cause fallback in these modes. Currency, percentage, sign and
 emoji changes are also rejected. Context alone does not opt into rewriting. Conservative cleanup can
 keep awkward grammar, spelling or unresolved speech rather than risk changing
-content. The deterministic filler list's language ambiguity remains ISSUE-1048;
-actual context budgeting and truncation detection remain ISSUE-1047.
+content. ISSUE-1048 replaces the global filler list with the conservative
+[source-context policy](cleanup-fillers.md); protected tokens remain in the
+content guard. ISSUE-1047 supplies actual model-token budgeting and explicit
+incomplete-generation detection, with exact raw fallback on limits.
 
 The separate text-only `tests/fixtures/quality/cleanup-faithfulness.json` corpus
 adds questions, commands, explicit corrections, meaningful hedges, repeated
 sentences and the observed French/Spanish pipeline inputs. Evaluate it with
 `--manifest apps/desktop/src-tauri/tests/fixtures/quality/cleanup-faithfulness.json`
 and a cleanup-only config to isolate prompt/output changes from ASR.
+
+`tests/fixtures/quality/cleanup-fillers.json` adds 32 text-only cases for German
+words, Hindi/Hinglish, quotes, names, uncertain pauses and English clause cues.
+Its explicit deterministic oracle and adversarial candidates also exercise both
+backend finalizers in Rust tests. The [ISSUE-1048 comparison](benchmarks/2026-10-09-cleanup-fillers.md)
+records 1,584 repeated native results, including increased model/limit fallbacks.
 
 ISSUE-1046 uses the shared [cleanup eligibility policy](cleanup-eligibility.md)
 for `cleanup_pipeline` worker requests. Pipeline results with `cleanup_skipped`

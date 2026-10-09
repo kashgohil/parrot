@@ -1,0 +1,584 @@
+{
+  "schema_version": 1,
+  "rows": 1584,
+  "groups": [
+    {
+      "phase": "before",
+      "corpus": "faithfulness",
+      "variant": "qwen-0-5b",
+      "rows": 72,
+      "completed": 72,
+      "incomplete": 0,
+      "fallbacks": 24,
+      "exact_input": 42,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "normalized_oracle_mismatches": null,
+      "incomplete_cases": []
+    },
+    {
+      "phase": "before",
+      "corpus": "faithfulness",
+      "variant": "qwen-1-5b",
+      "rows": 72,
+      "completed": 72,
+      "incomplete": 0,
+      "fallbacks": 32,
+      "exact_input": 38,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "normalized_oracle_mismatches": null,
+      "incomplete_cases": []
+    },
+    {
+      "phase": "before",
+      "corpus": "faithfulness",
+      "variant": "qwen-3b",
+      "rows": 72,
+      "completed": 72,
+      "incomplete": 0,
+      "fallbacks": 14,
+      "exact_input": 40,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "normalized_oracle_mismatches": null,
+      "incomplete_cases": []
+    },
+    {
+      "phase": "after",
+      "corpus": "faithfulness",
+      "variant": "qwen-0-5b",
+      "rows": 72,
+      "completed": 72,
+      "incomplete": 0,
+      "fallbacks": 24,
+      "exact_input": 42,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "normalized_oracle_mismatches": null,
+      "incomplete_cases": []
+    },
+    {
+      "phase": "after",
+      "corpus": "faithfulness",
+      "variant": "qwen-1-5b",
+      "rows": 72,
+      "completed": 72,
+      "incomplete": 0,
+      "fallbacks": 28,
+      "exact_input": 38,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "normalized_oracle_mismatches": null,
+      "incomplete_cases": []
+    },
+    {
+      "phase": "after",
+      "corpus": "faithfulness",
+      "variant": "qwen-3b",
+      "rows": 72,
+      "completed": 72,
+      "incomplete": 0,
+      "fallbacks": 16,
+      "exact_input": 42,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "normalized_oracle_mismatches": null,
+      "incomplete_cases": []
+    },
+    {
+      "phase": "before",
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "rows": 192,
+      "completed": 186,
+      "incomplete": 6,
+      "fallbacks": 50,
+      "exact_input": 6,
+      "source_content_flags": 156,
+      "reference_fact_flags": 156,
+      "normalized_oracle_mismatches": 156,
+      "incomplete_cases": [
+        {
+          "case": "hindi-english-interior",
+          "tone": "formal",
+          "repeat": 1,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "neutral",
+          "repeat": 1,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "formal",
+          "repeat": 1,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-english-interior",
+          "tone": "formal",
+          "repeat": 2,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "neutral",
+          "repeat": 2,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "formal",
+          "repeat": 2,
+          "finish_reason": "token_limit"
+        }
+      ]
+    },
+    {
+      "phase": "before",
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "rows": 192,
+      "completed": 192,
+      "incomplete": 0,
+      "fallbacks": 76,
+      "exact_input": 0,
+      "source_content_flags": 162,
+      "reference_fact_flags": 162,
+      "normalized_oracle_mismatches": 162,
+      "incomplete_cases": []
+    },
+    {
+      "phase": "before",
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "rows": 192,
+      "completed": 192,
+      "incomplete": 0,
+      "fallbacks": 28,
+      "exact_input": 0,
+      "source_content_flags": 162,
+      "reference_fact_flags": 162,
+      "normalized_oracle_mismatches": 162,
+      "incomplete_cases": []
+    },
+    {
+      "phase": "after",
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "rows": 192,
+      "completed": 186,
+      "incomplete": 6,
+      "fallbacks": 120,
+      "exact_input": 158,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "normalized_oracle_mismatches": 0,
+      "incomplete_cases": [
+        {
+          "case": "hindi-english-interior",
+          "tone": "formal",
+          "repeat": 1,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "neutral",
+          "repeat": 1,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "formal",
+          "repeat": 1,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-english-interior",
+          "tone": "formal",
+          "repeat": 2,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "neutral",
+          "repeat": 2,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "formal",
+          "repeat": 2,
+          "finish_reason": "token_limit"
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "rows": 192,
+      "completed": 188,
+      "incomplete": 4,
+      "fallbacks": 144,
+      "exact_input": 150,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "normalized_oracle_mismatches": 0,
+      "incomplete_cases": [
+        {
+          "case": "hindi-leading",
+          "tone": "neutral",
+          "repeat": 1,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "formal",
+          "repeat": 1,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "neutral",
+          "repeat": 2,
+          "finish_reason": "token_limit"
+        },
+        {
+          "case": "hindi-leading",
+          "tone": "formal",
+          "repeat": 2,
+          "finish_reason": "token_limit"
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "rows": 192,
+      "completed": 192,
+      "incomplete": 0,
+      "fallbacks": 114,
+      "exact_input": 152,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "normalized_oracle_mismatches": 0,
+      "incomplete_cases": []
+    }
+  ],
+  "comparisons": {
+    "faithfulness": {
+      "regression_check_pass": true,
+      "semantic_release_qualified": false,
+      "max_rate_increase": 0.02,
+      "regressions": [],
+      "note": "Compares worst repeat per case. Existing baseline failures remain unresolved; passing this check does not qualify release quality."
+    },
+    "fillers": {
+      "regression_check_pass": true,
+      "semantic_release_qualified": false,
+      "max_rate_increase": 0.02,
+      "regressions": [],
+      "note": "Compares worst repeat per case. Existing baseline failures remain unresolved; passing this check does not qualify release quality."
+    }
+  },
+  "repeats": {
+    "before-faithfulness": {
+      "pairs": 108,
+      "identical_text_completion_and_fallback": true
+    },
+    "after-faithfulness": {
+      "pairs": 108,
+      "identical_text_completion_and_fallback": true
+    },
+    "before-fillers": {
+      "pairs": 288,
+      "identical_text_completion_and_fallback": true
+    },
+    "after-fillers": {
+      "pairs": 288,
+      "identical_text_completion_and_fallback": true
+    }
+  },
+  "artifacts": {
+    "before-faithfulness": {
+      "binary": {
+        "path": "/private/tmp/parrot-1048-before-quality-eval",
+        "files": [
+          {
+            "name": "parrot-1048-before-quality-eval",
+            "bytes": 30522256,
+            "sha256": "75bacd441e0fc76899448192e9081ea6d8f9fb10771a210226600801b8a4d196"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "models": {
+        "qwen-0-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+              "bytes": 491400032,
+              "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+            }
+          ]
+        },
+        "qwen-1-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+              "bytes": 1117320736,
+              "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+            }
+          ]
+        },
+        "qwen-3b": {
+          "path": "/private/tmp/parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+              "bytes": 2104932768,
+              "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "09a617dc38255254738a3956d4f4ba91ec502db033e77059e3c9bf708250cdf8",
+      "git_commit": "568939b3bc0b22dcd83d0780ec847474be4113e7",
+      "git_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hardware": {
+        "system": "Darwin",
+        "node": "Kashyaps-MacBook-Pro.local",
+        "release": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+        "machine": "arm64",
+        "hw.model": "Mac16,7",
+        "hw.memsize": "25769803776",
+        "machdep.cpu.brand_string": "Apple M4 Pro"
+      }
+    },
+    "after-faithfulness": {
+      "binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30521824,
+            "sha256": "2b2c3c440dcf2be3c0805ae535c727a98c1e30d45f39293a130c0d70298e9d60"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "models": {
+        "qwen-0-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+              "bytes": 491400032,
+              "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+            }
+          ]
+        },
+        "qwen-1-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+              "bytes": 1117320736,
+              "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+            }
+          ]
+        },
+        "qwen-3b": {
+          "path": "/private/tmp/parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+              "bytes": 2104932768,
+              "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "09a617dc38255254738a3956d4f4ba91ec502db033e77059e3c9bf708250cdf8",
+      "git_commit": "7d4b93c4770d48650389004d19942fb1ad264b7c",
+      "git_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hardware": {
+        "system": "Darwin",
+        "node": "Kashyaps-MacBook-Pro.local",
+        "release": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+        "machine": "arm64",
+        "hw.model": "Mac16,7",
+        "hw.memsize": "25769803776",
+        "machdep.cpu.brand_string": "Apple M4 Pro"
+      }
+    },
+    "before-fillers": {
+      "binary": {
+        "path": "/private/tmp/parrot-1048-before-quality-eval",
+        "files": [
+          {
+            "name": "parrot-1048-before-quality-eval",
+            "bytes": 30522256,
+            "sha256": "75bacd441e0fc76899448192e9081ea6d8f9fb10771a210226600801b8a4d196"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "models": {
+        "qwen-0-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+              "bytes": 491400032,
+              "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+            }
+          ]
+        },
+        "qwen-1-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+              "bytes": 1117320736,
+              "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+            }
+          ]
+        },
+        "qwen-3b": {
+          "path": "/private/tmp/parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+              "bytes": 2104932768,
+              "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "033ef898caa67381552a17cb320848e0e8fb3750f08d0fbbcad669ed210e5427",
+      "git_commit": "568939b3bc0b22dcd83d0780ec847474be4113e7",
+      "git_diff_sha256": "60d84284b92de3971684d5da52513187aa3654c07cf34e19a9d282d6735428c3",
+      "hardware": {
+        "system": "Darwin",
+        "node": "Kashyaps-MacBook-Pro.local",
+        "release": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+        "machine": "arm64",
+        "hw.model": "Mac16,7",
+        "hw.memsize": "25769803776",
+        "machdep.cpu.brand_string": "Apple M4 Pro"
+      }
+    },
+    "after-fillers": {
+      "binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30521824,
+            "sha256": "2b2c3c440dcf2be3c0805ae535c727a98c1e30d45f39293a130c0d70298e9d60"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "models": {
+        "qwen-0-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+              "bytes": 491400032,
+              "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+            }
+          ]
+        },
+        "qwen-1-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+              "bytes": 1117320736,
+              "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+            }
+          ]
+        },
+        "qwen-3b": {
+          "path": "/private/tmp/parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+              "bytes": 2104932768,
+              "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "033ef898caa67381552a17cb320848e0e8fb3750f08d0fbbcad669ed210e5427",
+      "git_commit": "7d4b93c4770d48650389004d19942fb1ad264b7c",
+      "git_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hardware": {
+        "system": "Darwin",
+        "node": "Kashyaps-MacBook-Pro.local",
+        "release": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+        "machine": "arm64",
+        "hw.model": "Mac16,7",
+        "hw.memsize": "25769803776",
+        "machdep.cpu.brand_string": "Apple M4 Pro"
+      }
+    }
+  },
+  "semantic_release_qualified": false,
+  "physical_device_qualified": false,
+  "note": "Synthetic text and source-preservation checks; fallbacks are not successful model cleanup.",
+  "focused_final_oracle_matches": 576,
+  "focused_preserved_context_rows": 486,
+  "focused_permitted_leading_pause_rows": 90,
+  "candidate_human_pending": 792
+}

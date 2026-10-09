@@ -41,3 +41,6 @@ opening can still authorize a leading pause before a later language switch.
 Uncapitalized names that resemble pauses also remain a contextual ambiguity.
 Expanding removal needs speaker-reviewed examples, tracked in ISSUE-1077.
 No language model, new dependency, ASR setting or selected cleanup tier is added.
+
+The [repeated native comparison](benchmarks/2026-10-09-cleanup-fillers.md)
+records source retention, model/limit fallbacks and separate human qualification.
