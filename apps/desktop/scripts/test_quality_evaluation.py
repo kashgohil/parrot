@@ -103,6 +103,25 @@ class PropertyTests(unittest.TestCase):
         {'id': 'name', 'any_of': ['Priya']}, {'id': 'negation', 'any_of': ['not']},
         {'id': 'amount', 'any_of': ['25', 'twenty five']}]}
 
+    def test_pipeline_bypass_is_counted_without_claiming_model_completion(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp)
+            row = {'key': 'model/case/1', 'case': 'case', 'variant': 'model',
+                   'stage': 'cleanup_pipeline', 'tone': 'neutral', 'repeat': 1,
+                   'latency_ms': 0.1, 'input': 'on it', 'text': 'on it',
+                   'candidate': 'on it', 'model_output': '', 'fallback': False,
+                   'cleanup_skipped': True, 'application_cleanup_eligible': False}
+            quality.write_json(path / 'results.json', {
+                'manifest': {'cases': [{'id': 'case', 'reference': 'on it', 'facts': [],
+                                       'primary_metric': 'wer', 'languages': ['en']}]},
+                'complete': True, 'normalization': quality.NORMALIZATION, 'skipped': [], 'rows': [row]})
+            quality.score(path, None)
+            report = json.loads((path / 'scores.json').read_text())
+            self.assertEqual(report['groups'][0]['skipped_cleanup'], 1)
+            self.assertEqual(report['groups'][0]['incomplete_completions'], 0)
+            self.assertIsNone(report['rows'][0]['complete'])
+            self.assertFalse(report['rows'][0]['properties']['introduced_regression'])
+
     def test_missing_asr_fact_is_not_attributed_to_cleanup(self):
         result = quality.properties(self.CASE, 'Priya approved 25 euros', 'Priya approved 25 euros')
         self.assertIn('negation', result['reference_facts_failed'])

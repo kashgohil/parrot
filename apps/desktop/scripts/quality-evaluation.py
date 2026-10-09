@@ -400,6 +400,8 @@ def score(output, reviews_path):
             item['complete'] = row.get('complete')
             item['finish_reason'] = row.get('finish_reason')
             item['hints_truncated'] = row.get('hints_truncated', False)
+            item['cleanup_skipped'] = row.get('cleanup_skipped', False)
+            item['application_cleanup_eligible'] = row.get('application_cleanup_eligible')
             item['unchanged'] = row['text'].strip() == source.strip()
             item['off_baseline'] = properties(case, source, source)
             item['fillers_removed'] = sum(occurrences(source, filler) - occurrences(row['text'], filler) for filler in case.get('fillers', []))
@@ -427,6 +429,7 @@ def score(output, reviews_path):
                    'fallbacks': sum(row.get('fallback', False) for row in good), 'unchanged': sum(row.get('unchanged', False) for row in good),
                    'incomplete_completions': sum(row.get('complete') is False for row in good),
                    'bounded_hints': sum(row.get('hints_truncated', False) for row in good),
+                   'skipped_cleanup': sum(row.get('cleanup_skipped', False) for row in good),
                    'human_pending': sum(not row['human_review'].get('decision') for row in good),
                    'human_rejected': sum(row['human_review'].get('decision') == 'reject' for row in good),
                    'median_ms': statistics.median(row['latency_ms'] for row in rows)}

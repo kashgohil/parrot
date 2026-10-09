@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "name": "parrot-cleanup-eligibility-v1",
+  "provenance": "Synthetic text. Script and length checks only; non-English semantic review is separate.",
+  "cases": [
+    {
+      "id": "english-sentence",
+      "input": "send the invoice",
+      "expected_eligible": true
+    },
+    {
+      "id": "english-punctuation",
+      "input": "send,the,invoice",
+      "expected_eligible": true
+    },
+    {
+      "id": "unicode-whitespace",
+      "input": "send the invoice",
+      "expected_eligible": true
+    },
+    {
+      "id": "english-contraction",
+      "input": "don't send it",
+      "expected_eligible": true
+    },
+    {
+      "id": "english-ack",
+      "input": "  yes!  ",
+      "expected_eligible": false
+    },
+    {
+      "id": "english-two-words",
+      "input": "on it",
+      "expected_eligible": false
+    },
+    {
+      "id": "long-latin-name",
+      "input": "Alexanderson",
+      "expected_eligible": false
+    },
+    {
+      "id": "hindi-sentence",
+      "input": "इसे नहीं भेजो",
+      "expected_eligible": true
+    },
+    {
+      "id": "hindi-mixed",
+      "input": "प्रिया ने invoice नहीं भेजा",
+      "expected_eligible": true
+    },
+    {
+      "id": "hindi-ack",
+      "input": "ठीक है",
+      "expected_eligible": false
+    },
+    {
+      "id": "hindi-short-command",
+      "input": "नहीं भेजो",
+      "expected_eligible": false
+    },
+    {
+      "id": "chinese-sentence",
+      "input": "小王没有批准这笔付款",
+      "expected_eligible": true
+    },
+    {
+      "id": "chinese-ack",
+      "input": "谢谢",
+      "expected_eligible": false
+    },
+    {
+      "id": "chinese-seven",
+      "input": "一二三四五六七！！！",
+      "expected_eligible": false
+    },
+    {
+      "id": "chinese-eight",
+      "input": "一二三四五六七八",
+      "expected_eligible": true
+    },
+    {
+      "id": "japanese-sentence",
+      "input": "明日の会議は午後三時です",
+      "expected_eligible": true
+    },
+    {
+      "id": "japanese-ack",
+      "input": "ありがとう",
+      "expected_eligible": false
+    },
+    {
+      "id": "thai-sentence",
+      "input": "พรุ่งนี้อย่าส่งใบแจ้งหนี้",
+      "expected_eligible": true
+    },
+    {
+      "id": "thai-ack",
+      "input": "ขอบคุณ",
+      "expected_eligible": false
+    },
+    {
+      "id": "lao-sentence",
+      "input": "ກະລຸນາສົ່ງໃບແຈ້ງໜີ້",
+      "expected_eligible": true
+    },
+    {
+      "id": "khmer-sentence",
+      "input": "សូមកុំផ្ញើវិក្កយបត្រនៅថ្ងៃនេះ",
+      "expected_eligible": true
+    },
+    {
+      "id": "myanmar-sentence",
+      "input": "မနက်ဖြန်ငွေတောင်းခံလွှာမပို့ပါနှင့်",
+      "expected_eligible": true
+    },
+    {
+      "id": "mixed-unspaced",
+      "input": "请发送invoice",
+      "expected_eligible": true
+    },
+    {
+      "id": "mixed-three-words",
+      "input": "中 go to it",
+      "expected_eligible": true
+    },
+    {
+      "id": "combined-seven",
+      "input": "中áááááá",
+      "expected_eligible": false
+    },
+    {
+      "id": "combined-eight",
+      "input": "中ááááááá",
+      "expected_eligible": true
+    },
+    {
+      "id": "punctuation",
+      "input": "... !!! —",
+      "expected_eligible": false
+    },
+    {
+      "id": "emoji",
+      "input": "🙂🙂🙂🙂🙂🙂🙂🙂",
+      "expected_eligible": false
+    },
+    {
+      "id": "empty",
+      "input": "",
+      "expected_eligible": false
+    },
+    {
+      "id": "spaces",
+      "input": "  \n  ",
+      "expected_eligible": false
+    },
+    {
+      "id": "disabled-off-True",
+      "input": "小王没有批准这笔付款",
+      "cleanup_mode": "off",
+      "cleanup_enabled": true,
+      "expected_eligible": false
+    },
+    {
+      "id": "disabled-blocking-False",
+      "input": "小王没有批准这笔付款",
+      "cleanup_mode": "blocking",
+      "cleanup_enabled": false,
+      "expected_eligible": false
+    },
+    {
+      "id": "disabled-background-False",
+      "input": "小王没有批准这笔付款",
+      "cleanup_mode": "background",
+      "cleanup_enabled": false,
+      "expected_eligible": false
+    },
+    {
+      "id": "background-enabled",
+      "input": "小王没有批准这笔付款",
+      "cleanup_mode": "background",
+      "expected_eligible": true
+    }
+  ]
+}

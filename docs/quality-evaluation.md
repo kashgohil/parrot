@@ -143,6 +143,18 @@ sentences and the observed French/Spanish pipeline inputs. Evaluate it with
 `--manifest apps/desktop/src-tauri/tests/fixtures/quality/cleanup-faithfulness.json`
 and a cleanup-only config to isolate prompt/output changes from ASR.
 
+ISSUE-1046 uses the shared [cleanup eligibility policy](cleanup-eligibility.md)
+for `cleanup_pipeline` worker requests. Pipeline results with `cleanup_skipped`
+retain the exact input, have no model completion status, and report zero native
+segments. The worker acquires a cleanup model only for a request that needs it.
+`application_cleanup_eligible` records the decision; `skipped_cleanup` counts
+bypasses in scored groups. An isolated request still forces cleanup to measure
+the model independently of application eligibility. Direct pipeline requests
+can supply `cleanup_mode` (`off`, `blocking`, `background`) and `cleanup_enabled`
+to represent resolved settings; defaults are Blocking and enabled. These fields
+are refused on isolated requests. The regular ASR-to-cleanup runner uses those
+defaults. Neither worker nor runner reads saved app settings.
+
 `scores.json` and `summary.md` distinguish:
 
 - **ASR:** reference versus raw recognition, before cleanup.

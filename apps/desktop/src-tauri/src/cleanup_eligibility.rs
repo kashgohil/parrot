@@ -57,6 +57,26 @@ mod tests {
     use super::*;
 
     #[test]
+    fn shared_fixture_decisions_match_the_application_policy() {
+        let corpus: serde_json::Value = serde_json::from_str(include_str!(
+            "../tests/fixtures/quality/cleanup-eligibility.json"
+        ))
+        .unwrap();
+        for case in corpus["cases"].as_array().unwrap() {
+            assert_eq!(
+                should_cleanup(
+                    case["input"].as_str().unwrap(),
+                    case["cleanup_mode"].as_str().unwrap_or("blocking"),
+                    case["cleanup_enabled"].as_bool().unwrap_or(true),
+                ),
+                case["expected_eligible"].as_bool().unwrap(),
+                "{}",
+                case["id"]
+            );
+        }
+    }
+
+    #[test]
     fn substantive_unspaced_and_mixed_text_qualifies() {
         for text in [
             "小王没有批准这笔付款",

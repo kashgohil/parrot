@@ -1,7 +1,8 @@
 //! Opt-in headless worker using production ASR, prompts, token budget and finalizer.
 //! Only explicit local model/audio paths are used. No Tauri app or user DB is opened.
 use crate::{
-    audio_import::AudioSource, cleanup, cleanup_engine::SidecarCleanupClient, transcription,
+    audio_import::AudioSource, cleanup, cleanup_eligibility, cleanup_engine::SidecarCleanupClient,
+    transcription,
 };
 use anyhow::{ensure, Context, Result};
 use serde::Deserialize;
@@ -35,6 +36,8 @@ struct Case {
     whisper_decode_profile: Option<transcription::WhisperDecodeProfile>,
     input: Option<String>,
     stage: Option<String>,
+    cleanup_mode: Option<String>,
+    cleanup_enabled: Option<bool>,
     #[serde(default)]
     tones: Vec<String>,
     #[serde(default)]
@@ -78,6 +81,17 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
             "Whisper decoding profiles require the Whisper engine"
         );
         if config.engine == "cleanup" {
+            ensure!(
+                case.cleanup_mode
+                    .as_deref()
+                    .is_none_or(|mode| matches!(mode, "off" | "blocking" | "background")),
+                "Invalid cleanup mode"
+            );
+            ensure!(
+                case.stage.as_deref() == Some("cleanup_pipeline")
+                    || (case.cleanup_mode.is_none() && case.cleanup_enabled.is_none()),
+                "Cleanup settings require the pipeline stage"
+            );
             ensure!(case.input.is_some(), "Cleanup case needs input");
             ensure!(
                 matches!(
@@ -110,18 +124,44 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
         let sidecar = config
             .sidecar
             .context("Cleanup needs an explicit local sidecar path")?;
-        let model = config.model.clone();
-        let client = Arc::new(
-            tokio::task::spawn_blocking(move || SidecarCleanupClient::spawn(&sidecar, &model))
-                .await??,
-        );
-        write_row(
-            &mut file,
-            json!({"kind":"loaded", "engine":"cleanup", "load_ms":start.elapsed().as_secs_f64()*1000.0}),
-        )?;
+        // Match the app: a skipped request must not acquire a cleanup model.
+        let mut client: Option<Arc<SidecarCleanupClient>> = None;
         for case in config.cases {
             let input = case.input.unwrap();
             for tone in &case.tones {
+                let policy_start = Instant::now();
+                let eligible = cleanup_eligibility::should_cleanup(
+                    &input,
+                    case.cleanup_mode.as_deref().unwrap_or("blocking"),
+                    case.cleanup_enabled.unwrap_or(true),
+                );
+                if case.stage.as_deref() == Some("cleanup_pipeline") && !eligible {
+                    write_row(
+                        &mut file,
+                        json!({"kind":"result", "id":case.id,
+                        "stage":case.stage, "tone":tone, "input":input, "text":input,
+                        "cleanup_skipped":true, "application_cleanup_eligible":false,
+                        "model_output":"", "candidate":input, "fallback":false,
+                        "segments":[], "latency_ms":policy_start.elapsed().as_secs_f64()*1000.0}),
+                    )?;
+                    continue;
+                }
+                if client.is_none() && !input.trim().is_empty() {
+                    let load_start = Instant::now();
+                    let model = config.model.clone();
+                    let sidecar = sidecar.clone();
+                    client = Some(Arc::new(
+                        tokio::task::spawn_blocking(move || {
+                            SidecarCleanupClient::spawn(&sidecar, &model)
+                        })
+                        .await??,
+                    ));
+                    write_row(
+                        &mut file,
+                        json!({"kind":"loaded", "engine":"cleanup",
+                        "load_ms":load_start.elapsed().as_secs_f64()*1000.0}),
+                    )?;
+                }
                 let (system, hints) = cleanup::build_prompt_parts(
                     &case.custom_words,
                     &case.context_prompt,
@@ -141,7 +181,10 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
                         hints_truncated: false,
                     })
                 } else {
-                    let client = client.clone();
+                    let client = client
+                        .as_ref()
+                        .expect("nonempty input loaded cleanup")
+                        .clone();
                     let system = system.clone();
                     let hints = hints.clone();
                     let resolved_input = resolved_input.clone();
@@ -151,6 +194,7 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
                     .await?
                 };
                 let mut row = json!({"kind":"result", "id":case.id, "stage":case.stage, "tone":tone, "input":input,
+                    "application_cleanup_eligible":eligible, "cleanup_skipped":false,
                     "system_prompt":format!("{system}{hints}"), "user_message":user, "latency_ms":started.elapsed().as_secs_f64()*1000.0});
                 match native {
                     Ok(completion) => {
@@ -231,6 +275,55 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn skipped_pipeline_cases_preserve_exact_text_without_loading_a_model() {
+        let dir = std::env::temp_dir().join(format!("parrot-eligibility-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir(&dir).unwrap();
+        let model = dir.join("not-a-model.gguf");
+        let request = dir.join("request.json");
+        let output = dir.join("output.jsonl");
+        std::fs::write(&model, b"not a model").unwrap();
+        let corpus: Value = serde_json::from_str(include_str!(
+            "../tests/fixtures/quality/cleanup-eligibility.json"
+        ))
+        .unwrap();
+        let cases: Vec<_> = corpus["cases"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|case| case["expected_eligible"] == false)
+            .map(|case| {
+                json!({"id":case["id"], "input":case["input"],
+                "stage":"cleanup_pipeline", "tones":["neutral"],
+                "cleanup_mode":case["cleanup_mode"], "cleanup_enabled":case["cleanup_enabled"]})
+            })
+            .collect();
+        std::fs::write(
+            &request,
+            json!({"engine":"cleanup", "model":model,
+            "sidecar":dir.join("missing-worker"), "cases":cases})
+            .to_string(),
+        )
+        .unwrap();
+        run(&request, &output).await.unwrap();
+        let rows: Vec<Value> = std::fs::read_to_string(&output)
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        assert_eq!(rows.len(), cases.len());
+        for (row, case) in rows.iter().zip(&cases) {
+            assert_eq!(row["kind"], "result");
+            assert_eq!(row["text"], case["input"]);
+            assert_eq!(row["cleanup_skipped"], true);
+            assert_eq!(row["application_cleanup_eligible"], false);
+            assert_eq!(row["segments"], json!([]));
+            assert!(row.get("complete").is_none());
+            assert!(row.get("error").is_none());
+        }
+        std::fs::remove_dir_all(dir).unwrap();
+    }
 
     #[tokio::test]
     async fn refuses_invalid_requests_and_existing_outputs_before_loading_models() {
