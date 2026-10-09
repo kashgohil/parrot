@@ -365,7 +365,9 @@ def run(args):
                 case, source = mapping[row['id']]
                 row.update({'variant': variant['id'], 'case': case, 'repeat': repeat, 'source_key': source,
                             'key': f'{variant["id"]}/{row["id"]}/{row["tone"]}/{repeat}'})
-                row['system_prompt_sha256'] = hashlib.sha256(row['system_prompt'].encode()).hexdigest()
+                # Bypassed pipeline requests never build a prompt or load a model.
+                if 'system_prompt' in row:
+                    row['system_prompt_sha256'] = hashlib.sha256(row['system_prompt'].encode()).hexdigest()
             metadata['rows'].extend(rows)
             write_json(output / 'results.json', metadata)
     metadata['complete'] = True

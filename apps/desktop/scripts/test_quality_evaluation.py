@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 SPEC = importlib.util.spec_from_file_location('quality', Path(__file__).with_name('quality-evaluation.py'))
 quality = importlib.util.module_from_spec(SPEC)
@@ -10,6 +12,39 @@ SPEC.loader.exec_module(quality)
 
 
 class CleanupDiagnosticsTests(unittest.TestCase):
+    def test_asr_pipeline_run_accepts_native_bypass_without_inventing_a_prompt(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            model = root / 'model'
+            model.write_bytes(b'local test fixture')
+            manifest = root / 'manifest.json'
+            quality.write_json(manifest, dict(schema_version=1, cases=[dict(
+                id='short', languages=['en'], primary_metric='wer', reference='on it', audio='model')]))
+            config = root / 'config.json'
+            quality.write_json(config, dict(speech=[dict(id='speech', engine='whisper', model=str(model),
+                                                        quantization='test', language_modes=['auto'])],
+                                             cleanup=[dict(id='cleanup', model=str(model), quantization='test')], pipeline=True))
+            def worker(binary, output, name, request, timeout):
+                case = request['cases'][0]
+                if request['engine'] == 'whisper':
+                    return [dict(kind='result', id=case['id'], stage='asr', language='auto', text='on it', latency_ms=1)]
+                return [dict(kind='result', id=case['id'], stage='cleanup_pipeline', tone='neutral',
+                             input='on it', text='on it', candidate='on it', model_output='', fallback=False,
+                             cleanup_skipped=True, application_cleanup_eligible=False, segments=[], latency_ms=.01)]
+            def command(args):
+                return json.dumps(dict(known=True, languages=['en'], explicit_language_hints=False)) if '--capabilities' in args else 'fixture'
+            output = root / 'output'
+            with patch.object(quality, 'run_worker', side_effect=worker), patch.object(quality, 'command_output', side_effect=command):
+                quality.run(SimpleNamespace(config=config, manifest=manifest, output=output, repeats=1,
+                                            binary=model, sidecar=model, timeout=10))
+            result = json.loads((output / 'results.json').read_text())
+            self.assertTrue(result['complete'])
+            bypass = result['rows'][-1]
+            self.assertNotIn('system_prompt_sha256', bypass)
+            self.assertNotIn('complete', bypass)
+            scores = json.loads((output / 'scores.json').read_text())
+            self.assertEqual(sum(g['skipped_cleanup'] for g in scores['groups']), 1)
+
     def test_fixture_hints_override_model_defaults_without_changing_other_cases(self):
         variant = {'custom_words': '["Kubernetes"]', 'context_prompt': 'default context', 'writing_style': 'formal'}
         self.assertEqual(quality.cleanup_options(variant, {}), variant)
