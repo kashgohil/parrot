@@ -1,0 +1,4431 @@
+{
+  "schema_version": 1,
+  "semantic_release_qualified": false,
+  "decision": "Retain optional compact small Q5_1 with recognition tradeoffs; do not add base Q5_1 to Settings after Hindi script/amount and long-input screening failures.",
+  "priority_languages": [
+    "en",
+    "hi",
+    "hi+en"
+  ],
+  "review_pending": 300,
+  "quality_rows": 300,
+  "quality_repeat_pairs": 150,
+  "existing_default_transcripts_unchanged": 120,
+  "resource_rows": 162,
+  "upstream": {
+    "url": "https://huggingface.co/api/models/ggerganov/whisper.cpp?blobs=true",
+    "revision": "5359861c739e955e79d9a303bcbc70fb988958b1",
+    "artifacts": {
+      "ggml-base-q5_1.bin": {
+        "rfilename": "ggml-base-q5_1.bin",
+        "blobId": "4947e22c7365d941a9864b2d0f9f474a505cf39b",
+        "size": 59707625,
+        "lfs": {
+          "sha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
+          "size": 59707625,
+          "pointerSize": 133
+        }
+      },
+      "ggml-small-q5_1.bin": {
+        "rfilename": "ggml-small-q5_1.bin",
+        "blobId": "87631c52c89d37ed2337a46ec4a009976db1f3f4",
+        "size": 190085487,
+        "lfs": {
+          "sha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+          "size": 190085487,
+          "pointerSize": 134
+        }
+      },
+      "ggml-large-v3-turbo-q5_0.bin": {
+        "rfilename": "ggml-large-v3-turbo-q5_0.bin",
+        "blobId": "0e2474d5ec0361bb1726829aa83317ed4cbc3f18",
+        "size": 574041195,
+        "lfs": {
+          "sha256": "394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2",
+          "size": 574041195,
+          "pointerSize": 134
+        }
+      }
+    }
+  },
+  "quality": {
+    "seed": {
+      "rows": 180,
+      "groups": [
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 16,
+          "errors": 0,
+          "reference_fact_failures": 8,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 16,
+          "human_rejected": 0,
+          "median_ms": 107.230458,
+          "wer": {
+            "errors": 22,
+            "reference_units": 718,
+            "micro_rate": 0.03064066852367688,
+            "macro_rate": 0.12868590358517837
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "es",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 96.875416,
+          "wer": {
+            "errors": 0,
+            "reference_units": 16,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "fr",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 103.091375,
+          "wer": {
+            "errors": 6,
+            "reference_units": 38,
+            "micro_rate": 0.15789473684210525,
+            "macro_rate": 0.15
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 2,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 107.303646,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 60,
+            "reference_units": 62,
+            "micro_rate": 0.967741935483871,
+            "macro_rate": 0.967741935483871
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 2,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 94.5239165,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 42,
+            "reference_units": 68,
+            "micro_rate": 0.6176470588235294,
+            "macro_rate": 0.6176470588235294
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "ja",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 122.28604150000001,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 42,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "zh",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 98.125271,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 2,
+            "reference_units": 24,
+            "micro_rate": 0.08333333333333333,
+            "macro_rate": 0.08333333333333333
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "en",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 16,
+          "errors": 0,
+          "reference_fact_failures": 8,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 16,
+          "human_rejected": 0,
+          "median_ms": 63.488625,
+          "wer": {
+            "errors": 22,
+            "reference_units": 718,
+            "micro_rate": 0.03064066852367688,
+            "macro_rate": 0.12868590358517837
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "es",
+          "reference_language": "es",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 63.4045,
+          "wer": {
+            "errors": 0,
+            "reference_units": 16,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "fr",
+          "reference_language": "fr",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 63.68541700000001,
+          "wer": {
+            "errors": 6,
+            "reference_units": 38,
+            "micro_rate": 0.15789473684210525,
+            "macro_rate": 0.15
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 2,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 64.40697899999999,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 60,
+            "reference_units": 62,
+            "micro_rate": 0.967741935483871,
+            "macro_rate": 0.967741935483871
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 2,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 86.000125,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 42,
+            "reference_units": 68,
+            "micro_rate": 0.6176470588235294,
+            "macro_rate": 0.6176470588235294
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "ja",
+          "reference_language": "ja",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 75.6373125,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 42,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "zh",
+          "reference_language": "zh",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 55.969791,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 2,
+            "reference_units": 24,
+            "micro_rate": 0.08333333333333333,
+            "macro_rate": 0.08333333333333333
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 16,
+          "errors": 0,
+          "reference_fact_failures": 6,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 16,
+          "human_rejected": 0,
+          "median_ms": 246.209583,
+          "wer": {
+            "errors": 30,
+            "reference_units": 718,
+            "micro_rate": 0.04178272980501393,
+            "macro_rate": 0.14257255413580958
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "es",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 228.618896,
+          "wer": {
+            "errors": 4,
+            "reference_units": 16,
+            "micro_rate": 0.25,
+            "macro_rate": 0.25
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "fr",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 253.61597899999998,
+          "wer": {
+            "errors": 2,
+            "reference_units": 38,
+            "micro_rate": 0.05263157894736842,
+            "macro_rate": 0.05
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 322.88935449999997,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 12,
+            "reference_units": 62,
+            "micro_rate": 0.1935483870967742,
+            "macro_rate": 0.1935483870967742
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 2,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 247.97272900000002,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 40,
+            "reference_units": 68,
+            "micro_rate": 0.5882352941176471,
+            "macro_rate": 0.5882352941176471
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "ja",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 277.89,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 42,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "zh",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 233.91197950000003,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 2,
+            "reference_units": 24,
+            "micro_rate": 0.08333333333333333,
+            "macro_rate": 0.08333333333333333
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "en",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 16,
+          "errors": 0,
+          "reference_fact_failures": 6,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 16,
+          "human_rejected": 0,
+          "median_ms": 119.372375,
+          "wer": {
+            "errors": 30,
+            "reference_units": 718,
+            "micro_rate": 0.04178272980501393,
+            "macro_rate": 0.14257255413580958
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "es",
+          "reference_language": "es",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 102.9529375,
+          "wer": {
+            "errors": 4,
+            "reference_units": 16,
+            "micro_rate": 0.25,
+            "macro_rate": 0.25
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "fr",
+          "reference_language": "fr",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 121.8834375,
+          "wer": {
+            "errors": 2,
+            "reference_units": 38,
+            "micro_rate": 0.05263157894736842,
+            "macro_rate": 0.05
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 193.47412500000002,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 12,
+            "reference_units": 62,
+            "micro_rate": 0.1935483870967742,
+            "macro_rate": 0.1935483870967742
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 2,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 143.693375,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 30,
+            "reference_units": 68,
+            "micro_rate": 0.4411764705882353,
+            "macro_rate": 0.4411764705882353
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "ja",
+          "reference_language": "ja",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 159.1124165,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 42,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "zh",
+          "reference_language": "zh",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 108.949062,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 2,
+            "reference_units": 24,
+            "micro_rate": 0.08333333333333333,
+            "macro_rate": 0.08333333333333333
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 16,
+          "errors": 0,
+          "reference_fact_failures": 6,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 16,
+          "human_rejected": 0,
+          "median_ms": 875.7575625000001,
+          "wer": {
+            "errors": 20,
+            "reference_units": 718,
+            "micro_rate": 0.027855153203342618,
+            "macro_rate": 0.08855761482675262
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "es",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 801.830792,
+          "wer": {
+            "errors": 0,
+            "reference_units": 16,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "fr",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 850.067709,
+          "wer": {
+            "errors": 2,
+            "reference_units": 38,
+            "micro_rate": 0.05263157894736842,
+            "macro_rate": 0.05
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 864.4000209999999,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 6,
+            "reference_units": 62,
+            "micro_rate": 0.0967741935483871,
+            "macro_rate": 0.0967741935483871
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 2,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 815.4693955,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 42,
+            "reference_units": 68,
+            "micro_rate": 0.6176470588235294,
+            "macro_rate": 0.6176470588235294
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "ja",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 917.4929585,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 42,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "zh",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 814.7433120000001,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 24,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "en",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 16,
+          "errors": 0,
+          "reference_fact_failures": 6,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 16,
+          "human_rejected": 0,
+          "median_ms": 250.39718749999997,
+          "wer": {
+            "errors": 20,
+            "reference_units": 718,
+            "micro_rate": 0.027855153203342618,
+            "macro_rate": 0.08855761482675262
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "es",
+          "reference_language": "es",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 193.1212295,
+          "wer": {
+            "errors": 0,
+            "reference_units": 16,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "fr",
+          "reference_language": "fr",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 240.4451665,
+          "wer": {
+            "errors": 2,
+            "reference_units": 38,
+            "micro_rate": 0.05263157894736842,
+            "macro_rate": 0.05
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 256.375042,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 6,
+            "reference_units": 62,
+            "micro_rate": 0.0967741935483871,
+            "macro_rate": 0.0967741935483871
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 2,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 241.7165625,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 44,
+            "reference_units": 68,
+            "micro_rate": 0.6470588235294118,
+            "macro_rate": 0.6470588235294118
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "ja",
+          "reference_language": "ja",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 300.4196455,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 42,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "zh",
+          "reference_language": "zh",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 203.7761875,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 24,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          }
+        }
+      ],
+      "binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30542736,
+            "sha256": "364eef05e9063610f7da41e57999a4f9b5365f6d81c6055322e0e50ccb197c34"
+          }
+        ]
+      },
+      "models": {
+        "whisper-base": {
+          "path": "/private/tmp/parrot-1045-ggml-base-q5_1.bin",
+          "files": [
+            {
+              "name": "parrot-1045-ggml-base-q5_1.bin",
+              "bytes": 59707625,
+              "sha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898"
+            }
+          ]
+        },
+        "whisper-compact": {
+          "path": "/private/tmp/parrot-1058-ggml-small-q5_1.bin",
+          "files": [
+            {
+              "name": "parrot-1058-ggml-small-q5_1.bin",
+              "bytes": 190085487,
+              "sha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb"
+            }
+          ]
+        },
+        "whisper-turbo": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/ggml-large-v3-turbo-q5_0.bin",
+          "files": [
+            {
+              "name": "ggml-large-v3-turbo-q5_0.bin",
+              "bytes": 574041195,
+              "sha256": "394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "9e35c97292a6632028c433f4effd8857cf9ddfeb89f6759065a202d75f4c62bf",
+      "audio": [
+        {
+          "id": "en-basic",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/transcription/english.wav",
+          "files": [
+            {
+              "name": "english.wav",
+              "bytes": 87606,
+              "sha256": "25099515efd597162712930cc7cb609f33fa2ffb6993209917b9696f3b45d01c"
+            }
+          ]
+        },
+        {
+          "id": "fr-basic",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/transcription/french.wav",
+          "files": [
+            {
+              "name": "french.wav",
+              "bytes": 130728,
+              "sha256": "79458d2a6e15e391ae2661b7f2c29da059029eeace136d1744060402f0f656bf"
+            }
+          ]
+        },
+        {
+          "id": "en-facts",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/en-facts.wav",
+          "files": [
+            {
+              "name": "en-facts.wav",
+              "bytes": 200428,
+              "sha256": "dca8ad5a5203387c127d8a2d8a52fa3403f24b2c2b210026a220639a639f1c5d"
+            }
+          ]
+        },
+        {
+          "id": "en-uncertainty",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/en-uncertainty.wav",
+          "files": [
+            {
+              "name": "en-uncertainty.wav",
+              "bytes": 197086,
+              "sha256": "f07b31289954a8c973732e925324e984aa23fb134c92ca3f244c5165fdf1605a"
+            }
+          ]
+        },
+        {
+          "id": "en-accent-indian",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/en-accent-indian.wav",
+          "files": [
+            {
+              "name": "en-accent-indian.wav",
+              "bytes": 132658,
+              "sha256": "c7abe200dbb3a7fc7d4d34dd4cfd5c7a41050c0a3f9506b56ee2c14372268f0e"
+            }
+          ]
+        },
+        {
+          "id": "en-accent-australian",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/en-accent-australian.wav",
+          "files": [
+            {
+              "name": "en-accent-australian.wav",
+              "bytes": 119112,
+              "sha256": "06bf5a2f54de840c05756bf10ba784aec7a6eb3537b337192e3f857e3a9a8842"
+            }
+          ]
+        },
+        {
+          "id": "fr-facts",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/fr-facts.wav",
+          "files": [
+            {
+              "name": "fr-facts.wav",
+              "bytes": 98748,
+              "sha256": "9eec08d269eb238ab33df2b60de5cc4930f9fc36416e8bedbda5d9987a7fc3b2"
+            }
+          ]
+        },
+        {
+          "id": "es-facts",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/es-facts.wav",
+          "files": [
+            {
+              "name": "es-facts.wav",
+              "bytes": 75670,
+              "sha256": "8ea69274b2ed30f15835bd4fae635087c90bd813dd11187884119890e594f77d"
+            }
+          ]
+        },
+        {
+          "id": "hi-facts",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/hi-facts.wav",
+          "files": [
+            {
+              "name": "hi-facts.wav",
+              "bytes": 85866,
+              "sha256": "c5de5d7933b53e59174eb772d7d6e770353a274d9100950c24f3c24b155b4811"
+            }
+          ]
+        },
+        {
+          "id": "hi-en-mix",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/hi-en-mix.wav",
+          "files": [
+            {
+              "name": "hi-en-mix.wav",
+              "bytes": 96108,
+              "sha256": "2757c94311bf46c749a51237426f76b813d1e1973c579846d1800802ba6f0b8d"
+            }
+          ]
+        },
+        {
+          "id": "zh-facts",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/zh-facts.wav",
+          "files": [
+            {
+              "name": "zh-facts.wav",
+              "bytes": 99998,
+              "sha256": "153fa3506f669c1bd9b32d30888563e50d92ce13eca6f1b236c5c434a2806ab5"
+            }
+          ]
+        },
+        {
+          "id": "ja-facts",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/ja-facts.wav",
+          "files": [
+            {
+              "name": "ja-facts.wav",
+              "bytes": 150846,
+              "sha256": "15405718555b05863ac736cd9525ac569e3086e978f51c175a32f99aab8e84be"
+            }
+          ]
+        },
+        {
+          "id": "silence",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/silence.wav",
+          "files": [
+            {
+              "name": "silence.wav",
+              "bytes": 64044,
+              "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa"
+            }
+          ]
+        },
+        {
+          "id": "short-input",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/short-input.wav",
+          "files": [
+            {
+              "name": "short-input.wav",
+              "bytes": 3244,
+              "sha256": "2976da01e205a110c9fa41d47659e238a5c6d3c3f3137582f2949853faa201dd"
+            }
+          ]
+        },
+        {
+          "id": "long-120s",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/long-120s.wav",
+          "files": [
+            {
+              "name": "long-120s.wav",
+              "bytes": 3840044,
+              "sha256": "fb0a29ef54d00ab48158aeed92fd655612662fb7a2b05a56f110176805b0700d"
+            }
+          ]
+        }
+      ]
+    },
+    "focused": {
+      "rows": 120,
+      "groups": [
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 94.4787915,
+          "wer": {
+            "errors": 0,
+            "reference_units": 14,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 4,
+          "reference_script_failures": 4,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 125.632979,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 120,
+            "reference_units": 122,
+            "micro_rate": 0.9836065573770492,
+            "macro_rate": 0.9838709677419355
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 14,
+          "errors": 0,
+          "reference_fact_failures": 14,
+          "reference_script_failures": 14,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 14,
+          "human_rejected": 0,
+          "median_ms": 114.47666699999999,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 388,
+            "reference_units": 486,
+            "micro_rate": 0.7983539094650206,
+            "macro_rate": 0.7795518207282913
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "en",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 52.050729000000004,
+          "wer": {
+            "errors": 0,
+            "reference_units": 14,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 4,
+          "reference_script_failures": 4,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 70.8132915,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 120,
+            "reference_units": 122,
+            "micro_rate": 0.9836065573770492,
+            "macro_rate": 0.9838709677419355
+          }
+        },
+        {
+          "variant": "whisper-base",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 14,
+          "errors": 0,
+          "reference_fact_failures": 14,
+          "reference_script_failures": 14,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 14,
+          "human_rejected": 0,
+          "median_ms": 79.41704150000001,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 406,
+            "reference_units": 486,
+            "micro_rate": 0.8353909465020576,
+            "macro_rate": 0.8246498599439775
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 291.36929150000003,
+          "wer": {
+            "errors": 0,
+            "reference_units": 14,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 4,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 347.41802099999995,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 26,
+            "reference_units": 122,
+            "micro_rate": 0.21311475409836064,
+            "macro_rate": 0.21344086021505376
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 14,
+          "errors": 0,
+          "reference_fact_failures": 14,
+          "reference_script_failures": 14,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 14,
+          "human_rejected": 0,
+          "median_ms": 356.658958,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 318,
+            "reference_units": 486,
+            "micro_rate": 0.654320987654321,
+            "macro_rate": 0.6439463849200158
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "en",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 126.061271,
+          "wer": {
+            "errors": 0,
+            "reference_units": 14,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 4,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 213.9638955,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 26,
+            "reference_units": 122,
+            "micro_rate": 0.21311475409836064,
+            "macro_rate": 0.21344086021505376
+          }
+        },
+        {
+          "variant": "whisper-compact",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 14,
+          "errors": 0,
+          "reference_fact_failures": 14,
+          "reference_script_failures": 12,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 14,
+          "human_rejected": 0,
+          "median_ms": 203.9310835,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 266,
+            "reference_units": 486,
+            "micro_rate": 0.5473251028806584,
+            "macro_rate": 0.5212573092897637
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 1191.4238125000002,
+          "wer": {
+            "errors": 0,
+            "reference_units": 14,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 1396.7363335,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 6,
+            "reference_units": 122,
+            "micro_rate": 0.04918032786885246,
+            "macro_rate": 0.04838709677419355
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "auto",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 14,
+          "errors": 0,
+          "reference_fact_failures": 12,
+          "reference_script_failures": 10,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 14,
+          "human_rejected": 0,
+          "median_ms": 1424.214146,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 260,
+            "reference_units": 486,
+            "micro_rate": 0.5349794238683128,
+            "macro_rate": 0.5284302580448625
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "en",
+          "reference_language": "en",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 274.372396,
+          "wer": {
+            "errors": 0,
+            "reference_units": 14,
+            "micro_rate": 0.0,
+            "macro_rate": 0.0
+          },
+          "cer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi",
+          "upstream": null,
+          "count": 4,
+          "errors": 0,
+          "reference_fact_failures": 2,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 4,
+          "human_rejected": 0,
+          "median_ms": 373.38675,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 6,
+            "reference_units": 122,
+            "micro_rate": 0.04918032786885246,
+            "macro_rate": 0.04838709677419355
+          }
+        },
+        {
+          "variant": "whisper-turbo",
+          "stage": "asr",
+          "tone": null,
+          "language": "hi",
+          "reference_language": "hi+en",
+          "upstream": null,
+          "count": 14,
+          "errors": 0,
+          "reference_fact_failures": 12,
+          "reference_script_failures": 10,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "skipped_cleanup": 0,
+          "human_pending": 14,
+          "human_rejected": 0,
+          "median_ms": 368.5979165,
+          "wer": {
+            "errors": 0,
+            "reference_units": 0,
+            "micro_rate": null,
+            "macro_rate": null
+          },
+          "cer": {
+            "errors": 248,
+            "reference_units": 486,
+            "micro_rate": 0.5102880658436214,
+            "macro_rate": 0.4992986053837981
+          }
+        }
+      ],
+      "binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30542736,
+            "sha256": "364eef05e9063610f7da41e57999a4f9b5365f6d81c6055322e0e50ccb197c34"
+          }
+        ]
+      },
+      "models": {
+        "whisper-base": {
+          "path": "/private/tmp/parrot-1045-ggml-base-q5_1.bin",
+          "files": [
+            {
+              "name": "parrot-1045-ggml-base-q5_1.bin",
+              "bytes": 59707625,
+              "sha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898"
+            }
+          ]
+        },
+        "whisper-compact": {
+          "path": "/private/tmp/parrot-1058-ggml-small-q5_1.bin",
+          "files": [
+            {
+              "name": "parrot-1058-ggml-small-q5_1.bin",
+              "bytes": 190085487,
+              "sha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb"
+            }
+          ]
+        },
+        "whisper-turbo": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/ggml-large-v3-turbo-q5_0.bin",
+          "files": [
+            {
+              "name": "ggml-large-v3-turbo-q5_0.bin",
+              "bytes": 574041195,
+              "sha256": "394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "3358c38278b0de95cbad5dea5da61cae746ce8d4b8b21296b329d9d94c10b444",
+      "audio": [
+        {
+          "id": "hi-facts",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/hi-facts.wav",
+          "files": [
+            {
+              "name": "hi-facts.wav",
+              "bytes": 85866,
+              "sha256": "c5de5d7933b53e59174eb772d7d6e770353a274d9100950c24f3c24b155b4811"
+            }
+          ]
+        },
+        {
+          "id": "hi-en-mix",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/audio/hi-en-mix.wav",
+          "files": [
+            {
+              "name": "hi-en-mix.wav",
+              "bytes": 96108,
+              "sha256": "2757c94311bf46c749a51237426f76b813d1e1973c579846d1800802ba6f0b8d"
+            }
+          ]
+        },
+        {
+          "id": "mix-negative-single-voice",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/hindi-recognition/mix-negative-single-voice.wav",
+          "files": [
+            {
+              "name": "mix-negative-single-voice.wav",
+              "bytes": 84228,
+              "sha256": "ed3b8fd7d3ecde45be9647008a926946b13d8e0849dbd4b4eb18d47752f9dd24"
+            }
+          ]
+        },
+        {
+          "id": "mix-positive-single-voice",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/hindi-recognition/mix-positive-single-voice.wav",
+          "files": [
+            {
+              "name": "mix-positive-single-voice.wav",
+              "bytes": 73084,
+              "sha256": "ef218afc76e58742665bcbe57ae7a80b674987d09bf73f768c260083407dd232"
+            }
+          ]
+        },
+        {
+          "id": "mix-negative-zero-gap",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/hindi-recognition/mix-negative-zero-gap.wav",
+          "files": [
+            {
+              "name": "mix-negative-zero-gap.wav",
+              "bytes": 89708,
+              "sha256": "1a41d0d7ee221c4e5b04b1f2da4a9a4327538eef7554b221f5128278a137d798"
+            }
+          ]
+        },
+        {
+          "id": "mix-positive-voice-switch",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/hindi-recognition/mix-positive-voice-switch.wav",
+          "files": [
+            {
+              "name": "mix-positive-voice-switch.wav",
+              "bytes": 82796,
+              "sha256": "e85d7686c8a0c135c3fea3581d0939383539cef571cb19a3f189d0d3de6b02ca"
+            }
+          ]
+        },
+        {
+          "id": "mix-amount-negative",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/hindi-recognition/mix-amount-negative.wav",
+          "files": [
+            {
+              "name": "mix-amount-negative.wav",
+              "bytes": 97230,
+              "sha256": "22de23057581410648058b70c31c7f5a5ac4cacc97e6d4f727d90bfeec470fcd"
+            }
+          ]
+        },
+        {
+          "id": "mix-technical-prohibition",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/hindi-recognition/mix-technical-prohibition.wav",
+          "files": [
+            {
+              "name": "mix-technical-prohibition.wav",
+              "bytes": 162246,
+              "sha256": "997392796d7ff87fcd8a75a6549f019d272476d0cc75a8576ec7126a9262ef13"
+            }
+          ]
+        },
+        {
+          "id": "hi-negative-control",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/hindi-recognition/hi-negative-control.wav",
+          "files": [
+            {
+              "name": "hi-negative-control.wav",
+              "bytes": 76428,
+              "sha256": "65c251f20d0de9ed0858eab3580bb257fe6132b5236d4fd65d16b212905d568e"
+            }
+          ]
+        },
+        {
+          "id": "en-negative-control",
+          "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/tests/fixtures/quality/hindi-recognition/en-negative-control.wav",
+          "files": [
+            {
+              "name": "en-negative-control.wav",
+              "bytes": 74786,
+              "sha256": "18585430e3c7db53798722b188555bbfbfc21871f21f48e2417bba348174a158"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "resources": {
+    "complete": true,
+    "scope": "Fresh owned headless ASR worker, including loading. Excludes GUI, cleanup, capture, installed app, other applications and energy.",
+    "sample_interval_ms": 50,
+    "file_cache_controlled": false,
+    "hardware": {
+      "system": "Darwin",
+      "node": "Kashyaps-MacBook-Pro.local",
+      "release": "25.6.0",
+      "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+      "machine": "arm64",
+      "ram_bytes": "25769803776",
+      "chip": "Apple M4 Pro"
+    },
+    "binary": {
+      "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+      "files": [
+        {
+          "name": "parrot-quality-eval",
+          "bytes": 30542736,
+          "sha256": "364eef05e9063610f7da41e57999a4f9b5365f6d81c6055322e0e50ccb197c34"
+        }
+      ]
+    },
+    "git_commit": "2c0cc317cbdbcddc861b9dfc65ba157b69f9ad4d",
+    "git_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "models": {
+      "whisper-base": {
+        "path": "/private/tmp/parrot-1045-ggml-base-q5_1.bin",
+        "files": [
+          {
+            "name": "parrot-1045-ggml-base-q5_1.bin",
+            "bytes": 59707625,
+            "sha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898"
+          }
+        ]
+      },
+      "whisper-compact": {
+        "path": "/private/tmp/parrot-1058-ggml-small-q5_1.bin",
+        "files": [
+          {
+            "name": "parrot-1058-ggml-small-q5_1.bin",
+            "bytes": 190085487,
+            "sha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb"
+          }
+        ]
+      },
+      "whisper-turbo": {
+        "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/ggml-large-v3-turbo-q5_0.bin",
+        "files": [
+          {
+            "name": "ggml-large-v3-turbo-q5_0.bin",
+            "bytes": 574041195,
+            "sha256": "394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2"
+          }
+        ]
+      }
+    },
+    "runs": [
+      {
+        "variant": "whisper-base",
+        "repeat": 1,
+        "sample_count": 55,
+        "complete_samples": 55,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 315376552,
+        "peak_rss_bytes": 230326272,
+        "max_sample_gap_ms": 83.29554199999984,
+        "lifetime_peak_worker_footprint_bytes": 315425704,
+        "load_ms": 52.669292,
+        "first_ms": 112.90070800000001,
+        "warm_ms": 93.633458,
+        "long_ms": 1294.045083,
+        "median_short_ms": 105.3472085,
+        "request_sha256": "04d3a4ec53940e6f048281602b73ac48216a71612978ff2ad95d1d3be24dd9b3",
+        "output_sha256": "2c444eb7121050baf7cfff7548961580a08565e95b361edfc8b258d1360b9561",
+        "results": [
+          {
+            "id": "first-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 112.90070800000001,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "warm-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 93.633458,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 93.977666,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 99.282625,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Bonjour, je voudrais r\u00e9server une table pour demain soir.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 120.439959,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Ampria did not approve the payment of 25 euros and the API timeout is 300 milliseconds.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-uncertainty/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 128.02687500000002,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Oh I think the retry limit might be 3 but I am not sure please do not deploy release 2.1.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-indian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 107.763875,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Umpree I did not approve the invoice for 25 Uroes",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-australian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 99.99525,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Umpree I did not approve the invoice for 25 \u20ac.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 108.223417,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "que Pryann n'a pas approuv\u00e9 le paiement de 25 \u20ac.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/es-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 94.028,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Mar\u00eda no aprob\u00f3 el pago de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 104.711417,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u067e\u0631\u06cc\u0627 \u0646\u06d2 55 \u0631\u067e\u06d2 \u06a9\u0627 \u0628\u06be\u0648\u0637\u0627\u0646 \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 92.191791,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Priyani, invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/zh-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 95.819458,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u5c0f\u738b\u6c92\u6709\u6279\u51c625\u5143\u7684\u4ed8\u6b3e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/ja-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 115.46733400000001,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u7530\u4e2d\u3055\u3093\u306f25\u5186\u306e\u652f\u6255\u3044\u3092\u3001\u627f\u8a8d\u3057\u3066\u3044\u307e\u305b\u3093\u3002",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/silence/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.244083,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/short-input/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.055624999999999994,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/long-120s/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1294.045083,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain has expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at nine and closes at five on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing Atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at nine and closes at five on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing address on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 105.98299999999999,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u067e\u0631\u06cc\u0627 \u0646\u06d2 55 \u0631\u067e\u06d2 \u06a9\u0627 \u0628\u06be\u0648\u0637\u0627\u0646 \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 93.59337500000001,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Priyani, invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 108.736209,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0634\u0627\u06cc\u062f \u067e\u06cc\u0627\u0646\u06d2 \u0627\u0646\u0648\u0627\u0631\u0633 \u0627\u067e\u0631\u0648\u0628 \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 107.474583,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Pyaarne invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-zero-gap/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 92.748125,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Priya had invoiced a prove.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-voice-switch/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 99.05808300000001,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Priyani, invoice approved, Kya.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-amount-negative/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 151.343125,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0631\u0628\u06cc\u0648\u0627\u0631 \u0646\u06d2 \u067e\u06cc\u062b \u0631\u0648\u067e\u06d2 \u06a9\u0627 \u067e\u06cc\u0645\u0646\u062a \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-technical-prohibition/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 565.450917,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0634\u0627\u06cc\u062f \u0627\u06cc\u0642\u06cc \u0679\u0645\u0627\u0624\u0691 \u0679\u06cc\u0646\u0441\u0648\u06ba \u0645\u0644\u0633\u06a9\u0646\u0679\u0633 \u06c1\u06d2, \u0627\u0628\u06be\u06cc \u0631\u06cc\u0644\u06cc\u0632 \u062f\u06cc\u067e\u0644\u0648\u0645\u062a \u06a9\u0631\u0648.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 107.872,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0634\u0627\u06cc\u062f \u067e\u06cc\u0627\u0646\u06d2 \u0628\u06be\u06cc\u0644 \u0633\u0648\u06cc\u06a9\u0631\u06cc\u062a \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/en-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 90.002542,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Maybe Priya did not approve the invoice.",
+            "whisper_decode_profile": "production"
+          }
+        ]
+      },
+      {
+        "variant": "whisper-compact",
+        "repeat": 1,
+        "sample_count": 122,
+        "complete_samples": 122,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 550028344,
+        "peak_rss_bytes": 464945152,
+        "max_sample_gap_ms": 117.99091700000008,
+        "lifetime_peak_worker_footprint_bytes": 550093880,
+        "load_ms": 68.087834,
+        "first_ms": 230.248375,
+        "warm_ms": 225.259959,
+        "long_ms": 2984.493375,
+        "median_short_ms": 259.105,
+        "request_sha256": "7e461a48959d7c8a6bb20b5690e75da6d51dc8cfb9928cf3d072019b3bc00a1a",
+        "output_sha256": "7f68652e03594acd0feb6fb369bb1a2f2f450187c90e8dfe9dd38a417e6cd6c7",
+        "results": [
+          {
+            "id": "first-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 230.248375,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "warm-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 225.259959,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 263.530041,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 257.767,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Bonjour, je voudrais r\u00e9server une table pour demain soir.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 301.019125,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Ampria did not approve the payment of \u20ac25 and the API time-out is 300 milliseconds.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-uncertainty/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 300.9855,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "I think the retry limit might be 3 but I am not sure please do not deploy release 2.1.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-indian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 247.605041,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "UMPRIIA did not approve the invoice for 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-australian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 241.681958,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Some pre-ire did not approve the invoice for 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 254.038916,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Priya n'a pas approuv\u00e9 le paiement de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/es-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 225.228041,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Mariano aprob\u00f3 el pago de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 319.387792,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u092a\u094d\u0930\u094d\u092f\u093e\u0928\u0947 25 \u0930\u0941\u092a\u0948\u0915\u093e \u092d\u0942\u0926\u094d\u0924\u093e\u0928 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 243.058916,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "In voice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/zh-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 230.069666,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u5c0f\u738b\u6c92\u6709\u6279\u51c625\u5143\u7684\u4ed8\u6b3e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/ja-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 277.21008400000005,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u7530\u4e2d\u3055\u3093\u306f25\u5186\u306e\u652f\u6255\u3044\u3092\u627f\u8a8d\u3057\u3066\u3044\u307e\u305b\u3093",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/silence/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.239292,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/short-input/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.049125,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/long-120s/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 2984.493375,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing Atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 326.126292,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u092a\u094d\u0930\u094d\u092f\u093e\u0928\u0947 25 \u0930\u0941\u092a\u0948\u0915\u093e \u092d\u0942\u0926\u094d\u0924\u093e\u0928 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 248.205875,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "In voice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 340.4605,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u090f\u0926 \u092a\u094d\u0930\u094d\u092f\u093e\u0928\u0947 \u0907\u0902\u0935\u094b\u0930\u094d\u0938 \u0905\u092a\u094d\u0930\u0942\u0935 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 260.443,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Maybe, Priyanka approached her voice.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-zero-gap/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 251.74920899999998,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "In voice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-voice-switch/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 272.1085,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shaii Priyane In voice approved. Kya.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-amount-negative/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 364.084417,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0930\u0935\u093f\u0935\u093e\u0930 \u0928\u0947 \u092a\u094d\u091f\u0940\u0938 \u0930\u0942\u092a\u0947 \u0915\u093e \u092a\u0947\u092e\u0902\u091f \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-technical-prohibition/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 490.359542,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u090f\u0921 \u0906\u092a\u0940 \u0924\u093e\u0908\u0928\u093e\u0909\u091f, \u0924\u0940\u0928\u0938\u094b \u092e\u093f\u0932\u0938\u0915\u0902\u091f\u094d\u0938 \u0939\u0948, \u0905\u092c \u0939\u0940 \u0930\u0947\u0932\u0940\u091c \u0926\u093f\u092a\u094d\u0932\u094b\u0908 \u092e\u0924 \u0915\u0930\u094b.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 343.074875,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0924 \u092a\u094d\u0930\u094d\u092f\u093e\u0928\u0947 \u092d\u093f\u0932 \u0938\u094d\u0935\u093f\u0915\u094d\u0930\u093f\u0924 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/en-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 240.504875,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Maybe Priya did not approve the invoice.",
+            "whisper_decode_profile": "production"
+          }
+        ]
+      },
+      {
+        "variant": "whisper-turbo",
+        "repeat": 1,
+        "sample_count": 457,
+        "complete_samples": 457,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 896255392,
+        "peak_rss_bytes": 810876928,
+        "max_sample_gap_ms": 162.03787500000908,
+        "lifetime_peak_worker_footprint_bytes": 896304544,
+        "load_ms": 144.946417,
+        "first_ms": 1010.911917,
+        "warm_ms": 1263.610584,
+        "long_ms": 10188.416042,
+        "median_short_ms": 1265.563292,
+        "request_sha256": "f84874d02cd153f5c289f389a4210d38c3636777d1cfc07983f5f2ad83164d14",
+        "output_sha256": "051259e3cc237c8f1e9fd6b28647405e9c733ba09d6403a05d66051643ff0fa8",
+        "results": [
+          {
+            "id": "first-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1010.911917,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "warm-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1263.610584,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1277.5037089999998,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1267.516,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Bonjour, je voudrais r\u00e9server une table pour demain soir.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1382.457083,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Umpria did not approve the payment of 25 euros and the API timeout is 300 milliseconds.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-uncertainty/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1398.840375,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Uh I think the retry limit might be 3 but I am not sure please do not deploy release 2.1.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-indian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1318.904708,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Umpreyar did not approve the invoice for 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-australian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1340.714542,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Humphrey did not approve the invoice for 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1620.589375,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "E-Priya n'a pas approuv\u00e9 le paiement de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/es-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1754.662459,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Mar\u00eda no aprob\u00f3 el pago de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1276.0510000000002,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 25 \u0930\u0941\u092a\u0947 \u0915\u093e \u092d\u0942\u0924\u093e\u0928 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e\u0964",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1099.383709,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayad Priya ne Invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/zh-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1070.11525,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u5c0f\u738b\u6ca1\u6709\u6279\u51c625\u5143\u7684\u4ed8\u6b3e\u3002",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/ja-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1220.6430420000002,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u7530\u4e2d\u3055\u3093\u306f\u300125\u5186\u306e\u652f\u6255\u3044\u3092\u627f\u8a8d\u3057\u3066\u3044\u307e\u305b\u3093\u3002",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/silence/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.23258299999999998,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/short-input/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.060000000000000005,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/long-120s/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 10188.416042,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1133.2105000000001,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 25 \u0930\u0941\u092a\u0947 \u0915\u093e \u092d\u0942\u0924\u093e\u0928 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e\u0964",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1025.9075,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayad Priya ne Invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1061.9031670000002,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0926 \u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 invoice approve \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1075.575583,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0926 \u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 \u0907\u0902\u0935\u094b\u0930\u094d\u0938 \u0905\u092a\u094d\u0930\u0942 \u0915\u093f\u092f\u093e.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-zero-gap/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1033.422125,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayad Priya ne invoice approved nahi kiya.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-voice-switch/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1337.815042,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayad Priyane.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-amount-negative/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1464.1533339999999,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0930\u0935\u093f\u0935\u093e\u0930 \u0928\u0947 35 \u0930\u0941\u092a\u090f \u0915\u093e \u092a\u0947\u092e\u0902\u091f \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-technical-prohibition/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1273.545375,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0926 IP \u091f\u093e\u0907\u092e \u0906\u0909\u091f 300 \u092e\u093f\u0932\u0938\u0947\u0915\u0902\u0921\u094d\u0938 \u0939\u0948, \u0905\u092d\u0940 \u0930\u093f\u0932\u0940\u091c \u0921\u093f\u092a\u0932\u0949\u092f \u092e\u0924 \u0915\u0930\u094b.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1053.742084,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0926 \u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 \u092c\u093f\u0932 \u0938\u094d\u0935\u0940\u0915\u0943\u0924 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/en-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 969.498583,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Maybe Priya did not approve the invoice.",
+            "whisper_decode_profile": "production"
+          }
+        ]
+      },
+      {
+        "variant": "whisper-turbo",
+        "repeat": 2,
+        "sample_count": 391,
+        "complete_samples": 391,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 875349264,
+        "peak_rss_bytes": 790069248,
+        "max_sample_gap_ms": 114.69187499998952,
+        "lifetime_peak_worker_footprint_bytes": 875693352,
+        "load_ms": 259.413875,
+        "first_ms": 883.2021249999999,
+        "warm_ms": 964.8305,
+        "long_ms": 9307.391292,
+        "median_short_ms": 1011.6206669999999,
+        "request_sha256": "f84874d02cd153f5c289f389a4210d38c3636777d1cfc07983f5f2ad83164d14",
+        "output_sha256": "7facdd08ef34d6c92261a0f09cef75cfc166511b8d4536d09c9a3b0fd748d585",
+        "results": [
+          {
+            "id": "first-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 883.2021249999999,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "warm-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 964.8305,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 990.2585,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1038.655209,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Bonjour, je voudrais r\u00e9server une table pour demain soir.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1252.959208,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Umpria did not approve the payment of 25 euros and the API timeout is 300 milliseconds.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-uncertainty/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1489.3334579999998,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Uh I think the retry limit might be 3 but I am not sure please do not deploy release 2.1.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-indian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1035.753542,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Umpreyar did not approve the invoice for 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-australian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1003.574,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Humphrey did not approve the invoice for 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1010.0867499999999,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "E-Priya n'a pas approuv\u00e9 le paiement de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/es-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 973.145042,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Mar\u00eda no aprob\u00f3 el pago de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1065.170834,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 25 \u0930\u0941\u092a\u0947 \u0915\u093e \u092d\u0942\u0924\u093e\u0928 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e\u0964",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 995.0717089999999,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayad Priya ne Invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/zh-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 989.228292,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u5c0f\u738b\u6ca1\u6709\u6279\u51c625\u5143\u7684\u4ed8\u6b3e\u3002",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/ja-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1154.642667,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u7530\u4e2d\u3055\u3093\u306f\u300125\u5186\u306e\u652f\u6255\u3044\u3092\u627f\u8a8d\u3057\u3066\u3044\u307e\u305b\u3093\u3002",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/silence/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.329791,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/short-input/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.060958,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/long-120s/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 9307.391292,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1131.829958,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 25 \u0930\u0941\u092a\u0947 \u0915\u093e \u092d\u0942\u0924\u093e\u0928 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e\u0964",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1023.5360000000001,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayad Priya ne Invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1027.962916,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0926 \u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 invoice approve \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1013.154584,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0926 \u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 \u0907\u0902\u0935\u094b\u0930\u094d\u0938 \u0905\u092a\u094d\u0930\u0942 \u0915\u093f\u092f\u093e.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-zero-gap/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 932.706417,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayad Priya ne invoice approved nahi kiya.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-voice-switch/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 931.2397500000001,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayad Priyane.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-amount-negative/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1016.254542,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0930\u0935\u093f\u0935\u093e\u0930 \u0928\u0947 35 \u0930\u0941\u092a\u090f \u0915\u093e \u092a\u0947\u092e\u0902\u091f \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-technical-prohibition/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1126.174542,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0926 IP \u091f\u093e\u0907\u092e \u0906\u0909\u091f 300 \u092e\u093f\u0932\u0938\u0947\u0915\u0902\u0921\u094d\u0938 \u0939\u0948, \u0905\u092d\u0940 \u0930\u093f\u0932\u0940\u091c \u0921\u093f\u092a\u0932\u0949\u092f \u092e\u0924 \u0915\u0930\u094b.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 977.790708,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0926 \u092a\u094d\u0930\u093f\u092f\u093e \u0928\u0947 \u092c\u093f\u0932 \u0938\u094d\u0935\u0940\u0915\u0943\u0924 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/en-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 903.951167,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Maybe Priya did not approve the invoice.",
+            "whisper_decode_profile": "production"
+          }
+        ]
+      },
+      {
+        "variant": "whisper-compact",
+        "repeat": 2,
+        "sample_count": 124,
+        "complete_samples": 124,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 547783784,
+        "peak_rss_bytes": 462667776,
+        "max_sample_gap_ms": 85.89516700000422,
+        "lifetime_peak_worker_footprint_bytes": 547849320,
+        "load_ms": 78.53775,
+        "first_ms": 241.8245,
+        "warm_ms": 236.03650000000002,
+        "long_ms": 3086.748333,
+        "median_short_ms": 259.76325,
+        "request_sha256": "7e461a48959d7c8a6bb20b5690e75da6d51dc8cfb9928cf3d072019b3bc00a1a",
+        "output_sha256": "7055be823adaef63467aef9316b2ba1828738e098bcd40fca29941cd6552d3f8",
+        "results": [
+          {
+            "id": "first-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 241.8245,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "warm-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 236.03650000000002,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 233.150292,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 249.024792,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Bonjour, je voudrais r\u00e9server une table pour demain soir.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 298.031,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Ampria did not approve the payment of \u20ac25 and the API time-out is 300 milliseconds.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-uncertainty/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 308.97825,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "I think the retry limit might be 3 but I am not sure please do not deploy release 2.1.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-indian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 254.62637500000002,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "UMPRIIA did not approve the invoice for 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-australian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 249.355333,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Some pre-ire did not approve the invoice for 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 262.74354100000005,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Priya n'a pas approuv\u00e9 le paiement de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/es-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 236.782167,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Mariano aprob\u00f3 el pago de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 335.640208,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u092a\u094d\u0930\u094d\u092f\u093e\u0928\u0947 25 \u0930\u0941\u092a\u0948\u0915\u093e \u092d\u0942\u0926\u094d\u0924\u093e\u0928 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 252.36287499999997,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "In voice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/zh-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 239.346167,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u5c0f\u738b\u6c92\u6709\u6279\u51c625\u5143\u7684\u4ed8\u6b3e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/ja-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 291.87291700000003,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u7530\u4e2d\u3055\u3093\u306f25\u5186\u306e\u652f\u6255\u3044\u3092\u627f\u8a8d\u3057\u3066\u3044\u307e\u305b\u3093",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/silence/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.265,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/short-input/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.060458000000000005,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/long-120s/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 3086.748333,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at 9 and closes at 5 on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing Atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 335.13575000000003,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u092a\u094d\u0930\u094d\u092f\u093e\u0928\u0947 25 \u0930\u0941\u092a\u0948\u0915\u093e \u092d\u0942\u0926\u094d\u0924\u093e\u0928 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 256.782959,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "In voice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 354.724875,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u090f\u0926 \u092a\u094d\u0930\u094d\u092f\u093e\u0928\u0947 \u0907\u0902\u0935\u094b\u0930\u094d\u0938 \u0905\u092a\u094d\u0930\u0942\u0935 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 266.878833,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Maybe, Priyanka approached her voice.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-zero-gap/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 248.054708,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "In voice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-voice-switch/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 268.373208,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shaii Priyane In voice approved. Kya.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-amount-negative/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 355.417084,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0930\u0935\u093f\u0935\u093e\u0930 \u0928\u0947 \u092a\u094d\u091f\u0940\u0938 \u0930\u0942\u092a\u0947 \u0915\u093e \u092a\u0947\u092e\u0902\u091f \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-technical-prohibition/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 470.483666,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u090f\u0921 \u0906\u092a\u0940 \u0924\u093e\u0908\u0928\u093e\u0909\u091f, \u0924\u0940\u0928\u0938\u094b \u092e\u093f\u0932\u0938\u0915\u0902\u091f\u094d\u0938 \u0939\u0948, \u0905\u092c \u0939\u0940 \u0930\u0947\u0932\u0940\u091c \u0926\u093f\u092a\u094d\u0932\u094b\u0908 \u092e\u0924 \u0915\u0930\u094b.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 349.702083,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0936\u093e\u092f\u0924 \u092a\u094d\u0930\u094d\u092f\u093e\u0928\u0947 \u092d\u093f\u0932 \u0938\u094d\u0935\u093f\u0915\u094d\u0930\u093f\u0924 \u0928\u0939\u0940\u0902 \u0915\u093f\u092f\u093e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/en-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 227.775583,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Maybe Priya did not approve the invoice.",
+            "whisper_decode_profile": "production"
+          }
+        ]
+      },
+      {
+        "variant": "whisper-base",
+        "repeat": 2,
+        "sample_count": 54,
+        "complete_samples": 54,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 316638072,
+        "peak_rss_bytes": 231620608,
+        "max_sample_gap_ms": 95.70783300000585,
+        "lifetime_peak_worker_footprint_bytes": 316638072,
+        "load_ms": 47.767625,
+        "first_ms": 100.523583,
+        "warm_ms": 98.577083,
+        "long_ms": 1378.5227909999999,
+        "median_short_ms": 106.53254150000001,
+        "request_sha256": "04d3a4ec53940e6f048281602b73ac48216a71612978ff2ad95d1d3be24dd9b3",
+        "output_sha256": "62694cd7129f03d2a2e743cf3bd5aa07dfd1c9c2779b7817129ef3c7472d3e70",
+        "results": [
+          {
+            "id": "first-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 100.523583,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "warm-short",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 98.577083,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 97.701291,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-basic/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 103.065166,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Bonjour, je voudrais r\u00e9server une table pour demain soir.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 126.998916,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Ampria did not approve the payment of 25 euros and the API timeout is 300 milliseconds.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-uncertainty/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 130.625,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Oh I think the retry limit might be 3 but I am not sure please do not deploy release 2.1.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-indian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 109.24375,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Umpree I did not approve the invoice for 25 Uroes",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/en-accent-australian/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 100.235333,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Umpree I did not approve the invoice for 25 \u20ac.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/fr-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 108.845792,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "que Pryann n'a pas approuv\u00e9 le paiement de 25 \u20ac.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/es-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 96.051167,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Mar\u00eda no aprob\u00f3 el pago de 25 euros.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 103.508125,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u067e\u0631\u06cc\u0627 \u0646\u06d2 55 \u0631\u067e\u06d2 \u06a9\u0627 \u0628\u06be\u0648\u0637\u0627\u0646 \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 93.77437499999999,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Priyani, invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/zh-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 96.839834,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u5c0f\u738b\u6c92\u6709\u6279\u51c625\u5143\u7684\u4ed8\u6b3e",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/ja-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 115.238333,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u7530\u4e2d\u3055\u3093\u306f25\u5186\u306e\u652f\u6255\u3044\u3092\u3001\u627f\u8a8d\u3057\u3066\u3044\u307e\u305b\u3093\u3002",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/silence/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.24816699999999997,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/short-input/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 0.048625,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "seed/long-120s/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 1378.5227909999999,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain has expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at nine and closes at five on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing Atlas on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall. Please put the blue notebook on the kitchen table before lunch. The gardener will plant yellow flowers beside the wooden fence tomorrow morning. Remember to bring your umbrella because heavy rain is expected this evening. I booked a train ticket for the journey to the coast next Friday. The museum opens at nine and closes at five on weekdays. My brother left his bicycle outside the bakery near the river. We used the telescope to look at the moon and several bright stars. Our neighbors are coming for dinner on Saturday, so please buy fresh vegetables. The librarian found the missing address on a shelf near the entrance. Maria will collect the repaired camera from the shop after her meeting. The orange suitcase contains a jacket, two shirts, and a pair of boots. At the end of the walk, we stopped for coffee beside the waterfall.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-facts/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 116.68599999999999,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u067e\u0631\u06cc\u0627 \u0646\u06d2 55 \u0631\u067e\u06d2 \u06a9\u0627 \u0628\u06be\u0648\u0637\u0627\u0646 \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-en-mix/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 104.634167,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Priyani, invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 119.316292,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0634\u0627\u06cc\u062f \u067e\u06cc\u0627\u0646\u06d2 \u0627\u0646\u0648\u0627\u0631\u0633 \u0627\u067e\u0631\u0648\u0628 \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-single-voice/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 119.08891700000001,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Pyaarne invoice approved.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-negative-zero-gap/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 104.931042,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Priya had invoiced a prove.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-positive-voice-switch/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 108.134041,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Shayat Priyani, invoice approved, Kya.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-amount-negative/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 165.216584,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0631\u0628\u06cc\u0648\u0627\u0631 \u0646\u06d2 \u067e\u06cc\u062b \u0631\u0648\u067e\u06d2 \u06a9\u0627 \u067e\u06cc\u0645\u0646\u062a \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/mix-technical-prohibition/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 597.9235000000001,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0634\u0627\u06cc\u062f \u0627\u06cc\u0642\u06cc \u0679\u0645\u0627\u0624\u0691 \u0679\u06cc\u0646\u0441\u0648\u06ba \u0645\u0644\u0633\u06a9\u0646\u0679\u0633 \u06c1\u06d2, \u0627\u0628\u06be\u06cc \u0631\u06cc\u0644\u06cc\u0632 \u062f\u06cc\u067e\u0644\u0648\u0645\u062a \u06a9\u0631\u0648.",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/hi-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 113.150542,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "\u0634\u0627\u06cc\u062f \u067e\u06cc\u0627\u0646\u06d2 \u0628\u06be\u06cc\u0644 \u0633\u0648\u06cc\u06a9\u0631\u06cc\u062a \u0646\u06c1\u06cc\u06ba \u06a9\u06cc\u0627",
+            "whisper_decode_profile": "production"
+          },
+          {
+            "id": "focused/en-negative-control/auto",
+            "initial_prompt": null,
+            "kind": "result",
+            "language": "auto",
+            "latency_ms": 94.277667,
+            "prompt_style": "default",
+            "stage": "asr",
+            "text": "Maybe Priya did not approve the invoice.",
+            "whisper_decode_profile": "production"
+          }
+        ]
+      }
+    ]
+  }
+}
