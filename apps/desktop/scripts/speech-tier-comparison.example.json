@@ -1,0 +1,29 @@
+{
+  "speech": [
+    {
+      "id": "whisper-base",
+      "engine": "whisper",
+      "model": "/absolute/path/to/ggml-base-q5_1.bin",
+      "quantization": "Q5_1",
+      "language_modes": ["auto", "explicit"],
+      "prompt_style": "default"
+    },
+    {
+      "id": "whisper-compact",
+      "engine": "whisper",
+      "model": "/absolute/path/to/ggml-small-q5_1.bin",
+      "quantization": "Q5_1",
+      "language_modes": ["auto", "explicit"],
+      "prompt_style": "default"
+    },
+    {
+      "id": "whisper-turbo",
+      "engine": "whisper",
+      "model": "/absolute/path/to/ggml-large-v3-turbo-q5_0.bin",
+      "quantization": "Q5_0",
+      "language_modes": ["auto", "explicit"],
+      "prompt_style": "default"
+    }
+  ],
+  "pipeline": false
+}
