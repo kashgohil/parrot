@@ -1,0 +1,6186 @@
+{
+  "pilot": {
+    "whisper-turbo-production-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-full-context-1.stderr.log": [
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-full-context-1.stderr.log": [
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-production-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-full-context-segmented-1.stderr.log": [
+      {
+        "profile": "FullContextSegmented",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-compact-full-context-segmented-2.stderr.log": [
+      {
+        "profile": "FullContextSegmented",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-turbo-segmented-2.stderr.log": [
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-compact-segmented-1.stderr.log": [
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-turbo-segmented-1.stderr.log": [
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-compact-segmented-2.stderr.log": [
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-compact-production-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-full-context-2.stderr.log": [
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-full-context-segmented-2.stderr.log": [
+      {
+        "profile": "FullContextSegmented",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-compact-full-context-segmented-1.stderr.log": [
+      {
+        "profile": "FullContextSegmented",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "FullContextSegmented",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-compact-full-context-2.stderr.log": [
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-production-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      }
+    ]
+  },
+  "focused-matrix": {
+    "whisper-turbo-production-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-vocabulary-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-style-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-vocabulary-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-production-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-full-1.stderr.log": [
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42092",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42092",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "36520",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "36520",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "44832",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "44832",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "41376",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "41376",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48593",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48593",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "81101",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "81101",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "38192",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "38192",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "37371",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "37371",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-segmented-2.stderr.log": [
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-compact-segmented-1.stderr.log": [
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-turbo-full-1.stderr.log": [
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42092",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42092",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "36520",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "36520",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "44832",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "44832",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "41376",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "41376",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48593",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48593",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "81101",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "81101",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "38192",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "38192",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "37371",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "37371",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-style-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-full-2.stderr.log": [
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42092",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42092",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "36520",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "36520",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "44832",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "44832",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "41376",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "41376",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48593",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48593",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "81101",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "81101",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "38192",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "38192",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "37371",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "37371",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-style-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-segmented-1.stderr.log": [
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-compact-segmented-2.stderr.log": [
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "false"
+      },
+      {
+        "profile": "Segmented",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "false"
+      }
+    ],
+    "whisper-compact-production-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-vocabulary-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-full-2.stderr.log": [
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42911",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48032",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42092",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "42092",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "36520",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "36520",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "44832",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "44832",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "41376",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "41376",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48593",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "48593",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "81101",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "81101",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "38192",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "38192",
+        "audio_ctx": "1500",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "37371",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "FullContext",
+        "samples": "37371",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-style-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-vocabulary-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-production-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ]
+  },
+  "app-before": {
+    "whisper-turbo-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ]
+  },
+  "app-after": {
+    "whisper-turbo-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ]
+  },
+  "hint-with-vocabulary": {
+    "whisper-turbo-words-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-words-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-words-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-words-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ]
+  },
+  "default-before": {
+    "whisper-turbo-2.stderr.log": [],
+    "whisper-compact-1.stderr.log": [],
+    "whisper-compact-2.stderr.log": [],
+    "whisper-turbo-1.stderr.log": []
+  },
+  "default-after": {
+    "whisper-turbo-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ]
+  },
+  "hint-original-seed": {
+    "whisper-turbo-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-compact-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ]
+  },
+  "turbo-before": {
+    "whisper-turbo-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ]
+  },
+  "turbo-after": {
+    "whisper-turbo-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42092",
+        "audio_ctx": "364",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "36520",
+        "audio_ctx": "332",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "44832",
+        "audio_ctx": "384",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "41376",
+        "audio_ctx": "360",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48593",
+        "audio_ctx": "404",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "81101",
+        "audio_ctx": "608",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "38192",
+        "audio_ctx": "340",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37371",
+        "audio_ctx": "336",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ]
+  },
+  "turbo-hint-original-seed": {
+    "whisper-turbo-2.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ],
+    "whisper-turbo-1.stderr.log": [
+      {
+        "profile": "Production",
+        "samples": "43764",
+        "audio_ctx": "376",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "65325",
+        "audio_ctx": "512",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "100192",
+        "audio_ctx": "728",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "98521",
+        "audio_ctx": "716",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "66307",
+        "audio_ctx": "516",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "59534",
+        "audio_ctx": "476",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49352",
+        "audio_ctx": "412",
+        "language_id": "6",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "37813",
+        "audio_ctx": "340",
+        "language_id": "3",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "42911",
+        "audio_ctx": "372",
+        "language_id": "17",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "48032",
+        "audio_ctx": "404",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "49977",
+        "audio_ctx": "416",
+        "language_id": "1",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "75401",
+        "audio_ctx": "572",
+        "language_id": "7",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "389280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "356160",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "391200",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "418080",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      },
+      {
+        "profile": "Production",
+        "samples": "365280",
+        "audio_ctx": "1500",
+        "language_id": "0",
+        "single_segment": "true"
+      }
+    ]
+  }
+}

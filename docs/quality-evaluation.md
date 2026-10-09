@@ -57,6 +57,10 @@ language for that explicit hint. Each process loads one model at a time.
 
 ## Whisper recognition diagnosis
 
+ISSUE-1074 results, final turbo hint gating and worker resource limits are recorded
+in [the Hindi–English diagnosis](benchmarks/2026-10-09-hindi-recognition.md).
+Native-speaker/reference review and real-speaker qualification stay in ISSUE-1077.
+
 Speech variants may set `whisper_decode_profile` to `production` (the default),
 `full-context`, `segmented` or `full-context-segmented`. These options exist only
 in the opt-in quality worker. They independently compare the app's shortened

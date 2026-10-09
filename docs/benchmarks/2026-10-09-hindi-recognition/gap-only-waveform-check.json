@@ -1,0 +1,13 @@
+{
+  "same_voiced_pcm": true,
+  "removed_gap_frames": [
+    {
+      "zero_block_start_frame": 15891,
+      "frames": 1600
+    },
+    {
+      "zero_block_start_frame": 34700,
+      "frames": 1600
+    }
+  ]
+}
