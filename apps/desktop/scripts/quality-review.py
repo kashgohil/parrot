@@ -73,7 +73,7 @@ def packet(runs, languages):
     if not fixtures:
         raise ValueError('No cases match the requested languages')
     result = dict(schema_version=1, semantic_release_qualified=False, languages=languages,
-                  runs={label: dict(path=str(path), sha256=quality.sha256(path)) for label, (path, _) in runs.items()},
+                  runs={label: dict(path=f'runs/{label}/results.json', sha256=quality.sha256(path)) for label, (path, _) in runs.items()},
                   fixtures=list(fixtures.values()), outputs=list(outputs.values()), checks=list(CHECKS))
     result['packet_sha256'] = digest(result)
     return result
@@ -81,7 +81,8 @@ def packet(runs, languages):
 
 def prepare(args):
     output = private_destination(args.output)
-    data = packet(load_runs(args.run), args.languages)
+    runs = load_runs(args.run)
+    data = packet(runs, args.languages)
     media = {}
     for fixture in data['fixtures']:
         sound = fixture['audio']
@@ -93,6 +94,12 @@ def prepare(args):
     payload = json.dumps(dict(packet=data, media=media), ensure_ascii=False).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
     template = (HERE / 'quality-review.html').read_text(encoding='utf-8')
     output.mkdir(parents=True, exist_ok=False)
+    for label, (path, _) in runs.items():
+        snapshot = output / 'runs' / label
+        snapshot.mkdir(parents=True)
+        shutil.copy2(path, snapshot / 'results.json')
+        if quality.sha256(snapshot / 'results.json') != data['runs'][label]['sha256']:
+            raise ValueError('Evaluation changed while preparing packet')
     quality.write_json(output / 'review-packet.json', data)
     (output / 'index.html').write_text(template.replace('__PAYLOAD__', payload), encoding='utf-8')
     print(f"Prepared {len(data['fixtures'])} references and {len(data['outputs'])} distinct review subjects in {output / 'index.html'}")
@@ -151,7 +158,7 @@ def validate_review(data, reviews):
 
 def import_reviews(args):
     data = json.loads(args.packet.read_text(encoding='utf-8'))
-    runs = load_runs([f"{label}={Path(value['path']).parent}" for label, value in data['runs'].items()])
+    runs = load_runs([f"{label}={(args.packet.resolve().parent / value['path']).parent}" for label, value in data['runs'].items()])
     current = packet(runs, data['languages'])
     if current != data:
         raise ValueError('Packet or evaluated results changed; prepare a new packet')

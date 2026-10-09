@@ -21,8 +21,8 @@ class ReviewTests(unittest.TestCase):
         with wave.open(str(self.wav), 'wb') as audio:
             audio.setnchannels(1); audio.setsampwidth(2); audio.setframerate(16000)
             audio.writeframes(b'\x00\x00' * 4000)
-        self.run = self.root / 'run'
-        self.run.mkdir()
+        self.run = self.root / 'runs/test'
+        self.run.mkdir(parents=True)
         case = dict(id='case', languages=['hi', 'en'], primary_metric='cer', reference='प्रिया ने invoice approve नहीं किया।', facts=[])
         row = dict(case='case', id='case/auto', variant='model', stage='asr', language='auto', text=case['reference'], latency_ms=1)
         self.metadata = dict(schema_version=1, complete=True, normalization=review.quality.NORMALIZATION, skipped=[],
@@ -124,6 +124,7 @@ class ReviewTests(unittest.TestCase):
         self.assertNotIn('</script><script>window.injected', html)
         self.assertIn("connect-src 'none'", html)
         self.assertIn('\\u003c/script\\u003e', html)
+        self.assertEqual((dest / 'runs/test/results.json').read_bytes(), (self.run / 'results.json').read_bytes())
 
 
 if __name__ == '__main__': unittest.main()
