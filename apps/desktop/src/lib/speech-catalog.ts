@@ -7,6 +7,7 @@ export interface SpeechCapabilities {
 	explicit_language_hints: boolean;
 	languages: string[];
 	mixed_language_evaluated: boolean;
+	hindi_english_hint: boolean;
 }
 
 export interface SpeechModel {

@@ -137,7 +137,7 @@ let browser;
  assert((await speech.getByRole('alert').innerText()).includes('saved recognition hint'));
  await reset({...settings,stt_model:'small-q5_1',stt_language:'hi',stt_prompt_style:'hindi-english'});
  await page.waitForFunction(()=>document.querySelector('#sttLanguage')?.textContent==='Hindi');
- assert.equal(await speech.getByRole('alert').count(),0);
+ assert.equal(await speech.getByRole('alert').count(),1);
  await reset({...settings,stt_model:'large-v3-turbo',stt_language:'hi',stt_prompt_style:'typo'});
  await speech.getByRole('alert').waitFor();
  assert((await page.locator('#sttPromptStyle').innerText()).includes('unknown saved hint'));

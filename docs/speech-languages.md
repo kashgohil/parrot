@@ -126,11 +126,12 @@ does not access the user's Parrot database or start real downloads.
 
 Settings → Speech → Recognition hint offers an optional mixed writing example.
 The default adds no style hint. Hindi–English is explicit, experimental and
-requires a compatible multilingual Whisper model with Auto-detect or Hindi.
+requires a verified Whisper turbo model with Auto-detect or Hindi.
 It leaves the language preference, model tier and memory policy unchanged.
+Compact is excluded after observed English/French script regressions.
 Saved incompatible hints remain visible and block native decoding until the
 user chooses Default or compatible model/language settings. Parakeet, English-only
-Whisper and unknown custom coverage cannot be presented as compatible. The
+Whisper, compact and unknown custom coverage cannot be presented as compatible. The
 Parakeet upgrade banner is suppressed while a nondefault hint is saved.
 
 `stt_prompt_style=hindi-english` is read through the shared `TranscribeOpts` loader
@@ -147,3 +148,11 @@ cannot guarantee negation retention. Reviewed audio and consented real-speaker
 validation are tracked separately in ISSUE-1077. Physical-device qualification
 remains ISSUE-1072. Full encoder context and native segmentation remain diagnostic
 ablations, not new app defaults.
+
+Hint availability is separate from language coverage and semantic qualification.
+`hindi_english_hint` is true only for the turbo architecture (51,866 vocabulary,
+32 audio layers, 4 text layers). Settings reads these values from the actual
+GGML header; native decoding checks the loaded model. Stale model IDs, custom
+filenames and an incomplete header cannot make compact/full-size/English-only
+models appear eligible. This identifies the model family, not a guarantee for
+every quantization or custom weight file; measured evidence uses Q5_0.

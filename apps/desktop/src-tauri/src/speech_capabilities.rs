@@ -45,6 +45,8 @@ pub struct Capabilities {
     pub languages: Vec<&'static str>,
     // Language coverage does not establish accuracy on mixed speech.
     pub mixed_language_evaluated: bool,
+    /// Experimental prompt availability, separate from release accuracy.
+    pub hindi_english_hint: bool,
 }
 
 impl Capabilities {
@@ -55,6 +57,7 @@ impl Capabilities {
             explicit_language_hints: false,
             languages: vec![],
             mixed_language_evaluated: false,
+            hindi_english_hint: false,
         }
     }
 
@@ -65,6 +68,7 @@ impl Capabilities {
             explicit_language_hints: false,
             languages: PARAKEET_LANGUAGES.to_vec(),
             mixed_language_evaluated: false,
+            hindi_english_hint: false,
         }
     }
 
@@ -87,7 +91,15 @@ impl Capabilities {
             explicit_language_hints: true,
             languages,
             mixed_language_evaluated: false,
+            hindi_english_hint: false,
         }
+    }
+
+    /// Identify turbo from the actual GGML architecture, not its filename/ID.
+    pub fn whisper_model(n_vocab: i32, audio_layers: i32, text_layers: i32) -> Self {
+        let mut capabilities = Self::whisper_vocab(n_vocab);
+        capabilities.hindi_english_hint = (n_vocab, audio_layers, text_layers) == (51866, 32, 4);
+        capabilities
     }
 
     pub fn supports(&self, language: &str) -> Option<bool> {
@@ -129,7 +141,7 @@ pub fn models() -> Vec<Model> {
             recommended: true, capabilities: Capabilities::parakeet() },
         Model { id: "large-v3-turbo", name: "Multilingual (Whisper turbo)", size: "~600 MB download",
             description: "100 languages, including Hindi and Cantonese. Supports auto-detection and explicit language hints.",
-            recommended: false, capabilities: Capabilities::whisper_vocab(51866) },
+            recommended: false, capabilities: Capabilities::whisper_model(51866, 32, 4) },
         Model { id: "small-q5_1", name: "Compact multilingual (Whisper small)", size: "~181 MiB download",
             description: "99 languages, including Hindi. Smaller download; accuracy can differ from turbo. Cantonese requires turbo.",
             recommended: false, capabilities: Capabilities::whisper_vocab(51865) },
@@ -150,9 +162,18 @@ pub fn for_target(engine: &str, model_id: &str, path: &Path) -> Capabilities {
         if file.read_exact(&mut header).is_ok()
             && u32::from_le_bytes(header[..4].try_into().unwrap()) == 0x67676d6c
         {
-            return Capabilities::whisper_vocab(i32::from_le_bytes(
-                header[4..].try_into().unwrap(),
-            ));
+            let vocab = i32::from_le_bytes(header[4..].try_into().unwrap());
+            let mut architecture = [0u8; 32];
+            return if file.read_exact(&mut architecture).is_ok() {
+                Capabilities::whisper_model(
+                    vocab,
+                    i32::from_le_bytes(architecture[12..16].try_into().unwrap()),
+                    i32::from_le_bytes(architecture[28..32].try_into().unwrap()),
+                )
+            } else {
+                // A partial header can establish vocabulary coverage, but not turbo.
+                Capabilities::whisper_vocab(vocab)
+            };
         }
         return Capabilities::unknown();
     }
@@ -193,6 +214,28 @@ mod tests {
         for code in ["hi", "fr", "zz", "en\0"] {
             assert!(english.validate(Some(code)).is_err());
         }
+    }
+
+    #[test]
+    fn mixed_hint_requires_actual_turbo_architecture() {
+        assert!(!Capabilities::whisper_vocab(51866).hindi_english_hint);
+        assert!(!Capabilities::whisper_model(51866, 32, 32).hindi_english_hint);
+        assert!(!Capabilities::whisper_model(51865, 12, 12).hindi_english_hint);
+        let path = std::env::temp_dir().join(format!("parrot-hint-{}.bin", uuid::Uuid::new_v4()));
+        let mut header = 0x67676d6cu32.to_le_bytes().to_vec();
+        header.extend(51866i32.to_le_bytes());
+        std::fs::write(&path, &header).unwrap();
+        assert!(!for_target("whisper", "large-v3-turbo", &path).hindi_english_hint);
+        let mut architecture = [0u8; 32];
+        architecture[12..16].copy_from_slice(&32i32.to_le_bytes());
+        architecture[28..32].copy_from_slice(&4i32.to_le_bytes());
+        header.extend(architecture);
+        std::fs::write(&path, &header).unwrap();
+        assert!(for_target("whisper", "small.en", &path).hindi_english_hint);
+        header[36..40].copy_from_slice(&32i32.to_le_bytes());
+        std::fs::write(&path, &header).unwrap();
+        assert!(!for_target("whisper", "large-v3-turbo", &path).hindi_english_hint);
+        std::fs::remove_file(path).unwrap();
     }
 
     #[test]

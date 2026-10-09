@@ -91,9 +91,9 @@ impl TranscribeOpts {
     ) -> Result<()> {
         if self.prompt_style == SpeechPromptStyle::HindiEnglish {
             anyhow::ensure!(
-                capabilities.explicit_language_hints && capabilities.supports("hi") == Some(true)
+                capabilities.hindi_english_hint
                     && matches!(crate::speech_capabilities::normalize_language(self.language.as_deref()).as_str(), "auto" | "hi"),
-                "The Hindi–English hint requires a multilingual Whisper model and Auto-detect or Hindi. Change the model, language or hint in Settings → Speech."
+                "The Hindi–English hint requires Whisper turbo and Auto-detect or Hindi. Change the model, language or hint in Settings → Speech."
             );
         }
         Ok(())
@@ -113,8 +113,10 @@ pub enum LocalEngine {
 impl LocalEngine {
     fn validate_language(&self, opts: &TranscribeOpts) -> Result<()> {
         let capabilities = match self {
-            Self::Whisper(provider) => crate::speech_capabilities::Capabilities::whisper_vocab(
+            Self::Whisper(provider) => crate::speech_capabilities::Capabilities::whisper_model(
                 provider.ctx.model_n_vocab(),
+                provider.ctx.model_n_audio_layer(),
+                provider.ctx.model_n_text_layer(),
             ),
             Self::Parakeet(_) => crate::speech_capabilities::Capabilities::parakeet(),
         };
@@ -347,7 +349,11 @@ pub(crate) fn run_whisper(
     let initial_prompt = opts.resolved_initial_prompt();
     // Check the actual loaded model: whisper.cpp can silently force .en models
     // back to English even when a different language was requested.
-    let capabilities = crate::speech_capabilities::Capabilities::whisper_vocab(ctx.model_n_vocab());
+    let capabilities = crate::speech_capabilities::Capabilities::whisper_model(
+        ctx.model_n_vocab(),
+        ctx.model_n_audio_layer(),
+        ctx.model_n_text_layer(),
+    );
     capabilities.validate(language)?;
     opts.validate_prompt_style(&capabilities)?;
     let normalized_language = crate::speech_capabilities::normalize_language(language);
@@ -617,11 +623,13 @@ mod tests {
             Some("आज meeting में project status पर discussion होगा।\nVocabulary hints: Kubernetes.")
         );
         assert_eq!(opts.prompt_style, SpeechPromptStyle::HindiEnglish);
-        let turbo = crate::speech_capabilities::Capabilities::whisper_vocab(51866);
+        let turbo = crate::speech_capabilities::Capabilities::whisper_model(51866, 32, 4);
         assert!(opts.validate_prompt_style(&turbo).is_ok());
         for caps in [
             crate::speech_capabilities::Capabilities::parakeet(),
             crate::speech_capabilities::Capabilities::whisper_vocab(51864),
+            crate::speech_capabilities::Capabilities::whisper_model(51865, 12, 12),
+            crate::speech_capabilities::Capabilities::whisper_model(51866, 32, 32),
         ] {
             assert!(opts.validate_prompt_style(&caps).is_err());
         }
@@ -773,12 +781,16 @@ mod tests {
         let model_path = std::env::var_os("PARROT_TEST_WHISPER_MODEL").unwrap();
         let path = Path::new(&model_path);
         let provider = LocalWhisperProvider::load(path).unwrap();
-        let actual =
-            crate::speech_capabilities::Capabilities::whisper_vocab(provider.ctx.model_n_vocab());
+        let actual = crate::speech_capabilities::Capabilities::whisper_model(
+            provider.ctx.model_n_vocab(),
+            provider.ctx.model_n_audio_layer(),
+            provider.ctx.model_n_text_layer(),
+        );
         let header =
             crate::speech_capabilities::for_target("whisper", "deliberately-stale-id", path);
         assert!(actual.known);
         assert_eq!(header.languages, actual.languages);
+        assert_eq!(header.hindi_english_hint, actual.hindi_english_hint);
         assert_eq!(header.multilingual, Some(provider.ctx.is_multilingual()));
         eprintln!("SPEECH_CATALOG={}", crate::get_speech_catalog());
         eprintln!(
@@ -786,6 +798,35 @@ mod tests {
             serde_json::to_string(&actual).unwrap()
         );
         let engine = LocalEngine::Whisper(Arc::new(provider));
+        let mixed = include_bytes!("../tests/fixtures/quality/audio/hi-en-mix.wav");
+        let (mixed_samples, mixed_rate) = decode_audio_bytes(mixed).unwrap();
+        let mixed_audio = Arc::new(crate::audio::RecordedSamples {
+            samples: mixed_samples,
+            sample_rate: mixed_rate,
+        });
+        let hinted = TranscribeOpts {
+            prompt_style: SpeechPromptStyle::HindiEnglish,
+            ..Default::default()
+        };
+        let recording = engine
+            .transcribe_recording(mixed_audio, hinted.clone())
+            .await;
+        let import = engine
+            .transcribe_import(
+                crate::audio_import::AudioSource::Bytes(Arc::new(mixed.to_vec())),
+                hinted,
+            )
+            .await;
+        if actual.hindi_english_hint {
+            let recorded = recording.unwrap();
+            assert_eq!(recorded, import.unwrap().text);
+            assert!(recorded.contains("invoice") && recorded.contains("नहीं"));
+            eprintln!("PASS mixed-hint recording/import: {recorded}");
+        } else {
+            assert!(recording.unwrap_err().to_string().contains("Whisper turbo"));
+            assert!(import.err().unwrap().to_string().contains("Whisper turbo"));
+            eprintln!("PASS rejected mixed hint on non-turbo recording/import");
+        }
         let wav = include_bytes!("../tests/fixtures/transcription/english.wav");
         let (samples, rate) = decode_audio_bytes(wav).unwrap();
         let audio = Arc::new(crate::audio::RecordedSamples {
