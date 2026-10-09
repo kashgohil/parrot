@@ -254,6 +254,14 @@ def command_output(args):
     return subprocess.check_output(args, text=True, stderr=subprocess.DEVNULL).strip()
 
 
+def cleanup_options(variant, case):
+    options = {field: case.get(field, variant.get(field, ''))
+               for field in ('custom_words', 'context_prompt', 'writing_style')}
+    if any(not isinstance(value, str) for value in options.values()):
+        raise ValueError('Cleanup vocabulary, context and writing style must be strings')
+    return options
+
+
 def run(args):
     manifest = read_manifest(args.manifest.resolve())
     corpus_root = args.manifest.resolve().parent
@@ -264,6 +272,7 @@ def run(args):
     if not variants or len({variant['id'] for variant in variants}) != len(variants):
         raise ValueError('Provide models with unique variant IDs')
     for variant in variants:
+        cleanup_options(variant, {})
         style = variant.get('prompt_style', 'default')
         if style not in ('default', 'hindi-english') or (style != 'default' and variant.get('engine') != 'whisper'):
             raise ValueError('Speech prompt style must be default or Whisper-only hindi-english')
@@ -340,7 +349,7 @@ def run(args):
                 if case.get('cleanup_input') is not None:
                     key = case['id'] + '/isolated'
                     cases.append({'id': key, 'input': case['cleanup_input'], 'stage': 'cleanup_isolated', 'tones': variant.get('tones', ['casual', 'neutral', 'formal']),
-                                  'custom_words': variant.get('custom_words', ''), 'context_prompt': variant.get('context_prompt', ''), 'writing_style': variant.get('writing_style', '')})
+                                  **cleanup_options(variant, case)})
                     mapping[key] = (case['id'], None)
             if config.get('pipeline', True):
                 for source in asr_rows:
@@ -348,7 +357,7 @@ def run(args):
                         continue
                     key = source['variant'] + '/' + source['case'] + '/pipeline'
                     cases.append({'id': key, 'input': source['text'], 'stage': 'cleanup_pipeline', 'tones': ['neutral'],
-                                  'custom_words': variant.get('custom_words', ''), 'context_prompt': variant.get('context_prompt', ''), 'writing_style': variant.get('writing_style', '')})
+                                  **cleanup_options(variant, next(case for case in manifest['cases'] if case['id'] == source['case']))})
                     mapping[key] = (source['case'], source['key'])
             print(f'Cleanup {variant["id"]}, repeat {repeat}: {sum(len(case["tones"]) for case in cases)} completions', flush=True)
             rows = run_worker(args.binary, output, f'{variant["id"]}-{repeat}', {'engine': 'cleanup', 'model': variant['model'], 'sidecar': str(args.sidecar.resolve()), 'cases': cases}, args.timeout)

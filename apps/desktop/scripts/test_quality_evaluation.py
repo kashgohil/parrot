@@ -10,6 +10,14 @@ SPEC.loader.exec_module(quality)
 
 
 class CleanupDiagnosticsTests(unittest.TestCase):
+    def test_fixture_hints_override_model_defaults_without_changing_other_cases(self):
+        variant = {'custom_words': '["Kubernetes"]', 'context_prompt': 'default context', 'writing_style': 'formal'}
+        self.assertEqual(quality.cleanup_options(variant, {}), variant)
+        result = quality.cleanup_options(variant, {'context_prompt': 'long context', 'writing_style': ''})
+        self.assertEqual(result, dict(variant, context_prompt='long context', writing_style=''))
+        with self.assertRaises(ValueError):
+            quality.cleanup_options(variant, {'custom_words': ['invalid type']})
+
     def test_protocol_diagnostics_keep_segments_with_their_request(self):
         part = dict(prompt_tokens=300, reused_tokens=0, decoded_tokens=300, prefill_ms=14,
                     generated_tokens=10, generation_ms=80, context_tokens=2048, output_budget=100)

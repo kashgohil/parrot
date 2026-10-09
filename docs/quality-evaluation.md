@@ -249,6 +249,11 @@ tone remain intact. Excess hints are omitted from this request, logged and
 reported as `hints_truncated`; saved preferences and transcript characters are
 unchanged. This is a context bound, not a guarantee that every generation finishes
 or that long dictation is fast. The per-segment byte safety limit remains 8,000.
+Fixture-level `custom_words` (a JSON string), `context_prompt` and `writing_style`
+override the corresponding model-variant defaults in both isolated and pipeline
+cleanup. An explicit empty string clears the variant default for that case.
+The row's `system_prompt` records the requested system text; when hints are
+limited, actual prompt token counts are recorded separately in `segments`.
 
 `tests/fixtures/quality/cleanup-token-capacity.json` contains synthetic text only:
 numbered English/Hindi/mixed records, Chinese/Japanese without spaces, repeated
