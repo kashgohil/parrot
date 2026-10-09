@@ -38,14 +38,6 @@ struct OllamaChatResponse {
     done_reason: Option<String>,
 }
 
-/// Vocalized fillers that almost never belong in polished writing.
-/// Content-sensitive fillers ("like", "you know", "basically") are left to
-/// the LLM — stripping them here would mangle real sentences.
-const PURE_FILLER_TOKENS: &[&str] = &[
-    "um", "uh", "uhh", "umm", "uhm", "er", "erm", "ah", "ahh", "ohh", "hmm", "hm", "mm", "mmm",
-    "mhm", "uh-huh", "uhhuh", "huh",
-];
-
 /// Local cleanup: in-process llama.cpp (default) or legacy Ollama.
 pub async fn cleanup_text(
     raw_text: &str,
@@ -140,8 +132,17 @@ pub(crate) fn finalize_completion(
             let Some(part) = source.get(segment.start_byte..segment.end_byte) else {
                 return raw_text.to_string();
             };
-            let safe =
-                finalize_cleanup_output_with_policy(&segment.text, part, formality, writing_style);
+            let safe = finalize_cleanup_output_with_filler_context(
+                &segment.text,
+                part,
+                formality,
+                writing_style,
+                if segment.start_byte == 0 {
+                    raw_text
+                } else {
+                    ""
+                },
+            );
             combined.push_str(&part[..part.len() - part.trim_start().len()]);
             combined.push_str(safe.trim());
             combined.push_str(&part[part.trim_end().len()..]);
@@ -201,9 +202,23 @@ async fn cleanup_with_ollama(
     }
 
     let chat_resp: OllamaChatResponse = resp.json().await?;
+    Ok(finalize_ollama_response(
+        chat_resp,
+        raw_text,
+        formality,
+        writing_style,
+    ))
+}
+
+fn finalize_ollama_response(
+    chat_resp: OllamaChatResponse,
+    raw_text: &str,
+    formality: Formality,
+    writing_style: &str,
+) -> String {
     if !chat_resp.done || chat_resp.done_reason.as_deref() != Some("stop") {
         eprintln!("Ollama cleanup incomplete; retaining transcript");
-        return Ok(raw_text.to_string());
+        return raw_text.to_string();
     }
     let cleaned = finalize_cleanup_output_with_policy(
         &chat_resp.message.content,
@@ -212,10 +227,10 @@ async fn cleanup_with_ollama(
         writing_style,
     );
     if cleaned.trim().is_empty() {
-        return Ok(raw_text.to_string());
+        return raw_text.to_string();
     }
 
-    Ok(cleaned)
+    cleaned
 }
 
 pub(crate) fn build_user_message(raw_text: &str) -> String {
@@ -279,7 +294,7 @@ pub(crate) fn build_prompt_parts(
          Keep every original language and script. Keep intentional language mixing. Do not translate. Do not transliterate.\n\
          Preserve meaning, names, numbers, amounts, dates, negations, and uncertainty. Do not invent or omit facts.\n\
          Make minimal edits: punctuation, capitalization and clear grammar errors. Keep meaningful words such as like, actually, kind of and maybe.\n\
-         Remove only unmistakable vocal fillers and immediate stutters (I I think -> I think). Keep repeated sentences and paragraphs.\n\
+         Preserve quoted words, names and uncertain fillers; er and um can be meaningful words. Remove only unmistakable vocal fillers and immediate stutters (I I think -> I think). Keep repeated sentences and paragraphs.\n\
          Resolve only explicit self-corrections (send to John, no, to Jane -> send to Jane); keep the rest of the message. If uncertain, keep the original.\n\
          Use paragraphs, quotation marks or lists only when the spoken structure is clear.\n\
          Preservation takes priority over tone, vocabulary, context and writing style.",
@@ -307,15 +322,10 @@ pub(crate) fn build_prompt_parts(
     (system, prompt)
 }
 
-/// Strip model flourishes, leftover pure fillers, and messy whitespace.
+/// Strip model flourishes, permitted leading pauses, and messy whitespace.
 /// Falls back to `raw_fallback` on empty output or detectable language/content loss.
 pub fn finalize_cleanup_output(raw: &str, raw_fallback: &str) -> String {
-    let s = cleanup_candidate(raw);
-    if s.is_empty() || !preserves_language_structure(raw_fallback, &s) {
-        raw_fallback.trim().to_string()
-    } else {
-        s
-    }
+    finalize_cleanup_output_with_policy(raw, raw_fallback, Formality::Neutral, "")
 }
 
 /// Preserve word order and content under every tone. Explicit Formal/style
@@ -327,14 +337,24 @@ pub(crate) fn finalize_cleanup_output_with_policy(
     formality: Formality,
     writing_style: &str,
 ) -> String {
-    let source = resolve_clear_disfluencies(original);
+    finalize_cleanup_output_with_filler_context(raw, original, formality, writing_style, original)
+}
+
+fn finalize_cleanup_output_with_filler_context(
+    raw: &str,
+    original: &str,
+    formality: Formality,
+    writing_style: &str,
+    filler_context: &str,
+) -> String {
+    let resolved = resolve_clear_disfluencies(original);
+    let source = crate::cleanup_fillers::strip_leading_pauses(&resolved, filler_context);
     let faithful = formality != Formality::Formal && writing_style.trim().is_empty();
-    let candidate = cleanup_candidate(raw);
+    let candidate = cleanup_candidate(raw, filler_context);
     let words = |text: &str| {
         transcript_words(text)
             .into_iter()
             .map(|word| word.text)
-            .filter(|word| !is_pure_filler_token(word))
             .flat_map(|word| {
                 if !faithful {
                     if let Some(equivalent) = style_equivalent(&word) {
@@ -349,13 +369,13 @@ pub(crate) fn finalize_cleanup_output_with_policy(
             .collect::<Vec<_>>()
     };
     if candidate.is_empty()
-        || finalize_cleanup_output(raw, &source) != candidate
+        || !preserves_language_structure(&source, &candidate)
         || words(&source) != words(&candidate)
         || (source.trim_end().ends_with('?') && !candidate.trim_end().ends_with('?'))
     {
         // Keep useful, deterministic cleanup even when a model translates,
         // answers an instruction, paraphrases or loses content.
-        normalize_whitespace(&strip_pure_filler_tokens(&source))
+        normalize_whitespace(&source)
     } else {
         candidate
     }
@@ -578,10 +598,12 @@ pub(crate) fn resolve_clear_disfluencies(text: &str) -> String {
     result
 }
 
-pub(crate) fn cleanup_candidate(raw: &str) -> String {
+pub(crate) fn cleanup_candidate(raw: &str, original: &str) -> String {
     let mut s = strip_model_labels(raw.trim());
-    s = strip_wrapping_quotes(&s);
-    s = strip_pure_filler_tokens(&s);
+    if strip_wrapping_quotes(original) == original.trim() {
+        s = strip_wrapping_quotes(&s);
+    }
+    s = crate::cleanup_fillers::strip_leading_pauses(&s, original);
     s = normalize_whitespace(&s);
     s
 }
@@ -593,7 +615,6 @@ fn preserves_language_structure(original: &str, cleaned: &str) -> bool {
 
     let scripts = |text: &str| -> HashSet<Script> {
         text.split_whitespace()
-            .filter(|word| !is_pure_filler_token(word))
             .flat_map(str::chars)
             .filter(|c| c.is_alphabetic())
             .map(|c| c.script())
@@ -629,7 +650,6 @@ fn preserves_language_structure(original: &str, cleaned: &str) -> bool {
             text.split(|c: char| !c.is_alphabetic())
                 .filter(|word| !word.is_empty())
                 .filter(|word| word.chars().all(|c| c.script() == Script::Latin))
-                .filter(|word| !is_pure_filler_token(word))
                 .map(str::to_lowercase)
                 .collect()
         };
@@ -673,43 +693,6 @@ fn strip_wrapping_quotes(s: &str) -> String {
     } else {
         s.to_string()
     }
-}
-
-/// Drop standalone vocal fillers the small model sometimes leaves behind.
-fn strip_pure_filler_tokens(text: &str) -> String {
-    let mut out = String::with_capacity(text.len());
-    for (line_idx, line) in text.split('\n').enumerate() {
-        if line_idx > 0 {
-            out.push('\n');
-        }
-        let mut line_out = String::new();
-        for token in line.split_whitespace() {
-            if is_pure_filler_token(token) {
-                continue;
-            }
-            // Join only standalone punctuation. A blanket " ." replacement
-            // also attaches leading decimals such as "Use .5 percent".
-            if !line_out.is_empty() && !matches!(token, "," | "." | "?" | "!" | ";" | ":") {
-                line_out.push(' ');
-            }
-            line_out.push_str(token);
-        }
-        out.push_str(&line_out);
-    }
-    out
-}
-
-fn is_pure_filler_token(token: &str) -> bool {
-    // Strip common attached punctuation: "um," "uh." "hmm…"
-    let core: String = token
-        .chars()
-        .filter(|c| c.is_alphanumeric() || *c == '-')
-        .collect::<String>()
-        .to_lowercase();
-    if core.is_empty() {
-        return false;
-    }
-    PURE_FILLER_TOKENS.contains(&core.as_str())
 }
 
 fn normalize_whitespace(text: &str) -> String {
@@ -758,7 +741,7 @@ mod tests {
         ]});
         let complete = serde_json::from_value(json.clone()).unwrap();
         let cleaned = finalize_completion(&complete, &original, Formality::Neutral, "");
-        assert_eq!(cleaned, "Priya did not approve 25.\nravi approved 35.");
+        assert_eq!(cleaned, "Priya did not approve 25.\nuh ravi approved 35.");
         json["complete"] = serde_json::json!(false);
         json["finish_reason"] = serde_json::json!("token_limit");
         let incomplete = serde_json::from_value(json).unwrap();
@@ -788,6 +771,52 @@ mod tests {
                 finalize_completion(&result, source, Formality::Neutral, ""),
                 source
             );
+        }
+    }
+
+    #[test]
+    fn both_backends_retain_german_words_and_clean_english_prefixes() {
+        use crate::cleanup_engine::protocol::{Completion, FinishReason};
+        for (source, candidate, expected) in [
+            (
+                "Er kommt um acht Uhr.",
+                "Kommt acht Uhr.",
+                "Er kommt um acht Uhr.",
+            ),
+            (
+                "um please send कल का invoice",
+                "Please send कल का invoice.",
+                "um please send कल का invoice",
+            ),
+            ("um I like it", "I like it.", "I like it."),
+            (
+                "Er has not approved it.",
+                "Has not approved it.",
+                "Er has not approved it.",
+            ),
+        ] {
+            for tone in [Formality::Casual, Formality::Neutral, Formality::Formal] {
+                let completion = Completion {
+                    text: candidate.to_owned(),
+                    complete: true,
+                    finish_reason: FinishReason::EndOfGeneration,
+                    segments: Vec::new(),
+                    hints_truncated: false,
+                };
+                let response = OllamaChatResponse {
+                    message: ChatMessage {
+                        role: "assistant".into(),
+                        content: candidate.into(),
+                    },
+                    done: true,
+                    done_reason: Some("stop".into()),
+                };
+                assert_eq!(finalize_completion(&completion, source, tone, ""), expected);
+                assert_eq!(
+                    finalize_ollama_response(response, source, tone, ""),
+                    expected
+                );
+            }
         }
     }
 
@@ -901,11 +930,11 @@ mod tests {
         assert_eq!(finalize_cleanup_output(corrected, original), corrected);
         assert_eq!(
             finalize_cleanup_output("Meeting कल है।", "um meeting कल है"),
-            "Meeting कल है।"
+            "um meeting कल है"
         );
         assert_eq!(
             finalize_cleanup_output("今日は雨です。", "um 今日は雨です"),
-            "今日は雨です。"
+            "um 今日は雨です"
         );
         assert_eq!(
             finalize_cleanup_output(
@@ -927,7 +956,7 @@ mod tests {
             finalize_cleanup_output("Priya paid 250 euros and Ravi paid 25 euros.", original),
             original
         );
-        let formatted = "Priya paid 25 euros. Ravi paid 25 euros.";
+        let formatted = "Priya paid 25 euros, and Ravi paid 25 euros.";
         assert_eq!(finalize_cleanup_output(formatted, original), formatted);
     }
 
@@ -1192,14 +1221,17 @@ mod tests {
 
     #[test]
     fn finalize_strips_labels_and_pure_fillers() {
-        let out = finalize_cleanup_output("Cleaned text: um hello uh world", "fallback");
-        assert_eq!(out, "hello world");
+        let out = finalize_cleanup_output(
+            "Cleaned text: um please send the draft",
+            "um please send the draft",
+        );
+        assert_eq!(out, "please send the draft");
     }
 
     #[test]
     fn finalize_preserves_paragraphs_and_lists() {
         let raw = "Hey team,\n\n1. Ship Friday.\n2. QA today.";
-        let out = finalize_cleanup_output(raw, "fallback");
+        let out = finalize_cleanup_output(raw, raw);
         assert!(out.contains("Hey team,"));
         assert!(out.contains("1. Ship Friday."));
         assert!(out.contains("2. QA today."));
@@ -1209,7 +1241,7 @@ mod tests {
 
     #[test]
     fn finalize_does_not_strip_content_like() {
-        let out = finalize_cleanup_output("I like pizza.", "fallback");
+        let out = finalize_cleanup_output("I like pizza.", "I like pizza.");
         assert_eq!(out, "I like pizza.");
     }
 
@@ -1217,14 +1249,5 @@ mod tests {
     fn finalize_empty_falls_back() {
         let out = finalize_cleanup_output("   ", "original text");
         assert_eq!(out, "original text");
-    }
-
-    #[test]
-    fn pure_filler_detection() {
-        assert!(is_pure_filler_token("um"));
-        assert!(is_pure_filler_token("uh,"));
-        assert!(is_pure_filler_token("Hmm."));
-        assert!(!is_pure_filler_token("like"));
-        assert!(!is_pure_filler_token("umbrella"));
     }
 }

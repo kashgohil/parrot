@@ -211,7 +211,7 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
                             continue;
                         }
                         let model_output = &completion.text;
-                        let candidate = cleanup::cleanup_candidate(&model_output);
+                        let candidate = cleanup::cleanup_candidate(&model_output, &input);
                         let text = cleanup::finalize_completion(
                             &completion,
                             &input,
