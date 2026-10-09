@@ -234,7 +234,7 @@ still use strict stderr correlation; do not pair long-transcript logs by row.
 Summaries count incomplete completions separately from safe transcript fallbacks.
 
 The cleanup context stays at 2,048 tokens. The worker reserves
-`input_tokens + ceil(input_tokens / 2) + 64` output tokens using the loaded
+`max(96, input_tokens + ceil(input_tokens / 2) + 64)` output tokens using the loaded
 model's tokenizer, including the full chat template in its fit check. It plans
 prefixes of at most 4,096 bytes and prefers sentence or whitespace boundaries;
 an unbroken input can be split at a UTF-8 boundary. Coverage is checked before

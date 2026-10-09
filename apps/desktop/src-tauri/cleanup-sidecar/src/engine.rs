@@ -483,6 +483,7 @@ fn output_budget(input_tokens: usize) -> usize {
     input_tokens
         .saturating_add(input_tokens.div_ceil(2))
         .saturating_add(64)
+        .max(96)
 }
 
 /// Prefer a complete sentence, then whitespace, then a UTF-8 boundary. Punctuation
@@ -588,6 +589,7 @@ mod tests {
         }
         assert_eq!(output_budget(200), 364);
         assert_eq!(output_budget(201), 366);
+        assert_eq!(output_budget(1), 96);
     }
 
     #[test]

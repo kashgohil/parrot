@@ -4,7 +4,7 @@
 //!
 //! Protocol — newline-delimited JSON, stdout is protocol-only (all logs and
 //! llama.cpp chatter go to stderr):
-//!   startup  -> {"type":"ready"}              (after the model loads)
+//!   startup  -> {"type":"ready","protocol_version":2} (after the model loads)
 //!            -> {"type":"error","error":...}  (load failed; process exits 1)
 //!   request  <- {"id":N,"system":..,"user":..,"max_tokens":N}   (one per line)
 //!            <- {"id":N,"system":..,"hints":..,"transcript":..} (app path)

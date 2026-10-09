@@ -7,7 +7,7 @@
 //! llama in its own process removes the collision by construction.
 //!
 //! Wire protocol (newline-delimited JSON, see `cleanup-sidecar/src/main.rs`):
-//!   startup  <- {"type":"ready"} | {"type":"error","error":..}
+//!   startup  <- {"type":"ready","protocol_version":2} | {"type":"error","error":..}
 //!   request  -> {"id":N,"system":..,"user":..,"max_tokens":N}
 //!            -> {"id":N,"system":..,"hints":..,"transcript":..}
 //!   response <- {"type":"result","id":N,"ok":bool,"completion"?:..,"error"?:..}
@@ -277,10 +277,27 @@ fn read_message(proc: &mut Proc) -> Result<Message> {
         if trimmed.is_empty() {
             continue;
         }
-        if let Ok(msg) = serde_json::from_str::<Message>(trimmed) {
+        if let Some(msg) = parse_message(trimmed)? {
             return Ok(msg);
         }
         // Non-protocol line on stdout — ignore and keep reading.
+    }
+}
+
+fn parse_message(line: &str) -> Result<Option<Message>> {
+    match serde_json::from_str::<Message>(line) {
+        Ok(message) => Ok(Some(message)),
+        Err(error) => {
+            if serde_json::from_str::<serde_json::Value>(line)
+                .ok()
+                .is_some_and(|value| value.get("type").is_some())
+            {
+                // A broken protocol response must fail immediately. Discarding
+                // it as a log line would wait forever for an already-sent result.
+                return Err(error).context("invalid cleanup sidecar protocol message");
+            }
+            Ok(None)
+        }
     }
 }
 
@@ -317,6 +334,18 @@ pub fn resolve_sidecar_path() -> Result<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn malformed_completion_is_an_error_instead_of_a_discarded_log() {
+        assert!(parse_message("llama model diagnostic").unwrap().is_none());
+        assert!(parse_message(
+            r#"{"type":"result","id":1,"ok":true,"completion":{"text":"partial","complete":false}}"#
+        )
+        .is_err());
+        assert!(parse_message(r#"{"type":"ready","protocol_version":2}"#)
+            .unwrap()
+            .is_some());
+    }
 
     #[cfg(unix)]
     #[test]
