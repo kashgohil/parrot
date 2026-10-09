@@ -1,0 +1,277 @@
+{
+  "schema_version": 1,
+  "name": "parrot-cleanup-formatting-v1",
+  "cases": [
+    {
+      "id": "en-statement",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "Priya did not approve invoice 25 on Friday.",
+      "cleanup_input": "priya did not approve invoice 25 on friday",
+      "facts": [
+        {
+          "id": "name",
+          "any_of": [
+            "priya"
+          ]
+        },
+        {
+          "id": "negation",
+          "any_of": [
+            "not"
+          ]
+        },
+        {
+          "id": "amount",
+          "any_of": [
+            "25"
+          ]
+        }
+      ],
+      "format_check": {
+        "terminal": [
+          "."
+        ],
+        "initial_uppercase": true
+      },
+      "provenance": "Synthetic text; terminal-punctuation and initial-case checks only. Meaning, grammar and non-English wording require ISSUE-1077 review."
+    },
+    {
+      "id": "en-question",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "Can Priya not deploy release 2.1 until Friday?",
+      "cleanup_input": "can Priya not deploy release 2.1 until Friday",
+      "facts": [
+        {
+          "id": "name",
+          "any_of": [
+            "priya"
+          ]
+        },
+        {
+          "id": "negation",
+          "any_of": [
+            "not"
+          ]
+        },
+        {
+          "id": "version",
+          "any_of": [
+            "2.1"
+          ]
+        }
+      ],
+      "format_check": {
+        "terminal": [
+          "?"
+        ],
+        "initial_uppercase": true
+      },
+      "provenance": "Synthetic text; terminal-punctuation and initial-case checks only. Meaning, grammar and non-English wording require ISSUE-1077 review."
+    },
+    {
+      "id": "en-uncertainty",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "Maybe Priya did not approve invoice 25.",
+      "cleanup_input": "maybe Priya did not approve invoice 25",
+      "facts": [
+        {
+          "id": "uncertainty",
+          "any_of": [
+            "maybe"
+          ]
+        },
+        {
+          "id": "negation",
+          "any_of": [
+            "not"
+          ]
+        },
+        {
+          "id": "amount",
+          "any_of": [
+            "25"
+          ]
+        }
+      ],
+      "format_check": {
+        "terminal": [
+          "."
+        ],
+        "initial_uppercase": true
+      },
+      "provenance": "Synthetic text; terminal-punctuation and initial-case checks only. Meaning, grammar and non-English wording require ISSUE-1077 review."
+    },
+    {
+      "id": "hi-statement",
+      "languages": [
+        "hi"
+      ],
+      "primary_metric": "cer",
+      "reference": "प्रिया ने 25 रुपये का भुगतान नहीं किया।",
+      "cleanup_input": "प्रिया ने 25 रुपये का भुगतान नहीं किया",
+      "facts": [
+        {
+          "id": "name",
+          "any_of": [
+            "प्रिया"
+          ]
+        },
+        {
+          "id": "negation",
+          "any_of": [
+            "नहीं"
+          ]
+        },
+        {
+          "id": "amount",
+          "any_of": [
+            "25"
+          ]
+        }
+      ],
+      "format_check": {
+        "terminal": [
+          "।",
+          "."
+        ]
+      },
+      "provenance": "Synthetic text; terminal-punctuation and initial-case checks only. Meaning, grammar and non-English wording require ISSUE-1077 review."
+    },
+    {
+      "id": "hi-en-statement",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "primary_metric": "cer",
+      "reference": "शायद प्रिया ने invoice approve नहीं किया।",
+      "cleanup_input": "शायद प्रिया ने invoice approve नहीं किया",
+      "facts": [
+        {
+          "id": "uncertainty",
+          "any_of": [
+            "शायद"
+          ]
+        },
+        {
+          "id": "name",
+          "any_of": [
+            "प्रिया"
+          ]
+        },
+        {
+          "id": "negation",
+          "any_of": [
+            "नहीं"
+          ]
+        },
+        {
+          "id": "english",
+          "any_of": [
+            "invoice approve"
+          ]
+        }
+      ],
+      "format_check": {
+        "terminal": [
+          "।",
+          "."
+        ]
+      },
+      "provenance": "Synthetic text; terminal-punctuation and initial-case checks only. Meaning, grammar and non-English wording require ISSUE-1077 review."
+    },
+    {
+      "id": "fr-statement",
+      "languages": [
+        "fr"
+      ],
+      "primary_metric": "wer",
+      "reference": "Bonjour, je voudrais réserver une table pour demain soir.",
+      "cleanup_input": "bonjour je voudrais réserver une table pour demain soir",
+      "facts": [
+        {
+          "id": "language",
+          "any_of": [
+            "bonjour"
+          ]
+        }
+      ],
+      "format_check": {
+        "terminal": [
+          "."
+        ],
+        "initial_uppercase": true
+      },
+      "provenance": "Synthetic text; terminal-punctuation and initial-case checks only. Meaning, grammar and non-English wording require ISSUE-1077 review."
+    },
+    {
+      "id": "zh-statement",
+      "languages": [
+        "zh"
+      ],
+      "primary_metric": "cer",
+      "reference": "小王没有批准25元的付款。",
+      "cleanup_input": "小王没有批准25元的付款",
+      "facts": [
+        {
+          "id": "name",
+          "any_of": [
+            "小王"
+          ]
+        },
+        {
+          "id": "amount",
+          "any_of": [
+            "25"
+          ]
+        }
+      ],
+      "format_check": {
+        "terminal": [
+          "。",
+          "."
+        ]
+      },
+      "provenance": "Synthetic text; terminal-punctuation and initial-case checks only. Meaning, grammar and non-English wording require ISSUE-1077 review."
+    },
+    {
+      "id": "ja-statement",
+      "languages": [
+        "ja"
+      ],
+      "primary_metric": "cer",
+      "reference": "田中さんは25円の支払いを承認していません。",
+      "cleanup_input": "田中さんは25円の支払いを承認していません",
+      "facts": [
+        {
+          "id": "name",
+          "any_of": [
+            "田中"
+          ]
+        },
+        {
+          "id": "amount",
+          "any_of": [
+            "25"
+          ]
+        }
+      ],
+      "format_check": {
+        "terminal": [
+          "。",
+          "."
+        ]
+      },
+      "provenance": "Synthetic text; terminal-punctuation and initial-case checks only. Meaning, grammar and non-English wording require ISSUE-1077 review."
+    }
+  ]
+}
