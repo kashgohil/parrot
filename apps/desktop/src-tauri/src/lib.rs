@@ -6,6 +6,7 @@ mod cleanup_fillers;
 mod cleanup_engine;
 mod model_lifecycle;
 mod memory_policy;
+mod ollama_cleanup;
 mod db;
 mod hotkey;
 mod inference_scheduler;
