@@ -33,6 +33,9 @@ struct ChatMessage {
 #[derive(Deserialize)]
 struct OllamaChatResponse {
     message: ChatMessage,
+    #[serde(default)]
+    done: bool,
+    done_reason: Option<String>,
 }
 
 /// Vocalized fillers that almost never belong in polished writing.
@@ -108,12 +111,28 @@ async fn cleanup_with_builtin(
         .await
         .map_err(|e| anyhow::anyhow!("cleanup task join error: {e}"))??;
 
-    Ok(finalize_cleanup_output_with_policy(
+    Ok(finalize_completion(
         &cleaned,
         raw_text,
         formality,
         writing_style,
     ))
+}
+
+pub(crate) fn finalize_completion(
+    cleaned: &crate::cleanup_engine::protocol::Completion,
+    raw_text: &str,
+    formality: Formality,
+    writing_style: &str,
+) -> String {
+    if !cleaned.is_complete() {
+        eprintln!(
+            "cleanup incomplete: {:?}; retaining transcript",
+            cleaned.finish_reason
+        );
+        return raw_text.to_string();
+    }
+    finalize_cleanup_output_with_policy(&cleaned.text, raw_text, formality, writing_style)
 }
 
 /// Use Ollama's local server for text cleanup (compat path).
@@ -160,6 +179,10 @@ async fn cleanup_with_ollama(
     }
 
     let chat_resp: OllamaChatResponse = resp.json().await?;
+    if !chat_resp.done || chat_resp.done_reason.as_deref() != Some("stop") {
+        eprintln!("Ollama cleanup incomplete; retaining transcript");
+        return Ok(raw_text.to_string());
+    }
     let cleaned = finalize_cleanup_output_with_policy(
         &chat_resp.message.content,
         raw_text,
@@ -684,6 +707,39 @@ fn normalize_whitespace(text: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn incomplete_cleanup_retains_exact_source_even_when_words_match() {
+        use crate::cleanup_engine::protocol::{Completion, FinishReason};
+        let source = "  um प्रिया ने 25 रुपये का invoice approve नहीं किया?\n";
+        for reason in [
+            FinishReason::TokenLimit,
+            FinishReason::ContextLimit,
+            FinishReason::ByteLimit,
+        ] {
+            let result = Completion {
+                text: source.trim().to_string(),
+                complete: true,
+                finish_reason: reason,
+            };
+            assert_eq!(
+                finalize_completion(&result, source, Formality::Neutral, ""),
+                source
+            );
+        }
+    }
+
+    #[test]
+    fn legacy_ollama_requires_explicit_normal_stop() {
+        for json in [
+            r#"{"message":{"role":"assistant","content":"partial"},"done":true,"done_reason":"length"}"#,
+            r#"{"message":{"role":"assistant","content":"partial"},"done":false,"done_reason":"stop"}"#,
+            r#"{"message":{"role":"assistant","content":"partial"}}"#,
+        ] {
+            let response: OllamaChatResponse = serde_json::from_str(json).unwrap();
+            assert!(!response.done || response.done_reason.as_deref() != Some("stop"));
+        }
+    }
 
     #[tokio::test]
     async fn missing_builtin_returns_error_without_ollama_fallback() {

@@ -4,6 +4,7 @@
 //! The only differences: no Tauri / shared-state wiring, and all diagnostics go
 //! to **stderr** — stdout is reserved for the JSON protocol.
 
+use crate::protocol::{Completion, FinishReason};
 use anyhow::{Context, Result};
 use llama_cpp_2::context::params::LlamaContextParams;
 use llama_cpp_2::context::LlamaContext;
@@ -127,7 +128,7 @@ impl CleanupSession<'_> {
         system_prompt: &str,
         user_message: &str,
         max_tokens: i32,
-    ) -> Result<String> {
+    ) -> Result<Completion> {
         // Prefer the template baked into the GGUF; fall back to ChatML.
         let prompt = match self.build_chat_prompt(system_prompt, user_message) {
             Ok(p) => p,
@@ -147,7 +148,11 @@ impl CleanupSession<'_> {
         }
 
         let prompt_len = tokens.len() as i32;
-        let n_len = (prompt_len + max_tokens).min(N_CTX as i32);
+        let context = self.ctx.n_ctx() as i32;
+        if !fits_context(prompt_len as usize, max_tokens, context as usize) {
+            return Ok(Completion::incomplete(FinishReason::ContextLimit));
+        }
+        let n_len = prompt_len + max_tokens;
 
         // Keep the KV prefix shared with the previous prompt; re-decode at least
         // the final token so we have fresh logits to sample from.
@@ -199,18 +204,26 @@ impl CleanupSession<'_> {
         // chunk; every generation step after decodes a single-token batch.
         let mut sample_idx = batch.n_tokens() - 1;
 
-        while n_cur < n_len {
+        let mut finish_reason = FinishReason::TokenLimit;
+        loop {
             let token = sampler.sample(&self.ctx, sample_idx);
             sampler.accept(token);
 
             if self.model.is_eog_token(token) {
+                finish_reason = FinishReason::EndOfGeneration;
                 break;
             }
 
+            // Sample EOS after the final permitted content token. A further
+            // content token means the completion is incomplete; never decode it.
+            if n_cur >= n_len {
+                break;
+            }
             output.extend(token_bytes(self.model, token)?);
 
             // Hard stop if the model starts chatting / labeling.
             if output.len() > 8000 {
+                finish_reason = FinishReason::ByteLimit;
                 break;
             }
 
@@ -230,9 +243,16 @@ impl CleanupSession<'_> {
              prefill={prefill_ms}ms gen_tok={gen_tokens} gen={gen_ms}ms"
         );
 
+        if finish_reason != FinishReason::EndOfGeneration {
+            return Ok(Completion::incomplete(finish_reason));
+        }
         let output = String::from_utf8(output)
             .context("Cleanup output contains incomplete or invalid UTF-8")?;
-        Ok(sanitize_cleanup_output(&output))
+        Ok(Completion {
+            text: sanitize_cleanup_output(&output),
+            complete: true,
+            finish_reason,
+        })
     }
 
     fn build_chat_prompt(&self, system: &str, user: &str) -> Result<String> {
@@ -261,6 +281,12 @@ fn token_bytes(model: &LlamaModel, token: LlamaToken) -> Result<Vec<u8>> {
         result => result,
     };
     bytes.context("Failed to decode cleanup token bytes")
+}
+
+fn fits_context(prompt_tokens: usize, output_tokens: i32, context: usize) -> bool {
+    output_tokens > 0
+        && prompt_tokens < context
+        && output_tokens as usize <= context - prompt_tokens
 }
 
 fn format_chatml(system: &str, user: &str) -> String {
@@ -312,6 +338,17 @@ fn num_threads() -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn context_boundary_reserves_output_before_decoding() {
+        assert!(fits_context(1947, 100, 2048));
+        assert!(fits_context(1948, 100, 2048));
+        assert!(!fits_context(1949, 100, 2048));
+        assert!(!fits_context(2048, 1, 2048));
+        assert!(!fits_context(4096, 100, 2048));
+        assert!(!fits_context(200, 0, 2048));
+        assert!(!fits_context(200, -1, 2048));
+    }
 
     #[test]
     #[ignore = "needs PARROT_TEST_CLEANUP_MODEL"]

@@ -132,7 +132,12 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
                 let budget = cleanup::cleanup_token_budget(&input);
                 let started = Instant::now();
                 let native = if input.trim().is_empty() {
-                    Ok(String::new())
+                    Ok(crate::cleanup_engine::protocol::Completion {
+                        text: String::new(),
+                        complete: true,
+                        finish_reason:
+                            crate::cleanup_engine::protocol::FinishReason::EndOfGeneration,
+                    })
                 } else {
                     let client = client.clone();
                     let system = system.clone();
@@ -143,7 +148,18 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
                 let mut row = json!({"kind":"result", "id":case.id, "stage":case.stage, "tone":tone, "input":input,
                     "system_prompt":system, "user_message":user, "max_tokens":budget, "latency_ms":started.elapsed().as_secs_f64()*1000.0});
                 match native {
-                    Ok(model_output) => {
+                    Ok(completion) => {
+                        row["complete"] = json!(completion.is_complete());
+                        row["finish_reason"] = json!(completion.finish_reason);
+                        if !completion.is_complete() {
+                            row["fallback"] = json!(true);
+                            row["model_output"] = json!("");
+                            row["candidate"] = json!("");
+                            row["text"] = json!(input);
+                            write_row(&mut file, row)?;
+                            continue;
+                        }
+                        let model_output = completion.text;
                         let candidate = cleanup::cleanup_candidate(&model_output);
                         let text = cleanup::finalize_cleanup_output_with_policy(
                             &model_output,

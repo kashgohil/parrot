@@ -15,6 +15,9 @@
 //! exits when stdin closes (parent gone) or the model fails to load.
 
 mod engine;
+#[path = "../../src/cleanup_protocol.rs"]
+mod protocol;
+use protocol::Completion;
 
 use engine::CleanupEngine;
 use serde::{Deserialize, Serialize};
@@ -40,7 +43,7 @@ enum Message {
         id: u64,
         ok: bool,
         #[serde(skip_serializing_if = "Option::is_none")]
-        text: Option<String>,
+        completion: Option<Completion>,
         #[serde(skip_serializing_if = "Option::is_none")]
         error: Option<String>,
     },
@@ -109,7 +112,7 @@ fn main() {
                 emit(&Message::Result {
                     id: 0,
                     ok: false,
-                    text: None,
+                    completion: None,
                     error: Some(format!("bad request json: {e}")),
                 });
                 continue;
@@ -117,16 +120,16 @@ fn main() {
         };
 
         let msg = match session.cleanup(&req.system, &req.user, req.max_tokens) {
-            Ok(text) => Message::Result {
+            Ok(completion) => Message::Result {
                 id: req.id,
                 ok: true,
-                text: Some(text),
+                completion: Some(completion),
                 error: None,
             },
             Err(e) => Message::Result {
                 id: req.id,
                 ok: false,
-                text: None,
+                completion: None,
                 error: Some(format!("{e:#}")),
             },
         };

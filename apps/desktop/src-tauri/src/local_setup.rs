@@ -1243,10 +1243,10 @@ pub fn test_builtin_cleanup(model_path: &std::path::Path) -> Result<()> {
         "Clean up this transcript:\n\n<transcript>\num hello world\n</transcript>",
         48,
     )?;
-    if out.trim().is_empty() {
-        anyhow::bail!("Builtin cleanup returned empty output");
+    if !out.is_complete() || out.text.trim().is_empty() {
+        anyhow::bail!("Builtin cleanup returned empty or incomplete output");
     }
-    println!("Builtin cleanup smoke test ok: {:?}", out.chars().take(60).collect::<String>());
+    println!("Builtin cleanup smoke test ok: {:?}", out.text.chars().take(60).collect::<String>());
     Ok(())
 }
 

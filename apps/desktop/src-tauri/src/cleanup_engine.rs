@@ -11,7 +11,10 @@
 //!   request  -> {"id":N,"system":..,"user":..,"max_tokens":N}
 //!   response <- {"type":"result","id":N,"ok":bool,"text"?:..,"error"?:..}
 
+#[path = "cleanup_protocol.rs"]
+pub mod protocol;
 use anyhow::{anyhow, Context, Result};
+use protocol::Completion;
 use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
@@ -20,8 +23,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 
 /// Shared handle to the cleanup sidecar client. `None` until the sidecar is up.
-pub type SharedCleanupEngine =
-    Arc<crate::model_lifecycle::ModelLifecycle<SidecarCleanupClient>>;
+pub type SharedCleanupEngine = Arc<crate::model_lifecycle::ModelLifecycle<SidecarCleanupClient>>;
 
 pub fn new_cleanup_engine() -> SharedCleanupEngine {
     crate::model_lifecycle::ModelLifecycle::new(|model: PathBuf| {
@@ -48,7 +50,7 @@ enum Message {
     Result {
         id: u64,
         ok: bool,
-        text: Option<String>,
+        completion: Option<Completion>,
         error: Option<String>,
     },
 }
@@ -84,7 +86,7 @@ impl SidecarCleanupClient {
 
     /// Run a single cleanup completion via the sidecar. Same signature as the
     /// former in-process engine, so callers are unchanged.
-    pub fn cleanup(&self, system: &str, user: &str, max_tokens: i32) -> Result<String> {
+    pub fn cleanup(&self, system: &str, user: &str, max_tokens: i32) -> Result<Completion> {
         let id = self.next_id.fetch_add(1, Ordering::Relaxed);
         let mut guard = self
             .proc
@@ -152,7 +154,13 @@ fn spawn_proc(sidecar: &Path, model: &Path) -> Result<Proc> {
 }
 
 /// Send one request and read until the matching-id result comes back.
-fn transact(proc: &mut Proc, id: u64, system: &str, user: &str, max_tokens: i32) -> Result<String> {
+fn transact(
+    proc: &mut Proc,
+    id: u64,
+    system: &str,
+    user: &str,
+    max_tokens: i32,
+) -> Result<Completion> {
     let req = Request {
         id,
         system,
@@ -169,11 +177,11 @@ fn transact(proc: &mut Proc, id: u64, system: &str, user: &str, max_tokens: i32)
             Message::Result {
                 id: rid,
                 ok,
-                text,
+                completion,
                 error,
             } if rid == id => {
                 if ok {
-                    return text.ok_or_else(|| anyhow!("sidecar reported ok but sent no text"));
+                    return completion.ok_or_else(|| anyhow!("sidecar sent no completion status"));
                 }
                 return Err(anyhow!(
                     error.unwrap_or_else(|| "cleanup failed (no error message)".to_string())
@@ -342,12 +350,15 @@ mod tests {
                 128,
             )
             .expect("first cleanup");
-        assert!(!out1.trim().is_empty(), "first cleanup returned empty");
+        assert!(!out1.text.trim().is_empty(), "first cleanup returned empty");
 
         let out2 = client
             .cleanup(SYS, "the the meeting is at three pm tomorrow", 128)
             .expect("second cleanup");
-        assert!(!out2.trim().is_empty(), "second cleanup returned empty");
+        assert!(
+            !out2.text.trim().is_empty(),
+            "second cleanup returned empty"
+        );
 
         eprintln!("sidecar round-trip ok:\n  in : um so like i think ...\n  out: {out1:?}\n  out: {out2:?}");
     }
