@@ -122,14 +122,14 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
         for case in config.cases {
             let input = case.input.unwrap();
             for tone in &case.tones {
-                let system = cleanup::build_system_prompt(
+                let (system, hints) = cleanup::build_prompt_parts(
                     &case.custom_words,
                     &case.context_prompt,
                     &case.writing_style,
                     cleanup::Formality::from_setting(tone),
                 );
                 let user = cleanup::build_user_message(&input);
-                let budget = cleanup::cleanup_token_budget(&input);
+                let resolved_input = cleanup::resolve_clear_disfluencies(&input);
                 let started = Instant::now();
                 let native = if input.trim().is_empty() {
                     Ok(crate::cleanup_engine::protocol::Completion {
@@ -137,19 +137,26 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
                         complete: true,
                         finish_reason:
                             crate::cleanup_engine::protocol::FinishReason::EndOfGeneration,
+                        segments: Vec::new(),
+                        hints_truncated: false,
                     })
                 } else {
                     let client = client.clone();
                     let system = system.clone();
-                    let user = user.clone();
-                    tokio::task::spawn_blocking(move || client.cleanup(&system, &user, budget))
-                        .await?
+                    let hints = hints.clone();
+                    let resolved_input = resolved_input.clone();
+                    tokio::task::spawn_blocking(move || {
+                        client.cleanup_transcript(&system, &hints, &resolved_input)
+                    })
+                    .await?
                 };
                 let mut row = json!({"kind":"result", "id":case.id, "stage":case.stage, "tone":tone, "input":input,
-                    "system_prompt":system, "user_message":user, "max_tokens":budget, "latency_ms":started.elapsed().as_secs_f64()*1000.0});
+                    "system_prompt":format!("{system}{hints}"), "user_message":user, "latency_ms":started.elapsed().as_secs_f64()*1000.0});
                 match native {
                     Ok(completion) => {
                         row["complete"] = json!(completion.is_complete());
+                        row["segments"] = json!(completion.segments);
+                        row["hints_truncated"] = json!(completion.hints_truncated);
                         row["finish_reason"] = json!(completion.finish_reason);
                         if !completion.is_complete() {
                             row["fallback"] = json!(true);

@@ -15,11 +15,37 @@ pub struct Completion {
     pub text: String,
     pub complete: bool,
     pub finish_reason: FinishReason,
+    #[serde(default)]
+    pub segments: Vec<Segment>,
+    #[serde(default)]
+    pub hints_truncated: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Segment {
+    pub start_byte: usize,
+    pub end_byte: usize,
+    pub prompt_tokens: usize,
+    pub context_tokens: usize,
+    pub input_tokens: usize,
+    pub output_budget: usize,
+    pub generated_tokens: usize,
+    pub reused_tokens: usize,
+    pub decoded_tokens: usize,
+    pub prefill_ms: u128,
+    pub generation_ms: u128,
+    pub complete: bool,
+    pub finish_reason: FinishReason,
+    pub text: String,
 }
 
 impl Completion {
     pub fn is_complete(&self) -> bool {
-        self.complete && self.finish_reason == FinishReason::EndOfGeneration
+        self.complete
+            && self.finish_reason == FinishReason::EndOfGeneration
+            && self.segments.iter().all(|segment| {
+                segment.complete && segment.finish_reason == FinishReason::EndOfGeneration
+            })
     }
 
     pub fn incomplete(reason: FinishReason) -> Self {
@@ -27,6 +53,8 @@ impl Completion {
             text: String::new(),
             complete: false,
             finish_reason: reason,
+            segments: Vec::new(),
+            hints_truncated: false,
         }
     }
 }
@@ -45,7 +73,9 @@ mod tests {
             assert!(!Completion {
                 text: "partial".into(),
                 complete: true,
-                finish_reason: reason
+                finish_reason: reason,
+                segments: Vec::new(),
+                hints_truncated: false
             }
             .is_complete());
             assert!(Completion::incomplete(reason).text.is_empty());
@@ -53,7 +83,9 @@ mod tests {
         assert!(!Completion {
             text: "partial".into(),
             complete: false,
-            finish_reason: FinishReason::EndOfGeneration
+            finish_reason: FinishReason::EndOfGeneration,
+            segments: Vec::new(),
+            hints_truncated: false
         }
         .is_complete());
         assert!(serde_json::from_str::<Completion>(r#"{"text":"partial"}"#).is_err());

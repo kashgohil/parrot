@@ -7,12 +7,15 @@
 //!   startup  -> {"type":"ready"}              (after the model loads)
 //!            -> {"type":"error","error":...}  (load failed; process exits 1)
 //!   request  <- {"id":N,"system":..,"user":..,"max_tokens":N}   (one per line)
-//!   response -> {"type":"result","id":N,"ok":true,"text":..}
+//!            <- {"id":N,"system":..,"hints":..,"transcript":..} (app path)
+//!   response -> {"type":"result","id":N,"ok":true,"completion":..}
 //!            -> {"type":"result","id":N,"ok":false,"error":..}
 //!
 //! Requests are handled one at a time (cleanup is inherently serial). A failed
 //! request returns `ok:false` and does NOT kill the sidecar; the process only
 //! exits when stdin closes (parent gone) or the model fails to load.
+//! `ok` means the request was handled. Only completion.complete=true with an
+//! end_of_generation finish reason permits accepting its text.
 
 mod engine;
 #[path = "../../src/cleanup_protocol.rs"]
@@ -27,8 +30,11 @@ use std::io::{BufRead, Write};
 struct Request {
     id: u64,
     system: String,
-    user: String,
-    max_tokens: i32,
+    user: Option<String>,
+    max_tokens: Option<i32>,
+    transcript: Option<String>,
+    #[serde(default)]
+    hints: String,
 }
 
 #[derive(Serialize)]
@@ -119,7 +125,14 @@ fn main() {
             }
         };
 
-        let msg = match session.cleanup(&req.system, &req.user, req.max_tokens) {
+        let outcome = match (&req.transcript, &req.user, req.max_tokens) {
+            (Some(input), None, None) => session.cleanup_transcript(&req.system, &req.hints, input),
+            (None, Some(user), Some(max_tokens)) => session.cleanup(&req.system, user, max_tokens),
+            _ => Err(anyhow::anyhow!(
+                "request needs transcript or user/max_tokens, exclusively"
+            )),
+        };
+        let msg = match outcome {
             Ok(completion) => Message::Result {
                 id: req.id,
                 ok: true,

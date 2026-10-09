@@ -9,7 +9,8 @@
 //! Wire protocol (newline-delimited JSON, see `cleanup-sidecar/src/main.rs`):
 //!   startup  <- {"type":"ready"} | {"type":"error","error":..}
 //!   request  -> {"id":N,"system":..,"user":..,"max_tokens":N}
-//!   response <- {"type":"result","id":N,"ok":bool,"text"?:..,"error"?:..}
+//!            -> {"id":N,"system":..,"hints":..,"transcript":..}
+//!   response <- {"type":"result","id":N,"ok":bool,"completion"?:..,"error"?:..}
 
 #[path = "cleanup_protocol.rs"]
 pub mod protocol;
@@ -35,8 +36,13 @@ pub fn new_cleanup_engine() -> SharedCleanupEngine {
 struct Request<'a> {
     id: u64,
     system: &'a str,
-    user: &'a str,
-    max_tokens: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    user: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_tokens: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transcript: Option<&'a str>,
+    hints: &'a str,
 }
 
 #[derive(Deserialize)]
@@ -84,23 +90,47 @@ impl SidecarCleanupClient {
         })
     }
 
-    /// Run a single cleanup completion via the sidecar. Same signature as the
-    /// former in-process engine, so callers are unchanged.
+    /// A bounded single completion, used by model diagnostics and smoke tests.
     pub fn cleanup(&self, system: &str, user: &str, max_tokens: i32) -> Result<Completion> {
-        let id = self.next_id.fetch_add(1, Ordering::Relaxed);
+        self.request(system, "", None, Some(user), Some(max_tokens))
+    }
+
+    pub fn cleanup_transcript(
+        &self,
+        system: &str,
+        hints: &str,
+        transcript: &str,
+    ) -> Result<Completion> {
+        self.request(system, hints, Some(transcript), None, None)
+    }
+
+    fn request(
+        &self,
+        system: &str,
+        hints: &str,
+        transcript: Option<&str>,
+        user: Option<&str>,
+        max_tokens: Option<i32>,
+    ) -> Result<Completion> {
+        let request = Request {
+            id: self.next_id.fetch_add(1, Ordering::Relaxed),
+            system,
+            hints,
+            transcript,
+            user,
+            max_tokens,
+        };
         let mut guard = self
             .proc
             .lock()
             .map_err(|_| anyhow!("cleanup sidecar mutex poisoned"))?;
-
-        match transact(&mut guard, id, system, user, max_tokens) {
-            Ok(text) => Ok(text),
-            Err(e) => {
-                // Broken pipe / dead child: restart once and retry.
-                eprintln!("cleanup sidecar transaction failed ({e:#}); restarting");
+        match transact(&mut guard, &request) {
+            Ok(completion) => Ok(completion),
+            Err(error) => {
+                eprintln!("cleanup sidecar transaction failed ({error:#}); restarting");
                 *guard = spawn_proc(&self.sidecar_path, &self.model_path)
                     .context("failed to restart cleanup sidecar")?;
-                transact(&mut guard, id, system, user, max_tokens)
+                transact(&mut guard, &request)
             }
         }
     }
@@ -154,20 +184,8 @@ fn spawn_proc(sidecar: &Path, model: &Path) -> Result<Proc> {
 }
 
 /// Send one request and read until the matching-id result comes back.
-fn transact(
-    proc: &mut Proc,
-    id: u64,
-    system: &str,
-    user: &str,
-    max_tokens: i32,
-) -> Result<Completion> {
-    let req = Request {
-        id,
-        system,
-        user,
-        max_tokens,
-    };
-    let line = serde_json::to_string(&req)?;
+fn transact(proc: &mut Proc, request: &Request<'_>) -> Result<Completion> {
+    let line = serde_json::to_string(request)?;
     proc.stdin.write_all(line.as_bytes())?;
     proc.stdin.write_all(b"\n")?;
     proc.stdin.flush()?;
@@ -179,9 +197,14 @@ fn transact(
                 ok,
                 completion,
                 error,
-            } if rid == id => {
+            } if rid == request.id => {
                 if ok {
-                    return completion.ok_or_else(|| anyhow!("sidecar sent no completion status"));
+                    let completion =
+                        completion.ok_or_else(|| anyhow!("sidecar sent no completion status"))?;
+                    if let Some(input) = request.transcript {
+                        validate_completion(&completion, input)?;
+                    }
+                    return Ok(completion);
                 }
                 return Err(anyhow!(
                     error.unwrap_or_else(|| "cleanup failed (no error message)".to_string())
@@ -192,6 +215,41 @@ fn transact(
             Message::Error { error } => anyhow::bail!("cleanup sidecar error: {error}"),
         }
     }
+}
+
+fn validate_completion(completion: &Completion, input: &str) -> Result<()> {
+    let mut end = 0;
+    for segment in &completion.segments {
+        anyhow::ensure!(
+            segment.start_byte == end
+                && segment.end_byte > end
+                && segment.end_byte <= input.len()
+                && input.is_char_boundary(end)
+                && input.is_char_boundary(segment.end_byte),
+            "cleanup sidecar returned invalid segment coverage"
+        );
+        anyhow::ensure!(
+            segment.output_budget > 0
+                && segment.prompt_tokens < segment.context_tokens
+                && segment.output_budget <= segment.context_tokens - segment.prompt_tokens
+                && segment.generated_tokens <= segment.output_budget,
+            "cleanup sidecar returned invalid token reservation"
+        );
+        end = segment.end_byte;
+    }
+    anyhow::ensure!(
+        !completion.complete || completion.is_complete(),
+        "cleanup sidecar returned inconsistent completion status"
+    );
+    anyhow::ensure!(
+        !completion.is_complete() || end == input.len(),
+        "cleanup sidecar omitted transcript segments"
+    );
+    anyhow::ensure!(
+        completion.is_complete() || completion.text.is_empty(),
+        "cleanup sidecar returned partial text as usable output"
+    );
+    Ok(())
 }
 
 /// Read one protocol message, tolerating (and discarding) any stray non-JSON
@@ -250,6 +308,40 @@ pub fn resolve_sidecar_path() -> Result<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn transcript_response_requires_full_ordered_coverage_and_token_reservation() {
+        let valid = serde_json::json!({"text":"हिंदी", "complete":true, "finish_reason":"end_of_generation", "segments":[{
+            "start_byte":0,"end_byte":"हिंदी".len(),"prompt_tokens":300,"context_tokens":2048,
+            "input_tokens":5,"output_budget":72,"generated_tokens":5,"reused_tokens":0,"decoded_tokens":300,
+            "prefill_ms":1,"generation_ms":1,"complete":true,"finish_reason":"end_of_generation","text":"हिंदी"
+        }]});
+        assert!(
+            validate_completion(&serde_json::from_value(valid.clone()).unwrap(), "हिंदी").is_ok()
+        );
+        for (field, value) in [
+            ("start_byte", 1),
+            ("end_byte", 1),
+            ("prompt_tokens", 2040),
+            ("output_budget", 0),
+            ("generated_tokens", 73),
+        ] {
+            let mut invalid = valid.clone();
+            invalid["segments"][0][field] = serde_json::json!(value);
+            assert!(
+                validate_completion(&serde_json::from_value(invalid).unwrap(), "हिंदी").is_err(),
+                "{field}"
+            );
+        }
+        let mut omitted = valid.clone();
+        omitted["segments"] = serde_json::json!([]);
+        assert!(validate_completion(&serde_json::from_value(omitted).unwrap(), "हिंदी").is_err());
+        let mut inconsistent = valid;
+        inconsistent["segments"][0]["finish_reason"] = serde_json::json!("token_limit");
+        assert!(
+            validate_completion(&serde_json::from_value(inconsistent).unwrap(), "हिंदी").is_err()
+        );
+    }
 
     #[cfg(unix)]
     #[test]
