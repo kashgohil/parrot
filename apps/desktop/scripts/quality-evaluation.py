@@ -183,6 +183,20 @@ def read_manifest(path):
     return manifest
 
 
+def attach_cleanup_diagnostics(rows, stderr):
+    """Correlate successful serial requests only when every native log is present."""
+    pattern = (r'cleanup-sidecar: prompt_tok=(\d+) reused=(\d+) decoded=(\d+) '
+               r'prefill=(\d+)ms gen_tok=(\d+) gen=(\d+)ms')
+    values = re.findall(pattern, stderr)
+    native = [row for row in rows if row['input'].strip()]
+    if any(row.get('error') for row in rows) or len(values) != len(native):
+        return False  # Missing/extra logs or retries must not silently misattribute timings.
+    fields = ('prompt_tokens', 'reused_tokens', 'decoded_tokens', 'prefill_ms', 'generated_tokens', 'generation_ms')
+    for row, value in zip(native, values):
+        row['token_diagnostics'] = dict(zip(fields, map(int, value)))
+    return True
+
+
 def run_worker(binary, output, name, request, timeout):
     request_path = output / f'{name}.request.json'
     rows_path = output / f'{name}.jsonl'
@@ -209,6 +223,9 @@ def run_worker(binary, output, name, request, timeout):
     expected_keys = {(case['id'], tone) for case in request['cases'] for tone in (case['tones'] if request['engine'] == 'cleanup' else [None])}
     if {(row['id'], row.get('tone')) for row in results} != expected_keys:
         raise RuntimeError(f'Worker {name} returned duplicate or unexpected case/tone results')
+    if request['engine'] == 'cleanup':
+        if not attach_cleanup_diagnostics(results, (output / f'{name}.stderr.log').read_text(encoding='utf-8', errors='replace')):
+            print(f'Worker {name}: native token diagnostics could not be correlated; retain stderr for review', file=sys.stderr)
     return results
 
 

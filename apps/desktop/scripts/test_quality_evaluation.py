@@ -9,6 +9,24 @@ quality = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(quality)
 
 
+class CleanupDiagnosticsTests(unittest.TestCase):
+    def test_empty_inputs_do_not_shift_native_token_counts(self):
+        rows = [{'input': 'first'}, {'input': '  '}, {'input': 'second'}]
+        log = ('cleanup-sidecar: prompt_tok=300 reused=0 decoded=300 prefill=14ms gen_tok=10 gen=80ms\n'
+               'cleanup-sidecar: prompt_tok=310 reused=280 decoded=30 prefill=2ms gen_tok=11 gen=90ms\n')
+        self.assertTrue(quality.attach_cleanup_diagnostics(rows, log))
+        self.assertEqual(rows[0]['token_diagnostics']['prompt_tokens'], 300)
+        self.assertNotIn('token_diagnostics', rows[1])
+        self.assertEqual(rows[2]['token_diagnostics']['reused_tokens'], 280)
+
+    def test_missing_extra_or_failed_requests_cannot_be_correlated(self):
+        line = 'cleanup-sidecar: prompt_tok=300 reused=0 decoded=300 prefill=14ms gen_tok=10 gen=80ms\n'
+        for rows, log in [([{'input': 'text'}], ''), ([{'input': 'text'}], line + line),
+                          ([{'input': 'text', 'error': 'failed'}], line)]:
+            self.assertFalse(quality.attach_cleanup_diagnostics(rows, log))
+            self.assertNotIn('token_diagnostics', rows[0])
+
+
 class MetricsTests(unittest.TestCase):
     def test_alignment_counts_all_edit_types(self):
         self.assertEqual(quality.edit_counts(['a', 'b', 'c'], ['a', 'x', 'c'])['substitutions'], 1)
