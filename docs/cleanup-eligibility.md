@@ -41,3 +41,7 @@ and bounded segments after text qualifies. Eligibility does not modify the
 transcript, choose a model, enable low-memory mode or change cleanup finalization.
 Native-speaker semantic review remains ISSUE-1077; physical lower-RAM device
 validation remains ISSUE-1072.
+
+The [204-row repeated native check](benchmarks/2026-10-09-cleanup-eligibility.md)
+records expected eligibility, exact bypass retention, completion limits and
+content screening separately from semantic qualification.

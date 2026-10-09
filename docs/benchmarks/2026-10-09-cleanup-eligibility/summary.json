@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "source_revision": "0a95c46c7b2c1641b6d77bba2b59f465e8bc0cc5",
+  "hardware": "Apple M4 Pro",
+  "ram_bytes": 25769803776,
+  "worker_sha256": "75bacd441e0fc76899448192e9081ea6d8f9fb10771a210226600801b8a4d196",
+  "sidecar_sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a",
+  "fixture_sha256": "437e78c8a292cd0ea30e3c36f9b88a098f0ddd3d239834b228979594c707febb",
+  "models": [
+    {
+      "id": "qwen-0-5b",
+      "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+    },
+    {
+      "id": "qwen-1-5b",
+      "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+    },
+    {
+      "id": "qwen-3b",
+      "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+    }
+  ],
+  "cases": 34,
+  "repeats": 2,
+  "rows": 204,
+  "native_requests": 102,
+  "bypasses": 102,
+  "incomplete": 2,
+  "fallbacks": 30,
+  "exact_text": 190,
+  "normalized_content_retained": 204,
+  "repeat_text_and_status_identical": true,
+  "semantic_release_qualified": false,
+  "physical_device_qualified": false
+}
