@@ -94,10 +94,12 @@ model and the finalizer, so correcting an amount does not trip the original
 number-retention guard. Numeric-removal flags in evaluation remain visible for
 review; an explicit `25 no 35` correction is an intended removal, not a lost fact.
 
-Choosing Formal or supplying a nonempty Writing Style explicitly permits model
-rewriting. Language/script and numeric guards still apply, and the prompt puts
-fact preservation first; these choices do not have the default word-preservation
-guarantee. Context alone does not opt into rewriting. Conservative cleanup can
+Choosing Formal or supplying a nonempty Writing Style additionally permits a
+small set of English tone equivalents, such as `I'm` / `I am`, `can't` / `cannot`
+and `stay` / `remain`. These are canonicalized only for explicitly selected
+style; pronouns, negation, order and the remaining words stay protected. Arbitrary
+paraphrases still cause fallback in these modes. Currency, percentage, sign and
+emoji changes are also rejected. Context alone does not opt into rewriting. Conservative cleanup can
 keep awkward grammar, spelling or unresolved speech rather than risk changing
 content. The deterministic filler list's language ambiguity remains ISSUE-1048;
 actual context budgeting and truncation detection remain ISSUE-1047.
