@@ -226,6 +226,43 @@ directly.
 
 ## Checks
 
+Cleanup results now include `complete`, `finish_reason`, `hints_truncated` and
+`segments`. Each segment records input byte offsets, input/prompt tokens, its
+output reservation, the actual context size, generated tokens and timings.
+The runner uses these matching-request diagnostics directly. Historical workers
+still use strict stderr correlation; do not pair long-transcript logs by row.
+Summaries count incomplete completions separately from safe transcript fallbacks.
+
+The cleanup context stays at 2,048 tokens. The worker reserves
+`input_tokens + ceil(input_tokens / 2) + 64` output tokens using the loaded
+model's tokenizer, including the full chat template in its fit check. It plans
+prefixes of at most 4,096 bytes and prefers sentence or whitespace boundaries;
+an unbroken input can be split at a UTF-8 boundary. Coverage is checked before
+accepting the response. Per-segment and whole-transcript content guards retain
+unsafe sections. Any token, context or byte stop retains the exact original
+transcript, including sections already processed. Limits never count as a
+completed model cleanup.
+
+Optional vocabulary, context and style hints share a 256-token allowance and a
+4,096-byte preparation cap, in that order. The base preservation contract and
+tone remain intact. Excess hints are omitted from this request, logged and
+reported as `hints_truncated`; saved preferences and transcript characters are
+unchanged. This is a context bound, not a guarantee that every generation finishes
+or that long dictation is fast. The per-segment byte safety limit remains 8,000.
+
+`tests/fixtures/quality/cleanup-token-capacity.json` contains synthetic text only:
+numbered English/Hindi/mixed records, Chinese/Japanese without spaces, repeated
+sentences, unbroken text and oversized hints. Numbered record order and complete
+sentence retention also need inspection of the final text. The generic order
+checker uses word boundaries and is unsuitable for numbers embedded in CJK text;
+those cases use marker counts plus full-content comparisons. Hindi and mixed
+native-speaker qualification remains tracked in ISSUE-1077.
+
+The app and packaged sidecar must have the same protocol version. An incompatible
+worker is rejected and reaped during startup. The legacy Ollama path accepts
+only `done: true` with `done_reason: "stop"`; missing or length-limited completion
+metadata retains the original. See the [Ollama chat response contract](https://docs.ollama.com/api/chat).
+
 ```sh
 python3 -m unittest discover -s apps/desktop/scripts -p 'test_quality_evaluation.py'
 # From apps/desktop/src-tauri:

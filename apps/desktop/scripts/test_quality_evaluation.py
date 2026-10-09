@@ -10,6 +10,25 @@ SPEC.loader.exec_module(quality)
 
 
 class CleanupDiagnosticsTests(unittest.TestCase):
+    def test_protocol_diagnostics_keep_segments_with_their_request(self):
+        part = dict(prompt_tokens=300, reused_tokens=0, decoded_tokens=300, prefill_ms=14,
+                    generated_tokens=10, generation_ms=80, context_tokens=2048, output_budget=100)
+        rows = [{'input': 'two sentences', 'segments': [part, part]},
+                {'input': '', 'segments': []},
+                {'input': 'third', 'segments': [part], 'complete': False}]
+        self.assertTrue(quality.attach_cleanup_diagnostics(rows, 'unrelated/retry logs'))
+        self.assertEqual(rows[0]['token_diagnostics']['prompt_tokens'], 600)
+        self.assertEqual(rows[0]['token_diagnostics']['segment_count'], 2)
+        self.assertEqual(rows[1]['token_diagnostics']['generated_tokens'], 0)
+        self.assertEqual(rows[2]['token_diagnostics']['output_budgets'], [100])
+
+    def test_missing_protocol_diagnostics_cannot_fall_back_to_stderr_pairing(self):
+        for rows in [[{'input': 'text', 'segments': [{}]}],
+                     [{'input': 'text', 'segments': []}, {'input': 'second'}],
+                     [{'input': 'text', 'segments': [], 'error': 'failed'}]]:
+            self.assertFalse(quality.attach_cleanup_diagnostics(rows, ''))
+            self.assertNotIn('token_diagnostics', rows[0])
+
     def test_empty_inputs_do_not_shift_native_token_counts(self):
         rows = [{'input': 'first'}, {'input': '  '}, {'input': 'second'}]
         log = ('cleanup-sidecar: prompt_tok=300 reused=0 decoded=300 prefill=14ms gen_tok=10 gen=80ms\n'

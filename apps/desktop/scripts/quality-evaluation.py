@@ -185,6 +185,27 @@ def read_manifest(path):
 
 def attach_cleanup_diagnostics(rows, stderr):
     """Correlate successful serial requests only when every native log is present."""
+    if any('segments' in row for row in rows):
+        # The current worker carries diagnostics in its matching-id response.
+        # One transcript can have many segments; stderr position is insufficient.
+        fields = ('prompt_tokens', 'reused_tokens', 'decoded_tokens', 'prefill_ms',
+                  'generated_tokens', 'generation_ms')
+        if any(row.get('error') or 'segments' not in row for row in rows):
+            return False
+        for row in rows:
+            parts = row['segments']
+            required = fields + ('context_tokens', 'output_budget')
+            if not isinstance(parts, list) or any(not isinstance(part, dict) or any(
+                    type(part.get(field)) is not int or part[field] < 0 for field in required) for part in parts):
+                return False
+        for row in rows:
+            parts = row['segments']
+            row['token_diagnostics'] = {field: sum(part[field] for part in parts) for field in fields}
+            row['token_diagnostics'].update(source='protocol', segment_count=len(parts),
+                max_prompt_tokens=max((part['prompt_tokens'] for part in parts), default=0),
+                max_context_tokens=max((part['context_tokens'] for part in parts), default=0),
+                output_budgets=[part['output_budget'] for part in parts])
+        return True
     pattern = (r'cleanup-sidecar: prompt_tok=(\d+) reused=(\d+) decoded=(\d+) '
                r'prefill=(\d+)ms gen_tok=(\d+) gen=(\d+)ms')
     values = re.findall(pattern, stderr)
@@ -367,6 +388,9 @@ def score(output, reviews_path):
         if row['stage'] != 'asr':
             item['candidate_properties'] = properties(case, row['candidate'], source)
             item['fallback'] = row['fallback']
+            item['complete'] = row.get('complete')
+            item['finish_reason'] = row.get('finish_reason')
+            item['hints_truncated'] = row.get('hints_truncated', False)
             item['unchanged'] = row['text'].strip() == source.strip()
             item['off_baseline'] = properties(case, source, source)
             item['fillers_removed'] = sum(occurrences(source, filler) - occurrences(row['text'], filler) for filler in case.get('fillers', []))
@@ -392,6 +416,8 @@ def score(output, reviews_path):
                    'unexpected_speech': sum(row['properties']['unexpected_speech'] for row in good),
                    'introduced_regressions': sum(row['properties'].get('introduced_regression', False) for row in good),
                    'fallbacks': sum(row.get('fallback', False) for row in good), 'unchanged': sum(row.get('unchanged', False) for row in good),
+                   'incomplete_completions': sum(row.get('complete') is False for row in good),
+                   'bounded_hints': sum(row.get('hints_truncated', False) for row in good),
                    'human_pending': sum(not row['human_review'].get('decision') for row in good),
                    'human_rejected': sum(row['human_review'].get('decision') == 'reject' for row in good),
                    'median_ms': statistics.median(row['latency_ms'] for row in rows)}

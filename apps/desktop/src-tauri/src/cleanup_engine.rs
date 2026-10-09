@@ -49,7 +49,10 @@ struct Request<'a> {
 #[serde(tag = "type")]
 enum Message {
     #[serde(rename = "ready")]
-    Ready,
+    Ready {
+        #[serde(default)]
+        protocol_version: u32,
+    },
     #[serde(rename = "error")]
     Error { error: String },
     #[serde(rename = "result")]
@@ -171,7 +174,13 @@ fn spawn_proc(sidecar: &Path, model: &Path) -> Result<Proc> {
     };
 
     match read_message(&mut proc)? {
-        Message::Ready => Ok(proc),
+        Message::Ready { protocol_version } if protocol_version == protocol::PROTOCOL_VERSION => {
+            Ok(proc)
+        }
+        Message::Ready { protocol_version } => anyhow::bail!(
+            "cleanup sidecar protocol {protocol_version} is incompatible; expected {}",
+            protocol::PROTOCOL_VERSION
+        ),
         Message::Error { error } => {
             let _ = proc.child.kill();
             anyhow::bail!("cleanup sidecar failed to start: {error}")
@@ -211,7 +220,7 @@ fn transact(proc: &mut Proc, request: &Request<'_>) -> Result<Completion> {
                 ));
             }
             // A result for a different id (e.g. id 0 protocol error) — skip.
-            Message::Result { .. } | Message::Ready => continue,
+            Message::Result { .. } | Message::Ready { .. } => continue,
             Message::Error { error } => anyhow::bail!("cleanup sidecar error: {error}"),
         }
     }
@@ -308,6 +317,67 @@ pub fn resolve_sidecar_path() -> Result<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(unix)]
+    #[test]
+    fn incompatible_worker_is_reaped_before_any_request_can_stall() {
+        use std::os::unix::fs::PermissionsExt;
+        let dir =
+            std::env::temp_dir().join(format!("parrot-cleanup-protocol-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir(&dir).unwrap();
+        let script = dir.join("sidecar");
+        let pid_file = dir.join("pid");
+        std::fs::write(
+            &script,
+            "#!/bin/sh\necho $$ > \"$1\"\nprintf '%s\\n' '{\"type\":\"ready\"}'\nexec sleep 30\n",
+        )
+        .unwrap();
+        std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o700)).unwrap();
+        let error = SidecarCleanupClient::spawn(&script, &pid_file)
+            .err()
+            .unwrap();
+        assert!(error.to_string().contains("incompatible"));
+        let pid = std::fs::read_to_string(&pid_file).unwrap();
+        assert!(!std::process::Command::new("ps")
+            .args(["-p", pid.trim(), "-o", "pid="])
+            .output()
+            .unwrap()
+            .status
+            .success());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    #[ignore = "needs PARROT_CLEANUP_SIDECAR + PARROT_TEST_CLEANUP_MODEL"]
+    fn limits_keep_the_same_worker_and_next_transcript_succeeds() {
+        let sidecar = std::env::var("PARROT_CLEANUP_SIDECAR").unwrap();
+        let model = std::env::var("PARROT_TEST_CLEANUP_MODEL").unwrap();
+        let client = SidecarCleanupClient::spawn(Path::new(&sidecar), Path::new(&model)).unwrap();
+        let pid = client.proc.lock().unwrap().child.id();
+        let short = client
+            .cleanup(
+                "Copy exactly. Output only the transcript.",
+                "Priya did not approve invoice 25 on Friday.",
+                1,
+            )
+            .unwrap();
+        assert_eq!(short.finish_reason, protocol::FinishReason::TokenLimit);
+        assert!(!short.is_complete() && short.text.is_empty());
+        assert_eq!(client.proc.lock().unwrap().child.id(), pid);
+        let input = "Priya did not approve invoice 25 on Friday.";
+        let (system, hints) =
+            crate::cleanup::build_prompt_parts("", "", "", crate::cleanup::Formality::Neutral);
+        let complete = client.cleanup_transcript(&system, &hints, input).unwrap();
+        assert!(complete.is_complete());
+        assert_eq!(client.proc.lock().unwrap().child.id(), pid);
+        let text = crate::cleanup::finalize_completion(
+            &complete,
+            input,
+            crate::cleanup::Formality::Neutral,
+            "",
+        );
+        assert!(text.contains("25") && text.contains("not"));
+    }
 
     #[test]
     fn transcript_response_requires_full_ordered_coverage_and_token_reservation() {

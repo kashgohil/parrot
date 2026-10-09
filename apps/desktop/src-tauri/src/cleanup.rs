@@ -127,6 +127,33 @@ pub(crate) fn finalize_completion(
         );
         return raw_text.to_string();
     }
+    if cleaned.segments.len() > 1 {
+        let source = resolve_clear_disfluencies(raw_text);
+        let mut combined = String::new();
+        let mut end = 0;
+        for segment in &cleaned.segments {
+            // The client checks coverage too. Keep finalization safe for direct
+            // callers and tests that construct completion metadata themselves.
+            if segment.start_byte != end {
+                return raw_text.to_string();
+            }
+            let Some(part) = source.get(segment.start_byte..segment.end_byte) else {
+                return raw_text.to_string();
+            };
+            let safe =
+                finalize_cleanup_output_with_policy(&segment.text, part, formality, writing_style);
+            combined.push_str(&part[..part.len() - part.trim_start().len()]);
+            combined.push_str(safe.trim());
+            combined.push_str(&part[part.trim_end().len()..]);
+            end = segment.end_byte;
+        }
+        if end != source.len() {
+            return raw_text.to_string();
+        }
+        // Check across boundaries as well: splitting must not lose words,
+        // introduce spaces into a word, or alter a correction's meaning.
+        return finalize_cleanup_output_with_policy(&combined, raw_text, formality, writing_style);
+    }
     finalize_cleanup_output_with_policy(&cleaned.text, raw_text, formality, writing_style)
 }
 
@@ -711,6 +738,35 @@ fn normalize_whitespace(text: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn segmented_cleanup_keeps_every_sentence_and_rejects_local_content_loss() {
+        let first = "um priya did not approve 25.\n";
+        let second = "uh ravi approved 35.\n";
+        let original = format!("{first}{second}");
+        let segment = |start, end, text| {
+            serde_json::json!({
+                "start_byte":start,"end_byte":end,"prompt_tokens":300,"context_tokens":2048,
+                "input_tokens":12,"output_budget":82,"generated_tokens":12,"reused_tokens":0,"decoded_tokens":300,
+                "prefill_ms":1,"generation_ms":1,"complete":true,"finish_reason":"end_of_generation","text":text,
+            })
+        };
+        let mut json = serde_json::json!({"text":"Priya did not approve 25.\nRavi approved 36.",
+        "complete":true,"finish_reason":"end_of_generation", "segments":[
+            segment(0, first.len(), "Priya did not approve 25."),
+            segment(first.len(), original.len(), "Ravi approved 36.")
+        ]});
+        let complete = serde_json::from_value(json.clone()).unwrap();
+        let cleaned = finalize_completion(&complete, &original, Formality::Neutral, "");
+        assert_eq!(cleaned, "Priya did not approve 25.\nravi approved 35.");
+        json["complete"] = serde_json::json!(false);
+        json["finish_reason"] = serde_json::json!("token_limit");
+        let incomplete = serde_json::from_value(json).unwrap();
+        assert_eq!(
+            finalize_completion(&incomplete, &original, Formality::Neutral, ""),
+            original
+        );
+    }
 
     #[test]
     fn incomplete_cleanup_retains_exact_source_even_when_words_match() {

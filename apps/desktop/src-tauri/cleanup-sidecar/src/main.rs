@@ -41,7 +41,7 @@ struct Request {
 #[serde(tag = "type")]
 enum Message {
     #[serde(rename = "ready")]
-    Ready,
+    Ready { protocol_version: u32 },
     #[serde(rename = "error")]
     Error { error: String },
     #[serde(rename = "result")]
@@ -99,7 +99,9 @@ fn main() {
     };
 
     // Signal readiness only after the model and session are fully initialised.
-    emit(&Message::Ready);
+    emit(&Message::Ready {
+        protocol_version: protocol::PROTOCOL_VERSION,
+    });
 
     let stdin = std::io::stdin();
     for line in stdin.lock().lines() {

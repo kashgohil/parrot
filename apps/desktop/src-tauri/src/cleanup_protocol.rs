@@ -1,6 +1,8 @@
 //! Completion metadata shared by the app and its isolated cleanup worker.
 use serde::{Deserialize, Serialize};
 
+pub const PROTOCOL_VERSION: u32 = 2;
+
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum FinishReason {
