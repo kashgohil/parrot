@@ -88,7 +88,7 @@ fn infer_terminal(safe: &str, tokens: &[&str], original: &str) -> Option<char> {
         // Hindi–English mixes. Interrogatives and dependent endings abstain.
         let question = tokens.iter().any(|word| {
             matches!(
-                *word,
+                word.trim_end_matches([',', '،', '，']),
                 "क्या"
                     | "क्यों"
                     | "कैसे"
@@ -118,9 +118,12 @@ fn infer_terminal(safe: &str, tokens: &[&str], original: &str) -> Option<char> {
                     | "हुई"
                     | "हुए"
             )
-            && !tokens
-                .iter()
-                .any(|word| matches!(*word, "अगर" | "यदि" | "जब"))
+            && !tokens.iter().any(|word| {
+                matches!(
+                    word.trim_end_matches([',', '،', '，']),
+                    "अगर" | "यदि" | "जब"
+                )
+            })
         {
             return Some('।');
         }
@@ -128,7 +131,7 @@ fn infer_terminal(safe: &str, tokens: &[&str], original: &str) -> Option<char> {
     }
     // English terminal punctuation requires an explicit auxiliary and words
     // after it. Other Latin languages and imperative/fragments abstain.
-    let first = tokens[0].to_ascii_lowercase();
+    let first = tokens[0].trim_end_matches(',').to_ascii_lowercase();
     let auxiliary = |word: &str| {
         matches!(
             word,
@@ -255,8 +258,11 @@ mod tests {
             "Can of soup",
             "If Priya has not paid",
             "When Priya has not paid",
+            "Because Priya has not paid",
+            "if, Priya has not paid",
             "क्या प्रिया ने भुगतान नहीं किया",
             "रवि कब घर गया",
+            "कहाँ, प्रिया ने भुगतान किया",
             "अगर रवि घर गया",
             "शायद कल",
             "release 2.1",
@@ -293,7 +299,9 @@ mod tests {
             ),
             "can priya not deploy release 2.1"
         );
-        assert_eq!(format_completed("can Of soup be served", "can of soup be served"),
-            "can Of soup be served");
+        assert_eq!(
+            format_completed("can Of soup be served", "can of soup be served"),
+            "can Of soup be served"
+        );
     }
 }
