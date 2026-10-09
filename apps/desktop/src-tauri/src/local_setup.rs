@@ -364,8 +364,8 @@ const CLEANUP_QWEN25_05B_FILE: &str = "qwen2.5-0.5b-instruct-q4_k_m.gguf";
 const CLEANUP_QWEN25_05B_URL: &str =
     "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf";
 
-/// Larger cleanup tiers users can opt into from Settings for noticeably better
-/// punctuation, filler removal, and formalization than the 0.5B default.
+/// Optional larger cleanup tiers. Measured latency and memory rise with size;
+/// useful formatting still needs review. Keep the 0.5B default and saved choices.
 pub const CLEANUP_QWEN25_15B: &str = "qwen2.5-1.5b-instruct-q4_k_m";
 const CLEANUP_QWEN25_15B_FILE: &str = "qwen2.5-1.5b-instruct-q4_k_m.gguf";
 const CLEANUP_QWEN25_15B_URL: &str =

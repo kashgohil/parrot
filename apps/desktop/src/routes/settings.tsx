@@ -182,22 +182,22 @@ function SettingsPage() {
 		{
 			id: "qwen2.5-0.5b-instruct-q4_k_m",
 			name: "Basic",
-			desc: "Smallest & fastest. Light touch-up only.",
-			pill: "~0.5 GB",
-			recommended: false,
-		},
-		{
-			id: "qwen2.5-1.5b-instruct-q4_k_m",
-			name: "Fast",
-			desc: "Much better punctuation, filler removal & tone.",
-			pill: "~1 GB",
+			desc: "Lowest memory use and fastest cleanup in local tests. Recommended starting point.",
+			pill: "491 MB download",
 			recommended: true,
 		},
 		{
+			id: "qwen2.5-1.5b-instruct-q4_k_m",
+			name: "Standard",
+			desc: "More English punctuation and capitalization checks passed in local tests, at about twice Basic's cleanup time.",
+			pill: "1.12 GB download",
+			recommended: false,
+		},
+		{
 			id: "qwen2.5-3b-instruct-q4_k_m",
-			name: "Best",
-			desc: "Highest quality, including formal rewrites. A bit slower.",
-			pill: "~2 GB",
+			name: "Large",
+			desc: "Fewer rejected suggestions in local tests; punctuation did not consistently improve. Slowest and highest memory use.",
+			pill: "2.10 GB download",
 			recommended: false,
 		},
 	] as const;
@@ -795,12 +795,12 @@ function SettingsPage() {
 								</div>
 
 							<div className="space-y-2">
-								<Label className="text-sm font-medium">Cleanup quality</Label>
+								<Label className="text-sm font-medium">Cleanup model</Label>
 								<p className="text-xs text-muted-foreground">
-									Bigger models punctuate, de-fill, and formalize better, at the
-									cost of size and a little speed. Picking one downloads it and
-									switches cleanup over
-									{canUpgradeCleanup ? " (and drops Ollama)" : ""}.
+									Start with Basic for lower memory use. Larger models take more
+									memory and time, and can still return the original transcript.
+									Sizes shown are downloads. Selecting a tier
+									{canUpgradeCleanup ? " switches from Ollama to built-in cleanup" : " uses built-in cleanup"}.
 								</p>
 								{CLEANUP_TIERS.map((tier) => {
 									const selected = cleanupModel === tier.id;

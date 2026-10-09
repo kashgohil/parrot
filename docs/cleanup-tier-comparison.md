@@ -1,5 +1,8 @@
 # Cleanup tier comparison — ISSUE-1051
 
+The [measured comparison](benchmarks/2026-10-09-cleanup-tiers.md) keeps 0.5B as
+the default and compares quality, formatting, load, warm latency and memory.
+
 Compare the existing Qwen2.5 0.5B, 1.5B and 3B Q4_K_M tiers using the same
 production prompt, source guards and token budgets. Keep the current default and
 saved selections until measured evidence justifies a change. English, Hindi and
