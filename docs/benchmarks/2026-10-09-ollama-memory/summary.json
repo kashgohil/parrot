@@ -1,0 +1,2115 @@
+{
+  "metadata": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hardware": "Mac16,7",
+    "ram_bytes": 25769803776,
+    "git_commit": "2f0d34c57969f218511e606dfbc18b831da7bb27",
+    "binary_sha256": "6b8485d9a31fa763fe54fef68e02130e1271a0cdeeb6bd6ceb5157cc4c61ab06",
+    "ollama_sha256": "eea8a8a1841f95a39ab6001390ada9b5485db92d0afc81dca2087ecb3c4b8ca3",
+    "llama_manifest_sha256": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+    "llama_manifest": {
+      "schemaVersion": 2,
+      "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+      "config": {
+        "mediaType": "application/vnd.docker.container.image.v1+json",
+        "digest": "sha256:34bb5ab01051a11372a91f95f3fbbc51173eed8e7f13ec395b9ae9b8bd0e242b",
+        "size": 561
+      },
+      "layers": [
+        {
+          "mediaType": "application/vnd.ollama.image.model",
+          "digest": "sha256:dde5aa3fc5ffc17176b5e8bdc82f587b24b2678c6c66101bf7da77af9f7ccdff",
+          "size": 2019377376
+        },
+        {
+          "mediaType": "application/vnd.ollama.image.template",
+          "digest": "sha256:966de95ca8a62200913e3f8bfbf84c8494536f1b94b49166851e76644e966396",
+          "size": 1429
+        },
+        {
+          "mediaType": "application/vnd.ollama.image.license",
+          "digest": "sha256:fcc5a6bec9daf9b561a68827b67ab6088e1dba9d1fa2a50d7bbcc8384e0a265d",
+          "size": 7711
+        },
+        {
+          "mediaType": "application/vnd.ollama.image.license",
+          "digest": "sha256:a70ff7e570d97baaf4e62ac6e6ad9975e04caa6d900d3742d37698494479e0cd",
+          "size": 6016
+        },
+        {
+          "mediaType": "application/vnd.ollama.image.params",
+          "digest": "sha256:56bb8bd477a519ffa694fc449c2413c6f0e1d3b1c88fa7e3c9d88d3ae49d4dcb",
+          "size": 96
+        }
+      ]
+    },
+    "unrelated_gguf_sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db",
+    "sampling_seconds": 0.1,
+    "idle_seconds": [
+      2,
+      2,
+      60
+    ],
+    "daemon_environment": {
+      "OLLAMA_HOST": "http://127.0.0.1:50828",
+      "OLLAMA_MODELS": "/private/tmp/parrot-1054-native-final/temporary-models",
+      "OLLAMA_NO_CLOUD": "1",
+      "OLLAMA_CONTEXT_LENGTH": "4096",
+      "OLLAMA_NUM_PARALLEL": "1",
+      "OLLAMA_MAX_LOADED_MODELS": "3"
+    },
+    "ollama_version": {
+      "version": "0.22.1"
+    },
+    "source_blobs_verified_after": true
+  },
+  "runs": [
+    {
+      "run": 1,
+      "idle_seconds": 2,
+      "exit_code": 0,
+      "max_sample_gap_seconds": 0.1584517500000011,
+      "incomplete_samples": 0,
+      "phases": {
+        "cold": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 215616728,
+          "peak_footprint_bytes": 788844072,
+          "peak_rss_bytes": 2799878144
+        },
+        "demand_start": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 32883432,
+          "peak_footprint_bytes": 32883432,
+          "peak_rss_bytes": 61865984
+        },
+        "disabled": {
+          "complete_samples": 11,
+          "median_footprint_bytes": 293046480,
+          "peak_footprint_bytes": 293046480,
+          "peak_rss_bytes": 825376768
+        },
+        "disabled_reload": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 864817976,
+          "peak_footprint_bytes": 966218576,
+          "peak_rss_bytes": 3479191552
+        },
+        "disabled_reload_done": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 966251344,
+          "peak_footprint_bytes": 966251344,
+          "peak_rss_bytes": 3479240704
+        },
+        "idle_released": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 89818000,
+          "peak_footprint_bytes": 89818000,
+          "peak_rss_bytes": 152993792
+        },
+        "keep_warm": {
+          "complete_samples": 2,
+          "median_footprint_bytes": 776212056.0,
+          "peak_footprint_bytes": 776228440,
+          "peak_rss_bytes": 2808168448
+        },
+        "keep_warm_done": {
+          "complete_samples": 24,
+          "median_footprint_bytes": 688672344.0,
+          "peak_footprint_bytes": 776228440,
+          "peak_rss_bytes": 2808168448
+        },
+        "keep_warm_retained": {
+          "complete_samples": 6,
+          "median_footprint_bytes": 801018416.0,
+          "peak_footprint_bytes": 877237120,
+          "peak_rss_bytes": 3404546048
+        },
+        "low_memory": {
+          "complete_samples": 10,
+          "median_footprint_bytes": 293685456.0,
+          "peak_footprint_bytes": 293685456,
+          "peak_rss_bytes": 839614464
+        },
+        "low_memory_reload": {
+          "complete_samples": 8,
+          "median_footprint_bytes": 682390124.0,
+          "peak_footprint_bytes": 969872232,
+          "peak_rss_bytes": 3480485888
+        },
+        "low_memory_reload_done": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 300091600,
+          "peak_footprint_bytes": 300091600,
+          "peak_rss_bytes": 843792384
+        },
+        "reload": {
+          "complete_samples": 11,
+          "median_footprint_bytes": 675221056,
+          "peak_footprint_bytes": 775409216,
+          "peak_rss_bytes": 2805432320
+        },
+        "resident_idle_wait": {
+          "complete_samples": 17,
+          "median_footprint_bytes": 793841216,
+          "peak_footprint_bytes": 793873984,
+          "peak_rss_bytes": 2801958912
+        },
+        "startup": {
+          "complete_samples": 2,
+          "median_footprint_bytes": 29811432.0,
+          "peak_footprint_bytes": 38372072,
+          "peak_rss_bytes": 61669376
+        },
+        "switched_builtin": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 300091600,
+          "peak_footprint_bytes": 300091600,
+          "peak_rss_bytes": 843792384
+        },
+        "warm": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 793873984,
+          "peak_footprint_bytes": 793873984,
+          "peak_rss_bytes": 2801958912
+        }
+      },
+      "events": [
+        {
+          "latency_ms": null,
+          "phase": "demand_start",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 1.581088875
+        },
+        {
+          "latency_ms": null,
+          "phase": "cold",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 2.7835163749999996
+        },
+        {
+          "latency_ms": 990.732458,
+          "phase": "cold_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:30.763978+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 3.774557291
+        },
+        {
+          "latency_ms": null,
+          "phase": "warm",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:30.763978+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 3.7748392499999994
+        },
+        {
+          "latency_ms": 216.56020800000002,
+          "phase": "warm_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:30.981421+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 3.9917891659999993
+        },
+        {
+          "latency_ms": null,
+          "phase": "resident_idle_wait",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:30.981421+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 3.992204375
+        },
+        {
+          "latency_ms": 2052.4965,
+          "phase": "idle_released",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 6.044940166
+        },
+        {
+          "latency_ms": null,
+          "phase": "reload",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 7.247530666
+        },
+        {
+          "latency_ms": 1208.58775,
+          "phase": "reload_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:35.445995+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 8.457198250000001
+        },
+        {
+          "latency_ms": null,
+          "phase": "keep_warm",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:35.445995+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 8.457386791000001
+        },
+        {
+          "latency_ms": 219.40087499999998,
+          "phase": "keep_warm_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:49:50.521060807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 8.676569875
+        },
+        {
+          "latency_ms": null,
+          "phase": "keep_warm_retained",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:49:50.521060807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 11.678798291000001
+        },
+        {
+          "latency_ms": null,
+          "phase": "unrelated_loaded",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:49:54.308975807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              },
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:49:50.521060807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 12.464741
+        },
+        {
+          "latency_ms": 103.624625,
+          "phase": "disabled",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:49:54.308975807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 12.568793166
+        },
+        {
+          "latency_ms": null,
+          "phase": "disabled_reload",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:49:54.308975807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 13.771490416
+        },
+        {
+          "latency_ms": 1181.02475,
+          "phase": "disabled_reload_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:49:56.797349807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              },
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:49:54.308975807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 14.953168375
+        },
+        {
+          "latency_ms": 104.261833,
+          "phase": "low_memory",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:49:54.308975807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 15.057495875
+        },
+        {
+          "latency_ms": null,
+          "phase": "low_memory_reload",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:49:54.308975807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 16.260704333
+        },
+        {
+          "latency_ms": 931.229833,
+          "phase": "low_memory_reload_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:49:59.036698807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              },
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:49:54.308975807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 17.19242575
+        },
+        {
+          "latency_ms": 103.681917,
+          "phase": "switched_builtin",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:49:54.308975807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 17.296511875
+        },
+        {
+          "latency_ms": null,
+          "phase": "complete",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:49:54.308975807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 18.500288958000002
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "idle_seconds": 2,
+      "exit_code": 0,
+      "max_sample_gap_seconds": 0.13542574999999957,
+      "incomplete_samples": 0,
+      "phases": {
+        "cold": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 220859608,
+          "peak_footprint_bytes": 794054208,
+          "peak_rss_bytes": 2801942528
+        },
+        "demand_start": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 37733096,
+          "peak_footprint_bytes": 37733096,
+          "peak_rss_bytes": 61030400
+        },
+        "disabled": {
+          "complete_samples": 10,
+          "median_footprint_bytes": 266258640.0,
+          "peak_footprint_bytes": 266258640,
+          "peak_rss_bytes": 861716480
+        },
+        "disabled_reload": {
+          "complete_samples": 8,
+          "median_footprint_bytes": 653103724.0,
+          "peak_footprint_bytes": 940643200,
+          "peak_rss_bytes": 3498147840
+        },
+        "disabled_reload_done": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 271206608,
+          "peak_footprint_bytes": 271206608,
+          "peak_rss_bytes": 861913088
+        },
+        "idle_released": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 95749008,
+          "peak_footprint_bytes": 95749008,
+          "peak_rss_bytes": 159744000
+        },
+        "keep_warm": {
+          "complete_samples": 2,
+          "median_footprint_bytes": 776326696.0,
+          "peak_footprint_bytes": 776326696,
+          "peak_rss_bytes": 2809937920
+        },
+        "keep_warm_done": {
+          "complete_samples": 24,
+          "median_footprint_bytes": 690589224.0,
+          "peak_footprint_bytes": 776326696,
+          "peak_rss_bytes": 2809937920
+        },
+        "keep_warm_retained": {
+          "complete_samples": 4,
+          "median_footprint_bytes": 726831076.0,
+          "peak_footprint_bytes": 850826088,
+          "peak_rss_bytes": 3500851200
+        },
+        "low_memory": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 271206608,
+          "peak_footprint_bytes": 271206608,
+          "peak_rss_bytes": 861913088
+        },
+        "low_memory_reload": {
+          "complete_samples": 8,
+          "median_footprint_bytes": 607432676.0,
+          "peak_footprint_bytes": 944772016,
+          "peak_rss_bytes": 3501883392
+        },
+        "low_memory_reload_done": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 944870320,
+          "peak_footprint_bytes": 944870320,
+          "peak_rss_bytes": 3501998080
+        },
+        "reload": {
+          "complete_samples": 8,
+          "median_footprint_bytes": 437389976.0,
+          "peak_footprint_bytes": 774508072,
+          "peak_rss_bytes": 2808135680
+        },
+        "resident_idle_wait": {
+          "complete_samples": 16,
+          "median_footprint_bytes": 757583448.0,
+          "peak_footprint_bytes": 799559256,
+          "peak_rss_bytes": 2808348672
+        },
+        "startup": {
+          "complete_samples": 2,
+          "median_footprint_bytes": 26665704.0,
+          "peak_footprint_bytes": 32424680,
+          "peak_rss_bytes": 55787520
+        },
+        "switched_builtin": {
+          "complete_samples": 10,
+          "median_footprint_bytes": 274516200.0,
+          "peak_footprint_bytes": 274516200,
+          "peak_rss_bytes": 864632832
+        },
+        "unrelated_loaded": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 850826088,
+          "peak_footprint_bytes": 850826088,
+          "peak_rss_bytes": 3500851200
+        },
+        "warm": {
+          "complete_samples": 2,
+          "median_footprint_bytes": 799534680.0,
+          "peak_footprint_bytes": 799559256,
+          "peak_rss_bytes": 2808348672
+        }
+      },
+      "events": [
+        {
+          "latency_ms": null,
+          "phase": "demand_start",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 0.6161169169999994
+        },
+        {
+          "latency_ms": null,
+          "phase": "cold",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 1.818499708000001
+        },
+        {
+          "latency_ms": 975.3154579999999,
+          "phase": "cold_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:48.874157+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 2.794168958
+        },
+        {
+          "latency_ms": null,
+          "phase": "warm",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:48.874157+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 2.794439875000002
+        },
+        {
+          "latency_ms": 224.7415,
+          "phase": "warm_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:49.099835+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 3.0195863329999995
+        },
+        {
+          "latency_ms": null,
+          "phase": "resident_idle_wait",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:49.099835+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 3.0200647499999995
+        },
+        {
+          "latency_ms": 2058.018167,
+          "phase": "idle_released",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 5.078387417000002
+        },
+        {
+          "latency_ms": null,
+          "phase": "reload",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 6.281340917000001
+        },
+        {
+          "latency_ms": 927.291292,
+          "phase": "reload_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:53.289131+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 7.208862291999999
+        },
+        {
+          "latency_ms": null,
+          "phase": "keep_warm",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:02:53.289131+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 7.209185583
+        },
+        {
+          "latency_ms": 207.76987499999998,
+          "phase": "keep_warm_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:50:08.352431807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 7.4173469579999995
+        },
+        {
+          "latency_ms": null,
+          "phase": "keep_warm_retained",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:50:08.352431807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 10.421852916999999
+        },
+        {
+          "latency_ms": null,
+          "phase": "unrelated_loaded",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:50:11.848938807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              },
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:50:08.352431807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 10.9145115
+        },
+        {
+          "latency_ms": 104.620958,
+          "phase": "disabled",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:50:11.848938807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 11.019362042000001
+        },
+        {
+          "latency_ms": null,
+          "phase": "disabled_reload",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:50:11.848938807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 12.222281458000001
+        },
+        {
+          "latency_ms": 938.500541,
+          "phase": "disabled_reload_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:50:14.096218807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              },
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:50:11.848938807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 13.161150791999997
+        },
+        {
+          "latency_ms": 104.004666,
+          "phase": "low_memory",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:50:11.848938807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 13.265509875000003
+        },
+        {
+          "latency_ms": null,
+          "phase": "low_memory_reload",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:50:11.848938807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 14.468607792000004
+        },
+        {
+          "latency_ms": 933.9841250000001,
+          "phase": "low_memory_reload_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:50:16.337907807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              },
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:50:11.848938807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 15.403119333000003
+        },
+        {
+          "latency_ms": 103.76475,
+          "phase": "switched_builtin",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:50:11.848938807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 15.5073215
+        },
+        {
+          "latency_ms": null,
+          "phase": "complete",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:50:11.848938807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 16.710354083000002
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "idle_seconds": 60,
+      "exit_code": 0,
+      "max_sample_gap_seconds": 0.16169362499999806,
+      "incomplete_samples": 0,
+      "phases": {
+        "cold": {
+          "complete_samples": 8,
+          "median_footprint_bytes": 513158564.0,
+          "peak_footprint_bytes": 792366704,
+          "peak_rss_bytes": 2801188864
+        },
+        "demand_start": {
+          "complete_samples": 10,
+          "median_footprint_bytes": 34407168.0,
+          "peak_footprint_bytes": 34407168,
+          "peak_rss_bytes": 61898752
+        },
+        "disabled": {
+          "complete_samples": 10,
+          "median_footprint_bytes": 262179024.0,
+          "peak_footprint_bytes": 262179024,
+          "peak_rss_bytes": 853393408
+        },
+        "disabled_reload": {
+          "complete_samples": 8,
+          "median_footprint_bytes": 653529828.0,
+          "peak_footprint_bytes": 941052824,
+          "peak_rss_bytes": 3498164224
+        },
+        "disabled_reload_done": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 271026408,
+          "peak_footprint_bytes": 271026408,
+          "peak_rss_bytes": 861077504
+        },
+        "idle_released": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 91259816,
+          "peak_footprint_bytes": 91259816,
+          "peak_rss_bytes": 154943488
+        },
+        "keep_warm": {
+          "complete_samples": 2,
+          "median_footprint_bytes": 774164104.0,
+          "peak_footprint_bytes": 774164104,
+          "peak_rss_bytes": 2809364480
+        },
+        "keep_warm_done": {
+          "complete_samples": 23,
+          "median_footprint_bytes": 686608008,
+          "peak_footprint_bytes": 774164104,
+          "peak_rss_bytes": 2809364480
+        },
+        "keep_warm_retained": {
+          "complete_samples": 6,
+          "median_footprint_bytes": 777572912.0,
+          "peak_footprint_bytes": 794694528,
+          "peak_rss_bytes": 3446161408
+        },
+        "low_memory": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 271026408,
+          "peak_footprint_bytes": 271026408,
+          "peak_rss_bytes": 861077504
+        },
+        "low_memory_reload": {
+          "complete_samples": 8,
+          "median_footprint_bytes": 653669056.0,
+          "peak_footprint_bytes": 941478808,
+          "peak_rss_bytes": 3498442752
+        },
+        "low_memory_reload_done": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 271288552,
+          "peak_footprint_bytes": 271288552,
+          "peak_rss_bytes": 861192192
+        },
+        "reload": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 199691552,
+          "peak_footprint_bytes": 772230792,
+          "peak_rss_bytes": 2807578624
+        },
+        "resident_idle_wait": {
+          "complete_samples": 473,
+          "median_footprint_bytes": 707268232,
+          "peak_footprint_bytes": 794824328,
+          "peak_rss_bytes": 2803335168
+        },
+        "startup": {
+          "complete_samples": 2,
+          "median_footprint_bytes": 29713140.0,
+          "peak_footprint_bytes": 38306560,
+          "peak_rss_bytes": 61636608
+        },
+        "switched_builtin": {
+          "complete_samples": 9,
+          "median_footprint_bytes": 271288552,
+          "peak_footprint_bytes": 271288552,
+          "peak_rss_bytes": 861192192
+        },
+        "unrelated_loaded": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 846287792,
+          "peak_footprint_bytes": 846287792,
+          "peak_rss_bytes": 3492069376
+        },
+        "warm": {
+          "complete_samples": 1,
+          "median_footprint_bytes": 794807944,
+          "peak_footprint_bytes": 794807944,
+          "peak_rss_bytes": 2803286016
+        }
+      },
+      "events": [
+        {
+          "latency_ms": null,
+          "phase": "demand_start",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 0.5526482499999972
+        },
+        {
+          "latency_ms": null,
+          "phase": "cold",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 1.7548906250000016
+        },
+        {
+          "latency_ms": 956.7981669999999,
+          "phase": "cold_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:04:03.915568+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 2.7120265419999967
+        },
+        {
+          "latency_ms": null,
+          "phase": "warm",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:04:03.915568+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 2.712236458999996
+        },
+        {
+          "latency_ms": 209.205208,
+          "phase": "warm_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:04:04.125452+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 2.921886041999997
+        },
+        {
+          "latency_ms": null,
+          "phase": "resident_idle_wait",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:04:04.125452+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 2.9223074589999953
+        },
+        {
+          "latency_ms": 60045.385875,
+          "phase": "idle_released",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 62.96793829199999
+        },
+        {
+          "latency_ms": null,
+          "phase": "reload",
+          "resident": {
+            "models": []
+          },
+          "elapsed_seconds": 64.170968125
+        },
+        {
+          "latency_ms": 990.646292,
+          "phase": "reload_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:05:06.365974+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 65.16194191700001
+        },
+        {
+          "latency_ms": null,
+          "phase": "keep_warm",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2026-10-09T16:05:06.365974+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 65.162434125
+        },
+        {
+          "latency_ms": 226.37650000000002,
+          "phase": "keep_warm_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:51:23.448150807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 65.389218209
+        },
+        {
+          "latency_ms": null,
+          "phase": "keep_warm_retained",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:51:23.448150807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 68.39298091699999
+        },
+        {
+          "latency_ms": null,
+          "phase": "unrelated_loaded",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:51:27.225810807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              },
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:51:23.448150807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              }
+            ]
+          },
+          "elapsed_seconds": 69.167189834
+        },
+        {
+          "latency_ms": 103.373541,
+          "phase": "disabled",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:51:27.225810807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 69.270723917
+        },
+        {
+          "latency_ms": null,
+          "phase": "disabled_reload",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:51:27.225810807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 70.47380733399999
+        },
+        {
+          "latency_ms": 956.9199160000001,
+          "phase": "disabled_reload_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:51:29.490071807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              },
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:51:27.225810807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 71.43111687499999
+        },
+        {
+          "latency_ms": 104.319584,
+          "phase": "low_memory",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:51:27.225810807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 71.53585475
+        },
+        {
+          "latency_ms": null,
+          "phase": "low_memory_reload",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:51:27.225810807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 72.738564292
+        },
+        {
+          "latency_ms": 968.839125,
+          "phase": "low_memory_reload_done",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "llama"
+                  ],
+                  "family": "llama",
+                  "format": "gguf",
+                  "parameter_size": "3.2B",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+                "expires_at": "2319-01-19T15:51:31.766564807+05:30",
+                "model": "llama3.2:latest",
+                "name": "llama3.2:latest",
+                "size": 2750261248,
+                "size_vram": 2750261248
+              },
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:51:27.225810807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 73.70813000000001
+        },
+        {
+          "latency_ms": 105.446209,
+          "phase": "switched_builtin",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:51:27.225810807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 73.81403
+        },
+        {
+          "latency_ms": null,
+          "phase": "complete",
+          "resident": {
+            "models": [
+              {
+                "context_length": 4096,
+                "details": {
+                  "families": [
+                    "qwen2"
+                  ],
+                  "family": "qwen2",
+                  "format": "gguf",
+                  "parameter_size": "630.17M",
+                  "parent_model": "",
+                  "quantization_level": "Q4_K_M"
+                },
+                "digest": "af4f0484558a62bb4c6d009f7ca0ce16ae1e81ab9c2da2a71d82479c13f07def",
+                "expires_at": "2319-01-19T15:51:27.225810807+05:30",
+                "model": "parrot-unrelated:latest",
+                "name": "parrot-unrelated:latest",
+                "size": 755191296,
+                "size_vram": 755191296
+              }
+            ]
+          },
+          "elapsed_seconds": 75.019973792
+        }
+      ]
+    }
+  ]
+}

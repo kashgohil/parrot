@@ -32,7 +32,7 @@ even if its caller is cancelled. Settings changes let an active request finish,
 then release its model if disabled or switched. The HTTP request timeout is
 180 seconds. Graceful app exit attempts release within a five-second budget;
 abrupt exit or a long in-flight request can leave a keep-warm model resident.
-Finite request timeouts still apply inside Ollama after Parrot exits.
+Finite residency timeouts continue inside Ollama after Parrot exits.
 
 Memory events and switching to built-in cleanup do not stop Ollama, modify its
 global environment, remove model files, or unload models Parrot never requested.
@@ -55,3 +55,7 @@ models. It exercises production cleanup, native idle release, reload, keep warm,
 Off, low-memory mode and a built-in switch while retaining an unrelated model.
 Cold/warm latency and process memory must be reported separately from built-in
 cleanup and from the whole app's speech/GUI memory.
+
+The [measured legacy-backend report](benchmarks/2026-10-09-ollama-memory.md)
+contains three passing native runs, including the full default 60-second idle
+period, raw ledgers and separate cold/warm timings.
