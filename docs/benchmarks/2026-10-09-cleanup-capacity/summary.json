@@ -1,0 +1,1852 @@
+{
+  "scope": "Public synthetic text only; all semantic and native-speaker review pending. No target-device qualification.",
+  "runs": {
+    "seed-before": {
+      "rows": 288,
+      "repeat_pairs": 144,
+      "repeat_text_or_status_differences": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 86,
+      "hints_truncated": 0,
+      "manifest_sha256": "9e35c97292a6632028c433f4effd8857cf9ddfeb89f6759065a202d75f4c62bf",
+      "native_binary": {
+        "path": "/private/tmp/parrot-1047-before-quality-eval",
+        "files": [
+          {
+            "name": "parrot-1047-before-quality-eval",
+            "bytes": 30373712,
+            "sha256": "59738bf97388a56997857a21c9799c7a0ae838fa00af46b07c05408e91f4c8bf"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/private/tmp/parrot-1047-before-cleanup-sidecar",
+        "files": [
+          {
+            "name": "parrot-1047-before-cleanup-sidecar",
+            "bytes": 4161392,
+            "sha256": "e9495b0779058acba150ce3266fe1cd2836780292ced581cb6e6f76beebb4c32"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 6,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 76.425854
+        },
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 14,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 77.044583
+        },
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 6,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 75.3304375
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 16,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 129.6487295
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 16,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 130.6475835
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 14,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 128.067563
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 4,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 254.62222899999998
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 6,
+          "unchanged": 20,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 239.34783350000004
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 4,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 242.7599995
+        }
+      ]
+    },
+    "seed-after": {
+      "rows": 288,
+      "repeat_pairs": 144,
+      "repeat_text_or_status_differences": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 86,
+      "hints_truncated": 0,
+      "manifest_sha256": "9e35c97292a6632028c433f4effd8857cf9ddfeb89f6759065a202d75f4c62bf",
+      "native_binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30445200,
+            "sha256": "d7429cc59c66cfef39f6ab750775dbf56ff1788b00e752d649e945ae3e0b7fd1"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 6,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 75.8289585
+        },
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 14,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 75.5812715
+        },
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 6,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 72.95710399999999
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 16,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 123.7449585
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 16,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 124.0114585
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 14,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 122.2954995
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 4,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 236.13714549999997
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 6,
+          "unchanged": 20,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 233.2550835
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 32,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 4,
+          "unchanged": 22,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 32,
+          "human_rejected": 0,
+          "median_ms": 227.539875
+        }
+      ]
+    },
+    "faithfulness-before": {
+      "rows": 216,
+      "repeat_pairs": 108,
+      "repeat_text_or_status_differences": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 70,
+      "hints_truncated": 0,
+      "manifest_sha256": "09a617dc38255254738a3956d4f4ba91ec502db033e77059e3c9bf708250cdf8",
+      "native_binary": {
+        "path": "/private/tmp/parrot-1047-before-quality-eval",
+        "files": [
+          {
+            "name": "parrot-1047-before-quality-eval",
+            "bytes": 30373712,
+            "sha256": "59738bf97388a56997857a21c9799c7a0ae838fa00af46b07c05408e91f4c8bf"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/private/tmp/parrot-1047-before-cleanup-sidecar",
+        "files": [
+          {
+            "name": "parrot-1047-before-cleanup-sidecar",
+            "bytes": 4161392,
+            "sha256": "e9495b0779058acba150ce3266fe1cd2836780292ced581cb6e6f76beebb4c32"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 6,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 77.9149795
+        },
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 10,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 76.80668750000001
+        },
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 8,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 73.664104
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 12,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 127.404479
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 12,
+          "unchanged": 12,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 123.0505835
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 8,
+          "unchanged": 12,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 135.084208
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 4,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 247.56841699999998
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 6,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 232.04956249999998
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 4,
+          "unchanged": 12,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 226.18991699999998
+        }
+      ]
+    },
+    "faithfulness-after": {
+      "rows": 216,
+      "repeat_pairs": 108,
+      "repeat_text_or_status_differences": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 70,
+      "hints_truncated": 0,
+      "manifest_sha256": "09a617dc38255254738a3956d4f4ba91ec502db033e77059e3c9bf708250cdf8",
+      "native_binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30445200,
+            "sha256": "d7429cc59c66cfef39f6ab750775dbf56ff1788b00e752d649e945ae3e0b7fd1"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 6,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 75.1062705
+        },
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 10,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 72.4559375
+        },
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 8,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 70.67531249999999
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 12,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 130.2938335
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 12,
+          "unchanged": 12,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 125.90058350000001
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 8,
+          "unchanged": 12,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 139.16368749999998
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "casual",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 4,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 261.8933545
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "formal",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 6,
+          "unchanged": 14,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 229.8148125
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 24,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 2,
+          "fallbacks": 4,
+          "unchanged": 12,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 24,
+          "human_rejected": 0,
+          "median_ms": 237.054646
+        }
+      ]
+    },
+    "capacity-before": {
+      "rows": 54,
+      "repeat_pairs": 27,
+      "repeat_text_or_status_differences": 0,
+      "errors": 24,
+      "incomplete": 0,
+      "fallbacks": 28,
+      "hints_truncated": 0,
+      "manifest_sha256": "e6d63f5cb55a4093be2f4023c6939c87df5f5aeaf280a1257fe271bb8761376d",
+      "native_binary": {
+        "path": "/private/tmp/parrot-1047-before-quality-eval",
+        "files": [
+          {
+            "name": "parrot-1047-before-quality-eval",
+            "bytes": 30373712,
+            "sha256": "59738bf97388a56997857a21c9799c7a0ae838fa00af46b07c05408e91f4c8bf"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/private/tmp/parrot-1047-before-cleanup-sidecar",
+        "files": [
+          {
+            "name": "parrot-1047-before-cleanup-sidecar",
+            "bytes": 4161392,
+            "sha256": "e9495b0779058acba150ce3266fe1cd2836780292ced581cb6e6f76beebb4c32"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 18,
+          "errors": 8,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 10,
+          "unchanged": 10,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 10,
+          "human_rejected": 0,
+          "median_ms": 614.836271
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 18,
+          "errors": 8,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 10,
+          "unchanged": 10,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 10,
+          "human_rejected": 0,
+          "median_ms": 1622.6401460000002
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 18,
+          "errors": 8,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 8,
+          "unchanged": 10,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 10,
+          "human_rejected": 0,
+          "median_ms": 2960.8398125
+        }
+      ]
+    },
+    "capacity-after": {
+      "rows": 54,
+      "repeat_pairs": 27,
+      "repeat_text_or_status_differences": 0,
+      "errors": 0,
+      "incomplete": 8,
+      "fallbacks": 40,
+      "hints_truncated": 0,
+      "manifest_sha256": "e6d63f5cb55a4093be2f4023c6939c87df5f5aeaf280a1257fe271bb8761376d",
+      "native_binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30445200,
+            "sha256": "d7429cc59c66cfef39f6ab750775dbf56ff1788b00e752d649e945ae3e0b7fd1"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 18,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 16,
+          "unchanged": 18,
+          "incomplete_completions": 4,
+          "bounded_hints": 0,
+          "human_pending": 18,
+          "human_rejected": 0,
+          "median_ms": 4651.500458500001
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 18,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 16,
+          "unchanged": 16,
+          "incomplete_completions": 2,
+          "bounded_hints": 0,
+          "human_pending": 18,
+          "human_rejected": 0,
+          "median_ms": 5409.024396000001
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 18,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 8,
+          "unchanged": 12,
+          "incomplete_completions": 2,
+          "bounded_hints": 0,
+          "human_pending": 18,
+          "human_rejected": 0,
+          "median_ms": 19545.459020500002
+        }
+      ]
+    },
+    "hints-before": {
+      "rows": 6,
+      "repeat_pairs": 3,
+      "repeat_text_or_status_differences": 0,
+      "errors": 6,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "hints_truncated": 0,
+      "manifest_sha256": "74a315ec18c697cb88c66279c79eaaec0bedff13514e01a5b5c0d1631454dc40",
+      "native_binary": {
+        "path": "/private/tmp/parrot-1047-before-quality-eval",
+        "files": [
+          {
+            "name": "parrot-1047-before-quality-eval",
+            "bytes": 30373712,
+            "sha256": "59738bf97388a56997857a21c9799c7a0ae838fa00af46b07c05408e91f4c8bf"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/private/tmp/parrot-1047-before-cleanup-sidecar",
+        "files": [
+          {
+            "name": "parrot-1047-before-cleanup-sidecar",
+            "bytes": 4161392,
+            "sha256": "e9495b0779058acba150ce3266fe1cd2836780292ced581cb6e6f76beebb4c32"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 2,
+          "errors": 2,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 0,
+          "human_rejected": 0,
+          "median_ms": 908.8450625
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 2,
+          "errors": 2,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 0,
+          "human_rejected": 0,
+          "median_ms": 1906.7931254999999
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 2,
+          "errors": 2,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 0,
+          "incomplete_completions": 0,
+          "bounded_hints": 0,
+          "human_pending": 0,
+          "human_rejected": 0,
+          "median_ms": 3904.39225
+        }
+      ]
+    },
+    "hints-after": {
+      "rows": 6,
+      "repeat_pairs": 3,
+      "repeat_text_or_status_differences": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "hints_truncated": 6,
+      "manifest_sha256": "74a315ec18c697cb88c66279c79eaaec0bedff13514e01a5b5c0d1631454dc40",
+      "native_binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30445200,
+            "sha256": "d7429cc59c66cfef39f6ab750775dbf56ff1788b00e752d649e945ae3e0b7fd1"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "variant": "qwen-0-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 2,
+          "unchanged": 2,
+          "incomplete_completions": 0,
+          "bounded_hints": 2,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 268.17783349999996
+        },
+        {
+          "variant": "qwen-1-5b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 2,
+          "unchanged": 2,
+          "incomplete_completions": 0,
+          "bounded_hints": 2,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 361.27777100000003
+        },
+        {
+          "variant": "qwen-3b",
+          "stage": "cleanup_isolated",
+          "tone": "neutral",
+          "language": null,
+          "reference_language": "all",
+          "upstream": null,
+          "count": 2,
+          "errors": 0,
+          "reference_fact_failures": 0,
+          "reference_script_failures": 0,
+          "unexpected_speech": 0,
+          "introduced_regressions": 0,
+          "fallbacks": 0,
+          "unchanged": 2,
+          "incomplete_completions": 0,
+          "bounded_hints": 2,
+          "human_pending": 2,
+          "human_rejected": 0,
+          "median_ms": 876.0013544999999
+        }
+      ]
+    }
+  },
+  "unchanged_existing_rows": 504,
+  "capacity_full_content_and_numeric_order_rows": 54,
+  "hints_full_content_and_numeric_order_rows": 6,
+  "resource_runs": [
+    {
+      "model": "qwen-0-5b",
+      "condition": "before",
+      "repeat": 1,
+      "sampled_peak_summed_footprint_bytes": 216172560,
+      "sampled_peak_summed_rss_bytes": 743538688,
+      "process_lifetime_peaks": {
+        "56670/29716220661385": {
+          "pid": 56670,
+          "role": "worker",
+          "command": "/tmp/parrot-1047-before-quality-eval",
+          "lifetime_peak_bytes": 3654088
+        },
+        "56672/29716220824657": {
+          "pid": 56672,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 206488632
+        },
+        "56757/29716372754408": {
+          "pid": 56757,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 204244000
+        }
+      },
+      "sample_count": 157,
+      "sample_errors": 1,
+      "elapsed_ms": 12636.280375,
+      "load_ms": 6051.325333000001,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 112.30054200000001,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": "llama_decode failed on cleanup prompt: Decode Error 1: NoKvCacheSlot",
+          "latency_ms": 6393.142042,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": null
+        }
+      ],
+      "request_sha256": "41f8d11dc82a2dedd36ecbb0bdf343df54ccb343cd16efff1a2d028b960c54f9",
+      "output_sha256": "9ed80159882b23502973a9a46778e70aefd544c0487e830aea1cfcedf71a8bf5"
+    },
+    {
+      "model": "qwen-0-5b",
+      "condition": "after",
+      "repeat": 1,
+      "sampled_peak_summed_footprint_bytes": 197019112,
+      "sampled_peak_summed_rss_bytes": 631504896,
+      "process_lifetime_peaks": {
+        "56876/29716523949342": {
+          "pid": 56876,
+          "role": "worker",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+          "lifetime_peak_bytes": 4260320
+        },
+        "56878/29716524133626": {
+          "pid": 56878,
+          "role": "owned_child",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+          "lifetime_peak_bytes": 193446920
+        }
+      },
+      "sample_count": 48,
+      "sample_errors": 1,
+      "elapsed_ms": 3975.3079580000003,
+      "load_ms": 178.466333,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 95.453416,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": null,
+          "latency_ms": 3619.585666,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": true
+        }
+      ],
+      "request_sha256": "c2be934528563e04be1adf0b473a3669db43c3e71041b5fe73de09e0c8984894",
+      "output_sha256": "9bc0ecc0737468d10ac4473a94d81a7c34326b8c28bb29d18fa070f5c0adda64"
+    },
+    {
+      "model": "qwen-1-5b",
+      "condition": "before",
+      "repeat": 1,
+      "sampled_peak_summed_footprint_bytes": 305056840,
+      "sampled_peak_summed_rss_bytes": 2084945920,
+      "process_lifetime_peaks": {
+        "57067/29716619367516": {
+          "pid": 57067,
+          "role": "worker",
+          "command": "/tmp/parrot-1047-before-quality-eval",
+          "lifetime_peak_bytes": 3736008
+        },
+        "57069/29716619560791": {
+          "pid": 57069,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 233031192
+        },
+        "57081/29716641575144": {
+          "pid": 57081,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 232801768
+        }
+      },
+      "sample_count": 25,
+      "sample_errors": 1,
+      "elapsed_ms": 2025.7765419999992,
+      "load_ms": 194.974167,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 212.169708,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": "llama_decode failed on cleanup prompt: Decode Error 1: NoKvCacheSlot",
+          "latency_ms": 1529.9378749999998,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": null
+        }
+      ],
+      "request_sha256": "5d8b3fc371dad6d053225f88924cc73b122dfa63098c93437b8088c984cb18c5",
+      "output_sha256": "59c439a106b29c8266abde3e12ae3ead4d92ea6a831cd5f28a290670b80ca7c4"
+    },
+    {
+      "model": "qwen-1-5b",
+      "condition": "after",
+      "repeat": 1,
+      "sampled_peak_summed_footprint_bytes": 234670072,
+      "sampled_peak_summed_rss_bytes": 1294581760,
+      "process_lifetime_peaks": {
+        "57097/29716668017118": {
+          "pid": 57097,
+          "role": "worker",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+          "lifetime_peak_bytes": 4309472
+        },
+        "57099/29716668181036": {
+          "pid": 57099,
+          "role": "owned_child",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+          "lifetime_peak_bytes": 231130648
+        }
+      },
+      "sample_count": 119,
+      "sample_errors": 1,
+      "elapsed_ms": 9773.656624999998,
+      "load_ms": 203.691,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 230.378417,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": null,
+          "latency_ms": 9257.696833,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": true
+        }
+      ],
+      "request_sha256": "5d03934bc96a004a2d7cbdd241e6acc0f1655e20291ebdea4c3adfb2a3fdb993",
+      "output_sha256": "659b8ebbdedb752754373a496580ae0a8d742806173419c03bcd7a0b0a7f35a8"
+    },
+    {
+      "model": "qwen-3b",
+      "condition": "before",
+      "repeat": 1,
+      "sampled_peak_summed_footprint_bytes": 323113424,
+      "sampled_peak_summed_rss_bytes": 4010950656,
+      "process_lifetime_peaks": {
+        "57228/29716902600731": {
+          "pid": 57228,
+          "role": "worker",
+          "command": "/tmp/parrot-1047-before-quality-eval",
+          "lifetime_peak_bytes": 3703240
+        },
+        "57230/29716902754846": {
+          "pid": 57230,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 253987072
+        },
+        "57254/29716947542248": {
+          "pid": 57254,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 250546336
+        }
+      },
+      "sample_count": 50,
+      "sample_errors": 2,
+      "elapsed_ms": 4079.6493330000026,
+      "load_ms": 412.814959,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 404.063583,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": "llama_decode failed on cleanup prompt: Decode Error 1: NoKvCacheSlot",
+          "latency_ms": 3165.1917909999997,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": null
+        }
+      ],
+      "request_sha256": "738b37c4ae28ab58460f6c8f0a566a30f1940bec8a18a4279061082a0c7b7197",
+      "output_sha256": "d3668596bcf018bc6a80fba86bcef3d6973683781927b160a71ff9014f304885"
+    },
+    {
+      "model": "qwen-3b",
+      "condition": "after",
+      "repeat": 1,
+      "sampled_peak_summed_footprint_bytes": 255806176,
+      "sampled_peak_summed_rss_bytes": 2302820352,
+      "process_lifetime_peaks": {
+        "57285/29717000528404": {
+          "pid": 57285,
+          "role": "worker",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+          "lifetime_peak_bytes": 4145632
+        },
+        "57287/29717000707416": {
+          "pid": 57287,
+          "role": "owned_child",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+          "lifetime_peak_bytes": 252250368
+        }
+      },
+      "sample_count": 515,
+      "sample_errors": 1,
+      "elapsed_ms": 43206.506792,
+      "load_ms": 231.91875000000002,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 621.170625,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": null,
+          "latency_ms": 42255.451667,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": false
+        }
+      ],
+      "request_sha256": "0ca1c4a47bad60a16c80e3f965df6cc256410808f35f156f02cc8c7f5965c60b",
+      "output_sha256": "fe4deec4e7e1b2c778e9009a351894126f1b5d4bb7a5d3e33f195b5cf3906d28"
+    },
+    {
+      "model": "qwen-3b",
+      "condition": "after",
+      "repeat": 2,
+      "sampled_peak_summed_footprint_bytes": 257624800,
+      "sampled_peak_summed_rss_bytes": 2300936192,
+      "process_lifetime_peaks": {
+        "57870/29718037503031": {
+          "pid": 57870,
+          "role": "worker",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+          "lifetime_peak_bytes": 3604960
+        },
+        "57872/29718037666681": {
+          "pid": 57872,
+          "role": "owned_child",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+          "lifetime_peak_bytes": 254052608
+        }
+      },
+      "sample_count": 491,
+      "sample_errors": 0,
+      "elapsed_ms": 43011.932583,
+      "load_ms": 241.86725,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 407.9985,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": null,
+          "latency_ms": 42292.806040999996,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": false
+        }
+      ],
+      "request_sha256": "0ca1c4a47bad60a16c80e3f965df6cc256410808f35f156f02cc8c7f5965c60b",
+      "output_sha256": "6e5563db26407b8f14f6c91c3631e19c7505d26c0fed0b48532aa9ab77e7e040"
+    },
+    {
+      "model": "qwen-3b",
+      "condition": "before",
+      "repeat": 2,
+      "sampled_peak_summed_footprint_bytes": 323883424,
+      "sampled_peak_summed_rss_bytes": 4572397568,
+      "process_lifetime_peaks": {
+        "61670/29719069821693": {
+          "pid": 61670,
+          "role": "worker",
+          "command": "/tmp/parrot-1047-before-quality-eval",
+          "lifetime_peak_bytes": 3637704
+        },
+        "61672/29719070337943": {
+          "pid": 61672,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 254298368
+        },
+        "61830/29719112608206": {
+          "pid": 61830,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 252283064
+        }
+      },
+      "sample_count": 47,
+      "sample_errors": 0,
+      "elapsed_ms": 4063.6839999999947,
+      "load_ms": 313.26975,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 410.02079200000003,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": "llama_decode failed on cleanup prompt: Decode Error 1: NoKvCacheSlot",
+          "latency_ms": 3295.3302909999998,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": null
+        }
+      ],
+      "request_sha256": "738b37c4ae28ab58460f6c8f0a566a30f1940bec8a18a4279061082a0c7b7197",
+      "output_sha256": "a2ef049033cd861a5fcb9810176cc7db24e51a147f3a99ae15ba7711cc948688"
+    },
+    {
+      "model": "qwen-1-5b",
+      "condition": "after",
+      "repeat": 2,
+      "sampled_peak_summed_footprint_bytes": 238487544,
+      "sampled_peak_summed_rss_bytes": 1298366464,
+      "process_lifetime_peaks": {
+        "62065/29719167372967": {
+          "pid": 62065,
+          "role": "worker",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+          "lifetime_peak_bytes": 4293088
+        },
+        "62067/29719167588291": {
+          "pid": 62067,
+          "role": "owned_child",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+          "lifetime_peak_bytes": 234882584
+        }
+      },
+      "sample_count": 118,
+      "sample_errors": 1,
+      "elapsed_ms": 10023.111999999983,
+      "load_ms": 290.389916,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 576.89775,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": null,
+          "latency_ms": 9067.291708,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": true
+        }
+      ],
+      "request_sha256": "5d03934bc96a004a2d7cbdd241e6acc0f1655e20291ebdea4c3adfb2a3fdb993",
+      "output_sha256": "b0692aba4907450e8775782f4243c865af6e3985ced91f119b8ad4817080ee59"
+    },
+    {
+      "model": "qwen-1-5b",
+      "condition": "before",
+      "repeat": 2,
+      "sampled_peak_summed_footprint_bytes": 305023904,
+      "sampled_peak_summed_rss_bytes": 1807237120,
+      "process_lifetime_peaks": {
+        "62353/29719407944621": {
+          "pid": 62353,
+          "role": "worker",
+          "command": "/tmp/parrot-1047-before-quality-eval",
+          "lifetime_peak_bytes": 3686856
+        },
+        "62355/29719408111425": {
+          "pid": 62355,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 233719320
+        },
+        "62367/29719430243254": {
+          "pid": 62367,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 231785984
+        }
+      },
+      "sample_count": 25,
+      "sample_errors": 2,
+      "elapsed_ms": 2037.8843329999938,
+      "load_ms": 192.35575,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 214.37675000000002,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": "llama_decode failed on cleanup prompt: Decode Error 1: NoKvCacheSlot",
+          "latency_ms": 1541.903291,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": null
+        }
+      ],
+      "request_sha256": "5d8b3fc371dad6d053225f88924cc73b122dfa63098c93437b8088c984cb18c5",
+      "output_sha256": "738d733c42b97f1b8c187d47fb5254c0cb5ddf0b73cd9150d99a30148344fb47"
+    },
+    {
+      "model": "qwen-0-5b",
+      "condition": "after",
+      "repeat": 2,
+      "sampled_peak_summed_footprint_bytes": 195773952,
+      "sampled_peak_summed_rss_bytes": 622690304,
+      "process_lifetime_peaks": {
+        "62382/29719456875842": {
+          "pid": 62382,
+          "role": "worker",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+          "lifetime_peak_bytes": 3588576
+        },
+        "62384/29719457048159": {
+          "pid": 62384,
+          "role": "owned_child",
+          "command": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+          "lifetime_peak_bytes": 192218144
+        }
+      },
+      "sample_count": 51,
+      "sample_errors": 0,
+      "elapsed_ms": 4115.97095800002,
+      "load_ms": 362.00575000000003,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 96.697792,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": null,
+          "latency_ms": 3603.22475,
+          "complete": true,
+          "finish_reason": "end_of_generation",
+          "fallback": true
+        }
+      ],
+      "request_sha256": "c2be934528563e04be1adf0b473a3669db43c3e71041b5fe73de09e0c8984894",
+      "output_sha256": "2658aaf1af315b4aef5f0e91edca3b4ef871443f8c284b35b109e6a9847acce4"
+    },
+    {
+      "model": "qwen-0-5b",
+      "condition": "before",
+      "repeat": 2,
+      "sampled_peak_summed_footprint_bytes": 243632192,
+      "sampled_peak_summed_rss_bytes": 700809216,
+      "process_lifetime_peaks": {
+        "62439/29719555679494": {
+          "pid": 62439,
+          "role": "worker",
+          "command": "/tmp/parrot-1047-before-quality-eval",
+          "lifetime_peak_bytes": 3572168
+        },
+        "62441/29719555833929": {
+          "pid": 62441,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 196133920
+        },
+        "62447/29719565845117": {
+          "pid": 62447,
+          "role": "owned_child",
+          "command": "/tmp/parrot-1047-before-cleanup-sidecar",
+          "lifetime_peak_bytes": 192971808
+        }
+      },
+      "sample_count": 11,
+      "sample_errors": 1,
+      "elapsed_ms": 886.2618750000024,
+      "load_ms": 154.559167,
+      "results": [
+        {
+          "id": "warm-short",
+          "error": null,
+          "latency_ms": 98.29350000000001,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": false
+        },
+        {
+          "id": "hi-numbered-long",
+          "error": "llama_decode failed on cleanup prompt: Decode Error 1: NoKvCacheSlot",
+          "latency_ms": 576.8786670000001,
+          "complete": null,
+          "finish_reason": null,
+          "fallback": null
+        }
+      ],
+      "request_sha256": "41f8d11dc82a2dedd36ecbb0bdf343df54ccb343cd16efff1a2d028b960c54f9",
+      "output_sha256": "e347a38d620ac4b4ef3f7a8b1159bb5b59ce1baa6db511326520036610626684"
+    }
+  ],
+  "total_scored_rows": 1128,
+  "total_native_result_rows": 1152
+}
