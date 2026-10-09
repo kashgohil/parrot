@@ -62,6 +62,7 @@ A fresh, quiet resource comparison uses the frozen baseline worker and the final
 | after/Large | 225.8–231.6 | 394.4–399.2 | 135.9–138.1 | 239.6–239.9 | 2191.7–2192.0 |
 
 Every per-process ledger, identity, sample timestamp and actual sampling gap is retained. Missing ledgers are excluded from peaks and counted, never treated as zero. Physical footprint and RSS are separate OS accounting measures; summed RSS can count shared resident pages more than once; download size is storage. These measurements cannot establish a whole-app RAM requirement, GPU residency, energy use or an 8/16 GB release claim. Timing variation is descriptive rather than a statistical performance guarantee. Warm-request and sampled memory ranges overlap the frozen baseline; no algorithmic speedup or memory saving is claimed. The first frozen Basic load took 6.81 s and remains included as a startup/load outlier with no assigned cause. It makes the load-time comparison unsuitable for a speedup claim.
+
 - before: 372 complete samples; 1 incomplete samples excluded; maximum measured gap 95.8 ms.
 - after: 278 complete samples; 2 incomplete samples excluded; maximum measured gap 85.8 ms.
 
