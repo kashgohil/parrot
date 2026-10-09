@@ -136,7 +136,12 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
                 match native {
                     Ok(model_output) => {
                         let candidate = cleanup::cleanup_candidate(&model_output);
-                        let text = cleanup::finalize_cleanup_output(&model_output, &input);
+                        let text = cleanup::finalize_cleanup_output_with_policy(
+                            &model_output,
+                            &input,
+                            cleanup::Formality::from_setting(tone),
+                            &case.writing_style,
+                        );
                         row["fallback"] = json!(candidate != text);
                         row["model_output"] = json!(model_output);
                         row["candidate"] = json!(candidate);
