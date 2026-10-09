@@ -5,7 +5,8 @@ not qualify Hindi, Hinglish, a prompt or a model for release. No user dictation
 is included. Native-speaker pronunciation/reference and semantic review remain
 pending; the result review queue records each decision separately.
 
-- `hi-facts` and `hi-en-mix` reuse the original seed audio without changing it.
+- `hi-facts` and `hi-en-mix` reuse the original seed audio without changing it. They are declared
+  as existing files so even forced regeneration cannot overwrite the seed.
 - The same negative mixed sentence is voiced by Lekha alone, by separate
   Lekha/Samantha segments with the original 100 ms gaps, and with zero gaps.
   The zero-gap version has identical voiced PCM to the original; only two

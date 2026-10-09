@@ -56,14 +56,19 @@
         "original-seed-control"
       ],
       "source": {
-        "kind": "tts",
-        "segments": [
-          {
-            "voice": "Lekha",
-            "text": "प्रिया ने 25 रुपये का भुगतान नहीं किया।"
-          }
-        ],
-        "rate": 150
+        "kind": "existing",
+        "path": "../audio/hi-facts.wav",
+        "origin_manifest": "../manifest.json",
+        "original_source": {
+          "kind": "tts",
+          "segments": [
+            {
+              "voice": "Lekha",
+              "text": "प्रिया ने 25 रुपये का भुगतान नहीं किया।"
+            }
+          ],
+          "rate": 150
+        }
       },
       "provenance": "synthetic-local; no user dictation; reference and audio need native-speaker review",
       "audio": "../audio/hi-facts.wav"
@@ -123,22 +128,27 @@
         "original-seed-control"
       ],
       "source": {
-        "kind": "tts",
-        "rate": 150,
-        "segments": [
-          {
-            "voice": "Lekha",
-            "text": "शायद प्रिया ने"
-          },
-          {
-            "voice": "Samantha",
-            "text": "invoice approve"
-          },
-          {
-            "voice": "Lekha",
-            "text": "नहीं किया।"
-          }
-        ]
+        "kind": "existing",
+        "path": "../audio/hi-en-mix.wav",
+        "origin_manifest": "../manifest.json",
+        "original_source": {
+          "kind": "tts",
+          "rate": 150,
+          "segments": [
+            {
+              "voice": "Lekha",
+              "text": "शायद प्रिया ने"
+            },
+            {
+              "voice": "Samantha",
+              "text": "invoice approve"
+            },
+            {
+              "voice": "Lekha",
+              "text": "नहीं किया।"
+            }
+          ]
+        }
       },
       "provenance": "synthetic-local; no user dictation; reference and audio need native-speaker review",
       "audio": "../audio/hi-en-mix.wav"
