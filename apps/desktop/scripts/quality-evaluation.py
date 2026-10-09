@@ -159,6 +159,19 @@ def write_json(path, data):
     Path(path).write_text(json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')
 
 
+def private_destination(path):
+    path = Path(path).resolve()
+    try:
+        path.relative_to(ROOT)
+    except ValueError:
+        return path
+    try:
+        path.relative_to(ROOT / 'quality-results')
+    except ValueError:
+        raise ValueError('Private recordings and reviews must stay outside the repository or in quality-results/')
+    return path
+
+
 def formatting_check(case, text):
     """Check only the declared surface contract; do not infer semantic quality."""
     contract = case.get('format_check')
@@ -179,6 +192,15 @@ def read_manifest(path):
         if not re.fullmatch(r'[a-z0-9-]+', case['id']) or case['id'] in ids:
             raise ValueError('Case IDs must be unique lowercase letters, digits and hyphens')
         ids.add(case['id'])
+        source = case.get('source') or {}
+        if source.get('kind') == 'real-speaker':
+            consent = source.get('consent') or {}
+            if (consent.get('local_evaluation') is not True or not isinstance(consent.get('attested_by'), str)
+                    or not consent['attested_by'].strip() or not isinstance(source.get('speaker_id'), str)
+                    or not source['speaker_id'].strip() or not re.fullmatch(r'[a-f0-9]{64}', source.get('sha256', ''))):
+                raise ValueError('Real-speaker cases need local-evaluation consent, an attester, speaker ID and recording hash')
+            if datetime.fromisoformat(consent.get('attested_at', '').replace('Z', '+00:00')).tzinfo is None:
+                raise ValueError('Consent attestation needs a timestamp with a timezone')
         if case['primary_metric'] not in ('wer', 'cer') or not case['languages']:
             raise ValueError('Case needs a primary metric and languages')
         if 'format_check' in case:
@@ -282,6 +304,8 @@ def cleanup_options(variant, case):
 
 def run(args):
     manifest = read_manifest(args.manifest.resolve())
+    if any((case.get('source') or {}).get('kind') == 'real-speaker' for case in manifest['cases']):
+        private_destination(args.output)
     corpus_root = args.manifest.resolve().parent
     config = json.loads(args.config.read_text(encoding='utf-8'))
     if not 1 <= args.repeats <= 10:
@@ -307,7 +331,10 @@ def run(args):
             path = (corpus_root / case['audio']).resolve()
             if not path.is_file():
                 raise ValueError(f'Missing audio: {path}; run generate-quality-fixtures.py')
-            audio.append({'id': case['id'], **fingerprint(path)})
+            identity = fingerprint(path)
+            if (case.get('source') or {}).get('kind') == 'real-speaker' and identity['files'][0]['sha256'] != case['source']['sha256']:
+                raise ValueError('Real recording differs from consented intake; create and review a new corpus')
+            audio.append({'id': case['id'], **identity})
     args.output.mkdir(parents=True, exist_ok=False)
     output = args.output.resolve()
     metadata = {'schema_version': 1, 'started_at': datetime.now(timezone.utc).isoformat(), 'manifest': manifest,

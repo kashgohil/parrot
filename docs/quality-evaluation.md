@@ -205,8 +205,11 @@ Traditional versus simplified Chinese, spelling variants, contractions and
 valid paraphrases can cause flags without meaning loss.
 
 `review-queue.json` contains source, reference, output, model response and checks.
-Copy it, inspect each item, and set `decision` to `approve` or `reject` with notes.
-Preserve its output hash; stale decisions for different text are rejected.
+Copy it, inspect each item, and set `decision` to `approve` or `reject` with
+reviewer name/handle and notes. Preserve both `output_sha256` and
+`subject_sha256`: changed recordings, references, source text, models, prompts
+or native binaries invalidate a decision even when output text is identical.
+Old output-only decisions require a current review queue and a new judgment.
 Re-score without running inference:
 
 ```sh
@@ -220,6 +223,13 @@ accent proxies do not establish real-speaker performance. Consented real
 failures can be added locally; none were available for the initial seed. The
 ignored `quality-results/` directory is intended for private outputs. No text or
 audio upload is required.
+
+[language-review.md](language-review.md) provides a local audio review page,
+validated decision importer and consented real-recording intake. Real-speaker
+manifests need a pseudonymous speaker ID, explicit local-evaluation consent,
+attester/timestamp and recording hash. The runner rejects changed recording
+bytes and writes real-speaker outputs only outside the repository or under
+`quality-results/`. Consent metadata does not approve pronunciation or meaning.
 
 ## Compare changes
 
