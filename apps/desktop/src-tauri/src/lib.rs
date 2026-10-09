@@ -3,6 +3,7 @@ mod audio_import;
 mod cleanup;
 mod cleanup_eligibility;
 mod cleanup_fillers;
+mod cleanup_formatting;
 mod cleanup_engine;
 mod model_lifecycle;
 mod memory_policy;

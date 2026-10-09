@@ -12,7 +12,7 @@ fn pause(token: &str) -> bool {
     LEADING_PAUSES.contains(&token.trim_end_matches([',', '.', '!', '?', '…']))
 }
 
-fn quoted(text: &str) -> bool {
+pub(crate) fn quoted(text: &str) -> bool {
     let mut chars = text.chars().peekable();
     let mut previous = None;
     while let Some(c) = chars.next() {
