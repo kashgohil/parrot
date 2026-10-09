@@ -25,7 +25,8 @@ Settings shows unloaded, loading, ready, cleaning, and failed states. A model
 that has downloaded is available on disk; it need not be resident. Built-in load
 failure preserves the original transcript and does not silently try Ollama.
 A later eligible request retries loading. Ollama remains an explicit legacy
-backend; its residency policy is tracked separately in ISSUE-1054.
+backend; its [residency policy](ollama-memory-policy.md) uses the same saved
+timeout, demand loading and targeted model release.
 
 The first cleanup and the first cleanup after idle include model loading in
 their latency. Background cleanup still returns raw text first. Keeping a model

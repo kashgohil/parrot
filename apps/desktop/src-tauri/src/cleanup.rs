@@ -6,15 +6,11 @@ use unicode_script::{Script, UnicodeScript};
 use crate::cleanup_engine::SidecarCleanupClient;
 
 /// Request body for Ollama's native `/api/chat` endpoint.
-/// Using the native API (not OpenAI-compat) so we can pass `keep_alive` on
-/// every cleanup request — otherwise Ollama falls back to its 5-minute default
-/// after the first dictation and idle users pay a cold-load stall.
+/// The residency owner adds the selected model and policy-derived keep_alive.
 #[derive(Serialize)]
 struct OllamaChatRequest {
-    model: String,
     messages: Vec<ChatMessage>,
     stream: bool,
-    keep_alive: String,
     options: OllamaChatOptions,
 }
 
@@ -41,7 +37,7 @@ struct OllamaChatResponse {
 /// Local cleanup: in-process llama.cpp (default) or legacy Ollama.
 pub async fn cleanup_text(
     raw_text: &str,
-    model: Option<&str>,
+    ollama: Option<crate::ollama_cleanup::Session>,
     custom_words: &str,
     context_prompt: &str,
     writing_style: &str,
@@ -57,7 +53,7 @@ pub async fn cleanup_text(
         "ollama" => {
             cleanup_with_ollama(
                 raw_text,
-                model,
+                ollama.ok_or_else(|| anyhow::anyhow!("Ollama cleanup is not configured"))?,
                 custom_words,
                 context_prompt,
                 writing_style,
@@ -161,18 +157,16 @@ pub(crate) fn finalize_completion(
 /// Use Ollama's local server for text cleanup (compat path).
 async fn cleanup_with_ollama(
     raw_text: &str,
-    model: Option<&str>,
+    session: crate::ollama_cleanup::Session,
     custom_words: &str,
     context_prompt: &str,
     writing_style: &str,
     formality: Formality,
 ) -> Result<String> {
     let system_prompt = build_system_prompt(custom_words, context_prompt, writing_style, formality);
-    let model_name = model.unwrap_or("llama3.2");
     let user_message = build_user_message(raw_text);
 
     let request = OllamaChatRequest {
-        model: model_name.to_string(),
         messages: vec![
             ChatMessage {
                 role: "system".to_string(),
@@ -184,24 +178,11 @@ async fn cleanup_with_ollama(
             },
         ],
         stream: false,
-        keep_alive: "30m".to_string(),
         options: OllamaChatOptions { temperature: 0.1 },
     };
 
-    let client = reqwest::Client::new();
-    let resp = client
-        .post("http://localhost:11434/api/chat")
-        .json(&request)
-        .send()
-        .await?;
-
-    if !resp.status().is_success() {
-        let status = resp.status();
-        let body = resp.text().await.unwrap_or_default();
-        anyhow::bail!("Ollama API error {}: {}", status, body);
-    }
-
-    let chat_resp: OllamaChatResponse = resp.json().await?;
+    let response = session.owner.chat(session.port, serde_json::to_value(request)?).await?;
+    let chat_resp: OllamaChatResponse = serde_json::from_value(response)?;
     Ok(finalize_ollama_response(
         chat_resp,
         raw_text,

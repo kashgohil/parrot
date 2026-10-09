@@ -770,12 +770,11 @@ function SettingsPage() {
 								<p className="text-xs text-muted-foreground mt-0.5">
 									{cleanupBackend === "builtin"
 										? "Runs a small model inside Parrot — no third-party apps or admin password."
-										: "Uses the Ollama daemon you installed earlier. You can switch to the built-in engine and drop Ollama."}
+										: "Uses your local Ollama service. The model loads on your first cleanup and follows the memory preference below."}
 								</p>
 							</div>
 
 							{lowMemoryMode && cleanupBackend === "ollama" && <p className="text-xs text-muted-foreground">Low-memory mode skips Ollama cleanup and keeps your raw transcript. Select a built-in cleanup model below to enable cleanup. An external Ollama app may still use memory.</p>}
-                            {cleanupBackend === "builtin" && (
 								<div className="space-y-2">
 									<Label htmlFor="cleanupIdleSeconds" className="text-sm font-medium">Release cleanup memory after</Label>
 									<Select disabled={lowMemoryMode} value={lowMemoryMode ? "30" : cleanupIdleSeconds} onValueChange={(value) => { setCleanupIdleSeconds(value); setDirty(true); }}>
@@ -789,11 +788,11 @@ function SettingsPage() {
 										</SelectContent>
 									</Select>
 									<p className="text-xs text-muted-foreground">Loads when needed. Releasing memory adds model load time to your next cleanup. Active cleanup always finishes first.</p>
-									<p className="text-xs text-muted-foreground" role="status">
+									{cleanupBackend === "builtin" && <p className="text-xs text-muted-foreground" role="status">
 										{cleanupLifecycle?.state === "loading" ? "Loading cleanup model…" : cleanupLifecycle?.state === "in_use" ? "Cleaning…" : cleanupLifecycle?.state === "ready" ? "Cleanup model is ready" : cleanupLifecycle?.state === "failed" ? `Cleanup unavailable: ${cleanupLifecycle.error ?? "Load failed"}` : "Cleanup model is unloaded"}
-									</p>
+									</p>}
+									{cleanupBackend === "ollama" && <p className="text-xs text-muted-foreground">Other apps using the same Ollama model share its memory lifetime.</p>}
 								</div>
-							)}
 
 							<div className="space-y-2">
 								<Label className="text-sm font-medium">Cleanup quality</Label>

@@ -422,7 +422,13 @@ async fn run_cleanup(
 ) -> String {
     // Legacy Ollama residency is external to this mode. Keep raw text usable
     // without issuing a cleanup request or changing the user's backend.
-    if memory_policy::MemoryPolicy::from_database(db).skip_cleanup {
+    if memory_policy::MemoryPolicy::from_database(db).skip_cleanup
+        || !cleanup_eligibility::should_cleanup(
+            raw_text,
+            &db.get_setting("cleanup_mode").ok().flatten().unwrap_or_else(|| "blocking".into()),
+            profile.cleanup_enabled,
+        )
+    {
         return String::new();
     }
     let speech = app.state::<SharedLocalEngine>();
@@ -450,7 +456,22 @@ async fn run_cleanup(
         None
     };
     let builtin = lease.as_ref().map(|lease| lease.client.clone());
-    let llm_model = db.get_setting("llm_model").ok().flatten();
+    let ollama = if cleanup_backend == "ollama" {
+        let owner = app.state::<Arc<ollama_cleanup::OllamaCleanup>>();
+        owner.configure(ollama_cleanup::Policy::from_database(db));
+        let port = match start_local_servers(
+            app.state::<Database>(),
+            app.state::<SharedServerProcesses>(),
+            app.state::<SharedWhisperProvider>(),
+        ).await {
+            Ok(value) => value["ollama_port"].as_u64().unwrap_or(11434) as u16,
+            Err(error) => {
+                eprintln!("Ollama unavailable: {error}");
+                return String::new();
+            }
+        };
+        Some(ollama_cleanup::Session { owner: owner.inner().clone(), port })
+    } else { None };
     let formality = cleanup::Formality::from_setting(
         &db.get_setting("cleanup_formality")
             .ok()
@@ -459,7 +480,7 @@ async fn run_cleanup(
     );
     let result = match cleanup::cleanup_text(
         raw_text,
-        llm_model.as_deref(),
+        ollama,
         &profile.custom_words,
         &profile.context_prompt,
         &profile.writing_style,
@@ -1334,12 +1355,8 @@ async fn upgrade_cleanup_to_builtin(
     configure_cleanup(&db, cleanup_engine.inner());
     let ready = cleanup_engine.is_loaded();
 
-    // Stop Ollama if we started it (best-effort).
-    {
-        let servers = app.state::<SharedServerProcesses>();
-        let mut guard = servers.write().await;
-        guard.stop_all().await;
-    }
+    app.state::<Arc<ollama_cleanup::OllamaCleanup>>()
+        .configure(ollama_cleanup::Policy::from_database(&db));
 
     Ok(serde_json::json!({
         "backend": "builtin",
@@ -1432,12 +1449,8 @@ async fn switch_cleanup_model(
     configure_cleanup(&db, cleanup_engine.inner());
     let ready = cleanup_engine.is_loaded();
 
-    // If we were on Ollama, stop it (best-effort) — built-in now owns cleanup.
-    {
-        let servers = app.state::<SharedServerProcesses>();
-        let mut guard = servers.write().await;
-        guard.stop_all().await;
-    }
+    app.state::<Arc<ollama_cleanup::OllamaCleanup>>()
+        .configure(ollama_cleanup::Policy::from_database(&db));
 
     Ok(serde_json::json!({
         "backend": "builtin",
@@ -1596,6 +1609,7 @@ fn set_setting(
     value: &str,
     state: tauri::State<'_, Database>,
     cleanup: tauri::State<'_, SharedCleanupEngine>,
+    ollama: tauri::State<'_, Arc<ollama_cleanup::OllamaCleanup>>,
     speech: tauri::State<'_, SharedLocalEngine>,
 ) -> Result<(), String> {
     if matches!(key, "cleanup_idle_seconds" | "stt_idle_seconds") {
@@ -1618,9 +1632,10 @@ fn set_setting(
     state.set_setting(key, value).map_err(|e| e.to_string())?;
     if matches!(
         key,
-        "low_memory_mode" | "cleanup_idle_seconds" | "cleanup_mode" | "cleanup_backend" | "cleanup_model_path"
+        "low_memory_mode" | "cleanup_idle_seconds" | "cleanup_mode" | "cleanup_backend" | "cleanup_model_path" | "llm_model"
     ) {
         configure_cleanup(&state, cleanup.inner());
+        ollama.configure(ollama_cleanup::Policy::from_database(&state));
     }
     if matches!(
         key,
@@ -1926,6 +1941,8 @@ async fn start_local_setup(
                         let path_str = path.to_string_lossy().to_string();
                         let _ = db.set_setting("cleanup_model_path", &path_str);
                         configure_cleanup(&db, app.state::<SharedCleanupEngine>().inner());
+                        app.state::<Arc<ollama_cleanup::OllamaCleanup>>()
+                            .configure(ollama_cleanup::Policy::from_database(&db));
                     }
                     if engine == "parakeet" {
                         let _ = db.set_setting(
@@ -1984,29 +2001,18 @@ async fn start_local_servers(
 
     configure_speech(&db, whisper.inner());
 
-    // If we've already established a port for Ollama (either by spawning it
-    // or by adopting an existing daemon), short-circuit. The presence of a
-    // port — not a child — is the source of truth.
-    {
-        let guard = servers.read().await;
-        if let Some(op) = guard.ollama_port {
-            return Ok(serde_json::json!({
-                "ollama_port": op,
-                "status": "running",
-            }));
-        }
+    // Serialize adoption/start so simultaneous first jobs cannot spawn two
+    // daemons or overwrite an owned child handle.
+    let mut guard = servers.write().await;
+    if let Some(port) = guard.ollama_port {
+        return Ok(serde_json::json!({"ollama_port": port, "status": "running"}));
     }
-
     let (ollama_child, ollama_port) =
         local_setup::start_ollama_server(config.ollama_server_port)
             .await
             .map_err(|e| format!("Failed to start Ollama server: {}", e))?;
-
-    {
-        let mut guard = servers.write().await;
-        guard.ollama = ollama_child;
-        guard.ollama_port = Some(ollama_port);
-    }
+    guard.ollama = ollama_child;
+    guard.ollama_port = Some(ollama_port);
 
     Ok(serde_json::json!({
         "ollama_port": ollama_port,
@@ -2193,7 +2199,10 @@ async fn validate_local_servers(
             else { std::path::Path::new(&path).is_file() };
 
     let cleanup_ok = if resolve_cleanup_backend(&db) == "ollama" {
-        local_setup::test_cleanup(ollama_port, &config.ollama_model).await.is_ok()
+        local_setup::test_cleanup(
+            ollama_port,
+            &ollama_cleanup::selected_model(&db),
+        ).await.is_ok()
     } else {
         // Availability does not require model residency. Check the selected
         // model and executable without starting a sidecar during validation.
@@ -2219,6 +2228,8 @@ pub fn run() {
         config.prepare_database(&db).expect("Failed to prepare benchmark database");
     }
     let cleanup_state = cleanup_engine::new_cleanup_engine();
+    let ollama_state = ollama_cleanup::OllamaCleanup::new();
+    ollama_state.configure(ollama_cleanup::Policy::from_database(&db));
     let speech_state = speech_engine::SpeechEngine::new(cleanup_state.clone());
     let recorder = AudioRecorder::new().expect("Failed to initialize audio recorder");
     let recorder_state = RecorderState {
@@ -2240,6 +2251,7 @@ pub fn run() {
         .manage::<SharedServerProcesses>(Arc::new(RwLock::new(ServerProcesses::new())))
         .manage::<SharedWhisperProvider>(speech_state)
         .manage::<SharedCleanupEngine>(cleanup_state)
+        .manage(ollama_state)
         .manage(Arc::new(streaming::StreamingCoordinator::new()))
         .invoke_handler(tauri::generate_handler![
             start_recording,
@@ -2307,6 +2319,7 @@ pub fn run() {
             });
 
             app.state::<SharedCleanupEngine>().start_idle_monitor();
+            app.state::<Arc<ollama_cleanup::OllamaCleanup>>().start_idle_monitor();
             app.state::<SharedLocalEngine>().models.start_idle_monitor();
 
             #[cfg(feature = "memory-bench")]
@@ -2375,48 +2388,20 @@ pub fn run() {
                     let _ = db.set_setting("cleanup_backend", &resolved_backend);
 
                     let app_handle = app.handle().clone();
-                    let ollama_model = config.ollama_model.clone();
                     tauri::async_runtime::spawn(async move {
-                        // Must use the same migration-aware resolver as cleanup
-                        // itself — a bare default of "builtin" skipped Ollama
-                        // start for legacy installs and broke cleanup on update.
-                        let backend = {
+                        let enabled = {
                             let db = app_handle.state::<Database>();
-                            resolve_cleanup_backend(&db)
+                            ollama_cleanup::Policy::from_database(&db).model.is_some()
                         };
-                        if backend != "ollama" {
-                            println!("Using builtin cleanup (no Ollama daemon)");
-                            return;
-                        }
-                        match start_local_servers(
+                        if !enabled { return; }
+                        // Starting/adopting the service does not load a model.
+                        // Weights load on the first eligible cleanup request.
+                        if let Err(error) = start_local_servers(
                             app_handle.state::<Database>(),
                             app_handle.state::<SharedServerProcesses>(),
                             app_handle.state::<SharedWhisperProvider>(),
-                        )
-                        .await
-                        {
-                            Ok(_) => {
-                                println!("Local services started (Ollama compat)");
-                                let port = {
-                                    let servers = app_handle.state::<SharedServerProcesses>();
-                                    let guard = servers.read().await;
-                                    guard.ollama_port
-                                };
-                                if let Some(port) = port {
-                                    // Prefer the configured Ollama model; ignore
-                                    // qwen/gguf ids that may have been written later.
-                                    let model = if ollama_model.is_empty()
-                                        || ollama_model.contains("qwen")
-                                        || ollama_model.ends_with(".gguf")
-                                    {
-                                        "llama3.2".to_string()
-                                    } else {
-                                        ollama_model
-                                    };
-                                    local_setup::warm_up_ollama(port, &model).await;
-                                }
-                            }
-                            Err(e) => eprintln!("Failed to auto-start local services: {}", e),
+                        ).await {
+                            eprintln!("Failed to auto-start Ollama: {error}");
                         }
                     });
                 }
@@ -2437,7 +2422,9 @@ pub fn run() {
                     let _ = state.recorder.lock().map(|mut rec| rec.shutdown());
                 }
                 let servers = app.state::<SharedServerProcesses>().inner().clone();
+                let ollama = app.state::<Arc<ollama_cleanup::OllamaCleanup>>().inner().clone();
                 tauri::async_runtime::block_on(async move {
+                    ollama.shutdown().await;
                     let mut guard = servers.write().await;
                     guard.stop_all().await;
                 });

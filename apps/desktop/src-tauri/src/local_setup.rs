@@ -1194,44 +1194,6 @@ async fn probe_ollama(client: &reqwest::Client, port: u16) -> bool {
     }
 }
 
-/// Pre-warm the Ollama LLM by asking it to load the model into RAM with a
-/// long `keep_alive` window. Without this the first dictation pays a 3-10s
-/// cold-load tax inside the cleanup step. Errors are swallowed — this is
-/// best-effort and the user's first cleanup will still work, just slowly.
-pub async fn warm_up_ollama(port: u16, model: &str) {
-    let client = reqwest::Client::new();
-    let url = format!("http://127.0.0.1:{}/api/generate", port);
-    // Empty prompt + `keep_alive: "30m"` tells Ollama to load weights and
-    // hold them in memory for half an hour after this call returns. That
-    // window resets on every subsequent request, so an active user keeps the
-    // model warm indefinitely.
-    let body = serde_json::json!({
-        "model": model,
-        "prompt": "",
-        "keep_alive": "30m",
-        "stream": false,
-    });
-    let result = client
-        .post(&url)
-        .json(&body)
-        .timeout(Duration::from_secs(180))
-        .send()
-        .await;
-    match result {
-        Ok(resp) if resp.status().is_success() => {
-            println!("Ollama model '{}' warmed up", model);
-        }
-        Ok(resp) => {
-            let status = resp.status();
-            let body = resp.text().await.unwrap_or_default();
-            eprintln!("Ollama warmup non-success ({}): {}", status, body);
-        }
-        Err(e) => {
-            eprintln!("Ollama warmup request failed: {}", e);
-        }
-    }
-}
-
 /// Smoke-test the cleanup GGUF via a one-shot sidecar run (spawn + one gen).
 /// Runs out-of-process so this test doesn't link llama into the main app.
 pub fn test_builtin_cleanup(model_path: &std::path::Path) -> Result<()> {
@@ -1250,34 +1212,14 @@ pub fn test_builtin_cleanup(model_path: &std::path::Path) -> Result<()> {
     Ok(())
 }
 
-/// Test text cleanup via Ollama (legacy path).
+/// Check legacy model availability without loading weights or changing residency.
 pub async fn test_cleanup(port: u16, model: &str) -> Result<()> {
-    let client = reqwest::Client::new();
-    
-    let test_request = serde_json::json!({
-        "model": model,
-        "messages": [
-            {
-                "role": "user",
-                "content": "Hello"
-            }
-        ],
-        "stream": false
-    });
-    
-    let resp = client
-        .post(&format!("http://127.0.0.1:{}/v1/chat/completions", port))
-        .json(&test_request)
-        .timeout(Duration::from_secs(30))
-        .send()
-        .await?;
-    
-    if resp.status().is_success() {
-        Ok(())
-    } else {
-        let body = resp.text().await.unwrap_or_default();
-        anyhow::bail!("Cleanup test failed: {}", body);
-    }
+    reqwest::Client::new()
+        .post(format!("http://127.0.0.1:{port}/api/show"))
+        .json(&serde_json::json!({"model": model}))
+        .timeout(Duration::from_secs(5))
+        .send().await?.error_for_status()?;
+    Ok(())
 }
 
 /// Generate manual instructions for Ollama installation.

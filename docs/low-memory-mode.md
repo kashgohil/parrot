@@ -41,7 +41,9 @@ mode is enabled. After a disabled preview loop exits, previews resume on the
 next recording. Turning the mode off restores normal preferences.
 
 An external Ollama app can still consume memory. This mode skips new Ollama
-cleanup requests and does not kill another app or change the saved backend.
+cleanup requests, retires cleanup models used by this Parrot session through
+the [Ollama model release API](ollama-memory-policy.md), and preserves the daemon
+and saved backend. An active cleanup finishes before release.
 Select a built-in cleanup tier explicitly to enable cleanup under this mode.
 All dictation processing remains local; model downloads use the existing setup
 flow only when requested by the user.
