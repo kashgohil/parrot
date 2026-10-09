@@ -86,6 +86,31 @@ class ReviewTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'changed'):
             review.import_reviews(SimpleNamespace(packet=packet, reviews=reviews, output=self.root / 'stale'))
 
+    def test_local_recording_intake_rejects_missing_consent_and_keeps_pending_reference(self):
+        entry = dict(id='real-case', audio=str(self.wav), languages=['hi', 'en'], reference='प्रिया ने invoice approve नहीं किया।',
+                     facts=[], tags=['negative'], speaker_id='speaker-01', consent=dict(local_evaluation=False, attested_by='test', attested_at='2026-10-09T12:00:00Z'))
+        intake = self.root / 'intake.json'; destination = self.root / 'corpus'
+        review.quality.write_json(intake, dict(schema_version=1, cases=[entry]))
+        args = SimpleNamespace(intake=intake, output=destination)
+        with self.assertRaisesRegex(ValueError, 'consent'): review.create_corpus(args)
+        self.assertFalse(destination.exists())
+        entry['consent']['local_evaluation'] = True
+        review.quality.write_json(intake, dict(schema_version=1, cases=[entry]))
+        review.create_corpus(args)
+        manifest = review.quality.read_manifest(destination / 'manifest.json')
+        self.assertEqual(manifest['cases'][0]['source']['kind'], 'real-speaker')
+        self.assertEqual(review.quality.sha256(destination / 'audio/real-case.wav'), review.quality.sha256(self.wav))
+        self.assertIn('pending', manifest['cases'][0]['provenance'])
+        self.assertNotIn('reference_review', manifest['cases'][0])
+        model = self.root / 'model.bin'; model.write_bytes(b'fake model; never loaded')
+        config = self.root / 'config.json'
+        review.quality.write_json(config, dict(speech=[dict(id='model', engine='whisper', model=str(model), quantization='test')]))
+        (destination / 'audio/real-case.wav').write_bytes(b'changed after intake')
+        with self.assertRaisesRegex(ValueError, 'differs from consented intake'):
+            review.quality.run(SimpleNamespace(manifest=destination / 'manifest.json', config=config, repeats=1,
+                                              output=self.root / 'never-evaluated', sidecar=None))
+        self.assertFalse((self.root / 'never-evaluated').exists())
+
     def test_private_outputs_cannot_land_in_tracked_repository_folders(self):
         with self.assertRaises(ValueError): review.private_destination(review.quality.ROOT / 'docs/review')
         self.assertEqual(review.private_destination(review.quality.ROOT / 'quality-results/private'), review.quality.ROOT / 'quality-results/private')

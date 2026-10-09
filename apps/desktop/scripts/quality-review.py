@@ -190,6 +190,48 @@ def import_reviews(args):
     print(f'Imported {count} judgments; all other subjects remain pending. No semantic release qualification granted.')
 
 
+def create_corpus(args):
+    destination = private_destination(args.output)
+    intake = json.loads(args.intake.read_text(encoding='utf-8'))
+    if intake.get('schema_version') != 1 or not intake.get('cases'):
+        raise ValueError('Provide a nonempty schema-version-1 intake')
+    cases = []
+    sources = []
+    for entry in intake['cases']:
+        consent = entry.get('consent', {})
+        if consent.get('local_evaluation') is not True or not isinstance(consent.get('attested_by'), str) or not consent['attested_by'].strip():
+            raise ValueError('Each real recording needs explicit local-evaluation consent and an attester')
+        if not isinstance(entry.get('speaker_id'), str) or not entry['speaker_id'].strip():
+            raise ValueError('Use a pseudonymous speaker ID for each recording')
+        stamp = datetime.fromisoformat(consent.get('attested_at', '').replace('Z', '+00:00'))
+        if stamp.tzinfo is None:
+            raise ValueError('Consent attestation needs a timestamp with a timezone')
+        original = (args.intake.resolve().parent / entry['audio']).resolve()
+        if not original.is_file() or original.suffix.lower() != '.wav':
+            raise ValueError('Provide an existing WAV recording; this command does not record or synthesize speech')
+        sources.append(original)
+        case = {key: entry[key] for key in ['id', 'languages', 'reference', 'facts', 'tags']}
+        case.update(primary_metric='cer' if 'hi' in case['languages'] else 'wer', audio=f"audio/{case['id']}.wav",
+                    cleanup_input=case['reference'], provenance='consented-real-speaker; local-only; reference and semantic review pending',
+                    source=dict(kind='real-speaker', speaker_id=entry['speaker_id'], consent=consent, sha256=quality.sha256(original)))
+        cases.append(case)
+    manifest = dict(schema_version=1, name='parrot-private-real-speaker-v1', cases=cases)
+    # Validate before copying any recordings or creating the destination.
+    import tempfile
+    with tempfile.TemporaryDirectory() as temp:
+        check = Path(temp) / 'manifest.json'
+        quality.write_json(check, manifest)
+        quality.read_manifest(check)
+    destination.mkdir(parents=True, exist_ok=False)
+    (destination / 'audio').mkdir()
+    for source, case in zip(sources, cases):
+        shutil.copy2(source, destination / case['audio'])
+        if quality.sha256(destination / case['audio']) != case['source']['sha256']:
+            raise ValueError('Recording changed while creating corpus')
+    quality.write_json(destination / 'manifest.json', manifest)
+    print(f'Created {len(cases)} real-speaker cases locally. References and outputs remain unreviewed.')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
@@ -200,9 +242,12 @@ def main():
     p = sub.add_parser('import')
     for name in ['packet', 'reviews', 'output']:
         p.add_argument('--' + name, type=Path, required=True)
+    p = sub.add_parser('create-corpus')
+    for name in ['intake', 'output']:
+        p.add_argument('--' + name, type=Path, required=True)
     args = parser.parse_args()
     try:
-        {'prepare': prepare, 'import': import_reviews}[args.command](args)
+        {'prepare': prepare, 'import': import_reviews, 'create-corpus': create_corpus}[args.command](args)
     except (ValueError, KeyError, OSError, TypeError) as error:
         parser.exit(1, f'Review failed: {error}\n')
 

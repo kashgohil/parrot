@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "note": "Draft prompts only. Record with permission, replace paths, attest consent and transcribe what was actually spoken. These are not validated references.",
+  "cases": [
+    {
+      "id": "en-negative",
+      "audio": "/absolute/path/to/en-negative.wav",
+      "languages": [
+        "en"
+      ],
+      "reference": "Priya did not approve the payment of 25 euros.",
+      "facts": [],
+      "tags": [
+        "negative",
+        "names",
+        "numbers"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "en-positive",
+      "audio": "/absolute/path/to/en-positive.wav",
+      "languages": [
+        "en"
+      ],
+      "reference": "Priya approved the payment of 25 euros.",
+      "facts": [],
+      "tags": [
+        "positive",
+        "names",
+        "numbers"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "en-uncertainty",
+      "audio": "/absolute/path/to/en-uncertainty.wav",
+      "languages": [
+        "en"
+      ],
+      "reference": "Maybe Ravi will send invoice 35 after the meeting.",
+      "facts": [],
+      "tags": [
+        "uncertainty",
+        "names",
+        "numbers"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "en-technical",
+      "audio": "/absolute/path/to/en-technical.wav",
+      "languages": [
+        "en"
+      ],
+      "reference": "The API timeout is 300 milliseconds. Do not deploy release 2.1 yet.",
+      "facts": [],
+      "tags": [
+        "technical",
+        "numbers",
+        "natural-boundaries"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "hi-negative",
+      "audio": "/absolute/path/to/hi-negative.wav",
+      "languages": [
+        "hi"
+      ],
+      "reference": "प्रिया ने 25 रुपये का भुगतान नहीं किया।",
+      "facts": [],
+      "tags": [
+        "negative",
+        "names",
+        "numbers"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "hi-positive",
+      "audio": "/absolute/path/to/hi-positive.wav",
+      "languages": [
+        "hi"
+      ],
+      "reference": "प्रिया ने 25 रुपये का भुगतान किया।",
+      "facts": [],
+      "tags": [
+        "positive",
+        "names",
+        "numbers"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "hi-uncertainty",
+      "audio": "/absolute/path/to/hi-uncertainty.wav",
+      "languages": [
+        "hi"
+      ],
+      "reference": "शायद रवि बैठक के बाद 35 रुपये भेजेगा।",
+      "facts": [],
+      "tags": [
+        "uncertainty",
+        "names",
+        "numbers"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "hi-technical",
+      "audio": "/absolute/path/to/hi-technical.wav",
+      "languages": [
+        "hi"
+      ],
+      "reference": "समय सीमा 300 मिलीसेकंड है। अभी नया संस्करण जारी मत करो।",
+      "facts": [],
+      "tags": [
+        "technical",
+        "numbers",
+        "natural-boundaries"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "hi-en-negative",
+      "audio": "/absolute/path/to/hi-en-negative.wav",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "reference": "प्रिया ने invoice 25 approve नहीं किया।",
+      "facts": [],
+      "tags": [
+        "negative",
+        "names",
+        "numbers"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "hi-en-positive",
+      "audio": "/absolute/path/to/hi-en-positive.wav",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "reference": "प्रिया ने invoice 25 approve किया।",
+      "facts": [],
+      "tags": [
+        "positive",
+        "names",
+        "numbers"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "hi-en-uncertainty",
+      "audio": "/absolute/path/to/hi-en-uncertainty.wav",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "reference": "शायद रवि meeting के बाद invoice 35 भेजेगा।",
+      "facts": [],
+      "tags": [
+        "uncertainty",
+        "names",
+        "numbers"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    },
+    {
+      "id": "hi-en-technical",
+      "audio": "/absolute/path/to/hi-en-technical.wav",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "reference": "API timeout 300 milliseconds है। अभी release 2.1 deploy मत करो।",
+      "facts": [],
+      "tags": [
+        "technical",
+        "numbers",
+        "natural-boundaries"
+      ],
+      "speaker_id": "speaker-01",
+      "consent": {
+        "local_evaluation": false,
+        "attested_by": "",
+        "attested_at": ""
+      }
+    }
+  ]
+}
