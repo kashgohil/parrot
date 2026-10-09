@@ -695,9 +695,19 @@ mod tests {
         ] {
             db.set_setting(key, value).unwrap();
             owner.configure(Policy::from_database(&db));
-            owner.release_if_idle(Instant::now()).await;
-            let remaining = resident(&client, &base).await;
-            assert!(!has(&remaining, &model) && has(&remaining, &unrelated));
+            // Ollama acknowledges the unload before its scheduler removes the
+            // runner from /api/ps. Validate eventual release, not an atomic view.
+            let started = Instant::now();
+            loop {
+                owner.release_if_idle(Instant::now()).await;
+                let remaining = resident(&client, &base).await;
+                assert!(has(&remaining, &unrelated));
+                if !has(&remaining, &model) {
+                    break;
+                }
+                assert!(started.elapsed() < Duration::from_secs(10));
+                tokio::time::sleep(Duration::from_millis(100)).await;
+            }
             assert!(owner.chat(port, json!({"messages": []})).await.is_err());
             assert!(client
                 .get(format!("{base}/api/tags"))
@@ -706,7 +716,13 @@ mod tests {
                 .unwrap()
                 .status()
                 .is_success());
-            event(&client, &base, phase, None).await;
+            event(
+                &client,
+                &base,
+                phase,
+                Some(started.elapsed().as_secs_f64() * 1000.0),
+            )
+            .await;
             tokio::time::sleep(Duration::from_millis(1200)).await;
             if phase != "switched_builtin" {
                 db.set_setting(
