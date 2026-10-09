@@ -63,8 +63,12 @@ Python/Unicode versions, native binary/model/audio hashes and native source
 revision. Native JSONL files preserve model-load timings and result order;
 stderr logs retain native diagnostics. Inference timings exclude model loading
 and app UI work. Model-load timings use fresh processes with uncontrolled file
-caches; they are not guaranteed cold-disk timings. Token limits are budgets,
-not measured prompt token counts.
+caches; they are not guaranteed cold-disk timings. Token limits are budgets.
+Cleanup rows additionally contain `token_diagnostics` when serial native stderr
+can be correlated without missing/extra messages or inference errors. These are
+measured full prompt and generated token counts, cache reuse, prefill time and
+generation time. Empty-input bypasses have no native token diagnostics;
+uncorrelatable logs remain available for review.
 
 Rebuild both packages before comparing source changes; an existing sidecar file
 can predate the checked-out source. Record its hash for both runs. The sidecar's

@@ -1,0 +1,169 @@
+{
+  "seed": {
+    "regression_check_pass": false,
+    "semantic_release_qualified": false,
+    "max_rate_increase": 0.02,
+    "regressions": [
+      {
+        "key": "qwen-0-5b/whisper-compact/zh-facts/pipeline/neutral",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "reference_facts_failed",
+            "negation"
+          ]
+        ]
+      }
+    ],
+    "note": "Compares worst repeat per case. Existing baseline failures remain unresolved; passing this check does not qualify release quality."
+  },
+  "focused": {
+    "regression_check_pass": false,
+    "semantic_release_qualified": false,
+    "max_rate_increase": 0.02,
+    "regressions": [
+      {
+        "key": "qwen-0-5b/amount-correction/isolated/casual",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "introduced_regression",
+            "True"
+          ],
+          [
+            "numbers_lost",
+            "25"
+          ]
+        ]
+      },
+      {
+        "key": "qwen-0-5b/amount-correction/isolated/formal",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "introduced_regression",
+            "True"
+          ],
+          [
+            "numbers_lost",
+            "25"
+          ]
+        ]
+      },
+      {
+        "key": "qwen-0-5b/amount-correction/isolated/neutral",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "introduced_regression",
+            "True"
+          ],
+          [
+            "numbers_lost",
+            "25"
+          ]
+        ]
+      },
+      {
+        "key": "qwen-1-5b/amount-correction/isolated/casual",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "introduced_regression",
+            "True"
+          ],
+          [
+            "numbers_lost",
+            "25"
+          ]
+        ]
+      },
+      {
+        "key": "qwen-1-5b/amount-correction/isolated/formal",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "introduced_regression",
+            "True"
+          ],
+          [
+            "numbers_lost",
+            "25"
+          ]
+        ]
+      },
+      {
+        "key": "qwen-1-5b/amount-correction/isolated/neutral",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "introduced_regression",
+            "True"
+          ],
+          [
+            "numbers_lost",
+            "25"
+          ]
+        ]
+      }
+    ],
+    "note": "Compares worst repeat per case. Existing baseline failures remain unresolved; passing this check does not qualify release quality."
+  },
+  "3b-seed": {
+    "regression_check_pass": true,
+    "semantic_release_qualified": false,
+    "max_rate_increase": 0.02,
+    "regressions": [],
+    "note": "Compares worst repeat per case. Existing baseline failures remain unresolved; passing this check does not qualify release quality."
+  },
+  "3b-focused": {
+    "regression_check_pass": false,
+    "semantic_release_qualified": false,
+    "max_rate_increase": 0.02,
+    "regressions": [
+      {
+        "key": "qwen-3b/amount-correction/isolated/casual",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "introduced_regression",
+            "True"
+          ],
+          [
+            "numbers_lost",
+            "25"
+          ]
+        ]
+      },
+      {
+        "key": "qwen-3b/amount-correction/isolated/formal",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "introduced_regression",
+            "True"
+          ],
+          [
+            "numbers_lost",
+            "25"
+          ]
+        ]
+      },
+      {
+        "key": "qwen-3b/amount-correction/isolated/neutral",
+        "reason": "new property flags require review",
+        "flags": [
+          [
+            "introduced_regression",
+            "True"
+          ],
+          [
+            "numbers_lost",
+            "25"
+          ]
+        ]
+      }
+    ],
+    "note": "Compares worst repeat per case. Existing baseline failures remain unresolved; passing this check does not qualify release quality."
+  }
+}

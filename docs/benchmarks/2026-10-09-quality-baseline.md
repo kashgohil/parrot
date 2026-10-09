@@ -11,6 +11,18 @@ same-script translation by the 0.5B cleanup model. Both require follow-up before
 release qualification. Human review is pending for all 498 rows; non-English
 reference text and synthetic pronunciation need native-speaker review.
 
+**ISSUE-1049 sidecar correction:** the original cleanup run used an existing
+sidecar binary whose hash was `33ce7eb5de2e046887673362fa1e3dd3ea2af182d887c1ad87a579ea03ca1045`.
+Rebuilding the current `parrot-cleanup-sidecar` package produced
+`e9495b0779058acba150ce3266fe1cd2836780292ced581cb6e6f76beebb4c32`.
+Identical pre-change worker/model/input replay showed missing Hindi marks with
+the old binary and intact marks with the rebuilt binary. Do not attribute those
+old cleanup mark losses to model quality. The original archive remains intact
+as measured; ISSUE-1049 compares both prompts using the freshly rebuilt sidecar.
+Its [comparison report](2026-10-09-faithful-cleanup.md) records the replacement
+baseline, raw evidence and UTF-8 validation. ASR is a separate process and its
+original measurements do not depend on this sidecar correction.
+
 ## Method and evidence
 
 - Hardware: Apple M4 Pro, Mac16,7, 24 GiB RAM, macOS 26.6.2, arm64.

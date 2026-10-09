@@ -1,0 +1,92 @@
+{
+  "old_sidecar": {
+    "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+    "files": [
+      {
+        "name": "cleanup-sidecar",
+        "bytes": 5502832,
+        "sha256": "33ce7eb5de2e046887673362fa1e3dd3ea2af182d887c1ad87a579ea03ca1045"
+      }
+    ]
+  },
+  "rebuilt_sidecar": {
+    "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+    "files": [
+      {
+        "name": "cleanup-sidecar",
+        "bytes": 4161392,
+        "sha256": "e9495b0779058acba150ce3266fe1cd2836780292ced581cb6e6f76beebb4c32"
+      }
+    ]
+  },
+  "worker": {
+    "path": "/private/tmp/parrot-1049-before-quality-eval",
+    "files": [
+      {
+        "name": "parrot-1049-before-quality-eval",
+        "bytes": 30349488,
+        "sha256": "ee35e19e97c644d82b5a7999389dc875795409d10376f14ef32d3e1b78c90421"
+      }
+    ]
+  },
+  "models": {
+    "qwen-0-5b": {
+      "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+      "files": [
+        {
+          "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "bytes": 491400032,
+          "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+        }
+      ]
+    },
+    "qwen-1-5b": {
+      "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "files": [
+        {
+          "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "bytes": 1117320736,
+          "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+        }
+      ]
+    }
+  },
+  "rows": [
+    {
+      "key": "qwen-0-5b/hindi-question/isolated/casual/1",
+      "input": "क्या प्रिया ने 25 रुपये का भुगतान नहीं किया",
+      "old_model_output": "क्ा प्रिा े 25 ुपये का ुगता हीं किा",
+      "rebuilt_model_output": "क्या प्रिया ने 25 रुपये का भुगतान नहीं किया"
+    },
+    {
+      "key": "qwen-0-5b/hindi-question/isolated/neutral/1",
+      "input": "क्या प्रिया ने 25 रुपये का भुगतान नहीं किया",
+      "old_model_output": "क्ा प्रिा े 25 ुपये का ुगता हीं किा",
+      "rebuilt_model_output": "क्या प्रिया ने 25 रुपये का भुगतान नहीं किया"
+    },
+    {
+      "key": "qwen-0-5b/hindi-question/isolated/formal/1",
+      "input": "क्या प्रिया ने 25 रुपये का भुगतान नहीं किया",
+      "old_model_output": "क्ा प्रिा े ुपये का ुगता हीं किा",
+      "rebuilt_model_output": "क्या प्रिया ने रुपये का भुगतान नहीं किया"
+    },
+    {
+      "key": "qwen-0-5b/mixed-uncertainty/isolated/casual/1",
+      "input": "शायद प्रिया ने invoice approve नहीं किया और deadline Friday है",
+      "old_model_output": "शाद प्रिा े invoice approve हीं किा र deadline Friday ह",
+      "rebuilt_model_output": "शायद प्रिया ने invoice approve नहीं किया और deadline Friday है"
+    },
+    {
+      "key": "qwen-0-5b/mixed-uncertainty/isolated/neutral/1",
+      "input": "शायद प्रिया ने invoice approve नहीं किया और deadline Friday है",
+      "old_model_output": "शाद प्रिा े invoice approve हीं किा र deadline Friday ह",
+      "rebuilt_model_output": "शायद प्रिया ने invoice approve नहीं किया और deadline Friday है"
+    },
+    {
+      "key": "qwen-0-5b/mixed-uncertainty/isolated/formal/1",
+      "input": "शायद प्रिया ने invoice approve नहीं किया और deadline Friday है",
+      "old_model_output": "शाद प्रिा े invoice approve हीं किा र deadline Friday ह",
+      "rebuilt_model_output": "शायद प्रिया ने invoice approve नहीं किया और deadline Friday है"
+    }
+  ]
+}
