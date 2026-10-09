@@ -682,6 +682,7 @@ function SettingsPage() {
 														<Pill tone="primary">Recommended</Pill>
 													) : null}
 													<Pill tone="muted">{coverageLabel(capabilities)}</Pill>
+													<span className="text-xs font-normal text-muted-foreground">{tier.size}</span>
 												</p>
 												<p className="text-xs text-muted-foreground mt-0.5">
 													{differentCoverage ? "The selected model file differs from this catalog tier. The coverage shown here and the language checks use the actual file." : tier.description}
