@@ -15,6 +15,20 @@ pub struct TranscribeOpts {
     pub language: Option<String>,
     /// Whisper-only initial prompt for custom vocabulary biasing.
     pub initial_prompt: Option<String>,
+    /// Evaluation-only ablation; ordinary app builds have no override.
+    #[cfg(feature = "quality-eval")]
+    pub whisper_decode_profile: WhisperDecodeProfile,
+}
+
+#[cfg(feature = "quality-eval")]
+#[derive(Debug, Clone, Copy, Default, serde::Deserialize, serde::Serialize, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
+pub enum WhisperDecodeProfile {
+    #[default]
+    Production,
+    FullContext,
+    Segmented,
+    FullContextSegmented,
 }
 
 impl TranscribeOpts {
@@ -32,6 +46,7 @@ impl TranscribeOpts {
         Ok(Self {
             language,
             initial_prompt,
+            ..Default::default()
         })
     }
 }
@@ -194,14 +209,9 @@ impl LocalWhisperProvider {
     ) -> Result<String> {
         let pcm = prepare_pcm(samples, sample_rate, WHISPER_TARGET_SAMPLE_RATE).into_owned();
         let ctx = self.ctx.clone();
-        let language = opts.language.clone();
-        let initial_prompt = opts.initial_prompt.clone();
-
-        tokio::task::spawn_blocking(move || {
-            run_whisper(&ctx, &pcm, language.as_deref(), initial_prompt.as_deref())
-        })
-        .await
-        .context("Whisper task panicked")?
+        tokio::task::spawn_blocking(move || run_whisper(&ctx, &pcm, &opts))
+            .await
+            .context("Whisper task panicked")?
     }
 }
 
@@ -281,9 +291,10 @@ fn prepare_pcm(samples: &[f32], sample_rate: u32, target_rate: u32) -> Cow<'_, [
 pub(crate) fn run_whisper(
     ctx: &WhisperContext,
     pcm: &[f32],
-    language: Option<&str>,
-    initial_prompt: Option<&str>,
+    opts: &TranscribeOpts,
 ) -> Result<String> {
+    let language = opts.language.as_deref();
+    let initial_prompt = opts.initial_prompt.as_deref();
     // Check the actual loaded model: whisper.cpp can silently force .en models
     // back to English even when a different language was requested.
     crate::speech_capabilities::Capabilities::whisper_vocab(ctx.model_n_vocab())
@@ -327,18 +338,11 @@ pub(crate) fn run_whisper(
     params.set_print_timestamps(false);
     // Dictation is one continuous utterance — force a single segment so
     // whisper doesn't re-chunk short clips into multi-segment overhead.
-    params.set_single_segment(true);
+    let (audio_ctx, single_segment) = whisper_decode_settings(pcm.len(), opts);
+    params.set_single_segment(single_segment);
     // Drop non-speech tokens ([BLANK_AUDIO], [MUSIC], etc.) that show up on
     // silence edges and mic noise.
     params.set_suppress_nst(true);
-    // Scale the encoder context to clip length so a 3s utterance doesn't
-    // pay the full 30s-window cost. Mel hop is 10ms → 100 frames/s; pad ~1s
-    // and clamp to the model's default range.
-    let audio_secs = pcm.len() as f32 / WHISPER_TARGET_SAMPLE_RATE as f32;
-    let audio_ctx = ((audio_secs * 100.0).ceil() as i32 + 100).clamp(150, 1500);
-    // Metal requires the f16 cross-attention row stride (audio_ctx * 2 bytes)
-    // to be divisible by 8. Round up so arbitrary clip lengths cannot abort.
-    let audio_ctx = ((audio_ctx + 3) / 4) * 4;
     params.set_audio_ctx(audio_ctx);
     if let Some(prompt) = initial_prompt.filter(|p| !p.is_empty()) {
         params.set_initial_prompt(prompt);
@@ -356,6 +360,20 @@ pub(crate) fn run_whisper(
         })
         .context("Whisper inference failed")?;
 
+    #[cfg(feature = "quality-eval")]
+    eprintln!(
+        "parrot-whisper: profile={:?} samples={} audio_ctx={} language_id={} single_segment={}",
+        opts.whisper_decode_profile,
+        pcm.len(),
+        if audio_ctx == 0 {
+            ctx.model_n_audio_ctx()
+        } else {
+            audio_ctx
+        },
+        state.full_lang_id_from_state()?,
+        single_segment,
+    );
+
     let num_segments = state
         .full_n_segments()
         .context("Failed to read segment count")?;
@@ -368,6 +386,24 @@ pub(crate) fn run_whisper(
         transcript.push_str(&segment);
     }
     Ok(transcript.trim().to_string())
+}
+
+// Keep the existing app policy while evaluating full-context and segmentation
+// independently. Whisper's encoder downsamples the 100 Hz mel frames by two;
+// shortening this context is an accuracy tradeoff, not just padding removal.
+fn whisper_decode_settings(samples: usize, _opts: &TranscribeOpts) -> (i32, bool) {
+    let audio_secs = samples as f32 / WHISPER_TARGET_SAMPLE_RATE as f32;
+    let context = ((audio_secs * 100.0).ceil() as i32 + 100).clamp(150, 1500);
+    // Metal cross-attention requires an 8-byte-aligned f16 row stride.
+    let context = ((context + 3) / 4) * 4;
+    #[cfg(feature = "quality-eval")]
+    match _opts.whisper_decode_profile {
+        WhisperDecodeProfile::FullContext => return (0, true),
+        WhisperDecodeProfile::Segmented => return (context, false),
+        WhisperDecodeProfile::FullContextSegmented => return (0, false),
+        WhisperDecodeProfile::Production => {}
+    }
+    (context, true)
 }
 
 fn num_cpus_default() -> std::os::raw::c_int {
@@ -509,6 +545,29 @@ pub async fn transcribe_audio(
 mod tests {
     use super::*;
 
+    #[cfg(feature = "quality-eval")]
+    #[test]
+    fn decoding_ablations_are_independent_and_default_to_production() {
+        let default = TranscribeOpts::default();
+        assert_eq!(whisper_decode_settings(48_000, &default), (400, true));
+        for (profile, expected) in [
+            (WhisperDecodeProfile::FullContext, (0, true)),
+            (WhisperDecodeProfile::Segmented, (400, false)),
+            (WhisperDecodeProfile::FullContextSegmented, (0, false)),
+        ] {
+            let opts = TranscribeOpts {
+                whisper_decode_profile: profile,
+                ..Default::default()
+            };
+            assert_eq!(whisper_decode_settings(48_000, &opts), expected);
+        }
+        for samples in [4_000, 48_001, 448_000] {
+            let (context, _) = whisper_decode_settings(samples, &default);
+            assert_eq!(context % 4, 0);
+            assert!((152..=1500).contains(&context));
+        }
+    }
+
     #[test]
     fn transcription_preferences_preserve_auto_and_explicit_languages() {
         let db = crate::db::Database::in_memory().unwrap();
@@ -635,6 +694,7 @@ mod tests {
         let opts = TranscribeOpts {
             language: Some(unsupported.into()),
             initial_prompt: None,
+            ..Default::default()
         };
         let error = engine
             .transcribe_recording(audio.clone(), opts.clone())
@@ -655,6 +715,7 @@ mod tests {
             let opts = TranscribeOpts {
                 language: language.map(str::to_owned),
                 initial_prompt: None,
+                ..Default::default()
             };
             let recorded = engine
                 .transcribe_recording(audio.clone(), opts.clone())
@@ -722,6 +783,7 @@ mod tests {
                     TranscribeOpts {
                         language: language.map(str::to_owned),
                         initial_prompt: None,
+                        ..Default::default()
                     },
                 )
                 .await

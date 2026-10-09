@@ -54,6 +54,30 @@ only because supported explicit preferences cannot pin decoding. Whisper can
 compare Auto with an explicit hint; a mixed-language case uses its first declared
 language for that explicit hint. Each process loads one model at a time.
 
+## Whisper recognition diagnosis
+
+Speech variants may set `whisper_decode_profile` to `production` (the default),
+`full-context`, `segmented` or `full-context-segmented`. These options exist only
+in the opt-in quality worker. They independently compare the app's shortened
+encoder context and single-segment decoding with the model's full context and
+native segmentation. Invalid profiles and overrides on other engines fail
+before inference. The app's saved preferences and model selection are untouched.
+The same production import/chunking path remains in use for every profile.
+
+Each ASR result records the profile and initial prompt. Native stderr records
+actual sample count, effective audio context, language token ID and segmentation
+for each nonempty native chunk. Long imports have multiple such lines; do not
+associate them one-to-one with file results. Silence/short-input bypasses have
+none. The language ID identifies the decoder's selected language, not every
+language spoken in a mixed utterance or a confidence score.
+
+Shortening the encoder context is a speed/accuracy tradeoff, as explained by the
+[whisper.cpp maintainer](https://github.com/ggml-org/whisper.cpp/discussions/297).
+Use the same hashed corpus, models and repeated conditions before proposing an
+app policy. A full-context improvement on a synthetic sample is not proof of
+real-speaker accuracy or a RAM/latency win. Initial prompts should use vocabulary
+or held-out example style, never the evaluated reference sentence.
+
 ## Results and attribution
 
 `results.json` contains references, raw ASR, fixed cleanup inputs, original model

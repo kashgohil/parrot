@@ -243,6 +243,9 @@ def run(args):
     if not variants or len({variant['id'] for variant in variants}) != len(variants):
         raise ValueError('Provide models with unique variant IDs')
     for variant in variants:
+        profile = variant.get('whisper_decode_profile')
+        if profile is not None and (variant.get('engine') != 'whisper' or profile not in ('production', 'full-context', 'segmented', 'full-context-segmented')):
+            raise ValueError('Whisper decode profile must be a supported Whisper-only ablation')
         if not re.fullmatch(r'[a-z0-9-]+', variant['id']) or not Path(variant['model']).exists() or not variant.get('quantization'):
             raise ValueError('Variant needs a safe ID, existing local model and explicit quantization label')
     if config.get('cleanup') and (not args.sidecar or not args.sidecar.is_file()):
@@ -293,7 +296,8 @@ def run(args):
                         continue
                     key = f'{case["id"]}/{mode}'
                     cases.append({'id': key, 'audio': str((corpus_root / case['audio']).resolve()),
-                                  'language': 'auto' if mode == 'auto' else case['languages'][0], 'initial_prompt': variant.get('initial_prompt')})
+                                  'language': 'auto' if mode == 'auto' else case['languages'][0], 'initial_prompt': variant.get('initial_prompt'),
+                                  'whisper_decode_profile': variant.get('whisper_decode_profile')})
                     mapping[key] = case['id']
             if not cases:
                 continue

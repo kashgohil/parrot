@@ -134,13 +134,8 @@ impl SpeechModel for WhisperModel<'_> {
         samples: &[f32],
         _: &TranscribeOptions,
     ) -> std::result::Result<TranscriptionResult, TranscribeError> {
-        let text = crate::transcription::run_whisper(
-            self.ctx,
-            samples,
-            self.opts.language.as_deref(),
-            self.opts.initial_prompt.as_deref(),
-        )
-        .map_err(|e| TranscribeError::Inference(e.to_string()))?;
+        let text = crate::transcription::run_whisper(self.ctx, samples, &self.opts)
+            .map_err(|e| TranscribeError::Inference(e.to_string()))?;
         Ok(TranscriptionResult {
             text,
             segments: None,

@@ -31,6 +31,7 @@ struct Case {
     audio: Option<PathBuf>,
     language: Option<String>,
     initial_prompt: Option<String>,
+    whisper_decode_profile: Option<transcription::WhisperDecodeProfile>,
     input: Option<String>,
     stage: Option<String>,
     #[serde(default)]
@@ -68,6 +69,10 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
     let mut ids = std::collections::HashSet::new();
     for case in &config.cases {
         ensure!(ids.insert(&case.id), "Duplicate case ID: {}", case.id);
+        ensure!(
+            config.engine == "whisper" || case.whisper_decode_profile.is_none(),
+            "Whisper decoding profiles require the Whisper engine"
+        );
         if config.engine == "cleanup" {
             ensure!(case.input.is_some(), "Cleanup case needs input");
             ensure!(
@@ -177,12 +182,13 @@ pub async fn run(request: &Path, output: &Path) -> Result<()> {
             let opts = transcription::TranscribeOpts {
                 language: case.language.clone(),
                 initial_prompt: case.initial_prompt.clone(),
+                whisper_decode_profile: case.whisper_decode_profile.unwrap_or_default(),
             };
             let result = engine
                 .transcribe_import(AudioSource::File(case.audio.unwrap()), opts)
                 .await;
             let mut row = json!({"kind":"result", "id":case.id, "stage":"asr", "language":case.language,
-                "initial_prompt":case.initial_prompt, "latency_ms":started.elapsed().as_secs_f64()*1000.0});
+                "initial_prompt":case.initial_prompt, "whisper_decode_profile":case.whisper_decode_profile.unwrap_or_default(), "latency_ms":started.elapsed().as_secs_f64()*1000.0});
             match result {
                 Ok(result) => row["text"] = json!(result.text),
                 Err(error) => row["error"] = json!(format!("{error:#}")),
@@ -238,6 +244,30 @@ mod tests {
             .unwrap_err()
             .to_string()
             .contains("tones"));
+        assert!(!output.exists());
+        for engine in ["parakeet", "cleanup"] {
+            std::fs::write(
+                &request,
+                json!({"engine":engine, "model":model,
+                "cases":[{"id":"example", "audio":audio, "whisper_decode_profile":"full-context"}]})
+                .to_string(),
+            )
+            .unwrap();
+            assert!(run(&request, &output)
+                .await
+                .unwrap_err()
+                .to_string()
+                .contains("Whisper engine"));
+            assert!(!output.exists());
+        }
+        std::fs::write(
+            &request,
+            json!({"engine":"whisper", "model":model,
+            "cases":[{"id":"example", "audio":audio, "whisper_decode_profile":"typo"}]})
+            .to_string(),
+        )
+        .unwrap();
+        assert!(run(&request, &output).await.is_err());
         assert!(!output.exists());
         std::fs::remove_dir_all(dir).unwrap();
     }
