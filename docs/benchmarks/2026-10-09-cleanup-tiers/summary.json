@@ -1,0 +1,4610 @@
+{
+  "schema_version": 1,
+  "semantic_release_qualified": false,
+  "physical_device_qualified": false,
+  "scored_rows": 1432,
+  "groups": [
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "rows": 96,
+      "native_requests": 84,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 32,
+      "exact_input": 72,
+      "changed": 24,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 22,
+      "median_native_ms": 73.52222900000001
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_pipeline",
+      "rows": 52,
+      "native_requests": 44,
+      "bypasses": 8,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 24,
+      "exact_input": 52,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 20,
+      "candidate_content_flags": 12,
+      "median_native_ms": 70.646271
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "rows": 96,
+      "native_requests": 84,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 52,
+      "exact_input": 72,
+      "changed": 24,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 44,
+      "median_native_ms": 139.47166599999997
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_pipeline",
+      "rows": 52,
+      "native_requests": 44,
+      "bypasses": 8,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 20,
+      "exact_input": 52,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 20,
+      "candidate_content_flags": 8,
+      "median_native_ms": 127.2100835
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "rows": 96,
+      "native_requests": 84,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 12,
+      "exact_input": 70,
+      "changed": 26,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 8,
+      "median_native_ms": 279.15058350000004
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_pipeline",
+      "rows": 52,
+      "native_requests": 44,
+      "bypasses": 8,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 16,
+      "exact_input": 52,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 20,
+      "candidate_content_flags": 4,
+      "median_native_ms": 264.29579150000006
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "rows": 72,
+      "native_requests": 72,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 24,
+      "exact_input": 42,
+      "changed": 30,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 28,
+      "median_native_ms": 82.421604
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "rows": 72,
+      "native_requests": 72,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 28,
+      "exact_input": 38,
+      "changed": 34,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 30,
+      "median_native_ms": 156.342917
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "rows": 72,
+      "native_requests": 72,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 16,
+      "exact_input": 42,
+      "changed": 30,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 16,
+      "median_native_ms": 279.55262500000003
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "rows": 192,
+      "native_requests": 192,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 6,
+      "fallbacks": 120,
+      "exact_input": 158,
+      "changed": 34,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 118,
+      "median_native_ms": 44.742500500000006
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "rows": 192,
+      "native_requests": 192,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 4,
+      "fallbacks": 144,
+      "exact_input": 150,
+      "changed": 42,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 142,
+      "median_native_ms": 86.6349585
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "rows": 192,
+      "native_requests": 192,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 114,
+      "exact_input": 152,
+      "changed": 40,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 108,
+      "median_native_ms": 162.883771
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "rows": 48,
+      "native_requests": 48,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 18,
+      "exact_input": 40,
+      "changed": 8,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 16,
+      "median_native_ms": 72.85012499999999
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "rows": 48,
+      "native_requests": 48,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 22,
+      "exact_input": 22,
+      "changed": 26,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 22,
+      "median_native_ms": 130.5311875
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "rows": 48,
+      "native_requests": 48,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 2,
+      "exact_input": 28,
+      "changed": 20,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 2,
+      "median_native_ms": 247.6545835
+    }
+  ],
+  "language_groups": [
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 54,
+      "native_requests": 42,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 16,
+      "exact_input": 30,
+      "changed": 24,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 8,
+      "median_native_ms": 72.586938
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "es",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 70.55518749999999
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "fr",
+      "rows": 12,
+      "native_requests": 12,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 12,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 73.66443749999999
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 75.1990415
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 91.0524375
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "ja",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 74.409709
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "zh",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 55.253603999999996
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_pipeline",
+      "language": "en",
+      "rows": 32,
+      "native_requests": 24,
+      "bypasses": 8,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 16,
+      "exact_input": 32,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 12,
+      "candidate_content_flags": 4,
+      "median_native_ms": 91.0257915
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_pipeline",
+      "language": "es",
+      "rows": 4,
+      "native_requests": 4,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 4,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 68.792041
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_pipeline",
+      "language": "fr",
+      "rows": 8,
+      "native_requests": 8,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 8,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 4,
+      "candidate_content_flags": 4,
+      "median_native_ms": 71.43754200000001
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_pipeline",
+      "language": "hi",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 2,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 2,
+      "candidate_content_flags": 2,
+      "median_native_ms": 65.42597950000001
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_pipeline",
+      "language": "hi+en",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 2,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 2,
+      "candidate_content_flags": 2,
+      "median_native_ms": 52.5271875
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_pipeline",
+      "language": "ja",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 74.0532915
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_pipeline",
+      "language": "zh",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 53.539854000000005
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 54,
+      "native_requests": 42,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 16,
+      "exact_input": 30,
+      "changed": 24,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 8,
+      "median_native_ms": 145.6451875
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "es",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 137.46281249999998
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "fr",
+      "rows": 12,
+      "native_requests": 12,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 12,
+      "exact_input": 12,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 12,
+      "median_native_ms": 121.2783955
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 137.7078335
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 106.0336245
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "ja",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 144.623375
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "zh",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 124.6521875
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_pipeline",
+      "language": "en",
+      "rows": 32,
+      "native_requests": 24,
+      "bypasses": 8,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 12,
+      "exact_input": 32,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 12,
+      "candidate_content_flags": 0,
+      "median_native_ms": 164.299792
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_pipeline",
+      "language": "es",
+      "rows": 4,
+      "native_requests": 4,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 4,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 123.7512915
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_pipeline",
+      "language": "fr",
+      "rows": 8,
+      "native_requests": 8,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 8,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 4,
+      "candidate_content_flags": 4,
+      "median_native_ms": 130.36447900000002
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_pipeline",
+      "language": "hi",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 2,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 2,
+      "candidate_content_flags": 2,
+      "median_native_ms": 137.42710399999999
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_pipeline",
+      "language": "hi+en",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 2,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 2,
+      "candidate_content_flags": 2,
+      "median_native_ms": 103.2495625
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_pipeline",
+      "language": "ja",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 130.9073545
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_pipeline",
+      "language": "zh",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 98.2233335
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 54,
+      "native_requests": 42,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 12,
+      "exact_input": 30,
+      "changed": 24,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 8,
+      "median_native_ms": 283.8486245
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "es",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 241.45435400000002
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "fr",
+      "rows": 12,
+      "native_requests": 12,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 10,
+      "changed": 2,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 253.29274999999996
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 516.9145415
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 361.138833
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "ja",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 257.638229
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "zh",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 200.3528955
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_pipeline",
+      "language": "en",
+      "rows": 32,
+      "native_requests": 24,
+      "bypasses": 8,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 16,
+      "exact_input": 32,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 12,
+      "candidate_content_flags": 4,
+      "median_native_ms": 275.8502915
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_pipeline",
+      "language": "es",
+      "rows": 4,
+      "native_requests": 4,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 4,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 222.10649999999998
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_pipeline",
+      "language": "fr",
+      "rows": 8,
+      "native_requests": 8,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 8,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 4,
+      "candidate_content_flags": 0,
+      "median_native_ms": 252.0207085
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_pipeline",
+      "language": "hi",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 2,
+      "candidate_content_flags": 0,
+      "median_native_ms": 508.12225
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_pipeline",
+      "language": "hi+en",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 2,
+      "candidate_content_flags": 0,
+      "median_native_ms": 374.574062
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_pipeline",
+      "language": "ja",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 236.8586045
+    },
+    {
+      "corpus": "seed",
+      "variant": "qwen-3b",
+      "stage": "cleanup_pipeline",
+      "language": "zh",
+      "rows": 2,
+      "native_requests": 2,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 2,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 170.8242295
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 48,
+      "native_requests": 48,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 18,
+      "exact_input": 18,
+      "changed": 30,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 22,
+      "median_native_ms": 75.7975415
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "es",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 2,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 2,
+      "median_native_ms": 81.87966650000001
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "fr",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 97.8203125
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 217.792104
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 179.646187
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 48,
+      "native_requests": 48,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 12,
+      "exact_input": 14,
+      "changed": 34,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 14,
+      "median_native_ms": 150.4930835
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "es",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 152.23229149999997
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "fr",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 200.9179165
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 153.6647505
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 171.7178545
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 48,
+      "native_requests": 48,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 10,
+      "exact_input": 18,
+      "changed": 30,
+      "source_content_flags": 6,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 16,
+      "median_native_ms": 258.664854
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "es",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 263.38131250000004
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "fr",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 330.128771
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 597.680396
+    },
+    {
+      "corpus": "faithfulness",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 522.7242914999999
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "de",
+      "rows": 30,
+      "native_requests": 30,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 12,
+      "exact_input": 28,
+      "changed": 2,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 10,
+      "median_native_ms": 47.184312500000004
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "de+en",
+      "rows": 12,
+      "native_requests": 12,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 12,
+      "exact_input": 12,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 12,
+      "median_native_ms": 56.243938
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 114,
+      "native_requests": 114,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 60,
+      "exact_input": 82,
+      "changed": 32,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 60,
+      "median_native_ms": 41.139833
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 4,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 421.94091649999996
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 18,
+      "native_requests": 18,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 2,
+      "fallbacks": 18,
+      "exact_input": 18,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 18,
+      "median_native_ms": 48.883042
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "ja+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 28.8587295
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "zh+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 55.635958
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "de",
+      "rows": 30,
+      "native_requests": 30,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 24,
+      "exact_input": 24,
+      "changed": 6,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 24,
+      "median_native_ms": 88.1938335
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "de+en",
+      "rows": 12,
+      "native_requests": 12,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 12,
+      "exact_input": 12,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 12,
+      "median_native_ms": 86.051479
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 114,
+      "native_requests": 114,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 74,
+      "exact_input": 78,
+      "changed": 36,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 72,
+      "median_native_ms": 81.507417
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 4,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 777.070458
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 18,
+      "native_requests": 18,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 18,
+      "exact_input": 18,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 18,
+      "median_native_ms": 102.020708
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "ja+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 67.34983349999999
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "zh+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 172.39129200000002
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "de",
+      "rows": 30,
+      "native_requests": 30,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 20,
+      "exact_input": 30,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 20,
+      "median_native_ms": 152.16058299999997
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "de+en",
+      "rows": 12,
+      "native_requests": 12,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 12,
+      "exact_input": 12,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 8,
+      "median_native_ms": 168.24933299999998
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 114,
+      "native_requests": 114,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 48,
+      "exact_input": 74,
+      "changed": 40,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 46,
+      "median_native_ms": 154.38956199999998
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 366.31370849999996
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 18,
+      "native_requests": 18,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 16,
+      "exact_input": 18,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 16,
+      "median_native_ms": 178.641938
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "ja+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 126.0941455
+    },
+    {
+      "corpus": "fillers",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "zh+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 199.93039549999997
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 18,
+      "native_requests": 18,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 10,
+      "changed": 8,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 66.5755625
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "fr",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 76.7194165
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 75.2367715
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 128.791062
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "ja",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 76.4791045
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-0-5b",
+      "stage": "cleanup_isolated",
+      "language": "zh",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 54.776437
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 18,
+      "native_requests": 18,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 0,
+      "changed": 18,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 124.9195
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "fr",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 4,
+      "exact_input": 4,
+      "changed": 2,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 4,
+      "median_native_ms": 129.90783299999998
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 129.6390415
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 102.536
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "ja",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 0,
+      "changed": 6,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 149.492771
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-1-5b",
+      "stage": "cleanup_isolated",
+      "language": "zh",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 6,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 6,
+      "median_native_ms": 139.249167
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "en",
+      "rows": 18,
+      "native_requests": 18,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 2,
+      "exact_input": 4,
+      "changed": 14,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 2,
+      "median_native_ms": 216.601604
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "fr",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 0,
+      "changed": 6,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 270.653313
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "hi",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 508.25166699999994
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "hi+en",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 353.53508350000004
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "ja",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 250.2536455
+    },
+    {
+      "corpus": "formatting",
+      "variant": "qwen-3b",
+      "stage": "cleanup_isolated",
+      "language": "zh",
+      "rows": 6,
+      "native_requests": 6,
+      "bypasses": 0,
+      "errors": 0,
+      "incomplete": 0,
+      "fallbacks": 0,
+      "exact_input": 6,
+      "changed": 0,
+      "source_content_flags": 0,
+      "reference_fact_flags": 0,
+      "candidate_content_flags": 0,
+      "median_native_ms": 186.1230625
+    }
+  ],
+  "repeats": {
+    "seed": {
+      "pairs": 248,
+      "different": []
+    },
+    "faithfulness": {
+      "pairs": 108,
+      "different": []
+    },
+    "fillers": {
+      "pairs": 288,
+      "different": []
+    },
+    "formatting": {
+      "pairs": 72,
+      "different": []
+    }
+  },
+  "provenance": {
+    "seed": {
+      "binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30525952,
+            "sha256": "86d86e0f89c64ed0ccd1ae5ab2042827ca38e681ee5b05953e78759e92a0e6fc"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "models": {
+        "whisper-turbo-hindi-english": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/ggml-large-v3-turbo-q5_0.bin",
+          "files": [
+            {
+              "name": "ggml-large-v3-turbo-q5_0.bin",
+              "bytes": 574041195,
+              "sha256": "394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2"
+            }
+          ]
+        },
+        "parakeet-v3": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/parakeet-v3",
+          "files": [
+            {
+              "name": "._config.json",
+              "bytes": 312,
+              "sha256": "9177f989f63907647edef0884234f41e278ffcefc5ac564d0d9328de1974ac2a"
+            },
+            {
+              "name": "._decoder_joint-model.int8.onnx",
+              "bytes": 1940,
+              "sha256": "f673abc18be858ea8553d7e5dd6cd135267e27726fb475b109fceb687eb6dd36"
+            },
+            {
+              "name": "._encoder-model.int8.onnx",
+              "bytes": 1920,
+              "sha256": "fdd65178c62a14626939916b58dd67896105f88406adf4cdfd644ac0b3286a15"
+            },
+            {
+              "name": "._nemo128.onnx",
+              "bytes": 312,
+              "sha256": "21a2732c8146a643f1754b04a0e2394f2264823e1e13c875876cbf7ea994717b"
+            },
+            {
+              "name": "._vocab.txt",
+              "bytes": 575,
+              "sha256": "28822343a24611545a8a595f3be605a1413f1600432ac1d0033199e6a58a435d"
+            },
+            {
+              "name": "config.json",
+              "bytes": 97,
+              "sha256": "666903c76b9798caf2c210afd4f6cd60b08a8dbf9800ec8d7a3bc0d2148ac466"
+            },
+            {
+              "name": "decoder_joint-model.int8.onnx",
+              "bytes": 18202004,
+              "sha256": "eea7483ee3d1a30375daedc8ed83e3960c91b098812127a0d99d1c8977667a70"
+            },
+            {
+              "name": "encoder-model.int8.onnx",
+              "bytes": 652183999,
+              "sha256": "6139d2fa7e1b086097b277c7149725edbab89cc7c7ae64b23c741be4055aff09"
+            },
+            {
+              "name": "nemo128.onnx",
+              "bytes": 139764,
+              "sha256": "a9fde1486ebfcc08f328d75ad4610c67835fea58c73ba57e3209a6f6cf019e9f"
+            },
+            {
+              "name": "vocab.txt",
+              "bytes": 93939,
+              "sha256": "d58544679ea4bc6ac563d1f545eb7d474bd6cfa467f0a6e2c1dc1c7d37e3c35d"
+            }
+          ]
+        },
+        "qwen-0-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+              "bytes": 491400032,
+              "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+            }
+          ]
+        },
+        "qwen-1-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+              "bytes": 1117320736,
+              "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+            }
+          ]
+        },
+        "qwen-3b": {
+          "path": "/private/tmp/parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+              "bytes": 2104932768,
+              "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "9e35c97292a6632028c433f4effd8857cf9ddfeb89f6759065a202d75f4c62bf",
+      "git_commit": "f5b3696e34d4045819bd9a1f1576cd53451eaae6",
+      "git_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hardware": {
+        "system": "Darwin",
+        "node": "Kashyaps-MacBook-Pro.local",
+        "release": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+        "machine": "arm64",
+        "hw.model": "Mac16,7",
+        "hw.memsize": "25769803776",
+        "machdep.cpu.brand_string": "Apple M4 Pro"
+      }
+    },
+    "faithfulness": {
+      "binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30525952,
+            "sha256": "86d86e0f89c64ed0ccd1ae5ab2042827ca38e681ee5b05953e78759e92a0e6fc"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "models": {
+        "qwen-0-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+              "bytes": 491400032,
+              "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+            }
+          ]
+        },
+        "qwen-1-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+              "bytes": 1117320736,
+              "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+            }
+          ]
+        },
+        "qwen-3b": {
+          "path": "/private/tmp/parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+              "bytes": 2104932768,
+              "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "09a617dc38255254738a3956d4f4ba91ec502db033e77059e3c9bf708250cdf8",
+      "git_commit": "f5b3696e34d4045819bd9a1f1576cd53451eaae6",
+      "git_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hardware": {
+        "system": "Darwin",
+        "node": "Kashyaps-MacBook-Pro.local",
+        "release": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+        "machine": "arm64",
+        "hw.model": "Mac16,7",
+        "hw.memsize": "25769803776",
+        "machdep.cpu.brand_string": "Apple M4 Pro"
+      }
+    },
+    "fillers": {
+      "binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30525952,
+            "sha256": "86d86e0f89c64ed0ccd1ae5ab2042827ca38e681ee5b05953e78759e92a0e6fc"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "models": {
+        "qwen-0-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+              "bytes": 491400032,
+              "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+            }
+          ]
+        },
+        "qwen-1-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+              "bytes": 1117320736,
+              "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+            }
+          ]
+        },
+        "qwen-3b": {
+          "path": "/private/tmp/parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+              "bytes": 2104932768,
+              "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "033ef898caa67381552a17cb320848e0e8fb3750f08d0fbbcad669ed210e5427",
+      "git_commit": "f5b3696e34d4045819bd9a1f1576cd53451eaae6",
+      "git_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hardware": {
+        "system": "Darwin",
+        "node": "Kashyaps-MacBook-Pro.local",
+        "release": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+        "machine": "arm64",
+        "hw.model": "Mac16,7",
+        "hw.memsize": "25769803776",
+        "machdep.cpu.brand_string": "Apple M4 Pro"
+      }
+    },
+    "formatting": {
+      "binary": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+        "files": [
+          {
+            "name": "parrot-quality-eval",
+            "bytes": 30525952,
+            "sha256": "86d86e0f89c64ed0ccd1ae5ab2042827ca38e681ee5b05953e78759e92a0e6fc"
+          }
+        ]
+      },
+      "sidecar": {
+        "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+        "files": [
+          {
+            "name": "cleanup-sidecar",
+            "bytes": 4183104,
+            "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+          }
+        ]
+      },
+      "models": {
+        "qwen-0-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+              "bytes": 491400032,
+              "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+            }
+          ]
+        },
+        "qwen-1-5b": {
+          "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+              "bytes": 1117320736,
+              "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+            }
+          ]
+        },
+        "qwen-3b": {
+          "path": "/private/tmp/parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+          "files": [
+            {
+              "name": "parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+              "bytes": 2104932768,
+              "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+            }
+          ]
+        }
+      },
+      "manifest_sha256": "fd9488a45caddfe1f334b1be8b11bec3c87a247db3c605234331ef5834e85bea",
+      "git_commit": "f5b3696e34d4045819bd9a1f1576cd53451eaae6",
+      "git_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hardware": {
+        "system": "Darwin",
+        "node": "Kashyaps-MacBook-Pro.local",
+        "release": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+        "machine": "arm64",
+        "hw.model": "Mac16,7",
+        "hw.memsize": "25769803776",
+        "machdep.cpu.brand_string": "Apple M4 Pro"
+      }
+    }
+  },
+  "formatting": [
+    {
+      "variant": "qwen-0-5b",
+      "tone": "neutral",
+      "rows": 16,
+      "passes": 2,
+      "checks": [
+        {
+          "case": "en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday"
+        },
+        {
+          "case": "en-question",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe Priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        },
+        {
+          "case": "en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday"
+        },
+        {
+          "case": "en-question",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe Priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        }
+      ]
+    },
+    {
+      "variant": "qwen-0-5b",
+      "tone": "casual",
+      "rows": 16,
+      "passes": 2,
+      "checks": [
+        {
+          "case": "en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday"
+        },
+        {
+          "case": "en-question",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe Priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        },
+        {
+          "case": "en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday"
+        },
+        {
+          "case": "en-question",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe Priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        }
+      ]
+    },
+    {
+      "variant": "qwen-0-5b",
+      "tone": "formal",
+      "rows": 16,
+      "passes": 4,
+      "checks": [
+        {
+          "case": "en-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Priya did not approve invoice 25 on Friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe Priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        },
+        {
+          "case": "en-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Priya did not approve invoice 25 on Friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe Priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        }
+      ]
+    },
+    {
+      "variant": "qwen-1-5b",
+      "tone": "neutral",
+      "rows": 16,
+      "passes": 8,
+      "checks": [
+        {
+          "case": "en-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Priya did not approve invoice 25 on Friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Maybe Priya did not approve invoice 25."
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour, je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "田中さんは25円の支払いを承認していません。"
+        },
+        {
+          "case": "en-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Priya did not approve invoice 25 on Friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Maybe Priya did not approve invoice 25."
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour, je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "田中さんは25円の支払いを承認していません。"
+        }
+      ]
+    },
+    {
+      "variant": "qwen-1-5b",
+      "tone": "casual",
+      "rows": 16,
+      "passes": 8,
+      "checks": [
+        {
+          "case": "en-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Priya did not approve invoice 25 on Friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Maybe Priya did not approve invoice 25."
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "田中さんは25円の支払いを承認していません。"
+        },
+        {
+          "case": "en-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Priya did not approve invoice 25 on Friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Maybe Priya did not approve invoice 25."
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "田中さんは25円の支払いを承認していません。"
+        }
+      ]
+    },
+    {
+      "variant": "qwen-1-5b",
+      "tone": "formal",
+      "rows": 16,
+      "passes": 8,
+      "checks": [
+        {
+          "case": "en-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Priya did not approve invoice 25 on Friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Maybe Priya did not approve invoice 25."
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "田中さんは25円の支払いを承認していません。"
+        },
+        {
+          "case": "en-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Priya did not approve invoice 25 on Friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Maybe Priya did not approve invoice 25."
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour je voudrais réserver une table pour demain soir"
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "田中さんは25円の支払いを承認していません。"
+        }
+      ]
+    },
+    {
+      "variant": "qwen-3b",
+      "tone": "neutral",
+      "rows": 16,
+      "passes": 0,
+      "checks": [
+        {
+          "case": "en-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "can priya not deploy release 2.1 until friday"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour, je voudrais réserver une table pour demain soir."
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        },
+        {
+          "case": "en-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "can priya not deploy release 2.1 until friday"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour, je voudrais réserver une table pour demain soir."
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        }
+      ]
+    },
+    {
+      "variant": "qwen-3b",
+      "tone": "casual",
+      "rows": 16,
+      "passes": 0,
+      "checks": [
+        {
+          "case": "en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday"
+        },
+        {
+          "case": "en-question",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "can priya not deploy release 2.1 until friday"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour, je voudrais réserver une table pour demain soir."
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        },
+        {
+          "case": "en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday"
+        },
+        {
+          "case": "en-question",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "can priya not deploy release 2.1 until friday"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour, je voudrais réserver une table pour demain soir."
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        }
+      ]
+    },
+    {
+      "variant": "qwen-3b",
+      "tone": "formal",
+      "rows": 16,
+      "passes": 2,
+      "checks": [
+        {
+          "case": "en-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe Priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 1,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour, je voudrais réserver une table pour demain soir."
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 1,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        },
+        {
+          "case": "en-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "priya did not approve invoice 25 on friday."
+        },
+        {
+          "case": "en-question",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": true,
+          "pass_check": true,
+          "output": "Can Priya not deploy release 2.1 until Friday?"
+        },
+        {
+          "case": "en-uncertainty",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "maybe Priya did not approve invoice 25"
+        },
+        {
+          "case": "hi-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "प्रिया ने 25 रुपये का भुगतान नहीं किया"
+        },
+        {
+          "case": "hi-en-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "शायद प्रिया ने invoice approve नहीं किया"
+        },
+        {
+          "case": "fr-statement",
+          "repeat": 2,
+          "terminal": true,
+          "initial_case": false,
+          "pass_check": false,
+          "output": "bonjour, je voudrais réserver une table pour demain soir."
+        },
+        {
+          "case": "zh-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "小王没有批准25元的付款"
+        },
+        {
+          "case": "ja-statement",
+          "repeat": 2,
+          "terminal": false,
+          "initial_case": true,
+          "pass_check": false,
+          "output": "田中さんは25円の支払いを承認していません"
+        }
+      ]
+    }
+  ],
+  "resources": {
+    "schema_version": 1,
+    "complete": true,
+    "scope": "Fresh headless cleanup worker and owned descendants, including load; excludes GUI, ASR, microphone, installed app and energy.",
+    "sample_interval_ms": 50,
+    "file_cache_controlled": false,
+    "repeats": 2,
+    "hardware": {
+      "system": "Darwin",
+      "node": "Kashyaps-MacBook-Pro.local",
+      "release": "25.6.0",
+      "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:17:26 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6041",
+      "machine": "arm64",
+      "ram_bytes": "25769803776",
+      "chip": "Apple M4 Pro"
+    },
+    "git_commit": "f5b3696e34d4045819bd9a1f1576cd53451eaae6",
+    "git_diff_sha256": "14493c8ed885e0d4f179378e123505fa83d626a4facecac89be35f71bd774f4d",
+    "binary": {
+      "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/parrot-quality-eval",
+      "files": [
+        {
+          "name": "parrot-quality-eval",
+          "bytes": 30525952,
+          "sha256": "86d86e0f89c64ed0ccd1ae5ab2042827ca38e681ee5b05953e78759e92a0e6fc"
+        }
+      ]
+    },
+    "sidecar": {
+      "path": "/Users/kash/Projects/parrot/apps/desktop/src-tauri/target/release/cleanup-sidecar",
+      "files": [
+        {
+          "name": "cleanup-sidecar",
+          "bytes": 4183104,
+          "sha256": "2b8797d22cad981145849f39f4a8259da347b40b74b521dc928b0c46c3cfab3a"
+        }
+      ]
+    },
+    "models": {
+      "qwen-0-5b": {
+        "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+        "files": [
+          {
+            "name": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+            "bytes": 491400032,
+            "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+          }
+        ]
+      },
+      "qwen-1-5b": {
+        "path": "/Users/kash/Library/Application Support/com.kash.parrot/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+        "files": [
+          {
+            "name": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+            "bytes": 1117320736,
+            "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e"
+          }
+        ]
+      },
+      "qwen-3b": {
+        "path": "/private/tmp/parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+        "files": [
+          {
+            "name": "parrot-1049-qwen2.5-3b-instruct-q4_k_m.gguf",
+            "bytes": 2104932768,
+            "sha256": "626b4a6678b86442240e33df819e00132d3ba7dddfe1cdc4fbb18e0a9615c62d"
+          }
+        ]
+      }
+    },
+    "manifest_sha256": "9e35c97292a6632028c433f4effd8857cf9ddfeb89f6759065a202d75f4c62bf",
+    "runs": [
+      {
+        "variant": "qwen-0-5b",
+        "repeat": 1,
+        "sample_count": 26,
+        "complete_samples": 26,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 197510680,
+        "peak_rss_bytes": 631767040,
+        "max_sample_gap_ms": 120.888958,
+        "load_ms": 195.091791,
+        "elapsed_ms": 2248.594542,
+        "results": [
+          {
+            "id": "first-short",
+            "latency_ms": 121.564458,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "warm-short",
+            "latency_ms": 57.736958,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-basic",
+            "latency_ms": 56.720375000000004,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-basic",
+            "latency_ms": 77.996334,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-facts",
+            "latency_ms": 114.67512500000001,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-uncertainty",
+            "latency_ms": 116.588125,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-indian",
+            "latency_ms": 70.431042,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-australian",
+            "latency_ms": 62.207834,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-facts",
+            "latency_ms": 70.81008299999999,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "es-facts",
+            "latency_ms": 75.199292,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-facts",
+            "latency_ms": 85.719292,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-en-mix",
+            "latency_ms": 103.095916,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "zh-facts",
+            "latency_ms": 54.52225,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "ja-facts",
+            "latency_ms": 76.154334,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "silence",
+            "latency_ms": 0.001583,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "short-input",
+            "latency_ms": 0.000834,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "long-120s",
+            "latency_ms": 760.541917,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "cleanup-instructions",
+            "latency_ms": 77.913,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          }
+        ],
+        "request_sha256": "6322b1acf64aa35916b4990b6e1b6fb098a66cbcca36cdab88f998c9207db4b6",
+        "output_sha256": "5618b6fe56da9edecb9f83a667bffbc9fad30c29deaa94728247c5bfa733ecd8"
+      },
+      {
+        "variant": "qwen-1-5b",
+        "repeat": 1,
+        "sample_count": 46,
+        "complete_samples": 46,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 234276808,
+        "peak_rss_bytes": 1294188544,
+        "max_sample_gap_ms": 87.65820900000023,
+        "load_ms": 210.20362500000002,
+        "elapsed_ms": 3827.802584,
+        "results": [
+          {
+            "id": "first-short",
+            "latency_ms": 233.387292,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "warm-short",
+            "latency_ms": 93.175916,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-basic",
+            "latency_ms": 103.55508400000001,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-basic",
+            "latency_ms": 118.010208,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-facts",
+            "latency_ms": 210.148959,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-uncertainty",
+            "latency_ms": 237.418125,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-indian",
+            "latency_ms": 131.71279099999998,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-australian",
+            "latency_ms": 105.041208,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-facts",
+            "latency_ms": 130.152541,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "es-facts",
+            "latency_ms": 136.0405,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-facts",
+            "latency_ms": 131.962875,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-en-mix",
+            "latency_ms": 115.707167,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "zh-facts",
+            "latency_ms": 110.64525,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "ja-facts",
+            "latency_ms": 141.555625,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "silence",
+            "latency_ms": 0.0018750000000000001,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "short-input",
+            "latency_ms": 0.000792,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "long-120s",
+            "latency_ms": 1411.4990830000002,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "cleanup-instructions",
+            "latency_ms": 146.273833,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          }
+        ],
+        "request_sha256": "e5dd768ea8a32b75fc7ee3136cd301bd50089990fe573f42a4b2a209c63e927d",
+        "output_sha256": "cdd20084142f1b99d91dfa4d6d95fc781baebe5a67f44ea041e3339316f65889"
+      },
+      {
+        "variant": "qwen-3b",
+        "repeat": 1,
+        "sample_count": 86,
+        "complete_samples": 85,
+        "incomplete_samples": 1,
+        "peak_footprint_bytes": 251693720,
+        "peak_rss_bytes": 2298740736,
+        "max_sample_gap_ms": 86.11250000000018,
+        "load_ms": 243.166958,
+        "elapsed_ms": 7170.082042,
+        "results": [
+          {
+            "id": "first-short",
+            "latency_ms": 453.794917,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "warm-short",
+            "latency_ms": 161.253083,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-basic",
+            "latency_ms": 176.767542,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-basic",
+            "latency_ms": 239.498875,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-facts",
+            "latency_ms": 366.094166,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-uncertainty",
+            "latency_ms": 340.339375,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-indian",
+            "latency_ms": 211.25054200000002,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-australian",
+            "latency_ms": 175.882125,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-facts",
+            "latency_ms": 263.127375,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "es-facts",
+            "latency_ms": 218.625125,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-facts",
+            "latency_ms": 518.9583749999999,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-en-mix",
+            "latency_ms": 397.5845,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "zh-facts",
+            "latency_ms": 188.897625,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "ja-facts",
+            "latency_ms": 249.457417,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "silence",
+            "latency_ms": 0.001584,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "short-input",
+            "latency_ms": 0.000875,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "long-120s",
+            "latency_ms": 2637.154458,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "cleanup-instructions",
+            "latency_ms": 239.532583,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          }
+        ],
+        "request_sha256": "9473a77a36da789b7f07d348ea50dca93f61f05567c5ce4f765dd341f1aac0ba",
+        "output_sha256": "d8fce979b39f4aa4fc1c296fbe6fedc9f5c75631c2ac87a4dd9585821de063d7"
+      },
+      {
+        "variant": "qwen-3b",
+        "repeat": 2,
+        "sample_count": 86,
+        "complete_samples": 86,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 251628184,
+        "peak_rss_bytes": 2298675200,
+        "max_sample_gap_ms": 88.91008300000158,
+        "load_ms": 244.672542,
+        "elapsed_ms": 7187.479125,
+        "results": [
+          {
+            "id": "first-short",
+            "latency_ms": 469.18149999999997,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "warm-short",
+            "latency_ms": 162.662875,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-basic",
+            "latency_ms": 185.487667,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-basic",
+            "latency_ms": 245.1535,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-facts",
+            "latency_ms": 380.571541,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-uncertainty",
+            "latency_ms": 343.7835,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-indian",
+            "latency_ms": 220.895917,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-australian",
+            "latency_ms": 179.258833,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-facts",
+            "latency_ms": 286.24345800000003,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "es-facts",
+            "latency_ms": 233.676208,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-facts",
+            "latency_ms": 545.315667,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-en-mix",
+            "latency_ms": 403.264417,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "zh-facts",
+            "latency_ms": 189.363958,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "ja-facts",
+            "latency_ms": 252.89737499999998,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "silence",
+            "latency_ms": 0.002,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "short-input",
+            "latency_ms": 0.00075,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "long-120s",
+            "latency_ms": 2582.82625,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "cleanup-instructions",
+            "latency_ms": 224.071833,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          }
+        ],
+        "request_sha256": "9473a77a36da789b7f07d348ea50dca93f61f05567c5ce4f765dd341f1aac0ba",
+        "output_sha256": "209c2bf4cbef1c06db150174b06c41a7220b444704d25f1a07e8290304b68b37"
+      },
+      {
+        "variant": "qwen-1-5b",
+        "repeat": 2,
+        "sample_count": 47,
+        "complete_samples": 47,
+        "incomplete_samples": 0,
+        "peak_footprint_bytes": 231868360,
+        "peak_rss_bytes": 1291796480,
+        "max_sample_gap_ms": 93.24208299999987,
+        "load_ms": 208.861083,
+        "elapsed_ms": 3943.2067080000015,
+        "results": [
+          {
+            "id": "first-short",
+            "latency_ms": 238.523333,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "warm-short",
+            "latency_ms": 92.558583,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-basic",
+            "latency_ms": 99.80579200000001,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-basic",
+            "latency_ms": 115.08254099999999,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-facts",
+            "latency_ms": 213.64075,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-uncertainty",
+            "latency_ms": 286.04141599999997,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-indian",
+            "latency_ms": 155.49454200000002,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-australian",
+            "latency_ms": 103.099375,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-facts",
+            "latency_ms": 127.86600000000001,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "es-facts",
+            "latency_ms": 132.20820799999998,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-facts",
+            "latency_ms": 126.19037499999999,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-en-mix",
+            "latency_ms": 119.93775,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "zh-facts",
+            "latency_ms": 115.98775,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "ja-facts",
+            "latency_ms": 155.939542,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "silence",
+            "latency_ms": 0.001834,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "short-input",
+            "latency_ms": 0.000834,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "long-120s",
+            "latency_ms": 1455.650042,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "cleanup-instructions",
+            "latency_ms": 122.86570900000001,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          }
+        ],
+        "request_sha256": "e5dd768ea8a32b75fc7ee3136cd301bd50089990fe573f42a4b2a209c63e927d",
+        "output_sha256": "392050b12258aa9a8a45cb9789c53320d4702b3103a6c6890b0179f70281fbb6"
+      },
+      {
+        "variant": "qwen-0-5b",
+        "repeat": 2,
+        "sample_count": 27,
+        "complete_samples": 26,
+        "incomplete_samples": 1,
+        "peak_footprint_bytes": 195036672,
+        "peak_rss_bytes": 629473280,
+        "max_sample_gap_ms": 85.83383399999889,
+        "load_ms": 184.65870800000002,
+        "elapsed_ms": 2228.542292,
+        "results": [
+          {
+            "id": "first-short",
+            "latency_ms": 105.9925,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "warm-short",
+            "latency_ms": 56.117833,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-basic",
+            "latency_ms": 54.188917000000004,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-basic",
+            "latency_ms": 77.595625,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-facts",
+            "latency_ms": 115.662042,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-uncertainty",
+            "latency_ms": 128.5075,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-indian",
+            "latency_ms": 76.290583,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "en-accent-australian",
+            "latency_ms": 66.219125,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "fr-facts",
+            "latency_ms": 71.96275,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "es-facts",
+            "latency_ms": 74.089167,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-facts",
+            "latency_ms": 76.524791,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "hi-en-mix",
+            "latency_ms": 96.27375,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "zh-facts",
+            "latency_ms": 57.554542,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "ja-facts",
+            "latency_ms": 80.22033300000001,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": false,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "silence",
+            "latency_ms": 0.001959,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "short-input",
+            "latency_ms": 0.000875,
+            "complete": null,
+            "finish_reason": null,
+            "fallback": false,
+            "cleanup_skipped": true
+          },
+          {
+            "id": "long-120s",
+            "latency_ms": 739.578792,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          },
+          {
+            "id": "cleanup-instructions",
+            "latency_ms": 67.248791,
+            "complete": true,
+            "finish_reason": "end_of_generation",
+            "fallback": true,
+            "cleanup_skipped": false
+          }
+        ],
+        "request_sha256": "6322b1acf64aa35916b4990b6e1b6fb098a66cbcca36cdab88f998c9207db4b6",
+        "output_sha256": "9d94da6364c4f2f44f1ed62b783faa06174886a05fc3470a613465d4f6c207fc"
+      }
+    ]
+  },
+  "excluded_diagnostics": [
+    "Incomplete first seed runner attempt: missing system_prompt on a native bypass.",
+    "Exploratory resource measurements overlapped frontend compilation; only the subsequent quiet six-run resource comparison is used."
+  ]
+}
