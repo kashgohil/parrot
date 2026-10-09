@@ -1537,6 +1537,7 @@ mod tests {
     fn compact_multilingual_model_is_distinct_from_english_only_tier() {
         assert_eq!(stt_engine_for_model("small-q5_1"), "whisper");
         assert_eq!(get_whisper_model_url("small-q5_1"), "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small-q5_1.bin");
+        assert_eq!(get_whisper_model_path("small-q5_1").unwrap().file_name().unwrap(), "ggml-small-q5_1.bin");
         assert_ne!(get_whisper_model_file_name("small-q5_1"), get_whisper_model_file_name(STT_WHISPER_SMALL_EN));
     }
 

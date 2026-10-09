@@ -143,7 +143,7 @@ pub fn models() -> Vec<Model> {
             description: "100 languages, including Hindi and Cantonese. Supports auto-detection and explicit language hints.",
             recommended: false, capabilities: Capabilities::whisper_model(51866, 32, 4) },
         Model { id: "small-q5_1", name: "Compact multilingual (Whisper small)", size: "~181 MiB download",
-            description: "99 languages, including Hindi. Smaller download; accuracy can differ from turbo. Cantonese requires turbo.",
+            description: "99 languages, including Hindi. Lower memory than turbo in local tests, with Hindi and mixed-speech recognition errors. Review names, numbers and negation. Cantonese requires turbo.",
             recommended: false, capabilities: Capabilities::whisper_vocab(51865) },
         Model { id: "small.en", name: "English only (Whisper small.en)", size: "~500 MB download",
             description: "English only. Auto-detect also decodes as English. Other languages require a multilingual model.",
