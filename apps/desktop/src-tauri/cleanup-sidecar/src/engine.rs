@@ -355,7 +355,7 @@ impl CleanupSession<'_> {
                 .context("llama_decode failed on cleanup prompt")?;
             pos = end;
         }
-        let prefill_ms = prefill_start.elapsed().as_millis();
+        let prefill_ms = prefill_start.elapsed().as_millis().min(u64::MAX as u128) as u64;
         let decoded = tokens.len() - start;
 
         // KV now holds exactly [0, prompt_len) — record it for the next request.
@@ -410,7 +410,7 @@ impl CleanupSession<'_> {
             sample_idx = 0;
             n_cur += 1;
         }
-        let gen_ms = gen_start.elapsed().as_millis();
+        let gen_ms = gen_start.elapsed().as_millis().min(u64::MAX as u128) as u64;
         let gen_tokens = generated_tokens;
 
         eprintln!(

@@ -415,6 +415,14 @@ mod tests {
             "input_tokens":5,"output_budget":72,"generated_tokens":5,"reused_tokens":0,"decoded_tokens":300,
             "prefill_ms":1,"generation_ms":1,"complete":true,"finish_reason":"end_of_generation","text":"हिंदी"
         }]});
+        let wire = serde_json::json!({"type":"result", "id":1,"ok":true,"completion":valid});
+        assert!(matches!(
+            parse_message(&wire.to_string()).unwrap(),
+            Some(Message::Result {
+                completion: Some(_),
+                ..
+            })
+        ));
         assert!(
             validate_completion(&serde_json::from_value(valid.clone()).unwrap(), "हिंदी").is_ok()
         );
