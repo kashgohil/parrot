@@ -3475,6 +3475,7 @@ dependencies = [
  "tokio",
  "transcribe-rs",
  "unicode-script",
+ "unicode-segmentation",
  "uuid",
  "whisper-rs",
 ]

@@ -1,6 +1,7 @@
 mod audio;
 mod audio_import;
 mod cleanup;
+mod cleanup_eligibility;
 mod cleanup_engine;
 mod model_lifecycle;
 mod memory_policy;
@@ -123,15 +124,6 @@ async fn apply_pending(app: &tauri::AppHandle) -> bool {
     let _ = app.emit("cleanup-applied", ());
     unregister_apply_cleanup_shortcut(app);
     pasted
-}
-
-/// Very short utterances (a word or two — "yes", "on it", a name) don't gain
-/// much from LLM cleanup and aren't worth the round-trip. Anything longer runs
-/// through cleanup so fillers, punctuation, and tone are actually handled.
-const SHORT_UTTERANCE_WORD_LIMIT: usize = 3;
-
-fn word_count(text: &str) -> usize {
-    text.split_whitespace().count()
 }
 
 #[tauri::command]
@@ -272,9 +264,9 @@ async fn transcribe_recorded(
         .get_setting("cleanup_mode")
         .map_err(|e| e.to_string())?
         .unwrap_or_else(|| "blocking".to_string());
-    let skip_cleanup = cleanup_mode == "off"
-        || !effective.cleanup_enabled
-        || word_count(&raw_text) < SHORT_UTTERANCE_WORD_LIMIT;
+    let skip_cleanup = !cleanup_eligibility::should_cleanup(
+        &raw_text, &cleanup_mode, effective.cleanup_enabled,
+    );
 
     // Clear any previous polish affordance so a new dictation doesn't
     // accidentally apply a stale cleanup, and release ⌘⇧C if the prior
@@ -658,9 +650,9 @@ async fn run_file_transcription(
         .get_setting("cleanup_mode")
         .map_err(|e| e.to_string())?
         .unwrap_or_else(|| "blocking".to_string());
-    let skip_cleanup = cleanup_mode == "off"
-        || !effective.cleanup_enabled
-        || word_count(&raw_text) < SHORT_UTTERANCE_WORD_LIMIT;
+    let skip_cleanup = !cleanup_eligibility::should_cleanup(
+        &raw_text, &cleanup_mode, effective.cleanup_enabled,
+    );
 
     let cleaned_text = if skip_cleanup {
         String::new()
@@ -2565,6 +2557,34 @@ fn setup_hud_window(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Er
 #[cfg(test)]
 mod cleanup_policy_tests {
     use super::*;
+
+    #[test]
+    fn eligibility_respects_enabled_and_disabled_app_profiles() {
+        let db = Database::in_memory().unwrap();
+        let text = "小王没有批准这笔付款";
+        let bundle = "test.cleanup-profile";
+        for (profile_enabled, cleanup_enabled, expected) in [
+            (true, false, false), (true, true, true), (false, false, true),
+        ] {
+            db.upsert_app_profile(&db::AppProfile {
+                bundle_id: bundle.to_string(),
+                app_name: "Test".to_string(),
+                context_prompt: String::new(),
+                writing_style: String::new(),
+                cleanup_enabled,
+                enabled: profile_enabled,
+            }).unwrap();
+            let effective = db.effective_profile_for_app(Some(bundle)).unwrap();
+            for mode in ["blocking", "background"] {
+                assert_eq!(cleanup_eligibility::should_cleanup(
+                    text, mode, effective.cleanup_enabled,
+                ), expected);
+            }
+            assert!(!cleanup_eligibility::should_cleanup(text, "off", effective.cleanup_enabled));
+            let import_profile = db.effective_profile_for_app(None).unwrap();
+            assert!(cleanup_eligibility::should_cleanup(text, "blocking", import_profile.cleanup_enabled));
+        }
+    }
 
     #[tokio::test]
     async fn configured_cleanup_is_unloaded_and_off_cannot_acquire() {
