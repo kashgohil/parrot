@@ -249,11 +249,63 @@ class PropertyTests(unittest.TestCase):
             self.assertFalse(report['rows'][0]['properties']['introduced_regression'])
             reviews = path / 'reviewed.json'
             reviews.write_text(json.dumps({row['key']: {'decision': 'reject', 'notes': 'No useful cleanup',
+                                                       'reviewer': 'test reviewer',
+                                                       'subject_sha256': json.loads((path / 'review-queue.json').read_text())[row['key']]['subject_sha256'],
                                                        'output_sha256': quality.hashlib.sha256(row['text'].encode()).hexdigest()}}))
             quality.score(path, reviews)
             report = json.loads((path / 'scores.json').read_text(encoding='utf-8'))
             self.assertEqual(report['groups'][0]['human_rejected'], 1)
             self.assertFalse(report['semantic_release_qualified'])
+
+    def test_review_cannot_follow_unchanged_output_to_changed_subject(self):
+        import copy
+        metadata = dict(manifest=dict(cases=[dict(id='case', reference='प्रिया ने भुगतान नहीं किया।', languages=['hi'])]),
+                        models=dict(model=dict(files=[dict(name='model.bin', bytes=1, sha256='a' * 64)])),
+                        audio=[dict(id='case', files=[dict(name='audio.wav', bytes=1, sha256='b' * 64)])])
+        row = dict(key='model/case/1', case='case', variant='model', stage='asr', repeat=1, latency_ms=1,
+                   text='प्रिया ने भुगतान नहीं किया।', language='hi', initial_prompt=None)
+        original = quality.review_subject(metadata, row)
+        self.assertEqual(original, quality.review_subject(metadata, dict(row, repeat=2, latency_ms=99, key='model/case/2')))
+        changed = copy.deepcopy(metadata)
+        changed['audio'][0]['files'][0]['sha256'] = 'c' * 64
+        self.assertNotEqual(original, quality.review_subject(changed, row))
+        changed = copy.deepcopy(metadata)
+        changed['manifest']['cases'][0]['reference'] = 'प्रिया ने भुगतान किया।'
+        self.assertNotEqual(original, quality.review_subject(changed, row))
+        changed = copy.deepcopy(metadata)
+        changed['models']['model']['files'][0]['sha256'] = 'd' * 64
+        self.assertNotEqual(original, quality.review_subject(changed, row))
+        for field in ['initial_prompt', 'language', 'input', 'candidate', 'model_output']:
+            self.assertNotEqual(original, quality.review_subject(metadata, dict(row, **{field: 'changed'})))
+
+    def test_scorer_rejects_output_only_or_stale_review_and_failed_inference_decisions(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp)
+            row = dict(key='model/case/1', case='case', variant='model', stage='asr', repeat=1,
+                       latency_ms=1, text='on it', language='en')
+            metadata = dict(manifest=dict(cases=[dict(id='case', reference='on it', primary_metric='wer', languages=['en'])]),
+                            complete=True, normalization=quality.NORMALIZATION, skipped=[], rows=[row])
+            quality.write_json(path / 'results.json', metadata)
+            quality.score(path, None)
+            entry = json.loads((path / 'review-queue.json').read_text())[row['key']]
+            reviewed = dict(entry, decision='approve', reviewer='test reviewer', notes='Test judgment, not a release approval')
+            reviews = path / 'reviews.json'
+            quality.write_json(reviews, {row['key']: reviewed})
+            quality.score(path, reviews)
+            self.assertFalse(json.loads((path / 'scores.json').read_text())['semantic_release_qualified'])
+            for override in [dict(subject_sha256=None), dict(reviewer=''), dict(notes='')]:
+                quality.write_json(reviews, {row['key']: dict(reviewed, **override)})
+                with self.assertRaises(ValueError):
+                    quality.score(path, reviews)
+            quality.write_json(reviews, {row['key']: reviewed})
+            metadata['manifest']['cases'][0]['reference'] = 'on that'
+            quality.write_json(path / 'results.json', metadata)
+            with self.assertRaisesRegex(ValueError, 'subject hash'):
+                quality.score(path, reviews)
+            metadata['rows'][0]['error'] = 'inference failed'
+            quality.write_json(path / 'results.json', metadata)
+            with self.assertRaisesRegex(ValueError, 'Failed inference'):
+                quality.score(path, reviews)
 
 
 class ComparisonTests(unittest.TestCase):

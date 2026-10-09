@@ -394,6 +394,27 @@ def run(args):
     score(output, None)
 
 
+def review_subject(metadata, row):
+    """Bind a judgment to semantic inputs, not paths, timings or repeat numbers."""
+    case = next(case for case in metadata['manifest']['cases'] if case['id'] == row['case'])
+    variants = metadata.get('config', {}).get('speech', []) + metadata.get('config', {}).get('cleanup', [])
+    upstream = (row.get('source_key') or '').split('/')[0]
+    fields = ('stage', 'tone', 'language', 'initial_prompt', 'prompt_style', 'whisper_decode_profile',
+              'input', 'candidate', 'model_output', 'text', 'system_prompt', 'user_message',
+              'complete', 'finish_reason', 'fallback', 'cleanup_skipped', 'application_cleanup_eligible',
+              'formatting_applied', 'unformatted_text', 'hints_truncated')
+    subject = dict(schema_version=1, case=case, variant=row['variant'],
+                   model=metadata.get('models', {}).get(row['variant'], {}).get('files'),
+                   upstream_model=metadata.get('models', {}).get(upstream, {}).get('files'),
+                   audio=next((item['files'] for item in metadata.get('audio', []) if item['id'] == row['case']), None),
+                   worker=metadata.get('binary', {}).get('files'), sidecar=metadata.get('sidecar', {}).get('files'),
+                   configuration=[{key: value for key, value in variant.items() if key != 'model'}
+                                  for variant in variants if variant['id'] in (row['variant'], upstream)],
+                   result={field: row.get(field) for field in fields})
+    encoded = json.dumps(subject, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def score(output, reviews_path):
     metadata = json.loads((output / 'results.json').read_text(encoding='utf-8'))
     cases = {case['id']: case for case in metadata['manifest']['cases']}
@@ -407,6 +428,8 @@ def score(output, reviews_path):
         item = {'key': row['key'], 'case': row['case'], 'variant': row['variant'], 'stage': row['stage'], 'tone': row.get('tone'),
                 'repeat': row['repeat'], 'language': row.get('language'), 'primary_metric': case['primary_metric'], 'latency_ms': row['latency_ms'], 'error': row.get('error')}
         if row.get('error'):
+            if reviews.get(row['key'], {}).get('decision') is not None:
+                raise ValueError('Failed inference cannot receive a semantic decision')
             scored.append(item)
             groups[(row['variant'], row['stage'], row.get('tone'), row.get('language'), '+'.join(case['languages']) if row['stage'] == 'asr' else 'all', (row.get('source_key') or '').split('/')[0])].append(item)
             continue
@@ -432,11 +455,18 @@ def score(output, reviews_path):
         if review.get('decision') not in (None, 'approve', 'reject'):
             raise ValueError('Review decision must be approve, reject or null')
         output_hash = hashlib.sha256(row['text'].encode()).hexdigest()
+        subject_hash = review_subject(metadata, row)
         if review.get('decision') and review.get('output_sha256') != output_hash:
             raise ValueError('Review output hash does not match this result; use its current review queue')
+        if review.get('decision') and review.get('subject_sha256') != subject_hash:
+            raise ValueError('Review subject hash does not match its audio, reference, source or model context; regenerate the review queue')
+        if review.get('decision') and (not isinstance(review.get('reviewer'), str) or not review['reviewer'].strip()
+                                      or not isinstance(review.get('notes'), str) or not review['notes'].strip()):
+            raise ValueError('A semantic decision needs a reviewer and review notes')
         item['human_review'] = review
         queue[row['key']] = {'decision': review.get('decision'), 'notes': review.get('notes', ''), 'case': row['case'], 'stage': row['stage'],
-                             'output_sha256': output_hash,
+                             'output_sha256': output_hash, 'subject_sha256': subject_hash,
+                             'reviewer': review.get('reviewer', ''),
                              'source': source, 'reference': case['reference'], 'output': row['text'], 'model_output': row.get('model_output'),
                              'checks': item['properties'], 'criteria': 'Check meaning, language/script, names, amounts, negation, uncertainty, omissions, additions and useful cleanup. Flags are screening checks, not semantic proof.'}
         if 'formatting' in item:
