@@ -46,7 +46,8 @@ fn english_clause(first: &str, second: &str, third: Option<&str>) -> bool {
         || (pronouns.contains(&first.as_str())
             && [
                 "am", "is", "are", "was", "were", "have", "has", "will", "would", "can", "could",
-                "should", "think", "need", "want", "like", "did", "do", "don't", "can't", "cannot",
+                "should", "actually", "think", "need", "want", "like", "did", "do", "don't",
+                "can't", "cannot",
             ]
             .contains(&second.as_str()))
         || (verbs.contains(&first.as_str())

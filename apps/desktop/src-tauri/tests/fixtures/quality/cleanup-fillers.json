@@ -1,0 +1,1206 @@
+{
+  "schema_version": 1,
+  "name": "parrot-cleanup-fillers-v1",
+  "cases": [
+    {
+      "id": "german-pronoun-preposition",
+      "languages": [
+        "de"
+      ],
+      "primary_metric": "cer",
+      "reference": "Er kommt um acht Uhr.",
+      "cleanup_input": "Er kommt um acht Uhr.",
+      "expected_deterministic": "Er kommt um acht Uhr.",
+      "adversarial_candidate": "Kommt acht Uhr.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "Er"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "acht"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "german-lowercase-pronoun",
+      "languages": [
+        "de"
+      ],
+      "primary_metric": "cer",
+      "reference": "er kommt um acht Uhr",
+      "cleanup_input": "er kommt um acht Uhr",
+      "expected_deterministic": "er kommt um acht Uhr",
+      "adversarial_candidate": "kommt acht Uhr",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "er"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "acht"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "german-leading-preposition",
+      "languages": [
+        "de"
+      ],
+      "primary_metric": "cer",
+      "reference": "um acht kommt er",
+      "cleanup_input": "um acht kommt er",
+      "expected_deterministic": "um acht kommt er",
+      "adversarial_candidate": "acht kommt",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "er"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "acht"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "german-upper-preposition",
+      "languages": [
+        "de"
+      ],
+      "primary_metric": "cer",
+      "reference": "Um acht Uhr kommt Er.",
+      "cleanup_input": "Um acht Uhr kommt Er.",
+      "expected_deterministic": "Um acht Uhr kommt Er.",
+      "adversarial_candidate": "Acht Uhr kommt.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "Um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "Er"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "acht"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "german-purpose",
+      "languages": [
+        "de"
+      ],
+      "primary_metric": "cer",
+      "reference": "Er wartet, um den Plan zu prüfen.",
+      "cleanup_input": "Er wartet, um den Plan zu prüfen.",
+      "expected_deterministic": "Er wartet, um den Plan zu prüfen.",
+      "adversarial_candidate": "Wartet, den Plan zu prüfen.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "Er"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "Plan"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "german-english",
+      "languages": [
+        "de",
+        "en"
+      ],
+      "primary_metric": "cer",
+      "reference": "er will review the invoice um acht",
+      "cleanup_input": "er will review the invoice um acht",
+      "expected_deterministic": "er will review the invoice um acht",
+      "adversarial_candidate": "Will review the invoice acht.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "er"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "invoice"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "german-english-leading",
+      "languages": [
+        "de",
+        "en"
+      ],
+      "primary_metric": "cer",
+      "reference": "um die Rechnung please send",
+      "cleanup_input": "um die Rechnung please send",
+      "expected_deterministic": "um die Rechnung please send",
+      "adversarial_candidate": "Die Rechnung please send.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "Rechnung"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "hindi-english-leading",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "primary_metric": "cer",
+      "reference": "um please send कल का invoice",
+      "cleanup_input": "um please send कल का invoice",
+      "expected_deterministic": "um please send कल का invoice",
+      "adversarial_candidate": "Please send कल का invoice.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "कल"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "invoice"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "hindi-english-interior",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "primary_metric": "cer",
+      "reference": "प्रिया ने um invoice approve नहीं किया",
+      "cleanup_input": "प्रिया ने um invoice approve नहीं किया",
+      "expected_deterministic": "प्रिया ने um invoice approve नहीं किया",
+      "adversarial_candidate": "प्रिया ने invoice approve नहीं किया।",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "प्रिया"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "नहीं"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "hindi-leading",
+      "languages": [
+        "hi"
+      ],
+      "primary_metric": "cer",
+      "reference": "uh प्रिया ने भुगतान नहीं किया",
+      "cleanup_input": "uh प्रिया ने भुगतान नहीं किया",
+      "expected_deterministic": "uh प्रिया ने भुगतान नहीं किया",
+      "adversarial_candidate": "प्रिया ने भुगतान नहीं किया।",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "uh"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "प्रिया"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "नहीं"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "roman-hindi",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "primary_metric": "cer",
+      "reference": "um kal invoice mat bhejna",
+      "cleanup_input": "um kal invoice mat bhejna",
+      "expected_deterministic": "um kal invoice mat bhejna",
+      "adversarial_candidate": "Kal invoice mat bhejna.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "mat"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "invoice"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "chinese-leading",
+      "languages": [
+        "zh",
+        "en"
+      ],
+      "primary_metric": "cer",
+      "reference": "um 小王没有批准25元的付款",
+      "cleanup_input": "um 小王没有批准25元的付款",
+      "expected_deterministic": "um 小王没有批准25元的付款",
+      "adversarial_candidate": "小王没有批准25元的付款。",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "小王"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "25"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "japanese-leading",
+      "languages": [
+        "ja",
+        "en"
+      ],
+      "primary_metric": "cer",
+      "reference": "um 今日は雨です",
+      "cleanup_input": "um 今日は雨です",
+      "expected_deterministic": "um 今日は雨です",
+      "adversarial_candidate": "今日は雨です。",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "今日"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "quote-double",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "She said \"um please send the draft\".",
+      "cleanup_input": "She said \"um please send the draft\".",
+      "expected_deterministic": "She said \"um please send the draft\".",
+      "adversarial_candidate": "She said \"please send the draft\".",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "draft"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "quote-single",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "um please send the word 'uh'",
+      "cleanup_input": "um please send the word 'uh'",
+      "expected_deterministic": "um please send the word 'uh'",
+      "adversarial_candidate": "Please send the word 'uh'.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "uh"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "quote-curly",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "um please send the word “um”",
+      "cleanup_input": "um please send the word “um”",
+      "expected_deterministic": "um please send the word “um”",
+      "adversarial_candidate": "Please send the word “um”.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 2
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "word"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "quote-entire",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "\"um please send the draft\"",
+      "cleanup_input": "\"um please send the draft\"",
+      "expected_deterministic": "\"um please send the draft\"",
+      "adversarial_candidate": "Please send the draft.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "draft"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "code-word",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "um please send `um`",
+      "cleanup_input": "um please send `um`",
+      "expected_deterministic": "um please send `um`",
+      "adversarial_candidate": "Please send `um`.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 2
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "name-um",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "Um will review the invoice.",
+      "cleanup_input": "Um will review the invoice.",
+      "expected_deterministic": "Um will review the invoice.",
+      "adversarial_candidate": "Will review the invoice.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "Um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "invoice"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "name-er",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "Er has not approved the invoice.",
+      "cleanup_input": "Er has not approved the invoice.",
+      "expected_deterministic": "Er has not approved the invoice.",
+      "adversarial_candidate": "Has not approved the invoice.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "Er"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "not"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "internal-pause",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "I, um, like it, actually.",
+      "cleanup_input": "I, um, like it, actually.",
+      "expected_deterministic": "I, um, like it, actually.",
+      "adversarial_candidate": "I like it, actually.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "like"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "actually"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "acknowledgment",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "hmm uh-huh I am not sure",
+      "cleanup_input": "hmm uh-huh I am not sure",
+      "expected_deterministic": "hmm uh-huh I am not sure",
+      "adversarial_candidate": "I am not sure.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "hmm"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "uh-huh"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "not"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "english-um",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "I think we should keep it",
+      "cleanup_input": "um I think we should keep it",
+      "expected_deterministic": "I think we should keep it",
+      "adversarial_candidate": "I think we should keep it.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "think"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "should"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "english-uh",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "please send the draft",
+      "cleanup_input": "uh, please send the draft",
+      "expected_deterministic": "please send the draft",
+      "adversarial_candidate": "Please send the draft.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "send"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "draft"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "english-repeated-pause",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "keep the invoice",
+      "cleanup_input": "umm uh keep the invoice",
+      "expected_deterministic": "keep the invoice",
+      "adversarial_candidate": "Keep the invoice.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "keep"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "invoice"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "english-question",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "can Priya not deploy release 2.1",
+      "cleanup_input": "um can Priya not deploy release 2.1",
+      "expected_deterministic": "can Priya not deploy release 2.1",
+      "adversarial_candidate": "Can Priya not deploy release 2.1?",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "Priya"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "not"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "2.1"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "english-meaningful-like",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "I actually kind of like it, maybe",
+      "cleanup_input": "um I actually kind of like it, maybe",
+      "expected_deterministic": "I actually kind of like it, maybe",
+      "adversarial_candidate": "I like it.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "actually"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "kind of"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-2",
+          "any_of": [
+            "like"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-3",
+          "any_of": [
+            "maybe"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "capitalized-uncertain",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "Um please send the draft",
+      "cleanup_input": "Um please send the draft",
+      "expected_deterministic": "Um please send the draft",
+      "adversarial_candidate": "Please send the draft.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "Um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "draft"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "punctuation-not-pause",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "u.m please send the draft",
+      "cleanup_input": "u.m please send the draft",
+      "expected_deterministic": "u.m please send the draft",
+      "adversarial_candidate": "Please send the draft.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "u.m"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "draft"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "symbol-not-pause",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "u$m please send the draft",
+      "cleanup_input": "u$m please send the draft",
+      "expected_deterministic": "u$m please send the draft",
+      "adversarial_candidate": "Please send the draft.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "u$m"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "draft"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "uncertain-accent",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "um I like café",
+      "cleanup_input": "um I like café",
+      "expected_deterministic": "um I like café",
+      "adversarial_candidate": "I like café.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "café"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    },
+    {
+      "id": "uncertain-phrase",
+      "languages": [
+        "en"
+      ],
+      "primary_metric": "wer",
+      "reference": "um hello world",
+      "cleanup_input": "um hello world",
+      "expected_deterministic": "um hello world",
+      "adversarial_candidate": "Hello world.",
+      "facts": [
+        {
+          "id": "content-0",
+          "any_of": [
+            "um"
+          ],
+          "min_count": 1
+        },
+        {
+          "id": "content-1",
+          "any_of": [
+            "hello"
+          ],
+          "min_count": 1
+        }
+      ],
+      "tags": [
+        "cleanup-fillers"
+      ],
+      "source": {
+        "kind": "synthetic-text"
+      },
+      "provenance": "Synthetic text; non-English wording and semantic usefulness need human review in ISSUE-1077."
+    }
+  ]
+}

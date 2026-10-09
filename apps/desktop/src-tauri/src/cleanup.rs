@@ -821,6 +821,89 @@ mod tests {
     }
 
     #[test]
+    fn filler_fixture_rejects_destructive_candidates_in_both_backends() {
+        use crate::cleanup_engine::protocol::{Completion, FinishReason};
+        let fixture: serde_json::Value = serde_json::from_str(include_str!(
+            "../tests/fixtures/quality/cleanup-fillers.json"
+        ))
+        .unwrap();
+        for case in fixture["cases"].as_array().unwrap() {
+            let source = case["cleanup_input"].as_str().unwrap();
+            let candidate = case["adversarial_candidate"].as_str().unwrap();
+            for tone in [Formality::Casual, Formality::Neutral, Formality::Formal] {
+                for style in ["", "Professional"] {
+                    assert_eq!(
+                        finalize_cleanup_output_with_policy(source, source, tone, style),
+                        case["expected_deterministic"].as_str().unwrap(),
+                        "{}",
+                        case["id"]
+                    );
+                    let expected = match case["id"].as_str().unwrap() {
+                        "english-um"
+                        | "english-uh"
+                        | "english-repeated-pause"
+                        | "english-question" => candidate,
+                        _ => case["expected_deterministic"].as_str().unwrap(),
+                    };
+                    let completion = Completion {
+                        text: candidate.into(),
+                        complete: true,
+                        finish_reason: FinishReason::EndOfGeneration,
+                        segments: Vec::new(),
+                        hints_truncated: false,
+                    };
+                    let response = OllamaChatResponse {
+                        message: ChatMessage {
+                            role: "assistant".into(),
+                            content: candidate.into(),
+                        },
+                        done: true,
+                        done_reason: Some("stop".into()),
+                    };
+                    assert_eq!(
+                        finalize_completion(&completion, source, tone, style),
+                        expected,
+                        "builtin {}",
+                        case["id"]
+                    );
+                    assert_eq!(
+                        finalize_ollama_response(response, source, tone, style),
+                        expected,
+                        "ollama {}",
+                        case["id"]
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn segmented_filler_permission_uses_the_full_original_context() {
+        let first = "um I think we should keep it.\n";
+        let second = "Please keep the word \"um\".\n";
+        let original = format!("{first}{second}");
+        let segment = |start, end, text| {
+            serde_json::json!({
+                "start_byte":start,"end_byte":end,"prompt_tokens":300,"context_tokens":2048,
+                "input_tokens":12,"output_budget":96,"generated_tokens":12,"reused_tokens":0,"decoded_tokens":300,
+                "prefill_ms":1,"generation_ms":1,"complete":true,"finish_reason":"end_of_generation","text":text
+            })
+        };
+        let completion = serde_json::from_value(serde_json::json!({
+            "text":"I think we should keep it.\nPlease keep the word.",
+            "complete":true,"finish_reason":"end_of_generation","segments":[
+                segment(0, first.len(), "I think we should keep it."),
+                segment(first.len(), original.len(), "Please keep the word.")
+            ]
+        }))
+        .unwrap();
+        assert_eq!(
+            finalize_completion(&completion, &original, Formality::Neutral, ""),
+            original.trim()
+        );
+    }
+
+    #[test]
     fn legacy_ollama_requires_explicit_normal_stop() {
         for json in [
             r#"{"message":{"role":"assistant","content":"partial"},"done":true,"done_reason":"length"}"#,
