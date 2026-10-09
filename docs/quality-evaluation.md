@@ -21,7 +21,7 @@ Build the worker from `apps/desktop/src-tauri`:
 
 ```sh
 cargo build --locked --release -p parrot --features quality-eval --bin parrot-quality-eval
-cargo build --locked --release -p cleanup-sidecar
+cargo build --locked --release -p parrot-cleanup-sidecar
 ```
 
 Copy `apps/desktop/scripts/quality-evaluation.example.json` to a local config and
@@ -65,6 +65,48 @@ stderr logs retain native diagnostics. Inference timings exclude model loading
 and app UI work. Model-load timings use fresh processes with uncontrolled file
 caches; they are not guaranteed cold-disk timings. Token limits are budgets,
 not measured prompt token counts.
+
+Rebuild both packages before comparing source changes; an existing sidecar file
+can predate the checked-out source. Record its hash for both runs. The sidecar's
+`cleanup-sidecar: prompt_tok=...` stderr lines measure actual full chat-template
+prompt tokens, reused/decoded tokens, prefill time and generated tokens/time.
+These lines follow nonempty requests in worker order; empty-input bypasses have
+no native inference line. They include system text, transcript and template,
+not just the system prompt, and do not measure RAM or energy.
+
+## Default cleanup contract
+
+ISSUE-1049 makes Neutral and Casual conservative when Writing Style is empty.
+The model may change case, punctuation and clear structure, but the returned
+word sequence must match the source after narrowly specified corrections and
+the existing vocal-filler removal. Translation, word substitution, lost names,
+negation/uncertainty loss, reordered clauses and removed repeated sentences
+cause a source fallback. This also protects same-script language changes. Hindi
+marks remain part of the comparison. A fallback can preserve a question without
+adding a question mark; punctuation quality still needs review.
+
+The shared deterministic prepass resolves only immediate `I`/article stutters,
+`to John no to Jane` with single capitalized ASCII names, and integer corrections
+such as `25 no 35`. It preserves the rest of the message. Periods, paragraph
+breaks, quoted text, decimal/version corrections, other-language cues and
+ambiguous false starts are left intact. The corrected source is supplied to the
+model and the finalizer, so correcting an amount does not trip the original
+number-retention guard. Numeric-removal flags in evaluation remain visible for
+review; an explicit `25 no 35` correction is an intended removal, not a lost fact.
+
+Choosing Formal or supplying a nonempty Writing Style explicitly permits model
+rewriting. Language/script and numeric guards still apply, and the prompt puts
+fact preservation first; these choices do not have the default word-preservation
+guarantee. Context alone does not opt into rewriting. Conservative cleanup can
+keep awkward grammar, spelling or unresolved speech rather than risk changing
+content. The deterministic filler list's language ambiguity remains ISSUE-1048;
+actual context budgeting and truncation detection remain ISSUE-1047.
+
+The separate text-only `tests/fixtures/quality/cleanup-faithfulness.json` corpus
+adds questions, commands, explicit corrections, meaningful hedges, repeated
+sentences and the observed French/Spanish pipeline inputs. Evaluate it with
+`--manifest apps/desktop/src-tauri/tests/fixtures/quality/cleanup-faithfulness.json`
+and a cleanup-only config to isolate prompt/output changes from ASR.
 
 `scores.json` and `summary.md` distinguish:
 

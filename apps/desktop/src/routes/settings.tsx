@@ -978,7 +978,7 @@ function SettingsPage() {
 											{
 												value: "neutral" as const,
 												title: "Neutral",
-												desc: "Clean & natural",
+												desc: "Keep your wording",
 											},
 											{
 												value: "formal" as const,
@@ -1015,8 +1015,8 @@ function SettingsPage() {
 									})}
 								</div>
 								<p className="text-xs text-muted-foreground">
-									How much should cleanup reshape your tone? Formal rewrites into
-									polished, professional writing.
+									Neutral uses minimal edits. Choose Formal to request
+									professional phrasing.
 								</p>
 							</div>
 
