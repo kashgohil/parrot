@@ -50,7 +50,7 @@ pub(crate) fn format_completed(safe: &str, original: &str) -> String {
     }
     let tokens: Vec<&str> = safe.split_whitespace().collect();
     let terminal = if tokens.len() >= 3 && safe.ends_with(|c: char| c.is_alphanumeric()) {
-        infer_terminal(safe, &tokens)
+        infer_terminal(safe, &tokens, original)
     } else {
         None
     };
@@ -74,7 +74,7 @@ pub(crate) fn format_completed(safe: &str, original: &str) -> String {
     result
 }
 
-fn infer_terminal(safe: &str, tokens: &[&str]) -> Option<char> {
+fn infer_terminal(safe: &str, tokens: &[&str], original: &str) -> Option<char> {
     let devanagari = safe.chars().any(|c| c.script() == Script::Devanagari);
     if safe
         .chars()
@@ -150,22 +150,48 @@ fn infer_terminal(safe: &str, tokens: &[&str]) -> Option<char> {
     };
     let second = tokens[1].to_ascii_lowercase();
     if auxiliary(&last.to_ascii_lowercase())
-        || matches!(last.to_ascii_lowercase().as_str(),
-            "not" | "to" | "of" | "with" | "and" | "or" | "but" | "the" | "a" | "an")
+        || matches!(
+            last.to_ascii_lowercase().as_str(),
+            "not" | "to" | "of" | "with" | "and" | "or" | "but" | "the" | "a" | "an"
+        )
     {
         return None;
     }
     if auxiliary(&first) {
+        // A model may lowercase a source name. The original prefix can still
+        // establish inversion; candidate casing cannot create that evidence.
+        let mut source_tokens = original.split_whitespace();
+        let source_name = source_tokens
+            .next()
+            .is_some_and(|word| word.eq_ignore_ascii_case(tokens[0]))
+            && source_tokens.next().is_some_and(|word| {
+                word.eq_ignore_ascii_case(tokens[1])
+                    && word.starts_with(|c: char| c.is_ascii_uppercase())
+            });
         let subject = matches!(
             second.as_str(),
             "i" | "we" | "you" | "they" | "he" | "she" | "it" | "the" | "this" | "that"
-        ) || tokens[1].starts_with(|c: char| c.is_ascii_uppercase());
+        ) || source_name;
         if subject && tokens.len() >= 4 {
             return Some('?');
         }
     } else if !matches!(
         first.as_str(),
-        "if" | "when" | "while" | "although" | "unless" | "who" | "what" | "where" | "why" | "how"
+        "if" | "when"
+            | "while"
+            | "although"
+            | "unless"
+            | "because"
+            | "until"
+            | "after"
+            | "before"
+            | "since"
+            | "once"
+            | "who"
+            | "what"
+            | "where"
+            | "why"
+            | "how"
     ) && tokens
         .iter()
         .enumerate()
@@ -253,5 +279,21 @@ mod tests {
             format_completed("ravi has not paid", "\"ravi has not paid\""),
             "ravi has not paid"
         );
+        assert_eq!(
+            format_completed(
+                "can priya not deploy release 2.1",
+                "can Priya not deploy release 2.1"
+            ),
+            "Can priya not deploy release 2.1?"
+        );
+        assert_eq!(
+            format_completed(
+                "can priya not deploy release 2.1",
+                "can priya not deploy release 2.1"
+            ),
+            "can priya not deploy release 2.1"
+        );
+        assert_eq!(format_completed("can Of soup be served", "can of soup be served"),
+            "can Of soup be served");
     }
 }
