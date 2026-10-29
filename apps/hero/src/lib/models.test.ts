@@ -43,6 +43,7 @@ describe("SPEECH_MODELS matches the desktop app", () => {
 				),
 			);
 			expect(line?.[0]).toContain(`size: "${model.size} download"`);
+			expect(line?.[0]).toContain(`name: "${model.label}"`);
 			expect(line?.[1]).toBe(String(model.recommended));
 		});
 	}

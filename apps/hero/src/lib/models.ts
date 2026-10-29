@@ -50,6 +50,8 @@ export const CLEANUP_TIERS: readonly CleanupTier[] = [
  */
 export type SpeechModel = {
 	id: string;
+	/** The name the app shows in Settings and onboarding. */
+	label: string;
 	model: string;
 	/** Download size exactly as the app shows it. */
 	size: string;
@@ -61,6 +63,7 @@ export type SpeechModel = {
 export const SPEECH_MODELS: readonly SpeechModel[] = [
 	{
 		id: "parakeet-v3",
+		label: "Fast (Parakeet)",
 		model: "Parakeet TDT 0.6B v3",
 		size: "~450 MB",
 		recommended: true,
@@ -69,6 +72,7 @@ export const SPEECH_MODELS: readonly SpeechModel[] = [
 	},
 	{
 		id: "large-v3-turbo",
+		label: "Multilingual (Whisper turbo)",
 		model: "Whisper large-v3-turbo",
 		size: "~600 MB",
 		recommended: false,
@@ -77,6 +81,7 @@ export const SPEECH_MODELS: readonly SpeechModel[] = [
 	},
 	{
 		id: "small-q5_1",
+		label: "Compact multilingual (Whisper small)",
 		model: "Whisper small",
 		size: "~181 MiB",
 		recommended: false,
@@ -84,6 +89,7 @@ export const SPEECH_MODELS: readonly SpeechModel[] = [
 	},
 	{
 		id: "small.en",
+		label: "English only (Whisper small.en)",
 		model: "Whisper small.en",
 		size: "~500 MB",
 		recommended: false,
