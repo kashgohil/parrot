@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 // heard; the right is what gets pasted, with cleanup on or off.
 
 const HEARD =
-	"Um, so I think we should, uh, move the design review to Thursday. No, actually, Friday. And can you, like, send Priya the Figma link before then?";
+	"Um, so I think we should, uh, move the design review to Thursday. No, actually, Friday. And can you send Priya the Figma link before then?";
 
 function Fill({ children }: { children: ReactNode }) {
 	return (
@@ -55,16 +55,15 @@ export function CleanupSection() {
 							What the speech model heard
 						</p>
 						<p className="m-0 text-pretty text-[clamp(1.15rem,2vw,1.45rem)] leading-normal tracking-[-0.01em]">
-							<Fill>Um, so</Fill> I think we should, <Fill>uh,</Fill> move the
+							<Fill>Um,</Fill> so I think we should, <Fill>uh,</Fill> move the
 							design review{" "}
 							<span className="rounded bg-beak-soft px-0.5 text-foreground line-through decoration-beak decoration-2">
 								to Thursday. No, actually,
 							</span>{" "}
-							Friday. And can you, <Fill>like,</Fill> send Priya the Figma link
-							before then?
+							Friday. And can you send Priya the Figma link before then?
 						</p>
 						<div className="flex flex-wrap gap-2">
-							<Note>3 fillers</Note>
+							<Note>2 fillers</Note>
 							<Note>1 self-correction</Note>
 						</div>
 					</div>
@@ -105,11 +104,11 @@ export function CleanupSection() {
 						>
 							{on ? (
 								<>
-									I think we should move the design review to{" "}
+									So I think we should move the design review to{" "}
 									<mark className="rounded bg-lime px-[3px] text-lime-ink">
 										Friday
 									</mark>
-									. Can you send Priya the Figma link before then?
+									. And can you send Priya the Figma link before then?
 								</>
 							) : (
 								HEARD

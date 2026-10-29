@@ -25,22 +25,22 @@ const DEMOS: Record<
 		label: "Slack",
 		menu: "Slack",
 		title: "launch · Northwind",
-		said: "[Um, so] the build is green. Can we ship it [on Thursday, no wait,] Friday? And loop in Priya.",
-		clean: "Build is green. Can we ship Friday and loop in Priya?",
+		said: "[Um,] the build is green. Can we ship it [on Thursday, no wait,] Friday? And loop in Priya.",
+		clean: "The build is green. Can we ship it Friday? And loop in Priya.",
 	},
 	mail: {
 		label: "Mail",
 		menu: "Mail",
 		title: "Re: Renewal contract",
-		said: "Hi Dana, thanks for sending the contract over. I read through it and [uh] the renewal terms look good. I [just] have one question about section four.",
+		said: "Hi Dana, thanks for sending the contract over. I read through it and [uh,] the renewal terms look good. I have one question about section four.",
 		clean:
-			"Hi Dana,\n\nThanks for sending the contract over. I read through it and the renewal terms look good. I have one question about section 4.",
+			"Hi Dana, thanks for sending the contract over. I read through it and the renewal terms look good. I have one question about section four.",
 	},
 	vscode: {
 		label: "VS Code",
 		menu: "Code",
 		title: "useAuth.ts — northwind-web",
-		said: "Refactor the use auth hook so it [uh, like,] retries the token refresh once before logging the user out.",
+		said: "Refactor the use auth hook so it [uh,] retries the token refresh once before logging the user out.",
 		clean:
 			"Refactor the useAuth hook so it retries the token refresh once before logging the user out.",
 	},
@@ -48,9 +48,9 @@ const DEMOS: Record<
 		label: "Notes",
 		menu: "Notes",
 		title: "Notes",
-		said: "[Okay so] talked about the Q3 roadmap. Sam wants the onboarding redesign first, [um,] then the billing page.",
+		said: "[Um,] talked about the Q3 roadmap. Sam wants the onboarding redesign first, [uh,] then the billing page.",
 		clean:
-			"Talked about the Q3 roadmap.\n• Onboarding redesign first\n• Billing page after",
+			"Talked about the Q3 roadmap. Sam wants the onboarding redesign first, then the billing page.",
 	},
 };
 const ORDER: AppId[] = ["slack", "mail", "vscode", "notes"];
