@@ -1,37 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import {
-	AppleMessagesIcon,
-	AppleNotesIcon,
-	ArcIcon,
-	BearIcon,
-	CalendarIcon,
-	ChromeIcon,
-	ConfluenceIcon,
-	DiscordIcon,
-	ExcelIcon,
-	FigmaIcon,
-	FinderIcon,
-	FirefoxIcon,
-	GmailIcon,
-	GoogleDocsIcon,
-	InstagramIcon,
-	JiraIcon,
-	LinearIcon,
-	NotionIcon,
-	ObsidianIcon,
-	OutlookIcon,
-	SketchIcon,
-	SlackIcon,
-	SpotifyIcon,
-	SuperhumanIcon,
-	TeamsIcon,
-	TelegramIcon,
-	TerminalIcon,
-	TrelloIcon,
-	TwitterIcon,
-	VSCodeIcon,
-} from "@/components/app-icons";
 import Footer from "@/components/Footer";
 import { CleanupSection } from "@/components/home/cleanup-section";
 import {
@@ -170,72 +137,6 @@ export const Route = createFileRoute("/")({
 });
 
 // ---------------------------------------------------------------------------
-// 8. App Compatibility Carousel
-// ---------------------------------------------------------------------------
-const APP_ICONS_ROW1: { icon: ReactNode; label: string }[] = [
-	{ icon: <SlackIcon className="w-3.5 h-3.5" />, label: "Slack" },
-	{ icon: <VSCodeIcon className="w-3.5 h-3.5" />, label: "VS Code" },
-	{ icon: <GmailIcon className="w-3.5 h-3.5" />, label: "Gmail" },
-	{ icon: <NotionIcon className="w-3.5 h-3.5" />, label: "Notion" },
-	{ icon: <ArcIcon className="w-3.5 h-3.5" />, label: "Arc" },
-	{ icon: <FigmaIcon className="w-3.5 h-3.5" />, label: "Figma" },
-	{ icon: <LinearIcon className="w-3.5 h-3.5" />, label: "Linear" },
-	{ icon: <DiscordIcon className="w-3.5 h-3.5" />, label: "Discord" },
-	{ icon: <AppleMessagesIcon className="w-3.5 h-3.5" />, label: "Messages" },
-	{ icon: <AppleNotesIcon className="w-3.5 h-3.5" />, label: "Notes" },
-	{ icon: <GoogleDocsIcon className="w-3.5 h-3.5" />, label: "Google Docs" },
-	{ icon: <FinderIcon className="w-3.5 h-3.5" />, label: "Finder" },
-	{ icon: <ExcelIcon className="w-3.5 h-3.5" />, label: "Excel" },
-	{ icon: <TerminalIcon className="w-3.5 h-3.5" />, label: "Terminal" },
-	{ icon: <OutlookIcon className="w-3.5 h-3.5" />, label: "Outlook" },
-];
-const APP_ICONS_ROW2: { icon: ReactNode; label: string }[] = [
-	{ icon: <TwitterIcon className="w-3.5 h-3.5" />, label: "Twitter" },
-	{ icon: <TelegramIcon className="w-3.5 h-3.5" />, label: "Telegram" },
-	{ icon: <TrelloIcon className="w-3.5 h-3.5" />, label: "Trello" },
-	{ icon: <JiraIcon className="w-3.5 h-3.5" />, label: "Jira" },
-	{ icon: <ConfluenceIcon className="w-3.5 h-3.5" />, label: "Confluence" },
-	{ icon: <SpotifyIcon className="w-3.5 h-3.5" />, label: "Spotify" },
-	{ icon: <InstagramIcon className="w-3.5 h-3.5" />, label: "Instagram" },
-	{ icon: <TeamsIcon className="w-3.5 h-3.5" />, label: "Teams" },
-	{ icon: <ObsidianIcon className="w-3.5 h-3.5" />, label: "Obsidian" },
-	{ icon: <BearIcon className="w-3.5 h-3.5" />, label: "Bear" },
-	{ icon: <SketchIcon className="w-3.5 h-3.5" />, label: "Sketch" },
-	{ icon: <ChromeIcon className="w-3.5 h-3.5" />, label: "Chrome" },
-	{ icon: <FirefoxIcon className="w-3.5 h-3.5" />, label: "Firefox" },
-	{ icon: <SuperhumanIcon className="w-3.5 h-3.5" />, label: "Superhuman" },
-	{ icon: <CalendarIcon className="w-3.5 h-3.5" />, label: "Calendar" },
-];
-
-function AppCarousel() {
-	const renderItems = (apps: typeof APP_ICONS_ROW1) =>
-		apps.map((app, i) => (
-			<span
-				key={i}
-				className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-card border border-border rounded-xl text-sm text-foreground/80 font-medium shrink-0"
-			>
-				<span className="text-muted-foreground">{app.icon}</span>
-				{app.label}
-			</span>
-		));
-
-	return (
-		<div className="space-y-3 overflow-hidden">
-			{/* Row 1 - scrolls left */}
-			<div className="flex w-max animate-marquee">
-				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW1)}</div>
-				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW1)}</div>
-			</div>
-			{/* Row 2 - scrolls right */}
-			<div className="flex w-max animate-marquee-reverse">
-				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW2)}</div>
-				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW2)}</div>
-			</div>
-		</div>
-	);
-}
-
-// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 function HomePage() {
@@ -251,18 +152,6 @@ function HomePage() {
 
 			<PrivacySection />
 			<ModelsSection />
-
-			<section className="py-16 md:py-20 px-6 border-y border-border">
-				<div className="max-w-5xl mx-auto">
-					<h2 className="text-center text-lg font-bold text-foreground mb-2">
-						Voice dictation in any Mac app
-					</h2>
-					<p className="text-center text-sm text-muted-foreground mb-8">
-						Parrot pastes into any app on your Mac. No plugins, no integrations.
-					</p>
-					<AppCarousel />
-				</div>
-			</section>
 
 			<DetailsSection />
 

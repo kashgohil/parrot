@@ -1,7 +1,6 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { DoodleBackground } from "../components/doodle-background";
 import Header from "../components/Header";
 
 import appCss from "../styles.css?url";
@@ -126,7 +125,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<body>
 				<Header />
 				<div className="relative min-h-screen">
-					<DoodleBackground opacity={0.07} />
 					<div className="relative">{children}</div>
 				</div>
 				{import.meta.env.DEV && (
