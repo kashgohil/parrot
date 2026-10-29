@@ -167,7 +167,7 @@ function MainShell() {
 			/>
 
 			{/* Left Sidebar */}
-			<div className="hidden md:flex md:w-[240px] lg:w-[260px] bg-primary flex-col relative overflow-hidden shrink-0">
+			<div className="hidden md:flex md:w-[240px] lg:w-[260px] bg-rail flex-col relative overflow-hidden shrink-0">
 				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
 				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
 				<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl" />

@@ -356,7 +356,7 @@ function ProcessingContent({ label }: { label: string }) {
 			transition={{ duration: 0.12 }}
 			className="flex items-center gap-2"
 		>
-			<span className="w-2.5 h-2.5 border-2 border-white/40 border-t-white rounded-full animate-spin-fast" />
+			<span className="w-2.5 h-2.5 border-2 border-current/40 border-t-current rounded-full animate-spin-fast" />
 			<span>{label}</span>
 		</motion.span>
 	);

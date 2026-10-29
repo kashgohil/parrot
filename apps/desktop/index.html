@@ -1,10 +1,19 @@
 <!doctype html>
-<html lang="en" class="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/parrot-transparent.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Parrot</title>
+    <script>
+      // Set light/dark before the first paint (see src/lib/appearance.ts).
+      (function () {
+        var pref = "system";
+        try { pref = localStorage.getItem("parrot-appearance") || "system"; } catch (e) {}
+        var dark = pref === "dark" || (pref !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.add(dark ? "dark" : "light");
+      })();
+    </script>
   </head>
 
   <body>

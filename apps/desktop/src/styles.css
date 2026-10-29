@@ -8,7 +8,17 @@
 	--radius: 0.75rem;
 }
 
+/* The sidebar and onboarding rail: brand green in light mode, deep green in
+   dark mode, so the white text on it stays readable in both. */
+:root {
+	--app-rail: var(--brand-leaf-strong);
+}
+:root.dark {
+	--app-rail: #17311e;
+}
+
 @theme inline {
+	--color-rail: var(--app-rail);
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);

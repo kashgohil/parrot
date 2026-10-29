@@ -28,7 +28,11 @@ import {
 	Trash2,
 	PenLine,
 	AlertTriangle,
+	Monitor,
+	Moon,
+	Sun,
 } from "lucide-react";
+import { type Appearance, cachedAppearance, setAppearance } from "@/lib/appearance";
 import {
 	isMissing,
 	openPermissionSettings,
@@ -54,6 +58,7 @@ const SECTIONS = [
 	{ id: "writing", label: "Writing" },
 	{ id: "apps", label: "Per-app" },
 	{ id: "data", label: "Data" },
+	{ id: "appearance", label: "Appearance" },
 ] as const;
 
 // Selection-card styling shared across every "pick one" list on the page.
@@ -70,7 +75,7 @@ function RadioDot({ selected }: { selected: boolean }) {
 		<span
 			className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
 				selected
-					? "border-primary bg-primary text-white"
+					? "border-primary bg-primary text-primary-foreground"
 					: "border-border bg-background"
 			}`}
 		>
@@ -1107,6 +1112,11 @@ function SettingsPage() {
 						</div>
 					</section>
 				</div>
+
+				{/* Appearance — applies and saves immediately, no Save needed */}
+				<div id="sec-appearance" className="scroll-mt-24">
+					<AppearanceSection />
+				</div>
 			</div>
 
 			{/* Sticky save bar — appears only when there are unsaved changes */}
@@ -1476,5 +1486,68 @@ function PermissionRow({
 				</Button>
 			)}
 		</div>
+	);
+}
+
+const APPEARANCE_OPTIONS: {
+	value: Appearance;
+	title: string;
+	desc: string;
+	icon: typeof Sun;
+}[] = [
+	{ value: "system", title: "System", desc: "Match your Mac's appearance.", icon: Monitor },
+	{ value: "light", title: "Light", desc: "Always light.", icon: Sun },
+	{ value: "dark", title: "Dark", desc: "Always dark.", icon: Moon },
+];
+
+function AppearanceSection() {
+	const [appearance, setLocal] = useState<Appearance>(cachedAppearance);
+
+	return (
+		<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+			<div className="flex items-start gap-4 mb-4">
+				<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+					<Monitor className="w-5 h-5 text-primary" />
+				</div>
+				<div className="flex-1">
+					<h2 className="text-base font-semibold text-foreground">Appearance</h2>
+					<p className="text-sm text-muted-foreground">
+						Light, dark, or follow macOS. Changes apply right away.
+					</p>
+				</div>
+			</div>
+			<div role="radiogroup" aria-label="Appearance" className="grid gap-2 sm:grid-cols-3">
+				{APPEARANCE_OPTIONS.map((opt) => {
+					const selected = appearance === opt.value;
+					const Icon = opt.icon;
+					return (
+						<button
+							key={opt.value}
+							type="button"
+							role="radio"
+							aria-checked={selected}
+							onClick={() => {
+								setLocal(opt.value);
+								setAppearance(opt.value).catch((e) =>
+									console.error("Failed to save appearance", e),
+								);
+							}}
+							className={cardCls(selected)}
+						>
+							<div className="flex items-start gap-3">
+								<RadioDot selected={selected} />
+								<div className="min-w-0">
+									<p className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+										<Icon className="w-3.5 h-3.5 text-muted-foreground" />
+										{opt.title}
+									</p>
+									<p className="text-xs text-muted-foreground mt-0.5">{opt.desc}</p>
+								</div>
+							</div>
+						</button>
+					);
+				})}
+			</div>
+		</section>
 	);
 }

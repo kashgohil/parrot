@@ -4,6 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { HudOrb } from "./components/hud-orb";
 import { AuthProvider } from "./lib/auth";
+import { startAppearance } from "./lib/appearance";
 import { routeTree } from "./routeTree.gen";
 import "./styles.css";
 
@@ -20,6 +21,8 @@ declare module "@tanstack/react-router" {
 // tree, and avoids the SPA-fallback fragility of TanStack Router's path
 // history when loading a non-root URL in production.
 const isHudWindow = getCurrentWindow().label === "hud";
+
+startAppearance();
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement,
