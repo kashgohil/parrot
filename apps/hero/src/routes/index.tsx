@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Download, Minus, X as XIcon } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import type { ReactNode } from "react";
 import {
 	AppleMessagesIcon,
@@ -35,6 +35,10 @@ import {
 } from "@/components/app-icons";
 import Footer from "@/components/Footer";
 import { CleanupSection } from "@/components/home/cleanup-section";
+import {
+	CompareSection,
+	DetailsSection,
+} from "@/components/home/details-compare";
 import { DictationDemo } from "@/components/home/dictation-demo";
 import { Hero } from "@/components/home/hero";
 import {
@@ -273,87 +277,6 @@ function AppCarousel() {
 }
 
 // ---------------------------------------------------------------------------
-// 12. Competitor Comparison Table
-// ---------------------------------------------------------------------------
-function ComparisonTable() {
-	const rows: {
-		feature: string;
-		parrot: boolean | "partial" | "soon";
-		wispr: boolean | "partial" | "soon";
-		macos: boolean | "partial" | "soon";
-	}[] = [
-		{ feature: "Local mode", parrot: true, wispr: false, macos: false },
-		{
-			feature: "Fast on-device dictation",
-			parrot: true,
-			wispr: false,
-			macos: "partial",
-		},
-		{ feature: "Custom vocabulary", parrot: true, wispr: true, macos: false },
-		{ feature: "AI cleanup", parrot: true, wispr: true, macos: false },
-		{
-			feature: "Privacy (no data sent)",
-			parrot: true,
-			wispr: false,
-			macos: "partial",
-		},
-		{ feature: "Offline support", parrot: true, wispr: false, macos: true },
-		{ feature: "Free, for life", parrot: true, wispr: false, macos: true },
-	];
-
-	const renderCell = (val: boolean | "partial" | "soon") => {
-		if (val === true)
-			return <Check size={16} className="text-primary mx-auto" />;
-		if (val === false)
-			return <XIcon size={16} className="text-red-400/60 mx-auto" />;
-		if (val === "partial")
-			return <Minus size={16} className="text-amber-400 mx-auto" />;
-		if (val === "soon")
-			return (
-				<span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-primary/15 text-primary">
-					Soon
-				</span>
-			);
-		return null;
-	};
-
-	return (
-		<div className="max-w-3xl mx-auto overflow-x-auto">
-			<table className="w-full text-sm">
-				<thead>
-					<tr className="border-b-2 border-border">
-						<th className="text-left py-3 px-4 text-muted-foreground font-medium">
-							Feature
-						</th>
-						<th className="text-center py-3 px-4 font-bold text-primary">
-							Parrot
-						</th>
-						<th className="text-center py-3 px-4 text-muted-foreground font-medium">
-							Wispr Flow
-						</th>
-						<th className="text-center py-3 px-4 text-muted-foreground font-medium">
-							macOS Dictation
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					{rows.map((row, i) => (
-						<tr key={i} className="border-b border-border">
-							<td className="py-3 px-4 text-foreground">{row.feature}</td>
-							<td className="py-3 px-4 text-center">
-								{renderCell(row.parrot)}
-							</td>
-							<td className="py-3 px-4 text-center">{renderCell(row.wispr)}</td>
-							<td className="py-3 px-4 text-center">{renderCell(row.macos)}</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
-	);
-}
-
-// ---------------------------------------------------------------------------
 // FAQ
 // ---------------------------------------------------------------------------
 const FAQ: { q: string; a: ReactNode }[] = [
@@ -447,63 +370,9 @@ function HomePage() {
 				</div>
 			</section>
 
-			<section className="py-20 md:py-24 bg-muted/30 px-6">
-				<div className="max-w-4xl mx-auto">
-					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-8">
-						{[
-							{
-								title: "Global hotkey",
-								desc: "Press fn from anywhere. Customizable in settings.",
-							},
-							{
-								title: "Auto-paste",
-								desc: "Text lands at your cursor the moment you're done speaking.",
-							},
-							{
-								title: "Fast & accurate",
-								desc: "Snappy time-to-text with strong first-pass accuracy on names and jargon.",
-							},
-							{
-								title: "Live preview",
-								desc: "Watch your words form in the HUD while you hold the hotkey.",
-							},
-							{
-								title: "Free, for life",
-								desc: "No subscription, no word caps, no trial that expires.",
-							},
-							{
-								title: "Fully offline",
-								desc: "After one download, dictate without internet — or an account.",
-							},
-						].map((f, i) => (
-							<div key={i} className="border-l-2 border-primary/25 pl-4">
-								<h3 className="text-[15px] font-semibold text-foreground mb-1">
-									{f.title}
-								</h3>
-								<p className="text-sm text-muted-foreground leading-relaxed">
-									{f.desc}
-								</p>
-							</div>
-						))}
-					</div>
-				</div>
-			</section>
+			<DetailsSection />
 
-			<section className="py-20 md:py-28 px-6 border-y border-border">
-				<div className="max-w-4xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						How we compare
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
-						Parrot vs the alternatives
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px] mb-12">
-						Free for life, fully local, and built for the daily dictation loop —
-						not a metered cloud trial.
-					</p>
-					<ComparisonTable />
-				</div>
-			</section>
+			<CompareSection />
 
 			<section className="py-20 md:py-28 bg-muted/30 px-6">
 				<div className="max-w-2xl mx-auto">
