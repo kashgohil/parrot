@@ -1,18 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-	ArrowRight,
-	Bot,
-	Check,
-	Clipboard,
-	Download,
-	Laptop,
-	Lock,
-	Mic,
-	Minus,
-	Monitor,
-	X as XIcon,
-	Zap,
-} from "lucide-react";
+import { ArrowRight, Check, Download, Minus, X as XIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import {
 	AppleMessagesIcon,
@@ -54,6 +41,10 @@ import {
 	VocabularySection,
 	WritingStyleSection,
 } from "@/components/home/personal-sections";
+import {
+	ModelsSection,
+	PrivacySection,
+} from "@/components/home/privacy-models";
 import {
 	Accordion,
 	AccordionContent,
@@ -214,131 +205,6 @@ export const Route = createFileRoute("/")({
 		],
 	}),
 });
-
-// ---------------------------------------------------------------------------
-// 5. Dual Mode Spotlight (major section)
-// ---------------------------------------------------------------------------
-function DualModeSpotlight() {
-	const steps: { icon: ReactNode; label: string }[] = [
-		{ icon: <Mic size={20} className="text-primary" />, label: "Mic" },
-		{
-			icon: <Laptop size={20} className="text-foreground/70" />,
-			label: "Your Mac",
-		},
-		{
-			icon: <Zap size={20} className="text-amber-500" />,
-			label: "Transcribe",
-		},
-		{ icon: <Bot size={20} className="text-violet-500" />, label: "Cleanup" },
-		{
-			icon: <Clipboard size={20} className="text-foreground/70" />,
-			label: "Clipboard",
-		},
-	];
-
-	const stats = [
-		{ value: "Snappy", label: "time to paste" },
-		{ value: "0 bytes", label: "data sent" },
-		{ value: "Free", label: "for life" },
-	];
-
-	const features = [
-		"Fast, accurate first-pass dictation",
-		"Audio never leaves your device",
-		"No account, no sign-in",
-		"Works fully offline",
-		"Custom vocabulary & AI cleanup",
-		"Dictation history",
-	];
-
-	return (
-		<div className="max-w-4xl mx-auto">
-			{/* Mode label */}
-			<div className="flex items-center justify-center gap-3 mb-10">
-				<div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-foreground text-background shadow-md">
-					<Monitor size={16} />
-					On your Mac
-				</div>
-				<span className="text-sm text-muted-foreground">Private by design</span>
-			</div>
-
-			{/* Data flow diagram */}
-			<div className="relative rounded-2xl border-2 border-primary/30 bg-primary/3 p-6 md:p-8 mb-8">
-				<div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 rounded-full">
-					<Lock size={11} className="text-primary" />
-					<span className="text-[10px] font-bold text-primary uppercase tracking-wider">
-						On device
-					</span>
-				</div>
-
-				<div className="flex items-center justify-between gap-2 overflow-x-auto py-4">
-					{steps.map((step, i) => (
-						<div key={`local-${i}`} className="contents">
-							<div className="flex flex-col items-center gap-1.5 shrink-0">
-								<div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center shadow-sm">
-									{step.icon}
-								</div>
-								<span className="text-[10px] font-medium text-muted-foreground whitespace-nowrap">
-									{step.label}
-								</span>
-							</div>
-							{i < steps.length - 1 && (
-								<svg
-									width="32"
-									height="12"
-									className="shrink-0 mx-1"
-									viewBox="0 0 32 12"
-								>
-									<line
-										x1="0"
-										y1="6"
-										x2="24"
-										y2="6"
-										stroke="#7cb342"
-										strokeWidth="2"
-										strokeDasharray="4 3"
-										className="animate-flow-line"
-									/>
-									<polygon points="24,2 32,6 24,10" fill="#7cb342" />
-								</svg>
-							)}
-						</div>
-					))}
-				</div>
-			</div>
-
-			{/* Stats */}
-			<div className="grid grid-cols-3 gap-4 mb-8">
-				{stats.map((s, i) => (
-					<div
-						key={`local-stat-${i}`}
-						className="text-center bg-card rounded-xl border border-border p-4"
-					>
-						<p className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
-							{s.value}
-						</p>
-						<p className="text-xs text-muted-foreground mt-1">{s.label}</p>
-					</div>
-				))}
-			</div>
-
-			{/* Feature list */}
-			<div className="bg-card rounded-2xl border border-border overflow-hidden">
-				{features.map((label, i) => (
-					<div
-						key={label}
-						className={`flex items-center justify-between px-5 py-3 ${
-							i > 0 ? "border-t border-border" : ""
-						}`}
-					>
-						<span className="text-sm text-foreground">{label}</span>
-						<Check size={16} className="text-primary" />
-					</div>
-				))}
-			</div>
-		</div>
-	);
-}
 
 // ---------------------------------------------------------------------------
 // 8. App Compatibility Carousel
@@ -566,21 +432,8 @@ function HomePage() {
 			<VocabularySection />
 			<WritingStyleSection />
 
-			<section className="py-20 md:py-28 px-6">
-				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						On your Mac
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
-						Fast. Private. Free for life.
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px]">
-						Transcription and cleanup run entirely on-device. Nothing leaves
-						your Mac — and you never pay a subscription to keep dictating.
-					</p>
-				</div>
-				<DualModeSpotlight />
-			</section>
+			<PrivacySection />
+			<ModelsSection />
 
 			<section className="py-16 md:py-20 px-6 border-y border-border">
 				<div className="max-w-5xl mx-auto">

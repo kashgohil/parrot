@@ -43,3 +43,50 @@ export const CLEANUP_TIERS: readonly CleanupTier[] = [
 			"Fewer rejected suggestions in our tests. Slowest, and uses the most memory.",
 	},
 ];
+
+/**
+ * Speech models, mirroring `models()` in
+ * apps/desktop/src-tauri/src/speech_capabilities.rs (checked by models.test.ts).
+ */
+export type SpeechModel = {
+	id: string;
+	model: string;
+	/** Download size exactly as the app shows it. */
+	size: string;
+	recommended: boolean;
+	blurb: string;
+	experimental?: string;
+};
+
+export const SPEECH_MODELS: readonly SpeechModel[] = [
+	{
+		id: "parakeet-v3",
+		model: "Parakeet TDT 0.6B v3",
+		size: "~450 MB",
+		recommended: true,
+		blurb:
+			"The fast default. Detects 25 European languages, including English, on its own.",
+	},
+	{
+		id: "large-v3-turbo",
+		model: "Whisper large-v3-turbo",
+		size: "~600 MB",
+		recommended: false,
+		blurb: "100 languages, including Hindi and Cantonese, with language hints.",
+		experimental: "Hindi–English mixing",
+	},
+	{
+		id: "small-q5_1",
+		model: "Whisper small",
+		size: "~181 MiB",
+		recommended: false,
+		blurb: "99 languages with lower memory use than turbo.",
+	},
+	{
+		id: "small.en",
+		model: "Whisper small.en",
+		size: "~500 MB",
+		recommended: false,
+		blurb: "English only.",
+	},
+];
