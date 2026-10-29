@@ -271,3 +271,86 @@ pre {
 .blog-content td strong {
 	color: var(--foreground);
 }
+
+/* ---- Homepage dictation demo (ISSUE-1332) ---- */
+
+@keyframes caret {
+	50% {
+		opacity: 0;
+	}
+}
+
+@utility animate-caret {
+	animation: caret 1.05s steps(1) infinite;
+}
+
+@keyframes land {
+	from {
+		background-color: var(--brand-lime);
+	}
+	to {
+		background-color: transparent;
+	}
+}
+
+@utility animate-land {
+	animation: land 1.6s ease-out;
+}
+
+@keyframes hud-bar {
+	0%,
+	100% {
+		height: 4px;
+	}
+	50% {
+		height: 12px;
+	}
+}
+
+@utility animate-hud-bar {
+	animation: hud-bar 0.9s ease-in-out infinite;
+}
+
+/* A macOS-like wallpaper in the parrot's greens; it is a picture, so it keeps its own colors. */
+.demo-wallpaper {
+	--wall-a: #c9e77c;
+	--wall-b: #4e9a3a;
+	--wall-c: #f2e58a;
+	--wall-d: #1f4d2a;
+	background:
+		radial-gradient(60% 80% at 12% 10%, var(--wall-a) 0%, transparent 60%),
+		radial-gradient(50% 70% at 92% 18%, var(--wall-c) 0%, transparent 55%),
+		radial-gradient(70% 90% at 70% 100%, var(--wall-b) 0%, transparent 65%),
+		var(--wall-d);
+}
+
+/* Syntax colors and the Slack sidebar inside the mock windows. */
+:root {
+	--demo-slack: #3f1d44;
+	--tok-k: #a3368f;
+	--tok-s: #2f7a3a;
+	--tok-f: #2457a6;
+}
+
+@media (prefers-color-scheme: dark) {
+	.demo-wallpaper {
+		--wall-a: #6e9a35;
+		--wall-b: #23552a;
+		--wall-c: #8c7d2e;
+		--wall-d: #0e2416;
+	}
+	:root {
+		--demo-slack: #2a1430;
+		--tok-k: #e28bd3;
+		--tok-s: #8fd08a;
+		--tok-f: #8db6f2;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.animate-caret,
+	.animate-hud-bar,
+	.animate-land {
+		animation: none;
+	}
+}
