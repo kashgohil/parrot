@@ -6,7 +6,7 @@ import { Panel } from "@/components/panel";
 import { SectionHead } from "@/components/section-head";
 import { PARROT_FACTS } from "@/lib/parrot-facts";
 
-const WRAP = "mx-auto max-w-[1160px] px-4 md:px-8";
+const WRAP = "mx-auto max-w-[1224px] px-4 md:px-8";
 const SECTION = "pb-[clamp(72px,10vw,128px)]";
 const LINK =
 	"text-ink-2 underline decoration-border underline-offset-[3px] hover:text-foreground";

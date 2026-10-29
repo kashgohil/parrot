@@ -16,7 +16,7 @@ export type ReleaseState =
 	| { status: "no-release" }
 	| { status: "error" };
 
-const WRAP = "mx-auto max-w-[1160px] px-4 md:px-8";
+const WRAP = "mx-auto max-w-[1224px] px-4 md:px-8";
 const SECTION = "pb-[clamp(72px,10vw,128px)]";
 const LINK =
 	"text-ink-2 underline decoration-border underline-offset-[3px] hover:text-foreground";

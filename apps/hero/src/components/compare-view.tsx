@@ -2,15 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
 import Footer from "@/components/Footer";
-import { DownloadButton } from "@/components/home/hero";
 import { SectionHead } from "@/components/section-head";
+import { TryParrot } from "@/components/try-parrot";
 import { type Competitor, competitors } from "@/lib/competitors";
-import { PARROT_FACTS } from "@/lib/parrot-facts";
 import { cn } from "@/lib/utils";
 
 // Every fact on these pages comes from lib/competitors.ts.
 
-const WRAP = "mx-auto max-w-[1160px] px-4 md:px-8";
+const WRAP = "mx-auto max-w-[1224px] px-4 md:px-8";
 const SECTION = "pb-[clamp(72px,10vw,128px)]";
 const HERO = `${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(56px,8vw,88px)]`;
 const LINK =
@@ -279,33 +278,22 @@ export function CompetitorView({
 				</div>
 			</section>
 
-			<section className="border-t border-border">
-				<div
-					className={`${WRAP} grid justify-items-start gap-6 py-[clamp(64px,9vw,112px)]`}
-				>
-					<h2 className="m-0 text-[clamp(2rem,5vw,3.5rem)] font-bold leading-none tracking-[-0.035em]">
-						Try Parrot. <span className="text-quiet">It's free.</span>
-					</h2>
-					<DownloadButton />
-					<p className="m-0 text-sm text-muted-foreground">
-						{PARROT_FACTS.osRequirement} · no account · {PARROT_FACTS.price}
-						{alternativesSlug && (
-							<>
-								{" "}
-								· Comparing several options? See the{" "}
-								<Link
-									to="/blog/$slug"
-									params={{ slug: alternativesSlug }}
-									className={LINK}
-								>
-									best {c.shortName} alternatives
-								</Link>
-								.
-							</>
-						)}
-					</p>
-				</div>
-			</section>
+			<TryParrot>
+				{alternativesSlug && (
+					<>
+						{" "}
+						· Comparing several options? See the{" "}
+						<Link
+							to="/blog/$slug"
+							params={{ slug: alternativesSlug }}
+							className={LINK}
+						>
+							best {c.shortName} alternatives
+						</Link>
+						.
+					</>
+				)}
+			</TryParrot>
 
 			<section className={`${WRAP} pb-[clamp(56px,8vw,88px)]`}>
 				<p className="m-0 mb-3 font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
