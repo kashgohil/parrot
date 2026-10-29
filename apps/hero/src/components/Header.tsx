@@ -1,127 +1,137 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+
+// Homepage sections are linked by hash so the nav works from every page.
+const NAV = [
+	{ label: "Cleanup", to: "/", hash: "cleanup" },
+	{ label: "Privacy", to: "/", hash: "privacy" },
+	{ label: "Models", to: "/", hash: "models" },
+	{ label: "Compare", to: "/compare" },
+	{ label: "FAQ", to: "/", hash: "faq" },
+	{ label: "Blog", to: "/blog" },
+] as const;
 
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
+
+	useEffect(() => {
+		if (!isOpen) return;
+		const onKey = (e: KeyboardEvent) => e.key === "Escape" && setIsOpen(false);
+		window.addEventListener("keydown", onKey);
+		return () => window.removeEventListener("keydown", onKey);
+	}, [isOpen]);
+
 	return (
 		<>
-			<div className="sticky top-0 z-40 w-full px-4 pt-3">
-				<header className="max-w-5xl mx-auto flex items-center justify-between px-4 py-2.5 bg-foreground/3 backdrop-blur-xl rounded-2xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+			<header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-border/70 bg-background/85 backdrop-blur-[14px] backdrop-saturate-150">
+				<div className="mx-auto flex h-16 max-w-[1224px] items-center gap-7 px-4 md:px-8">
 					<Link
 						to="/"
-						className="flex items-center gap-2 no-underline text-foreground hover:opacity-80 transition-opacity"
+						className="inline-flex items-center gap-2.5 text-[19px] font-extrabold tracking-[-0.03em] text-foreground no-underline"
 					>
 						<img
-							src="/parrot-transparent.png"
-							alt="Parrot"
-							className="w-8 h-8"
+							src="/parrot-192.png"
+							alt=""
+							width={30}
+							height={30}
+							className="size-[30px]"
 						/>
-						<span className="text-2xl font-bold tracking-tight">Parrot</span>
+						Parrot
 					</Link>
 
-					<nav className="hidden md:flex items-center">
-						<div className="flex items-center gap-0.5 bg-muted/60 rounded-xl p-1">
-							{(
-								[
-									{ to: "/", label: "Home" },
-									{ to: "/about", label: "About" },
-									{ to: "/compare", label: "Compare" },
-									{ to: "/blog", label: "Blog" },
-								] as const
-							).map((link) => (
-								<Link
-									key={link.to}
-									to={link.to}
-									className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors no-underline"
-									activeProps={{
-										className:
-											"px-3.5 py-1.5 rounded-lg text-[13px] font-medium bg-card text-foreground shadow-sm no-underline",
-									}}
-								>
-									{link.label}
-								</Link>
-							))}
-						</div>
+					<nav
+						aria-label="Main"
+						className="hidden items-center gap-6 text-[14.5px] md:flex"
+					>
+						{NAV.map((item) => (
+							<Link
+								key={item.label}
+								to={item.to}
+								hash={"hash" in item ? item.hash : undefined}
+								activeOptions={{ includeHash: true }}
+								className="text-ink-2 no-underline transition-colors hover:text-foreground"
+								activeProps={
+									"hash" in item ? undefined : { className: "text-foreground" }
+								}
+							>
+								{item.label}
+							</Link>
+						))}
 					</nav>
 
-					<div className="hidden md:block">
-						<Link
-							to="/download"
-							className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-foreground text-background text-[13px] font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
-						>
-							Download
-							<ArrowRight size={13} strokeWidth={2.5} />
-						</Link>
-					</div>
+					<Link
+						to="/download"
+						className="ml-auto inline-flex h-9 items-center rounded-full bg-foreground px-4 text-sm font-semibold text-background no-underline transition-[background-color,transform] hover:bg-primary hover:text-primary-foreground active:scale-[0.97]"
+					>
+						Download
+					</Link>
 
 					<button
+						type="button"
 						onClick={() => setIsOpen(true)}
-						className="p-1.5 rounded-lg hover:bg-muted transition-colors md:hidden"
+						className="-mr-1.5 rounded-lg p-1.5 transition-colors hover:bg-muted md:hidden"
 						aria-label="Open menu"
+						aria-expanded={isOpen}
 					>
 						<Menu size={20} className="text-foreground" />
 					</button>
-				</header>
-			</div>
+				</div>
+			</header>
 
 			{isOpen && (
-				<div
-					className="fixed inset-0 bg-foreground/10 backdrop-blur-sm z-40 md:hidden"
+				<button
+					type="button"
+					aria-label="Close menu"
+					tabIndex={-1}
+					className="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-sm md:hidden"
 					onClick={() => setIsOpen(false)}
 				/>
 			)}
 
 			<aside
-				className={`fixed top-0 right-0 h-full w-[280px] bg-card z-50 transform transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col shadow-[-8px_0_30px_rgba(0,0,0,0.08)] ${
+				aria-label="Menu"
+				aria-hidden={!isOpen}
+				inert={!isOpen}
+				className={`fixed top-0 right-0 z-50 flex h-full w-[280px] flex-col bg-card pt-[env(safe-area-inset-top,0px)] pr-[env(safe-area-inset-right,0px)] shadow-[-8px_0_30px_rgba(0,0,0,0.08)] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden ${
 					isOpen ? "translate-x-0" : "translate-x-full"
 				}`}
 			>
 				<div className="flex items-center justify-between p-5">
-					<span className="text-sm font-bold text-foreground tracking-tight">
+					<span className="text-sm font-bold tracking-tight text-foreground">
 						Menu
 					</span>
 					<button
+						type="button"
 						onClick={() => setIsOpen(false)}
-						className="p-1.5 rounded-lg hover:bg-muted transition-colors"
+						className="rounded-lg p-1.5 transition-colors hover:bg-muted"
 						aria-label="Close menu"
 					>
 						<X size={18} className="text-foreground" />
 					</button>
 				</div>
 
-				<nav className="flex-1 px-3">
-					{(
-						[
-							{ to: "/", label: "Home" },
-							{ to: "/about", label: "About" },
-							{ to: "/compare", label: "Compare" },
-							{ to: "/blog", label: "Blog" },
-						] as const
-					).map((link) => (
+				<nav aria-label="Mobile" className="flex-1 px-3">
+					{NAV.map((item) => (
 						<Link
-							key={link.to}
-							to={link.to}
+							key={item.label}
+							to={item.to}
+							hash={"hash" in item ? item.hash : undefined}
 							onClick={() => setIsOpen(false)}
-							className="block px-3 py-3 rounded-xl text-[15px] text-foreground hover:bg-muted transition-colors no-underline"
-							activeProps={{
-								className:
-									"block px-3 py-3 rounded-xl text-[15px] font-semibold text-foreground bg-muted no-underline",
-							}}
+							className="block rounded-xl px-3 py-3 text-[15px] text-foreground no-underline transition-colors hover:bg-muted"
 						>
-							{link.label}
+							{item.label}
 						</Link>
 					))}
 				</nav>
 
-				<div className="p-4 border-t border-border">
+				<div className="border-t border-border p-4">
 					<Link
 						to="/download"
 						onClick={() => setIsOpen(false)}
-						className="flex items-center justify-center gap-2 w-full py-2.5 bg-foreground text-background text-sm font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
+						className="flex w-full items-center justify-center rounded-full bg-foreground py-2.5 text-sm font-semibold text-background no-underline transition-colors hover:bg-primary hover:text-primary-foreground"
 					>
-						Download
-						<ArrowRight size={14} />
+						Download for Mac
 					</Link>
 				</div>
 			</aside>
