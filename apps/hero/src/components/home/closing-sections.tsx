@@ -113,7 +113,7 @@ export function BlogStrip() {
 								<span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
 									{post.category} · {post.readingTime}
 								</span>
-								<span className="text-[16px] font-semibold leading-snug text-foreground group-hover:text-leaf">
+								<span className="text-[16px] font-semibold leading-snug text-foreground group-hover:text-success">
 									{post.title}
 								</span>
 								<span className="line-clamp-2 text-sm text-muted-foreground">
@@ -127,7 +127,7 @@ export function BlogStrip() {
 							<span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
 								Compare
 							</span>
-							<span className="text-[16px] font-semibold leading-snug text-foreground group-hover:text-leaf">
+							<span className="text-[16px] font-semibold leading-snug text-foreground group-hover:text-success">
 								Parrot vs the alternatives
 							</span>
 							<span className="text-sm text-muted-foreground">

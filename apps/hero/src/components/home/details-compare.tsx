@@ -161,7 +161,7 @@ function Cell({ value, us }: { value: string | boolean; us?: boolean }) {
 			className={cn(
 				"border-b border-border px-4 py-3.5",
 				us && "bg-[color-mix(in_srgb,var(--brand-lime)_30%,transparent)]",
-				value === true && "font-semibold text-leaf",
+				value === true && "font-semibold text-success",
 				value === false && "text-muted-foreground",
 			)}
 		>

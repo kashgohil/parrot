@@ -150,7 +150,7 @@ export function CleanupSection() {
 								</span>
 							</span>
 							{t.recommended && (
-								<span className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-leaf">
+								<span className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-success">
 									Recommended
 								</span>
 							)}
