@@ -2,7 +2,7 @@
 
 > Parrot is a free, local-first voice dictation app for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud, no API keys.
 
-Generated: 2026-08-04. Prefer live pages for the latest UI; this file is a consolidated text dump for LLM context. Index: https://tryparrot.app/llms.txt
+Generated: 2026-10-29. Prefer live pages for the latest UI; this file is a consolidated text dump for LLM context. Index: https://tryparrot.app/llms.txt
 
 # Product overview
 
@@ -40,33 +40,33 @@ Voice dictation for Mac. 3x faster than typing, with AI cleanup, custom vocabula
 
 ## FAQ
 
-**Q: Does Parrot work fully offline?**
+**Q: Does Parrot work offline?**
 
-Yes. Parrot runs transcription and AI cleanup entirely on your Mac. Everything happens on-device — zero data leaves your computer. You download what you need once, then no internet is required. Ideal for private work, legal documents, or anyone who values control.
+Yes. During setup Parrot downloads the speech and cleanup models you choose. After that, recording, transcription and cleanup all run on your Mac with no internet, no account and no API keys. When you are online, Parrot also checks GitHub for app updates.
 
-**Q: How fast is it?**
+**Q: Does my voice leave my Mac?**
 
-Built for daily use: release the hotkey and text lands at your cursor with minimal wait. Accuracy is tuned for first-pass names, jargon, and everyday speech — not a raw draft you have to rewrite.
+No. Audio, transcripts, vocabulary and history stay on your Mac, and recordings are kept only if you turn on Save audio. The only network requests Parrot makes are model downloads and the update check.
 
-**Q: How does the cleanup work?**
+**Q: Which Macs does it run on?**
 
-After transcription, an optional AI pass fixes grammar, removes filler words (um, uh, like), and applies your custom vocabulary and writing style. The output reads like you wrote it, not dictated it. It runs entirely on your Mac.
+Macs with Apple Silicon (M1 and later). Intel Macs are not supported.
 
-**Q: What about my privacy?**
+**Q: Is it actually free?**
 
-Everything stays on your Mac — audio, transcripts, history, vocabulary. Nothing is sent to our servers.
+Yes, free for life, with no word limit and no subscription. Everything runs on your Mac, so there is no server bill to pass on. For comparison, Wispr Flow Pro is $15/mo Pro and Superwhisper Pro is $8.49/mo Pro (prices checked July 2026).
 
-**Q: Is it really free?**
+**Q: Which languages work?**
 
-Yes — Free for life. Unlimited local dictation with AI cleanup and custom vocabulary. No word caps and no subscription. Wispr Flow Pro is $15/mo Pro; Superwhisper Pro is $8.49/mo Pro (checked July 2026).
+Parakeet, the default speech model, detects 25 European languages, including English, on its own. Whisper turbo covers 100 languages, including Hindi, and has an experimental mode for mixed Hindi and English. Accuracy can drop when you switch languages within one recording.
 
-**Q: Does it work on Intel Macs?**
+**Q: What does cleanup change?**
 
-Not currently. Parrot is built for Apple Silicon (M1 and later) and the on-device performance that makes dictation feel instant.
+It removes clear filler like um and uh, resolves corrections you make out loud, fixes punctuation and capitals, and follows your vocabulary and writing style. It keeps your words and your language. You can turn it off, or have Parrot paste first and clean up in the background.
 
-**Q: Will my audio be uploaded?**
+**Q: Can I use my own model?**
 
-No. Parrot runs entirely on your Mac — transcription, cleanup, and history all stay on-device. Nothing is sent to any server.
+Yes. If you run Ollama, point Parrot's cleanup at any model you have installed. Parrot talks to Ollama on your Mac, not over the internet.
 
 Download: https://tryparrot.app/download
 About: https://tryparrot.app/about
