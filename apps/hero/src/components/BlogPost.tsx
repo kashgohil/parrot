@@ -107,7 +107,7 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 			</header>
 
 			<div
-				className={`${WRAP} grid gap-12 border-t border-border pt-[clamp(32px,5vw,48px)] pb-[clamp(56px,8vw,96px)] lg:grid-cols-[minmax(0,1fr)_220px]`}
+				className={`mx-4 md:mx-[max(32px,calc((100%-1160px)/2))] grid gap-12 border-t border-border pt-[clamp(32px,5vw,48px)] pb-[clamp(56px,8vw,96px)] lg:grid-cols-[minmax(0,1fr)_220px]`}
 			>
 				<article ref={body} className="blog-content min-w-0">
 					<Suspense
