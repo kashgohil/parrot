@@ -157,8 +157,8 @@ function VocabularyPage() {
 			{suggestions.length > 0 && (
 				<div className="bg-card rounded-2xl border border-border p-5 space-y-3">
 					<div className="flex items-start gap-3">
-						<div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
-							<Sparkles className="w-5 h-5 text-amber-600" />
+						<div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center shrink-0">
+							<Sparkles className="w-5 h-5 text-warning" />
 						</div>
 						<div>
 							<h2 className="text-base font-semibold text-foreground">
@@ -251,8 +251,8 @@ function VocabularyPage() {
 			{entries.length > 0 && (
 				<div className="bg-card rounded-2xl border border-border p-5">
 					<div className="flex items-start gap-4 mb-4">
-						<div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
-							<BookA className="w-5 h-5 text-purple-500" />
+						<div className="w-10 h-10 rounded-xl bg-leaf/10 flex items-center justify-center shrink-0">
+							<BookA className="w-5 h-5 text-leaf" />
 						</div>
 						<div className="flex-1">
 							<div className="flex items-center justify-between">

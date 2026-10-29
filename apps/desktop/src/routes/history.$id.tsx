@@ -197,7 +197,7 @@ function TranscriptionDetailPage() {
 								variant="outline"
 								size="sm"
 								onClick={() => void copyText()}
-								className={copied ? "text-green-600" : undefined}
+								className={copied ? "text-success" : undefined}
 							>
 								{copied ? (
 									<Check className="w-4 h-4 mr-1.5" />

@@ -590,7 +590,7 @@ function HomePage() {
 															variant="ghost"
 															size="sm"
 															onClick={() => copyEntry(entry)}
-															className={`h-8 px-2 text-xs ${isCopied ? "text-green-600" : "hover:text-primary"}`}
+															className={`h-8 px-2 text-xs ${isCopied ? "text-success" : "hover:text-primary"}`}
 														>
 															{isCopied ? (
 																<Check className="w-3.5 h-3.5" />

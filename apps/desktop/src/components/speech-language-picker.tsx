@@ -77,7 +77,7 @@ export function SpeechLanguagePicker({
 					: capabilities ? "Custom model coverage is unknown. The loaded model checks language compatibility before decoding." : "Loading model capabilities…"}
 			</p>
 			{unsupported && (
-				<div role="alert" className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 space-y-2">
+				<div role="alert" className="rounded-xl border border-warning/30 bg-warning/5 p-3 space-y-2">
 					<p className="text-sm">{selectedLanguage?.name ?? language} is not supported by this model. Your preference is retained, but transcription cannot use it until you select a compatible model or Auto-detect.</p>
 					<p className="text-xs text-muted-foreground">Choose a model below to download it if needed and switch. Your language preference stays the same; use Save changes to persist edits.</p>
 					<div className="flex flex-wrap gap-2">
@@ -98,7 +98,7 @@ export function SpeechLanguagePicker({
             </Select>
             <p className="text-xs text-muted-foreground">The optional Hindi–English hint uses a mixed writing example. It requires Whisper turbo with Auto-detect or Hindi; compact is not supported. Check names, numbers and negation. Custom vocabulary can change the result. Real-speaker validation is pending.</p>
             {(unknownHint || (promptStyle !== "default" && !canUseMixedHint)) && (
-                <p role="alert" className="text-xs text-amber-600 dark:text-amber-400">This saved recognition hint cannot run with the current model or language. Choose Default, or Whisper turbo with Auto-detect or Hindi.</p>
+                <p role="alert" className="text-xs text-warning">This saved recognition hint cannot run with the current model or language. Choose Default, or Whisper turbo with Auto-detect or Hindi.</p>
             )}
 			<p className="text-xs text-muted-foreground">Language coverage does not guarantee accuracy when languages are mixed in one recording. Broader mixed-language evaluation is still pending.</p>
 		</div>

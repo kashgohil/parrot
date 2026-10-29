@@ -79,7 +79,7 @@ function RadioDot({ selected }: { selected: boolean }) {
 	);
 }
 
-type PillTone = "muted" | "primary" | "accent" | "emerald";
+type PillTone = "muted" | "primary" | "warning" | "success";
 
 function Pill({
 	children,
@@ -91,8 +91,8 @@ function Pill({
 	const tones: Record<PillTone, string> = {
 		muted: "bg-muted text-muted-foreground",
 		primary: "bg-primary/10 text-primary",
-		accent: "bg-warning/10 text-warning",
-		emerald: "bg-emerald-500/10 text-emerald-700",
+		warning: "bg-warning-soft text-warning",
+		success: "bg-success-soft text-success",
 	};
 	return (
 		<span
@@ -677,7 +677,7 @@ function SettingsPage() {
 												<p className="text-sm font-medium text-foreground flex items-center gap-2 flex-wrap">
 													{tier.name}
 													{selected ? (
-														<Pill tone="emerald">Active</Pill>
+														<Pill tone="success">Active</Pill>
 													) : tier.recommended ? (
 														<Pill tone="primary">Recommended</Pill>
 													) : null}
@@ -854,7 +854,7 @@ function SettingsPage() {
 													<p className="text-sm font-medium text-foreground flex items-center gap-2 flex-wrap">
 														{tier.name}
 														{selected ? (
-															<Pill tone="emerald">Active</Pill>
+															<Pill tone="success">Active</Pill>
 														) : tier.recommended ? (
 															<Pill tone="primary">Recommended</Pill>
 														) : null}
@@ -1450,8 +1450,8 @@ function PermissionRow({
 						<span
 							className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
 								granted
-									? "bg-emerald-500/10 text-emerald-700"
-									: "bg-amber-500/15 text-amber-800"
+									? "bg-success/10 text-success"
+									: "bg-warning/15 text-warning"
 							}`}
 						>
 							{statusLabel}

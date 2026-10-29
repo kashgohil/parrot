@@ -122,7 +122,7 @@ function SystemCheckStep({
 				<p className="text-sm text-muted-foreground">Checking your system...</p>
 				{showTimeoutMessage && (
 					<div className="text-center max-w-sm">
-						<p className="text-sm text-yellow-600 mb-2">
+						<p className="text-sm text-warning mb-2">
 							Taking longer than expected...
 						</p>
 						<p className="text-xs text-muted-foreground">
@@ -162,14 +162,14 @@ function SystemCheckStep({
 
 			{allGood ? (
 				<div className="p-4 bg-primary/10 border border-primary/30 rounded-lg">
-					<div className="flex items-center gap-2 text-[#5a8a2e]">
+					<div className="flex items-center gap-2 text-success">
 						<Check className="w-5 h-5" />
 						<span className="font-medium">Everything looks good!</span>
 					</div>
 				</div>
 			) : (
-				<div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-					<div className="flex items-start gap-2 text-yellow-700">
+				<div className="p-4 bg-warning-soft border border-warning/30 rounded-lg">
+					<div className="flex items-start gap-2 text-warning">
 						<AlertCircle className="w-5 h-5 mt-0.5" />
 						<div>
 							<p className="font-medium">Some requirements need attention</p>
@@ -211,7 +211,7 @@ function RequirementItem({
 				<div>
 					<div className="text-sm font-medium">{label}</div>
 					<div className="text-sm text-muted-foreground">{value}</div>
-					{detail && <div className="text-xs text-red-500 mt-1">{detail}</div>}
+					{detail && <div className="text-xs text-danger mt-1">{detail}</div>}
 				</div>
 			</div>
 			<div
@@ -219,8 +219,8 @@ function RequirementItem({
 					status === "success"
 						? "bg-primary"
 						: status === "warning"
-							? "bg-yellow-500"
-							: "bg-red-500"
+							? "bg-warning"
+							: "bg-danger"
 				}`}
 			/>
 		</div>
@@ -715,7 +715,7 @@ function InstallationProgressStep({
 								status.type === "completed"
 									? "bg-primary/15 text-primary"
 									: status.type === "failed"
-										? "bg-red-100 text-red-600"
+										? "bg-danger-soft text-danger"
 										: "bg-primary/10 text-primary"
 							}`}
 						>
@@ -779,12 +779,12 @@ function InstallationProgressStep({
 
 			{/* Failure banner */}
 			{status.type === "failed" && (
-				<div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+				<div className="p-4 bg-danger-soft border border-danger/30 rounded-lg">
 					<div className="flex items-start gap-2">
-						<X className="w-5 h-5 text-red-600 mt-0.5" />
+						<X className="w-5 h-5 text-danger mt-0.5" />
 						<div className="flex-1">
-							<p className="font-medium text-red-900">Setup failed</p>
-							<p className="text-sm text-red-700 mt-1 break-words">
+							<p className="font-medium text-danger">Setup failed</p>
+							<p className="text-sm text-danger mt-1 break-words">
 								{status.error}
 							</p>
 							<Button
@@ -801,10 +801,10 @@ function InstallationProgressStep({
 			)}
 
 			{/* Educational tooltip */}
-			<div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+			<div className="p-4 bg-info-soft border border-info/30 rounded-lg">
 				<div className="flex items-start gap-2">
-					<AlertCircle className="w-4 h-4 text-blue-600 mt-0.5" />
-					<div className="text-sm text-blue-700">
+					<AlertCircle className="w-4 h-4 text-info mt-0.5" />
+					<div className="text-sm text-info">
 						{getEducationalTooltip(progress.step)}
 					</div>
 				</div>
@@ -865,23 +865,23 @@ function ManualInterventionStep({
 
 	return (
 		<div className="space-y-6">
-			<div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+			<div className="p-4 bg-warning-soft border border-warning/30 rounded-lg">
 				<div className="flex items-start gap-3">
-					<AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" />
+					<AlertCircle className="w-5 h-5 text-warning mt-0.5 shrink-0" />
 					<div className="flex-1 min-w-0">
-						<h3 className="font-medium text-yellow-900">
+						<h3 className="font-medium text-warning">
 							{instructions.title}
 						</h3>
-						<p className="text-sm text-yellow-700 mt-1">
+						<p className="text-sm text-warning mt-1">
 							{instructions.description}
 						</p>
 						{instructions.error_detail && (
 							<details className="mt-3 group">
-								<summary className="text-xs text-yellow-700/80 hover:text-yellow-900 cursor-pointer select-none list-none flex items-center gap-1">
+								<summary className="text-xs text-warning/80 hover:text-warning cursor-pointer select-none list-none flex items-center gap-1">
 									<ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90" />
 									Technical details
 								</summary>
-								<pre className="mt-2 p-2 bg-yellow-100/60 border border-yellow-200 rounded text-[11px] text-yellow-900 font-mono whitespace-pre-wrap break-words max-h-32 overflow-y-auto">
+								<pre className="mt-2 p-2 bg-warning-soft/60 border border-warning/30 rounded text-[11px] text-warning font-mono whitespace-pre-wrap break-words max-h-32 overflow-y-auto">
 									{instructions.error_detail}
 								</pre>
 							</details>
@@ -1010,13 +1010,13 @@ function CompletionStep({
 					className={`flex items-center gap-3 p-3 rounded-lg border ${
 						testResults?.transcription
 							? "bg-primary/10 border-primary/30"
-							: "bg-red-50 border-red-200"
+							: "bg-danger-soft border-danger/30"
 					}`}
 				>
 					{testResults?.transcription ? (
 						<Check className="w-5 h-5 text-primary" />
 					) : (
-						<X className="w-5 h-5 text-red-600" />
+						<X className="w-5 h-5 text-danger" />
 					)}
 					<div>
 						<div className="font-medium">Dictation</div>
@@ -1032,13 +1032,13 @@ function CompletionStep({
 					className={`flex items-center gap-3 p-3 rounded-lg border ${
 						testResults?.cleanup
 							? "bg-primary/10 border-primary/30"
-							: "bg-red-50 border-red-200"
+							: "bg-danger-soft border-danger/30"
 					}`}
 				>
 					{testResults?.cleanup ? (
 						<Check className="w-5 h-5 text-primary" />
 					) : (
-						<X className="w-5 h-5 text-red-600" />
+						<X className="w-5 h-5 text-danger" />
 					)}
 					<div>
 						<div className="font-medium">Text Cleanup</div>
@@ -1052,10 +1052,10 @@ function CompletionStep({
 			</div>
 
 			{!allTestsPassed && (
-				<div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+				<div className="p-4 bg-warning-soft border border-warning/30 rounded-lg">
 					<div className="flex items-start gap-2">
-						<AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
-						<div className="text-sm text-yellow-700">
+						<AlertCircle className="w-5 h-5 text-warning mt-0.5" />
+						<div className="text-sm text-warning">
 							<p className="font-medium">Some tests failed</p>
 							<p className="mt-1">
 								You can still use Parrot, but some features may not work. Check

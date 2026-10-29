@@ -29,24 +29,24 @@ const SLIDES = [
 		title: "AI Cleanup",
 		description:
 			"Your transcription is automatically cleaned up using AI — grammar, punctuation, and style. No manual editing needed.",
-		color: "bg-blue-500",
-		gradient: "from-blue-500/20 to-blue-500/5",
+		color: "bg-info",
+		gradient: "from-info/20 to-info/5",
 	},
 	{
 		icon: History,
 		title: "View History",
 		description:
 			"All your dictations are saved. Search through past transcriptions and copy them anytime from the History tab.",
-		color: "bg-purple-500",
-		gradient: "from-purple-500/20 to-purple-500/5",
+		color: "bg-leaf",
+		gradient: "from-leaf/20 to-leaf/5",
 	},
 	{
 		icon: User,
 		title: "Personalize",
 		description:
 			"Add custom vocabulary (names, technical terms) and describe your writing style in the Vocabulary tab for better results.",
-		color: "bg-orange-500",
-		gradient: "from-orange-500/20 to-orange-500/5",
+		color: "bg-beak",
+		gradient: "from-beak/20 to-beak/5",
 	},
 ];
 
@@ -106,7 +106,7 @@ function TourPage() {
 								shadow-lg shadow-${slide.color}/25
 							`}
 						>
-							<Icon className="w-12 h-12 text-white" />
+							<Icon className="w-12 h-12 text-paper" />
 						</div>
 
 						<div className="space-y-3 max-w-md">

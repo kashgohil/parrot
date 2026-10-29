@@ -443,8 +443,8 @@ function RecordingOverlay() {
 
 function ProcessingOverlay({ label }: { label: string }) {
 	return (
-		<div className="fixed top-5 right-5 z-1000 flex items-center gap-2.5 px-[18px] py-2.5 rounded-2xl text-sm font-semibold text-white bg-blue-500 shadow-lg">
-			<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin-fast" />
+		<div className="fixed top-5 right-5 z-1000 flex items-center gap-2.5 px-[18px] py-2.5 rounded-2xl text-sm font-semibold text-info-soft bg-info shadow-lg">
+			<div className="w-4 h-4 border-2 border-current/30 border-t-current rounded-full animate-spin-fast" />
 			<span>{label}</span>
 		</div>
 	);
@@ -478,7 +478,7 @@ function ResultOverlay({
 						{display}
 					</p>
 					{result.pasted ? (
-						<Badge className="mt-3 bg-green-500/10 text-green-600 border-green-500/20 hover:bg-green-500/20">
+						<Badge className="mt-3 bg-success/10 text-success border-success/20 hover:bg-success/20">
 							Pasted successfully
 						</Badge>
 					) : (
@@ -593,12 +593,12 @@ function PermissionsBanner() {
 			: "Without it, Parrot can't paste your dictation into other apps.";
 
 	return (
-		<div className="shrink-0 relative z-10 border-b border-amber-200 bg-amber-50 text-amber-900 px-4 py-2.5">
+		<div className="shrink-0 relative z-10 border-b border-warning/30 bg-warning-soft text-warning px-4 py-2.5">
 			<div className="max-w-3xl mx-auto flex items-center gap-3">
 				<AlertTriangle className="w-4 h-4 shrink-0" />
 				<div className="flex-1 min-w-0">
 					<p className="text-sm font-medium leading-tight">{headline}</p>
-					<p className="text-xs text-amber-800/80 leading-tight mt-0.5">
+					<p className="text-xs text-warning/80 leading-tight mt-0.5">
 						{detail}
 					</p>
 				</div>
@@ -609,7 +609,7 @@ function PermissionsBanner() {
 							showError(e, { context: "opening System Settings" }),
 						);
 					}}
-					className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md bg-amber-900 text-amber-50 hover:bg-amber-950 transition-colors"
+					className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md bg-warning text-warning-soft hover:bg-warning/90 transition-colors"
 				>
 					Open Settings
 					<ExternalLink className="w-3 h-3" />
@@ -624,7 +624,7 @@ function PermissionsBanner() {
 							return next;
 						})
 					}
-					className="text-amber-900/60 hover:text-amber-900 text-base px-1"
+					className="text-warning/60 hover:text-warning text-base px-1"
 				>
 					×
 				</button>
@@ -686,14 +686,14 @@ function ParakeetUpgradeBanner() {
 	}
 
 	return (
-		<div className="shrink-0 relative z-10 border-b border-sky-200 bg-sky-50 text-sky-950 px-4 py-2.5">
+		<div className="shrink-0 relative z-10 border-b border-info/30 bg-info-soft text-info px-4 py-2.5">
 			<div className="max-w-3xl mx-auto flex items-center gap-3">
-				<Sparkles className="w-4 h-4 shrink-0 text-sky-600" />
+				<Sparkles className="w-4 h-4 shrink-0 text-info" />
 				<div className="flex-1 min-w-0">
 					<p className="text-sm font-medium leading-tight">
 						Parakeet dictation is available
 					</p>
-					<p className="text-xs text-sky-900/75 leading-tight mt-0.5">
+					<p className="text-xs text-info/75 leading-tight mt-0.5">
 						{progress ||
 							"Parakeet auto-detects 25 European languages, including English. Language hints do not pin decoding. Your Whisper model stays on disk."}
 					</p>
@@ -702,7 +702,7 @@ function ParakeetUpgradeBanner() {
 					type="button"
 					disabled={busy}
 					onClick={() => void upgrade()}
-					className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md bg-sky-700 text-white hover:bg-sky-800 disabled:opacity-60 transition-colors shrink-0"
+					className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md bg-info text-info-soft hover:bg-info/90 disabled:opacity-60 transition-colors shrink-0"
 				>
 					{busy ? (
 						<>
@@ -716,7 +716,7 @@ function ParakeetUpgradeBanner() {
 				<button
 					type="button"
 					onClick={() => navigate({ to: "/settings" })}
-					className="text-xs font-medium text-sky-800/80 hover:text-sky-950 underline shrink-0 hidden sm:inline"
+					className="text-xs font-medium text-info/80 hover:text-info underline shrink-0 hidden sm:inline"
 				>
 					Settings
 				</button>
@@ -729,7 +729,7 @@ function ParakeetUpgradeBanner() {
 							localStorage.setItem(PARAKEET_BANNER_DISMISS_KEY, "1");
 						}
 					}}
-					className="text-sky-900/50 hover:text-sky-950 text-base px-1"
+					className="text-info/50 hover:text-info text-base px-1"
 				>
 					×
 				</button>
