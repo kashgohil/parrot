@@ -52,6 +52,7 @@ import {
 	VSCodeIcon,
 } from "@/components/app-icons";
 import Footer from "@/components/Footer";
+import { Hero } from "@/components/home/hero";
 import {
 	Accordion,
 	AccordionContent,
@@ -1257,92 +1258,14 @@ const FAQ: { q: string; a: ReactNode }[] = [
 function HomePage() {
 	return (
 		<div className="min-h-screen">
-			<section className="relative px-6 pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
-				<div className="max-w-6xl mx-auto grid md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 items-center">
-					{/* Left - copy */}
-					<div>
-						<div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/8 border border-primary/15 rounded-full mb-6">
-							<div className="w-1.5 h-1.5 rounded-full bg-primary" />
-							<span className="text-xs font-semibold text-primary tracking-wide">
-								macOS &middot; Free for life &middot; Faster &amp; sharper
-							</span>
-						</div>
-
-						<h1 className="text-[2.75rem] md:text-[3.5rem] lg:text-[4rem] font-black text-foreground tracking-tight leading-[1.08] mb-5">
-							Voice dictation for Mac.
-							<br />
-							<span className="text-primary">Local-first. Free.</span>
-						</h1>
-
-						<p className="text-lg text-muted-foreground leading-relaxed max-w-md mb-8">
-							{PARROT_FACTS.entity} Unlike Wispr Flow ({wispr.pricing.theirPaid}
-							) and Superwhisper ({superwhisper.pricing.theirPaid}), Parrot is{" "}
-							{PARROT_FACTS.price}, runs transcription fully on-device, and
-							pastes into any Mac app via a global hotkey. Custom vocabulary, AI
-							cleanup, full history.
-						</p>
-
-						<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-							<Link
-								to="/download"
-								className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline shadow-[0_4px_20px_rgba(0,0,0,0.08)]"
-							>
-								<Download size={18} strokeWidth={2.5} />
-								Download for Mac
-								<ArrowRight size={16} strokeWidth={2.5} />
-							</Link>
-							<span className="text-xs text-muted-foreground">
-								Free for life &middot; Apple Silicon
-							</span>
-						</div>
-
-						{/* Hotkey hint */}
-						<div className="mt-8 flex items-center gap-3">
-							<div className="flex items-center gap-1">
-								<kbd className="px-2 py-1 bg-muted border border-border rounded-md text-[11px] font-bold text-foreground/70 shadow-[0_1px_0_0] shadow-border/50">
-									fn
-								</kbd>
-							</div>
-							<span className="text-xs text-muted-foreground">
-								to start dictating
-							</span>
-						</div>
-					</div>
-
-					{/* Right - typing race */}
-					<div className="max-w-md md:max-w-none mx-auto w-full">
-						<DictationDemo />
-					</div>
+			<Hero>
+				{/* Interim: the old demo holds the slot until ISSUE-1332 lands. */}
+				<div id="demo" className="mx-auto mt-[clamp(40px,6vw,64px)] max-w-xl">
+					<DictationDemo />
 				</div>
-			</section>
+			</Hero>
 
-			<div className="border-y border-border bg-muted/30 py-4 overflow-hidden">
-				<div className="flex w-max animate-marquee">
-					{[0, 1].map((setIndex) => (
-						<div key={setIndex} className="flex gap-8 pr-8">
-							{[
-								"Send the quarterly report to the team by Friday.",
-								"Dear Dr. Patel, thank you for the referral.",
-								"Schedule a follow-up with the client next Tuesday.",
-								"The defendant's counsel filed a motion to dismiss.",
-								"Remind me to buy oat milk and sourdough.",
-								"Let's reschedule the standup to 3pm.",
-								"Patient presents with elevated BP, recommend full metabolic panel.",
-								"Can you review the PR and merge when ready?",
-							].map((phrase, i) => (
-								<span
-									key={`${setIndex}-${i}`}
-									className="text-[13px] text-muted-foreground/60 font-mono whitespace-nowrap"
-								>
-									{phrase}
-								</span>
-							))}
-						</div>
-					))}
-				</div>
-			</div>
-
-			<section id="demo" className="py-20 md:py-28 px-6">
+			<section id="cleanup" className="py-20 md:py-28 px-6">
 				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
 					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
 						Cleanup
@@ -1669,8 +1592,7 @@ function HomePage() {
 								href: "/blog/superwhisper-alternatives",
 								tag: "Alternatives",
 								title: "Best Superwhisper alternatives",
-								blurb:
-									"Local Mac dictation with cleanup — without a Pro plan.",
+								blurb: "Local Mac dictation with cleanup — without a Pro plan.",
 							},
 							{
 								href: "/blog/free-voice-dictation-apps-2026",
@@ -1690,8 +1612,7 @@ function HomePage() {
 								href: "/blog/best-voice-dictation-apps-mac-2026",
 								tag: "Comparison",
 								title: "Best voice dictation apps for Mac",
-								blurb:
-									"Parrot, macOS Dictation, Otter, Dragon, and more.",
+								blurb: "Parrot, macOS Dictation, Otter, Dragon, and more.",
 							},
 							{
 								href: "/compare",
