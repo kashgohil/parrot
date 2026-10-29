@@ -2,7 +2,6 @@
 
 # Allow all crawlers
 User-agent: *
-Disallow: /og-templates/
 
 # Explicitly allow AI search engine bots
 User-agent: GPTBot
