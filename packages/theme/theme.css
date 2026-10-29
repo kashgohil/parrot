@@ -1,0 +1,231 @@
+/*
+ * Parrot theme — the single source of colors and fonts for apps/hero and apps/desktop.
+ *
+ * Import it right after Tailwind:
+ *   @import "tailwindcss";
+ *   @import "@parrot/theme/theme.css";
+ *
+ * Brand tokens (--brand-*) carry the palette. The shadcn names both apps already use
+ * (--background, --primary, ...) are mapped onto them, so existing classes keep working.
+ *
+ * Modes: light by default; dark follows prefers-color-scheme unless the root has
+ * `.light`, and `.dark` on the root forces dark. The dark values are written twice
+ * (media query + class) because plain CSS cannot share a block between them —
+ * keep the two dark blocks identical. contrast.test.ts checks every text pair.
+ */
+
+:root {
+	/* Neutrals: a slight green bias toward the leaf accent. */
+	--brand-paper: #f5f7f1;
+	--brand-surface: #ffffff;
+	--brand-sunk: #ecf0e6;
+	--brand-ink: #121b14;
+	--brand-ink-2: #3a473d;
+	--brand-muted: #5e6c60;
+	--brand-quiet: #7d8a7f;
+	--brand-line: #dae1d3;
+
+	/* Greens from the parrot; red from its beak. */
+	--brand-leaf: #3a8a2c;
+	--brand-leaf-strong: #2c6e21;
+	--brand-on-leaf: #ffffff;
+	--brand-lime: #dcefa0;
+	--brand-lime-ink: #2b4410;
+	--brand-beak: #e2432c;
+	--brand-beak-soft: #fbe3dd;
+
+	/* Dark band (privacy section) — dark in both modes. */
+	--brand-band: #10251a;
+	--brand-band-2: #183326;
+	--brand-band-ink: #eaf2e4;
+	--brand-band-muted: #9db3a2;
+	--brand-band-line: #2a4636;
+	--brand-band-accent: #b9e27a;
+
+	/* Status. Text color on its own -soft background. */
+	--brand-success: #2c6e21;
+	--brand-success-soft: #e3f1d6;
+	--brand-warning: #8a5a00;
+	--brand-warning-soft: #fbefd3;
+	--brand-danger: #bf3520;
+	--brand-danger-soft: #fbe3dd;
+	--brand-info: #2457a6;
+	--brand-info-soft: #e1eaf7;
+
+	/* shadcn mapping */
+	--background: var(--brand-paper);
+	--foreground: var(--brand-ink);
+	--card: var(--brand-surface);
+	--card-foreground: var(--brand-ink);
+	--popover: var(--brand-surface);
+	--popover-foreground: var(--brand-ink);
+	--primary: var(--brand-leaf-strong);
+	--primary-foreground: var(--brand-on-leaf);
+	--secondary: var(--brand-sunk);
+	--secondary-foreground: var(--brand-ink);
+	--muted: var(--brand-sunk);
+	--muted-foreground: var(--brand-muted);
+	--accent: var(--brand-sunk);
+	--accent-foreground: var(--brand-ink);
+	--destructive: var(--brand-danger);
+	--border: var(--brand-line);
+	--input: var(--brand-line);
+	--ring: var(--brand-leaf);
+	--chart-1: var(--brand-leaf);
+	--chart-2: var(--brand-info);
+	--chart-3: var(--brand-warning);
+	--chart-4: var(--brand-beak);
+	--chart-5: var(--brand-muted);
+	--sidebar: var(--brand-sunk);
+	--sidebar-foreground: var(--brand-ink);
+	--sidebar-primary: var(--brand-leaf-strong);
+	--sidebar-primary-foreground: var(--brand-on-leaf);
+	--sidebar-accent: var(--brand-surface);
+	--sidebar-accent-foreground: var(--brand-ink);
+	--sidebar-border: var(--brand-line);
+	--sidebar-ring: var(--brand-leaf);
+
+	color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not(.light) {
+		--brand-paper: #0d130f;
+		--brand-surface: #141c16;
+		--brand-sunk: #18211a;
+		--brand-ink: #e8efe4;
+		--brand-ink-2: #c3cec2;
+		--brand-muted: #8e9c90;
+		--brand-quiet: #7a887c;
+		--brand-line: #263128;
+		--brand-leaf: #8dcb5b;
+		--brand-leaf-strong: #a6db76;
+		--brand-on-leaf: #0d130f;
+		--brand-lime: #2d4318;
+		--brand-lime-ink: #d6f0a8;
+		--brand-beak: #f26a52;
+		--brand-beak-soft: #3a1e19;
+		--brand-band: #0a1a10;
+		--brand-band-2: #12271a;
+		--brand-band-ink: #eaf2e4;
+		--brand-band-muted: #93aa98;
+		--brand-band-line: #244030;
+		--brand-band-accent: #b9e27a;
+		--brand-success: #8dcb5b;
+		--brand-success-soft: #1e2e16;
+		--brand-warning: #e8b04b;
+		--brand-warning-soft: #33270f;
+		--brand-danger: #f26a52;
+		--brand-danger-soft: #3a1e19;
+		--brand-info: #8db6f2;
+		--brand-info-soft: #17243a;
+		color-scheme: dark;
+	}
+}
+
+:root.dark {
+	--brand-paper: #0d130f;
+	--brand-surface: #141c16;
+	--brand-sunk: #18211a;
+	--brand-ink: #e8efe4;
+	--brand-ink-2: #c3cec2;
+	--brand-muted: #8e9c90;
+	--brand-quiet: #7a887c;
+	--brand-line: #263128;
+	--brand-leaf: #8dcb5b;
+	--brand-leaf-strong: #a6db76;
+	--brand-on-leaf: #0d130f;
+	--brand-lime: #2d4318;
+	--brand-lime-ink: #d6f0a8;
+	--brand-beak: #f26a52;
+	--brand-beak-soft: #3a1e19;
+	--brand-band: #0a1a10;
+	--brand-band-2: #12271a;
+	--brand-band-ink: #eaf2e4;
+	--brand-band-muted: #93aa98;
+	--brand-band-line: #244030;
+	--brand-band-accent: #b9e27a;
+	--brand-success: #8dcb5b;
+	--brand-success-soft: #1e2e16;
+	--brand-warning: #e8b04b;
+	--brand-warning-soft: #33270f;
+	--brand-danger: #f26a52;
+	--brand-danger-soft: #3a1e19;
+	--brand-info: #8db6f2;
+	--brand-info-soft: #17243a;
+	color-scheme: dark;
+}
+
+@theme {
+	--font-sans:
+		-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
+	--font-display:
+		-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
+	--font-mono:
+		ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+
+	--color-paper: var(--brand-paper);
+	--color-surface: var(--brand-surface);
+	--color-sunk: var(--brand-sunk);
+	--color-ink: var(--brand-ink);
+	--color-ink-2: var(--brand-ink-2);
+	--color-quiet: var(--brand-quiet);
+	--color-line: var(--brand-line);
+	--color-leaf: var(--brand-leaf);
+	--color-leaf-strong: var(--brand-leaf-strong);
+	--color-on-leaf: var(--brand-on-leaf);
+	--color-lime: var(--brand-lime);
+	--color-lime-ink: var(--brand-lime-ink);
+	--color-beak: var(--brand-beak);
+	--color-beak-soft: var(--brand-beak-soft);
+	--color-band: var(--brand-band);
+	--color-band-2: var(--brand-band-2);
+	--color-band-ink: var(--brand-band-ink);
+	--color-band-muted: var(--brand-band-muted);
+	--color-band-line: var(--brand-band-line);
+	--color-band-accent: var(--brand-band-accent);
+	--color-success: var(--brand-success);
+	--color-success-soft: var(--brand-success-soft);
+	--color-warning: var(--brand-warning);
+	--color-warning-soft: var(--brand-warning-soft);
+	--color-danger: var(--brand-danger);
+	--color-danger-soft: var(--brand-danger-soft);
+	--color-info: var(--brand-info);
+	--color-info-soft: var(--brand-info-soft);
+}
