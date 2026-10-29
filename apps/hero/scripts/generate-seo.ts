@@ -11,8 +11,16 @@ import {
 	type FaqItem,
 	getCompetitor,
 } from "../src/lib/competitors.ts";
+import { RELEASES } from "../src/lib/changelog.ts";
 import { HOME_FAQ } from "../src/lib/home-faq.ts";
 import { PARROT_FACTS } from "../src/lib/parrot-facts.ts";
+
+// Fail the build when the changelog and the app version disagree.
+if (RELEASES[0]?.version !== `v${PARROT_FACTS.version}`) {
+	throw new Error(
+		`Changelog's newest release is ${RELEASES[0]?.version}, but PARROT_FACTS.version is ${PARROT_FACTS.version}. Update src/lib/changelog.ts.`,
+	);
+}
 
 const SITE_URL = "https://tryparrot.app";
 const SITE_NAME = "Parrot";
