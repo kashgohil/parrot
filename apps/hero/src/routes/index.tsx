@@ -4,21 +4,16 @@ import {
 	Bot,
 	Check,
 	Clipboard,
-	Code,
 	Download,
 	Laptop,
 	Lock,
-	Mail,
-	MessageSquare,
 	Mic,
 	Minus,
 	Monitor,
-	Stethoscope,
 	X as XIcon,
 	Zap,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
 import {
 	AppleMessagesIcon,
 	AppleNotesIcon,
@@ -55,6 +50,10 @@ import Footer from "@/components/Footer";
 import { CleanupSection } from "@/components/home/cleanup-section";
 import { DictationDemo } from "@/components/home/dictation-demo";
 import { Hero } from "@/components/home/hero";
+import {
+	VocabularySection,
+	WritingStyleSection,
+} from "@/components/home/personal-sections";
 import {
 	Accordion,
 	AccordionContent,
@@ -217,146 +216,6 @@ export const Route = createFileRoute("/")({
 });
 
 // ---------------------------------------------------------------------------
-// 4. Interactive Voice Demo Playground
-// ---------------------------------------------------------------------------
-const VOICE_SCENARIOS: {
-	label: string;
-	icon: ReactNode;
-	appName: string;
-	words: string;
-}[] = [
-	{
-		label: "Email",
-		icon: <Mail size={18} />,
-		appName: "Gmail",
-		words:
-			"Hi team, just a quick update on the Q3 launch. We're tracking ahead of schedule and should have the beta ready by next Wednesday. I'll send calendar invites for the review session.",
-	},
-	{
-		label: "Code",
-		icon: <Code size={18} />,
-		appName: "VS Code",
-		words:
-			"This function validates the user session token against the Redis store. If expired, it triggers a refresh flow and returns the new token. Throws AuthError on invalid signatures.",
-	},
-	{
-		label: "Medical",
-		icon: <Stethoscope size={18} />,
-		appName: "Epic",
-		words:
-			"Patient is a 54-year-old male presenting with chest tightness and shortness of breath on exertion. No prior cardiac history. Recommend stress echocardiogram and lipid panel.",
-	},
-	{
-		label: "Slack",
-		icon: <MessageSquare size={18} />,
-		appName: "Slack",
-		words:
-			"Hey, the deploy pipeline is green. I merged the hotfix for the auth redirect bug. Can someone from the frontend team verify on staging before we push to prod?",
-	},
-];
-
-function VoiceDemoPlayground() {
-	const [activeTab, setActiveTab] = useState(0);
-	const [visibleWords, setVisibleWords] = useState(0);
-	const scenario = VOICE_SCENARIOS[activeTab];
-	const wordsArr = scenario.words.split(" ");
-
-	useEffect(() => {
-		setVisibleWords(0);
-	}, [activeTab]);
-
-	useEffect(() => {
-		if (visibleWords >= wordsArr.length) return;
-		const t = setTimeout(
-			() => setVisibleWords((v) => v + 1),
-			60 + Math.random() * 40,
-		);
-		return () => clearTimeout(t);
-	}, [visibleWords, wordsArr.length]);
-
-	// Animated waveform bars
-	const waveformBars = Array.from({ length: 32 }, (_, i) => i);
-
-	return (
-		<div className="max-w-3xl mx-auto">
-			{/* Tab buttons */}
-			<div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
-				{VOICE_SCENARIOS.map((s, i) => (
-					<button
-						key={i}
-						type="button"
-						onClick={() => setActiveTab(i)}
-						className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-							i === activeTab
-								? "bg-foreground text-background shadow-sm"
-								: "bg-muted/50 text-muted-foreground hover:bg-muted border border-border"
-						}`}
-					>
-						<span>{s.icon}</span>
-						{s.label}
-					</button>
-				))}
-			</div>
-
-			{/* Demo card */}
-			<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-				{/* App context bar */}
-				<div className="flex items-center gap-2 px-5 py-3 border-b border-border bg-muted/30">
-					<span className="text-muted-foreground">{scenario.icon}</span>
-					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-						Dictating into {scenario.appName}
-					</span>
-				</div>
-
-				{/* Waveform */}
-				<div className="px-5 pt-4">
-					<div className="flex items-center gap-[2px] h-8">
-						{waveformBars.map((i) => {
-							const isActive = visibleWords < wordsArr.length;
-							return (
-								<div
-									key={i}
-									className={`flex-1 rounded-full transition-all ${
-										isActive
-											? "bg-primary/50 animate-soundwave"
-											: "bg-primary/15"
-									}`}
-									style={{
-										height: isActive
-											? `${12 + Math.sin(i * 0.8) * 16}px`
-											: "4px",
-										animationDelay: `${i * 0.06}s`,
-										animationDuration: `${0.7 + (i % 5) * 0.15}s`,
-									}}
-								/>
-							);
-						})}
-					</div>
-				</div>
-
-				{/* Word-by-word text */}
-				<div className="p-5">
-					<p className="text-[15px] leading-relaxed text-foreground min-h-[80px]">
-						{wordsArr.map((word, i) => (
-							<span
-								key={`${activeTab}-${i}`}
-								className={`inline-block mr-[0.3em] transition-all duration-200 ${
-									i < visibleWords
-										? "opacity-100 translate-y-0"
-										: "opacity-0 translate-y-1"
-								} ${i === visibleWords - 1 ? "text-primary font-medium" : ""}`}
-							>
-								{word}
-							</span>
-						))}
-					</p>
-				</div>
-			</div>
-		</div>
-	);
-}
-
-// ---------------------------------------------------------------------------
 // 5. Dual Mode Spotlight (major section)
 // ---------------------------------------------------------------------------
 function DualModeSpotlight() {
@@ -482,39 +341,6 @@ function DualModeSpotlight() {
 }
 
 // ---------------------------------------------------------------------------
-// Feature deep-dive row (kept as-is)
-// ---------------------------------------------------------------------------
-function FeatureRow({
-	title,
-	body,
-	visual,
-	flipped,
-}: {
-	title: string;
-	body: string;
-	visual: React.ReactNode;
-	flipped?: boolean;
-}) {
-	return (
-		<div
-			className={`flex flex-col ${
-				flipped ? "md:flex-row-reverse" : "md:flex-row"
-			} items-center gap-8 md:gap-14`}
-		>
-			<div className="flex-1 min-w-0">
-				<h3 className="text-2xl md:text-[28px] font-bold text-foreground tracking-tight mb-3 leading-tight">
-					{title}
-				</h3>
-				<p className="text-muted-foreground leading-relaxed text-[15px]">
-					{body}
-				</p>
-			</div>
-			<div className="flex-1 min-w-0 w-full">{visual}</div>
-		</div>
-	);
-}
-
-// ---------------------------------------------------------------------------
 // 8. App Compatibility Carousel
 // ---------------------------------------------------------------------------
 const APP_ICONS_ROW1: { icon: ReactNode; label: string }[] = [
@@ -575,189 +401,6 @@ function AppCarousel() {
 			<div className="flex w-max animate-marquee-reverse">
 				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW2)}</div>
 				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW2)}</div>
-			</div>
-		</div>
-	);
-}
-
-// ---------------------------------------------------------------------------
-// 9. Use-Case Tabs
-// ---------------------------------------------------------------------------
-const USE_CASE_TABS = [
-	{
-		label: "Writers",
-		before:
-			"so um I think the main point of the article is that like AI is changing how we write and uh we need to adapt our workflows",
-		after:
-			"The core argument: AI is fundamentally changing how we write, and our workflows need to adapt accordingly.",
-		benefits: [
-			"Draft blog posts and newsletters at the speed of thought",
-			"Cleanup turns stream-of-consciousness into polished prose",
-			"Custom writing style keeps your voice consistent",
-		],
-	},
-	{
-		label: "Medical",
-		before:
-			"patient is a 54 year old male presenting with uh chest tightness and shortness of breath on exertion no prior cardiac history",
-		after:
-			"Patient is a 54-year-old male presenting with chest tightness and dyspnea on exertion. No prior cardiac history.",
-		benefits: [
-			"Dictate patient notes between appointments",
-			"Custom vocabulary handles medical terminology",
-			"Local mode keeps patient data on-device",
-		],
-	},
-	{
-		label: "Legal",
-		before:
-			"the defendants counsel filed a motion to dismiss arguing that the plaintiff lacks standing under uh article three",
-		after:
-			"Defendant's counsel filed a motion to dismiss, arguing that the plaintiff lacks standing under Article III.",
-		benefits: [
-			"Draft case notes and contracts by voice",
-			"Local mode keeps privileged communications on-device",
-			"Writing style adapts to formal legal prose",
-		],
-	},
-	{
-		label: "Developers",
-		before:
-			"this function validates the user session token and if its expired it triggers a refresh flow uh and returns the new token",
-		after:
-			"This function validates the user session token. If expired, it triggers a refresh flow and returns the new token.",
-		benefits: [
-			"Write documentation and code comments by voice",
-			"Great for developers managing RSI",
-			"Technical vocabulary like 'Kubernetes' transcribed correctly",
-		],
-	},
-	{
-		label: "Executives",
-		before:
-			"hey can you schedule a follow up with the client for next tuesday and also send the deck to marketing before the all hands",
-		after:
-			"Please schedule a follow-up with the client for next Tuesday. Also, send the deck to Marketing before the all-hands.",
-		benefits: [
-			"Fire off emails and status updates in seconds",
-			"Writing style keeps tone consistent across communication",
-			"Works in any app - email, Slack, Notion, etc.",
-		],
-	},
-	{
-		label: "Accessibility",
-		before:
-			"for anyone who finds typing difficult parrot provides a reliable fast alternative that works across every app",
-		after:
-			"For anyone who finds typing difficult, Parrot provides a reliable, fast alternative that works across every app.",
-		benefits: [
-			"Reliable voice input across every Mac app",
-			"Global hotkey means no mouse required to start",
-			"Local mode works fully offline",
-		],
-	},
-];
-
-function UseCaseTabs() {
-	const [activeTab, setActiveTab] = useState(0);
-	const [isTransitioning, setIsTransitioning] = useState(false);
-
-	const handleTabChange = (i: number) => {
-		if (i === activeTab) return;
-		setIsTransitioning(true);
-		setTimeout(() => {
-			setActiveTab(i);
-			setIsTransitioning(false);
-		}, 200);
-	};
-
-	return (
-		<div className="max-w-4xl mx-auto">
-			{/* Tab bar */}
-			<div className="flex items-center gap-1.5 mb-8 overflow-x-auto pb-2 flex-wrap">
-				{USE_CASE_TABS.map((t, i) => (
-					<button
-						key={i}
-						type="button"
-						onClick={() => handleTabChange(i)}
-						className={`px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
-							i === activeTab
-								? "bg-foreground text-background shadow-sm"
-								: "bg-muted/50 text-muted-foreground hover:bg-muted border border-border"
-						}`}
-					>
-						{t.label}
-					</button>
-				))}
-			</div>
-
-			{/* Panel */}
-			<div className="bg-card rounded-2xl border border-border p-6 md:p-8">
-				{/* Mini before/after */}
-				<div className="grid md:grid-cols-2 gap-4 mb-6">
-					<div className="bg-muted/30 rounded-xl p-4 border border-border">
-						<p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
-							You say
-						</p>
-						<div className="grid">
-							{USE_CASE_TABS.map((tab, i) => (
-								<p
-									key={i}
-									className={`col-start-1 row-start-1 text-sm text-foreground/60 italic leading-relaxed transition-opacity duration-300 ${
-										i === activeTab && !isTransitioning
-											? "opacity-100"
-											: "opacity-0"
-									}`}
-								>
-									"{tab.before}"
-								</p>
-							))}
-						</div>
-					</div>
-					<div className="bg-foreground/3 rounded-xl p-4 border border-primary/15">
-						<p className="text-[10px] font-bold uppercase tracking-wider text-primary mb-2">
-							Parrot writes
-						</p>
-						<div className="grid">
-							{USE_CASE_TABS.map((tab, i) => (
-								<p
-									key={i}
-									className={`col-start-1 row-start-1 text-sm text-foreground leading-relaxed transition-opacity duration-300 ${
-										i === activeTab && !isTransitioning
-											? "opacity-100"
-											: "opacity-0"
-									}`}
-								>
-									"{tab.after}"
-								</p>
-							))}
-						</div>
-					</div>
-				</div>
-
-				{/* Benefits */}
-				<div className="grid">
-					{USE_CASE_TABS.map((tab, tabIndex) => (
-						<ul
-							key={tabIndex}
-							className={`col-start-1 row-start-1 space-y-2.5 transition-opacity duration-300 ${
-								tabIndex === activeTab && !isTransitioning
-									? "opacity-100"
-									: "opacity-0"
-							}`}
-						>
-							{tab.benefits.map((b, i) => (
-								<li
-									key={i}
-									className="flex items-start gap-2.5 text-sm text-muted-foreground"
-								>
-									<Check size={15} className="text-primary mt-0.5 shrink-0" />
-									{b}
-								</li>
-							))}
-						</ul>
-					))}
-				</div>
 			</div>
 		</div>
 	);
@@ -920,22 +563,8 @@ function HomePage() {
 			</Hero>
 
 			<CleanupSection />
-
-			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
-				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Context
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-3">
-						Dictate into any app
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px]">
-						Parrot works wherever your cursor is. Watch it transcribe for
-						different workflows.
-					</p>
-				</div>
-				<VoiceDemoPlayground />
-			</section>
+			<VocabularySection />
+			<WritingStyleSection />
 
 			<section className="py-20 md:py-28 px-6">
 				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
@@ -953,154 +582,6 @@ function HomePage() {
 				<DualModeSpotlight />
 			</section>
 
-			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
-				<div className="max-w-5xl mx-auto">
-					<div className="max-w-4xl mb-12 md:mb-16">
-						<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-							Features
-						</p>
-						<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-3">
-							Voice dictation features that work for you
-						</h2>
-						<p className="text-muted-foreground max-w-lg text-[15px]">
-							Faster dictation, sharper accuracy, and the polish you actually
-							use every day.
-						</p>
-					</div>
-					<div className="space-y-20 md:space-y-28">
-						<FeatureRow
-							title="Custom vocabulary that actually remembers"
-							body="Add names, acronyms, brand terms, and jargon. Parrot learns the words that matter so 'Kubernetes' doesn't become 'Cooper Netties' and your coworker's name isn't butchered every time."
-							visual={
-								<div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-									<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
-										Your vocabulary
-									</p>
-									<div className="flex flex-wrap gap-2">
-										{[
-											"Kubernetes",
-											"GraphQL",
-											"Supabase",
-											"Dr. Nakamura",
-											"Anthropic",
-											"YC W24",
-											"Series A",
-											"OAuth2",
-											"Tailwind",
-											"PostgreSQL",
-										].map((word) => (
-											<span
-												key={word}
-												className="px-3 py-1.5 bg-primary/6 border border-primary/12 rounded-lg text-sm text-foreground font-medium"
-											>
-												{word}
-											</span>
-										))}
-									</div>
-								</div>
-							}
-						/>
-
-						<FeatureRow
-							flipped
-							title="Pick how your text sounds"
-							body="Set your writing context and style. The cleanup matches your tone - whether that's terse Slack messages, formal legal prose, or casual blog posts. You write it once, Parrot applies it every time."
-							visual={
-								<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-									<div className="border-b border-border px-5 py-3">
-										<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-											Writing style
-										</p>
-									</div>
-									<div className="p-5 space-y-4">
-										<div>
-											<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
-												Context
-											</p>
-											<p className="text-sm text-foreground bg-muted/50 rounded-lg p-3 border border-border">
-												I'm a senior engineer writing technical docs and Slack
-												messages to my team.
-											</p>
-										</div>
-										<div>
-											<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
-												Tone
-											</p>
-											<div className="flex gap-2">
-												{["Concise", "Technical", "Friendly"].map((t, i) => (
-													<span
-														key={t}
-														className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
-															i === 0
-																? "bg-foreground text-background border-foreground"
-																: "bg-muted/50 text-muted-foreground border-border"
-														}`}
-													>
-														{t}
-													</span>
-												))}
-											</div>
-										</div>
-									</div>
-								</div>
-							}
-						/>
-
-						<FeatureRow
-							title="Everything searchable, nothing lost"
-							body="Every dictation is saved with full text, timestamp, and audio duration. Search past transcriptions, copy them again, or review what you said last Tuesday. You can turn it off if you want to keep it private."
-							visual={
-								<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-									<div className="px-5 py-3 border-b border-border flex items-center gap-3">
-										<div className="flex-1 bg-muted/50 rounded-lg px-3 py-2 border border-border">
-											<span className="text-xs text-muted-foreground">
-												Search dictations...
-											</span>
-										</div>
-									</div>
-									<div className="divide-y divide-border">
-										{[
-											{
-												text: "Move the meeting to Thursday - Monday doesn't work for Sarah.",
-												time: "2 min ago",
-												dur: "0:08",
-											},
-											{
-												text: "Patient presents with elevated BP (~150/95). Recommend full metabolic panel.",
-												time: "1 hour ago",
-												dur: "0:14",
-											},
-											{
-												text: "Can you send me the Q3 report with revenue numbers?",
-												time: "Yesterday",
-												dur: "0:06",
-											},
-										].map((entry, i) => (
-											<div
-												key={i}
-												className="px-5 py-3.5 hover:bg-muted/30 transition-colors"
-											>
-												<p className="text-sm text-foreground truncate">
-													{entry.text}
-												</p>
-												<div className="flex items-center gap-3 mt-1">
-													<span className="text-[11px] text-muted-foreground">
-														{entry.time}
-													</span>
-													<span className="text-[11px] text-muted-foreground">
-														{entry.dur}
-													</span>
-												</div>
-											</div>
-										))}
-									</div>
-								</div>
-							}
-						/>
-					</div>
-				</div>
-			</section>
-
 			<section className="py-16 md:py-20 px-6 border-y border-border">
 				<div className="max-w-5xl mx-auto">
 					<h2 className="text-center text-lg font-bold text-foreground mb-2">
@@ -1110,22 +591,6 @@ function HomePage() {
 						Parrot pastes into any app on your Mac. No plugins, no integrations.
 					</p>
 					<AppCarousel />
-				</div>
-			</section>
-
-			<section className="py-20 md:py-28 px-6 bg-muted/30">
-				<div className="max-w-5xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Who it's for
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
-						Voice dictation for every workflow
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px] mb-12">
-						Whether you're drafting emails, writing patient notes, or coding
-						documentation - Parrot adapts to how you work.
-					</p>
-					<UseCaseTabs />
 				</div>
 			</section>
 

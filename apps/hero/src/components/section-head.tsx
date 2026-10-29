@@ -35,10 +35,12 @@ export function SectionHead({
 			)}
 			<Heading
 				className={cn(
-					"font-bold leading-[1.05]",
+					// Line height must follow the size: tailwind-merge drops a
+					// leading-* that comes before a text-* size.
+					"font-bold",
 					Heading === "h1"
 						? "text-[clamp(2.6rem,6.4vw,4.9rem)] leading-none tracking-[-0.03em]"
-						: "text-[clamp(2rem,4.2vw,3.25rem)]",
+						: "text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.05]",
 					band ? "text-band-ink" : "text-foreground",
 				)}
 			>
