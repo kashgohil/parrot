@@ -4,9 +4,9 @@ import type { ReactNode } from "react";
 function Column({ title, children }: { title: string; children: ReactNode }) {
 	return (
 		<div>
-			<h4 className="m-0 mb-3 text-[13px] font-semibold text-foreground">
+			<h2 className="m-0 mb-3 text-[13px] font-semibold tracking-normal text-foreground">
 				{title}
-			</h4>
+			</h2>
 			<ul className="m-0 grid list-none gap-2 p-0 text-muted-foreground [&_a]:no-underline [&_a]:transition-colors [&_a:hover]:text-foreground">
 				{children}
 			</ul>

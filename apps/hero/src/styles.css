@@ -60,7 +60,8 @@ pre {
 		color: var(--brand-quiet);
 	}
 	:focus-visible {
-		outline-color: var(--brand-leaf);
+		outline: 2px solid var(--brand-leaf);
+		outline-offset: 2px;
 	}
 }
 

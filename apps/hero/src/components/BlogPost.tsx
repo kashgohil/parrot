@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import type React from "react";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { TryParrot } from "@/components/try-parrot";
 import type { BlogPost } from "@/lib/blog";
@@ -27,25 +28,7 @@ function slugify(text: string) {
 export default function BlogPostLayout({ post }: { post: BlogPost }) {
 	const related = getRelatedPosts(post.slug);
 	const Component = post.component;
-	const body = useRef<HTMLDivElement>(null);
-	const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
-
-	// The body is a lazy component, so the contents list is built once it renders.
-	useEffect(() => {
-		const el = body.current;
-		if (!el) return;
-		const collect = () => {
-			const items = [...el.querySelectorAll("h2")].map((h) => {
-				if (!h.id) h.id = slugify(h.textContent ?? "");
-				return { id: h.id, text: h.textContent ?? "" };
-			});
-			setToc(items);
-		};
-		collect();
-		const observer = new MutationObserver(collect);
-		observer.observe(el, { childList: true, subtree: true });
-		return () => observer.disconnect();
-	}, []);
+	const body = useRef<HTMLElement>(null);
 
 	const updated = post.dateModified && post.dateModified !== post.date;
 
@@ -114,26 +97,10 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 						fallback={<p className="text-muted-foreground">Loading…</p>}
 					>
 						<Component />
+						<BodyReady />
 					</Suspense>
 				</article>
-				{toc.length > 1 && (
-					<nav aria-label="On this page" className="max-lg:hidden">
-						<div className="sticky top-24 grid gap-2.5 text-sm">
-							<p className="m-0 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-								On this page
-							</p>
-							{toc.map((item) => (
-								<a
-									key={item.id}
-									href={`#${item.id}`}
-									className="leading-snug text-muted-foreground no-underline hover:text-foreground"
-								>
-									{item.text}
-								</a>
-							))}
-						</div>
-					</nav>
-				)}
+				<TableOfContents article={body} />
 			</div>
 
 			{post.faq && post.faq.length > 0 && (
@@ -196,4 +163,72 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 			<Footer />
 		</div>
 	);
+}
+
+// Built from the rendered h2s once the lazy post body is in the DOM. It keeps its
+// own state: updating the layout during hydration would make React drop the
+// still-hydrating post body to its Suspense fallback and shift the page.
+function TableOfContents({
+	article,
+}: {
+	article: React.RefObject<HTMLElement | null>;
+}) {
+	const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
+
+	useEffect(() => {
+		const el = article.current;
+		if (!el) return;
+		const collect = () => {
+			const items = [...el.querySelectorAll("h2")].map((h) => {
+				if (!h.id) h.id = slugify(h.textContent ?? "");
+				return { id: h.id, text: h.textContent ?? "" };
+			});
+			setToc(items);
+			// A deep link like #heading can only land once the ids exist.
+			const target =
+				location.hash && document.getElementById(location.hash.slice(1));
+			if (target) target.scrollIntoView();
+		};
+		// Only touch the headings once the post body has hydrated (BodyReady).
+		if (el.dataset.ready) collect();
+		el.addEventListener(READY, collect);
+		return () => el.removeEventListener(READY, collect);
+	}, [article]);
+
+	// The column is always rendered on wide screens so the article never reflows.
+	return (
+		<nav aria-label="On this page" className="max-lg:hidden">
+			{toc.length > 1 && (
+				<div className="sticky top-24 grid gap-2.5 text-sm">
+					<p className="m-0 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+						On this page
+					</p>
+					{toc.map((item) => (
+						<a
+							key={item.id}
+							href={`#${item.id}`}
+							className="leading-snug text-muted-foreground no-underline hover:text-foreground"
+						>
+							{item.text}
+						</a>
+					))}
+				</div>
+			)}
+		</nav>
+	);
+}
+
+const READY = "post-body-ready";
+
+// Rendered inside the post's Suspense boundary, so its effect runs only after
+// the body has hydrated (or rendered on client navigation).
+function BodyReady() {
+	const ref = useRef<HTMLSpanElement>(null);
+	useEffect(() => {
+		const article = ref.current?.closest("article");
+		if (!article) return;
+		article.dataset.ready = "1";
+		article.dispatchEvent(new Event(READY));
+	}, []);
+	return <span ref={ref} hidden />;
 }

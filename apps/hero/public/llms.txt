@@ -2,7 +2,7 @@
 
 > Parrot is a free, local-first voice dictation app for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud, no API keys.
 
-Parrot runs fully offline on-device (Whisper.cpp + optional Ollama cleanup). It supports custom vocabulary, writing style, and context so names and jargon land correctly. Built with Tauri 2 (Rust + React). Website: https://tryparrot.app
+Parrot dictates fully offline on-device: Parakeet or Whisper for speech, and a built-in Qwen2.5 model (or your own Ollama) for optional cleanup. It goes online only to download models and check for app updates. It supports custom vocabulary, writing style, and context so names and jargon land correctly. Built with Tauri 2 (Rust + React). Website: https://tryparrot.app
 
 Key facts:
 - Free for life
@@ -10,7 +10,7 @@ Key facts:
 - On-device transcription and optional AI cleanup
 - Works system-wide (Slack, Notion, VS Code, email, browsers, etc.)
 - Custom vocabulary, writing style, and dictation history
-- Fully offline after a one-time model download
+- Dictates fully offline after a one-time model download; checks GitHub for app updates
 
 ## Core pages
 

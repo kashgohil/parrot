@@ -411,7 +411,7 @@ function SlackApp({ children }: { children: ReactNode }) {
 					<Message who="Marcus Lee" initials="ML" time="10:42" color="#7A5AF8">
 						QA signed off on 2.4. Anything still blocking the release?
 					</Message>
-					<Message who="Priya Raman" initials="PR" time="10:44" color="#D9822B">
+					<Message who="Priya Raman" initials="PR" time="10:44" color="#A65A17">
 						Changelog is ready. I just need a date.
 					</Message>
 				</div>
