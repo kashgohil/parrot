@@ -52,6 +52,7 @@ import {
 	VSCodeIcon,
 } from "@/components/app-icons";
 import Footer from "@/components/Footer";
+import { CleanupSection } from "@/components/home/cleanup-section";
 import { DictationDemo } from "@/components/home/dictation-demo";
 import { Hero } from "@/components/home/hero";
 import {
@@ -214,117 +215,6 @@ export const Route = createFileRoute("/")({
 		],
 	}),
 });
-
-// ---------------------------------------------------------------------------
-// Before/After cleanup demo (kept as-is)
-// ---------------------------------------------------------------------------
-function BeforeAfter() {
-	const examples = [
-		{
-			before:
-				"so um basically I think we should uh move the meeting to like Thursday because uh monday doesnt work for sarah and also john said he cant make it either so yeah thursday works better I think",
-			after:
-				"Let's move the meeting to Thursday - Monday doesn't work for Sarah, and John can't make it either.",
-		},
-		{
-			before:
-				"hey can you um send me the report for Q3 the one with the revenue numbers and also the customer churn data I need it for the board deck thanks",
-			after:
-				"Can you send me the Q3 report with revenue numbers and customer churn data? I need it for the board deck. Thanks.",
-		},
-		{
-			before:
-				"the patient presents with um elevated BP around 150 over 95 and uh complaints of recurring headaches especially in the morning hours I think we should do a full metabolic panel",
-			after:
-				"Patient presents with elevated BP (~150/95) and recurring morning headaches. Recommend full metabolic panel.",
-		},
-	];
-	const [idx, setIdx] = useState(0);
-	const [key, setKey] = useState(0); // Used to reset the timer on manual selection
-	const [isTransitioning, setIsTransitioning] = useState(false);
-
-	// Auto-rotate every 5 seconds, reset when key changes (manual selection)
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setIsTransitioning(true);
-			setTimeout(() => {
-				setIdx((i) => (i + 1) % examples.length);
-				setIsTransitioning(false);
-			}, 300);
-		}, 5000);
-		return () => clearInterval(interval);
-	}, [key, examples.length]);
-
-	const handleSelect = (i: number) => {
-		if (i === idx) return;
-		setIsTransitioning(true);
-		setTimeout(() => {
-			setIdx(i);
-			setIsTransitioning(false);
-		}, 300);
-		setKey((k) => k + 1); // Reset the timer
-	};
-
-	return (
-		<div className="max-w-4xl mx-auto">
-			<div className="grid md:grid-cols-2 gap-4 md:gap-0">
-				<div className="bg-card rounded-2xl md:rounded-r-none border border-border p-6 md:p-7">
-					<div className="flex items-center gap-2 mb-4">
-						<div className="w-2 h-2 rounded-full bg-amber-400" />
-						<span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-							What you said
-						</span>
-					</div>
-					<div className="grid">
-						{examples.map((example, i) => (
-							<p
-								key={i}
-								className={`col-start-1 row-start-1 text-[15px] leading-relaxed text-foreground/70 italic transition-opacity duration-300 ${
-									i === idx && !isTransitioning ? "opacity-100" : "opacity-0"
-								}`}
-							>
-								"{example.before}"
-							</p>
-						))}
-					</div>
-				</div>
-				<div className="bg-foreground rounded-2xl md:rounded-l-none border border-foreground p-6 md:p-7">
-					<div className="flex items-center gap-2 mb-4">
-						<div className="w-2 h-2 rounded-full bg-primary" />
-						<span className="text-xs font-semibold uppercase tracking-wider text-background/50">
-							What Parrot writes
-						</span>
-					</div>
-					<div className="grid">
-						{examples.map((example, i) => (
-							<p
-								key={i}
-								className={`col-start-1 row-start-1 text-[15px] leading-relaxed text-background/90 transition-opacity duration-300 ${
-									i === idx && !isTransitioning ? "opacity-100" : "opacity-0"
-								}`}
-							>
-								"{example.after}"
-							</p>
-						))}
-					</div>
-				</div>
-			</div>
-			<div className="flex items-center justify-center gap-2 mt-5">
-				{examples.map((_, i) => (
-					<button
-						key={i}
-						type="button"
-						onClick={() => handleSelect(i)}
-						className={`h-1.5 rounded-full transition-all ${
-							i === idx ? "w-8 bg-primary" : "w-4 bg-border hover:bg-primary/30"
-						}`}
-						aria-label={`Example ${i + 1}`}
-					/>
-				))}
-			</div>
-		</div>
-	);
-}
 
 // ---------------------------------------------------------------------------
 // 4. Interactive Voice Demo Playground
@@ -1029,21 +919,7 @@ function HomePage() {
 				<DictationDemo />
 			</Hero>
 
-			<section id="cleanup" className="py-20 md:py-28 px-6">
-				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Cleanup
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-3">
-						AI cleanup for voice dictation
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px]">
-						The optional cleanup pass removes filler words, fixes grammar, and
-						applies your writing style. Here's what that looks like.
-					</p>
-				</div>
-				<BeforeAfter />
-			</section>
+			<CleanupSection />
 
 			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
 				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
