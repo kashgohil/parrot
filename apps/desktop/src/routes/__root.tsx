@@ -167,7 +167,7 @@ function MainShell() {
 			/>
 
 			{/* Left Sidebar */}
-			<div className="hidden md:flex md:w-[240px] lg:w-[260px] bg-pk-primary flex-col relative overflow-hidden shrink-0">
+			<div className="hidden md:flex md:w-[240px] lg:w-[260px] bg-primary flex-col relative overflow-hidden shrink-0">
 				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
 				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
 				<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl" />
@@ -422,13 +422,13 @@ function RecordingOverlay() {
 	const secs = elapsed % 60;
 
 	return (
-		<div className="fixed top-5 right-5 z-1000 flex items-center gap-2.5 px-[18px] py-2.5 rounded-2xl text-sm font-semibold text-white bg-pk-accent shadow-lg animate-pulse-glow">
-			<div className="w-2.5 h-2.5 bg-white rounded-full animate-blink" />
+		<div className="fixed top-5 right-5 z-1000 flex items-center gap-2.5 px-[18px] py-2.5 rounded-2xl text-sm font-semibold text-paper bg-danger shadow-lg animate-pulse-glow">
+			<div className="w-2.5 h-2.5 bg-current rounded-full animate-blink" />
 			<div className="flex items-center gap-0.5 h-[18px]">
 				{[...Array(5)].map((_, i) => (
 					<div
 						key={i}
-						className="w-[3px] h-1.5 bg-white rounded-sm animate-waveform"
+						className="w-[3px] h-1.5 bg-current rounded-sm animate-waveform"
 						style={{ animationDelay: `${i * 0.12}s` }}
 					/>
 				))}

@@ -139,7 +139,7 @@ function OnboardingLayout() {
 			{/* REAL panel — always at natural width. Never animates layout. */}
 			<div
 				ref={panelRef}
-				className="md:w-[280px] lg:w-[320px] bg-pk-primary relative overflow-hidden shrink-0 flex flex-col justify-between p-6 lg:p-8 z-10"
+				className="md:w-[280px] lg:w-[320px] bg-primary relative overflow-hidden shrink-0 flex flex-col justify-between p-6 lg:p-8 z-10"
 			>
 				{/* Decorative blobs */}
 				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl pointer-events-none" />
@@ -197,7 +197,7 @@ function OnboardingLayout() {
 											transition-all duration-200 mt-0.5
 											${
 												isActive
-													? "bg-white text-pk-primary shadow-lg"
+													? "bg-white text-primary shadow-lg"
 													: isCompleted
 														? "bg-white/25 text-white"
 														: "bg-white/10 text-white/40"
@@ -299,7 +299,7 @@ function OnboardingLayout() {
 							setPhase("reveal");
 						}
 					}}
-					className="absolute inset-y-0 left-0 bg-pk-primary overflow-hidden z-30 pointer-events-none"
+					className="absolute inset-y-0 left-0 bg-primary overflow-hidden z-30 pointer-events-none"
 				>
 					{/* Decorative blobs — match the real panel so the handoff is
 					    visually identical when the overlay reaches panel width. */}

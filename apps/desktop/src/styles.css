@@ -1,106 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@parrot/theme/theme.css";
 
 @custom-variant dark (&:is(.dark *));
 
-@font-face {
-	font-family: "Fira Sans";
-	src:
-		url("/fonts/FiraSans-Regular.woff2") format("woff2"),
-		url("/fonts/FiraSans-Regular.woff") format("woff");
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Fira Sans";
-	src:
-		url("/fonts/FiraSans-Italic.woff2") format("woff2"),
-		url("/fonts/FiraSans-Italic.woff") format("woff");
-	font-weight: 400;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Fira Sans";
-	src:
-		url("/fonts/FiraSans-Medium.woff2") format("woff2"),
-		url("/fonts/FiraSans-Medium.woff") format("woff");
-	font-weight: 500;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Fira Sans";
-	src:
-		url("/fonts/FiraSans-SemiBold.woff2") format("woff2"),
-		url("/fonts/FiraSans-SemiBold.woff") format("woff");
-	font-weight: 600;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: "Fira Sans";
-	src:
-		url("/fonts/FiraSans-Bold.woff2") format("woff2"),
-		url("/fonts/FiraSans-Bold.woff") format("woff");
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-}
-
 :root {
 	--radius: 0.75rem;
-	/* Parakeet green theme mapped to shadcn variables */
-	--background: #fafdf6;
-	--foreground: #1b2e1b;
-	--card: #ffffff;
-	--card-foreground: #1b2e1b;
-	--popover: #ffffff;
-	--popover-foreground: #1b2e1b;
-	--primary: #7cb342;
-	--primary-foreground: #ffffff;
-	--secondary: #f1f8e9;
-	--secondary-foreground: #1b2e1b;
-	--muted: #f1f8e9;
-	--muted-foreground: #5f7a5f;
-	--accent: #f1f8e9;
-	--accent-foreground: #1b2e1b;
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: #d5e4c3;
-	--input: #d5e4c3;
-	--ring: #7cb342;
-	--chart-1: oklch(0.646 0.222 41.116);
-	--chart-2: oklch(0.6 0.118 184.704);
-	--chart-3: oklch(0.398 0.07 227.392);
-	--chart-4: oklch(0.828 0.189 84.429);
-	--chart-5: oklch(0.769 0.188 70.08);
-	--sidebar: #f1f8e9;
-	--sidebar-foreground: #1b2e1b;
-	--sidebar-primary: #7cb342;
-	--sidebar-primary-foreground: #ffffff;
-	--sidebar-accent: #f1f8e9;
-	--sidebar-accent-foreground: #1b2e1b;
-	--sidebar-border: #d5e4c3;
-	--sidebar-ring: #7cb342;
-	
-	/* Parakeet theme extras */
-	--color-pk-primary: #7cb342;
-	--color-pk-primary-light: #8bc34a;
-	--color-pk-primary-dark: #689f38;
-	--color-pk-bg: #fafdf6;
-	--color-pk-bg-secondary: #f1f8e9;
-	--color-pk-bg-card: #ffffff;
-	--color-pk-text: #1b2e1b;
-	--color-pk-text-muted: #5f7a5f;
-	--color-pk-accent: #ff7043;
-	--color-pk-accent-hover: #ff8a65;
-	--color-pk-border: #d5e4c3;
-	--color-pk-badge-green: #4ade80;
 }
 
 @theme inline {
@@ -111,54 +16,8 @@
 	--radius-2xl: calc(var(--radius) + 8px);
 	--radius-3xl: calc(var(--radius) + 12px);
 	--radius-4xl: calc(var(--radius) + 16px);
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--color-card: var(--card);
-	--color-card-foreground: var(--card-foreground);
-	--color-popover: var(--popover);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-primary: var(--primary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-secondary: var(--secondary);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-muted: var(--muted);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-destructive: var(--destructive);
-	--color-border: var(--border);
-	--color-input: var(--input);
-	--color-ring: var(--ring);
-	--color-chart-1: var(--chart-1);
-	--color-chart-2: var(--chart-2);
-	--color-chart-3: var(--chart-3);
-	--color-chart-4: var(--chart-4);
-	--color-chart-5: var(--chart-5);
-	--color-sidebar: var(--sidebar);
-	--color-sidebar-foreground: var(--sidebar-foreground);
-	--color-sidebar-primary: var(--sidebar-primary);
-	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-	--color-sidebar-accent: var(--sidebar-accent);
-	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-	--color-sidebar-border: var(--sidebar-border);
-	--color-sidebar-ring: var(--sidebar-ring);
-
-	/* Parakeet theme extras */
-	--color-pk-primary: #7cb342;
-	--color-pk-primary-light: #8bc34a;
-	--color-pk-primary-dark: #689f38;
-	--color-pk-bg: #fafdf6;
-	--color-pk-bg-secondary: #f1f8e9;
-	--color-pk-bg-card: #ffffff;
-	--color-pk-text: #1b2e1b;
-	--color-pk-text-muted: #5f7a5f;
-	--color-pk-accent: #ff7043;
-	--color-pk-accent-hover: #ff8a65;
-	--color-pk-border: #d5e4c3;
-	--color-pk-badge-green: #4ade80;
 }
 
-/* Animation Keyframes */
 @keyframes blink {
 	0%,
 	100% {
@@ -172,10 +31,10 @@
 @keyframes pulse-glow {
 	0%,
 	100% {
-		box-shadow: 0 4px 20px rgba(255, 112, 67, 0.4);
+		box-shadow: 0 4px 20px color-mix(in srgb, var(--brand-danger) 40%, transparent);
 	}
 	50% {
-		box-shadow: 0 4px 30px rgba(255, 112, 67, 0.7);
+		box-shadow: 0 4px 30px color-mix(in srgb, var(--brand-danger) 70%, transparent);
 	}
 }
 
@@ -272,10 +131,10 @@
 
 @keyframes glow-badge {
 	0%, 100% {
-		box-shadow: 0 0 8px rgba(124, 179, 66, 0.3), 0 0 20px rgba(124, 179, 66, 0.1);
+		box-shadow: 0 0 8px color-mix(in srgb, var(--brand-leaf) 30%, transparent), 0 0 20px color-mix(in srgb, var(--brand-leaf) 10%, transparent);
 	}
 	50% {
-		box-shadow: 0 0 16px rgba(124, 179, 66, 0.5), 0 0 40px rgba(124, 179, 66, 0.2);
+		box-shadow: 0 0 16px color-mix(in srgb, var(--brand-leaf) 50%, transparent), 0 0 40px color-mix(in srgb, var(--brand-leaf) 20%, transparent);
 	}
 }
 
@@ -353,7 +212,7 @@
 }
 
 @utility animate-shimmer {
-	background: linear-gradient(90deg, transparent 0%, rgba(124, 179, 66, 0.08) 50%, transparent 100%);
+	background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--brand-leaf) 8%, transparent) 50%, transparent 100%);
 	background-size: 200% 100%;
 	animation: shimmer 3s ease-in-out infinite;
 }
@@ -388,13 +247,7 @@
 }
 
 body {
-	font-family:
-		"Fira Sans",
-		-apple-system,
-		BlinkMacSystemFont,
-		"Segoe UI",
-		Roboto,
-		sans-serif;
+	font-family: var(--font-sans);
 	background: var(--background);
 	color: var(--foreground);
 	height: 100vh;

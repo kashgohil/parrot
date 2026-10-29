@@ -91,7 +91,7 @@ function Pill({
 	const tones: Record<PillTone, string> = {
 		muted: "bg-muted text-muted-foreground",
 		primary: "bg-primary/10 text-primary",
-		accent: "bg-pk-accent/10 text-pk-accent",
+		accent: "bg-warning/10 text-warning",
 		emerald: "bg-emerald-500/10 text-emerald-700",
 	};
 	return (
@@ -509,7 +509,7 @@ function SettingsPage() {
 			{/* Branded header — echoes the sidebar's green wash + soft blobs */}
 			<header className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-card to-card px-6 py-6 shadow-sm">
 				<div className="absolute -top-16 -right-8 w-48 h-48 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-				<div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-pk-accent/5 blur-3xl pointer-events-none" />
+				<div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-warning/5 blur-3xl pointer-events-none" />
 				<div className="relative">
 					<h1 className="text-2xl font-bold text-foreground tracking-tight">
 						Settings
@@ -1060,8 +1060,8 @@ function SettingsPage() {
 				<div id="sec-data" className="scroll-mt-24">
 					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 						<div className="flex items-start gap-4 mb-4">
-							<div className="w-10 h-10 rounded-xl bg-pk-accent/10 flex items-center justify-center shrink-0">
-								<Database className="w-5 h-5 text-pk-accent" />
+							<div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center shrink-0">
+								<Database className="w-5 h-5 text-warning" />
 							</div>
 							<div className="flex-1">
 								<h2 className="text-base font-semibold text-foreground">
@@ -1114,7 +1114,7 @@ function SettingsPage() {
 				<div className="sticky bottom-0 z-20 -mx-5 mt-6 border-t border-border/60 bg-background/85 backdrop-blur-md px-5 py-3 animate-fade-in-up">
 					<div className="flex items-center gap-3">
 						{hotkeyDirty && (
-							<span className="flex items-center gap-1.5 text-xs font-medium text-pk-accent">
+							<span className="flex items-center gap-1.5 text-xs font-medium text-warning">
 								<AlertTriangle className="w-3.5 h-3.5 shrink-0" />
 								Restart Parrot after saving for the new shortcut to take effect.
 							</span>
@@ -1146,8 +1146,8 @@ function PermissionsSection() {
 	return (
 		<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 			<div className="flex items-start gap-4 mb-4">
-				<div className="w-10 h-10 rounded-xl bg-pk-accent/10 flex items-center justify-center shrink-0">
-					<ShieldCheck className="w-5 h-5 text-pk-accent" />
+				<div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center shrink-0">
+					<ShieldCheck className="w-5 h-5 text-warning" />
 				</div>
 				<div className="flex-1">
 					<h2 className="text-base font-semibold text-foreground">Permissions</h2>

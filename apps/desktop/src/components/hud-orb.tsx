@@ -261,7 +261,7 @@ function ActiveChip({
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: 6 }}
 			transition={{ duration: 0.18 }}
-			className={`flex items-center justify-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold text-white bg-pk-primary border-0 cursor-grab active:cursor-grabbing ${!clickable ? "pointer-events-auto" : ""}`}
+			className={`flex items-center justify-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold text-primary-foreground bg-primary border-0 cursor-grab active:cursor-grabbing ${!clickable ? "pointer-events-auto" : ""}`}
 			aria-label={
 				status === "cleanup-ready"
 					? "Apply cleanup"
@@ -330,12 +330,12 @@ function RecordingContent() {
 			transition={{ duration: 0.12 }}
 			className="flex items-center gap-2 min-w-0 max-w-full"
 		>
-			<span className="w-2 h-2 bg-white rounded-full animate-blink shrink-0" />
+			<span className="w-2 h-2 bg-current rounded-full animate-blink shrink-0" />
 			<span className="flex items-center gap-[2px] h-3 shrink-0">
 				{[0, 1, 2, 3, 4].map((i) => (
 					<span
 						key={i}
-						className="w-[2px] h-1.5 bg-white rounded-sm animate-waveform"
+						className="w-[2px] h-1.5 bg-current rounded-sm animate-waveform"
 						style={{ animationDelay: `${i * 0.12}s` }}
 					/>
 				))}

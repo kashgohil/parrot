@@ -161,7 +161,7 @@ function SystemCheckStep({
 			</div>
 
 			{allGood ? (
-				<div className="p-4 bg-pk-primary/10 border border-pk-primary/30 rounded-lg">
+				<div className="p-4 bg-primary/10 border border-primary/30 rounded-lg">
 					<div className="flex items-center gap-2 text-[#5a8a2e]">
 						<Check className="w-5 h-5" />
 						<span className="font-medium">Everything looks good!</span>
@@ -217,7 +217,7 @@ function RequirementItem({
 			<div
 				className={`w-2 h-2 rounded-full ${
 					status === "success"
-						? "bg-pk-primary"
+						? "bg-primary"
 						: status === "warning"
 							? "bg-yellow-500"
 							: "bg-red-500"
@@ -309,8 +309,8 @@ function PermissionsStep({ onContinue }: { onContinue: () => void }) {
 	if (bothGranted) {
 		return (
 			<div className="flex flex-col items-center justify-center py-10 space-y-3">
-				<div className="w-14 h-14 rounded-full bg-pk-primary/15 flex items-center justify-center">
-					<Check className="w-7 h-7 text-pk-primary" />
+				<div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center">
+					<Check className="w-7 h-7 text-primary" />
 				</div>
 				<p className="font-medium">Permissions granted</p>
 				<p className="text-sm text-muted-foreground">Continuing...</p>
@@ -409,13 +409,13 @@ function PermissionRow({
 	return (
 		<div
 			className={`flex items-center gap-3 p-3 rounded-lg border ${
-				granted ? "bg-pk-primary/10 border-pk-primary/30" : "bg-card"
+				granted ? "bg-primary/10 border-primary/30" : "bg-card"
 			}`}
 		>
 			<div
 				className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
 					granted
-						? "bg-pk-primary text-white"
+						? "bg-primary text-white"
 						: "bg-muted text-muted-foreground"
 				}`}
 			>
@@ -610,7 +610,7 @@ function ModelCard({
 							</span>
 						)}
 						{isDownloaded && (
-							<span className="text-xs bg-pk-primary/10 text-pk-primary px-2 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap shrink-0">
+							<span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap shrink-0">
 								<Check className="w-3 h-3" />
 								Downloaded
 							</span>
@@ -713,7 +713,7 @@ function InstallationProgressStep({
 						<div
 							className={`w-10 h-10 rounded-full flex items-center justify-center ${
 								status.type === "completed"
-									? "bg-pk-primary/15 text-pk-primary"
+									? "bg-primary/15 text-primary"
 									: status.type === "failed"
 										? "bg-red-100 text-red-600"
 										: "bg-primary/10 text-primary"
@@ -896,7 +896,7 @@ function ManualInterventionStep({
 						key={index}
 						className={`p-4 border rounded-lg ${
 							completedSteps.has(index)
-								? "bg-pk-primary/10 border-pk-primary/30"
+								? "bg-primary/10 border-primary/30"
 								: "bg-card"
 						}`}
 					>
@@ -904,7 +904,7 @@ function ManualInterventionStep({
 							<div
 								className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium ${
 									completedSteps.has(index)
-										? "bg-pk-primary text-white"
+										? "bg-primary text-white"
 										: "bg-muted text-muted-foreground"
 								}`}
 							>
@@ -994,8 +994,8 @@ function CompletionStep({
 	return (
 		<div className="space-y-6">
 			<div className="text-center py-8">
-				<div className="w-16 h-16 bg-pk-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
-					<Check className="w-8 h-8 text-pk-primary" />
+				<div className="w-16 h-16 bg-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
+					<Check className="w-8 h-8 text-primary" />
 				</div>
 				<h2 className="text-xl font-bold mb-2">Setup Complete!</h2>
 				<p className="text-muted-foreground">
@@ -1009,12 +1009,12 @@ function CompletionStep({
 				<div
 					className={`flex items-center gap-3 p-3 rounded-lg border ${
 						testResults?.transcription
-							? "bg-pk-primary/10 border-pk-primary/30"
+							? "bg-primary/10 border-primary/30"
 							: "bg-red-50 border-red-200"
 					}`}
 				>
 					{testResults?.transcription ? (
-						<Check className="w-5 h-5 text-pk-primary" />
+						<Check className="w-5 h-5 text-primary" />
 					) : (
 						<X className="w-5 h-5 text-red-600" />
 					)}
@@ -1031,12 +1031,12 @@ function CompletionStep({
 				<div
 					className={`flex items-center gap-3 p-3 rounded-lg border ${
 						testResults?.cleanup
-							? "bg-pk-primary/10 border-pk-primary/30"
+							? "bg-primary/10 border-primary/30"
 							: "bg-red-50 border-red-200"
 					}`}
 				>
 					{testResults?.cleanup ? (
-						<Check className="w-5 h-5 text-pk-primary" />
+						<Check className="w-5 h-5 text-primary" />
 					) : (
 						<X className="w-5 h-5 text-red-600" />
 					)}

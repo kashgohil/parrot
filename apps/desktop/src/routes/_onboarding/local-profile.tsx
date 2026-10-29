@@ -57,8 +57,8 @@ function LocalProfilePage() {
 		<div className="space-y-6">
 			{/* Header */}
 			<div className="text-center space-y-2">
-				<div className="w-16 h-16 bg-pk-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
-					<User className="w-8 h-8 text-pk-primary" />
+				<div className="w-16 h-16 bg-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
+					<User className="w-8 h-8 text-primary" />
 				</div>
 				<h2 className="text-2xl font-bold text-foreground">Welcome to Parrot</h2>
 				<p className="text-muted-foreground">
