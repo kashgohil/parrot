@@ -51,7 +51,6 @@ export function DownloadView({
 					<div className="grid gap-6">
 						<SectionHead
 							as="h1"
-							eyebrow="Download"
 							title="Get Parrot for Mac."
 							quiet="Free, for life."
 							lede={`${PARROT_FACTS.entity} No account and no subscription.`}
@@ -142,7 +141,6 @@ export function DownloadView({
 
 			<section className={`${WRAP} ${SECTION}`}>
 				<SectionHead
-					eyebrow="Setup"
 					title="Install in"
 					quiet="about a minute."
 					className="mb-[clamp(44px,6vw,72px)]"
@@ -187,12 +185,7 @@ export function DownloadView({
 			</section>
 
 			<section className={`${WRAP} ${SECTION}`}>
-				<SectionHead
-					eyebrow="In the app"
-					title="What you get"
-					quiet="for free."
-					className="mb-7"
-				/>
+				<SectionHead title="What you get" quiet="for free." className="mb-7" />
 				<FeatureNotes
 					className="sm:grid-cols-2 lg:grid-cols-3"
 					items={[
@@ -227,7 +220,6 @@ export function DownloadView({
 			<section className={`${WRAP} ${SECTION}`}>
 				<div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
 					<SectionHead
-						eyebrow="FAQ"
 						title="Common"
 						quiet="questions."
 						className="content-start self-start lg:sticky lg:top-24"
@@ -256,7 +248,6 @@ export function DownloadView({
 
 			<section className={`${WRAP} ${SECTION}`}>
 				<SectionHead
-					eyebrow="More"
 					title="Before or"
 					quiet="after you install."
 					className="mb-7"

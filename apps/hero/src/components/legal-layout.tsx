@@ -17,7 +17,6 @@ function anchor(title: string) {
 // Shared by /privacy and /terms: title, last-updated date, contents list, an
 // optional plain-language summary, then the sections in a reading column.
 export function LegalLayout({
-	eyebrow,
 	title,
 	quiet,
 	lede,
@@ -25,7 +24,6 @@ export function LegalLayout({
 	summary,
 	sections,
 }: {
-	eyebrow: string;
 	title: string;
 	quiet?: string;
 	lede: string;
@@ -38,13 +36,7 @@ export function LegalLayout({
 			<section
 				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(48px,7vw,80px)]`}
 			>
-				<SectionHead
-					as="h1"
-					eyebrow={eyebrow}
-					title={title}
-					quiet={quiet}
-					lede={lede}
-				/>
+				<SectionHead as="h1" title={title} quiet={quiet} lede={lede} />
 				<p className="mt-5 font-mono text-[12.5px] text-muted-foreground">
 					Last updated {updated}
 				</p>

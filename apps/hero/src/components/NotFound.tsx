@@ -45,7 +45,6 @@ export default function NotFound() {
 					/>
 					<SectionHead
 						as="h1"
-						eyebrow="404 · Page not found"
 						title="This page"
 						quiet="flew off."
 						lede="The link is broken or the page moved. Everything else is still here."

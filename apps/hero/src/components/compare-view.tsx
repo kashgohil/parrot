@@ -22,7 +22,6 @@ export function CompareIndexView() {
 			<section className={HERO}>
 				<SectionHead
 					as="h1"
-					eyebrow="Compare"
 					title="Parrot vs"
 					quiet="the alternatives."
 					lede="Side-by-side comparisons with the apps people actually consider for dictation on a Mac, including where each one is the better pick."
@@ -95,12 +94,10 @@ function RuledList({ items, title }: { items: string[]; title: string }) {
 }
 
 function Block({
-	eyebrow,
 	title,
 	quiet,
 	children,
 }: {
-	eyebrow: string;
 	title: string;
 	quiet?: string;
 	children: ReactNode;
@@ -108,7 +105,6 @@ function Block({
 	return (
 		<section className={`${WRAP} ${SECTION}`}>
 			<SectionHead
-				eyebrow={eyebrow}
 				title={title}
 				quiet={quiet}
 				className="mb-[clamp(28px,4vw,44px)]"
@@ -130,7 +126,6 @@ export function CompetitorView({
 			<section className={HERO}>
 				<SectionHead
 					as="h1"
-					eyebrow="Compare"
 					title="Parrot vs"
 					quiet={`${c.name}.`}
 					lede={c.heroVerdict}
@@ -162,7 +157,7 @@ export function CompetitorView({
 				</p>
 			</section>
 
-			<Block eyebrow="Features" title="Side by side.">
+			<Block title="Side by side.">
 				<div className="overflow-x-auto">
 					<table className="w-full min-w-[480px] border-collapse text-[15px]">
 						<thead>
@@ -202,11 +197,7 @@ export function CompetitorView({
 				</div>
 			</Block>
 
-			<Block
-				eyebrow="Fair play"
-				title={`Where ${c.shortName}`}
-				quiet="is the better pick."
-			>
+			<Block title={`Where ${c.shortName}`} quiet="is the better pick.">
 				<div className="grid gap-10 md:grid-cols-2">
 					<RuledList
 						title={`What ${c.shortName} does well`}
@@ -216,11 +207,7 @@ export function CompetitorView({
 				</div>
 			</Block>
 
-			<Block
-				eyebrow="Why people switch"
-				title="What Parrot"
-				quiet="does differently."
-			>
+			<Block title="What Parrot" quiet="does differently.">
 				<div className="grid gap-x-8 sm:grid-cols-2">
 					{c.parrotWins.map((win) => (
 						<div
@@ -238,7 +225,7 @@ export function CompetitorView({
 				</div>
 			</Block>
 
-			<Block eyebrow="Decide" title="Which one" quiet="is for you?">
+			<Block title="Which one" quiet="is for you?">
 				<div className="grid gap-10 md:grid-cols-2">
 					<RuledList title="Pick Parrot if…" items={c.chooseParrotWhen} />
 					<RuledList
@@ -251,7 +238,6 @@ export function CompetitorView({
 			<section className={`${WRAP} ${SECTION}`}>
 				<div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
 					<SectionHead
-						eyebrow="FAQ"
 						title="Parrot vs"
 						quiet={`${c.shortName}, answered.`}
 						className="content-start self-start lg:sticky lg:top-24"

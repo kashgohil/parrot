@@ -31,7 +31,6 @@ export function VocabularySection() {
 			<div className={SPLIT}>
 				<div>
 					<SectionHead
-						eyebrow="Vocabulary"
 						title="Names and jargon,"
 						quiet="spelled right."
 						lede="Add the words you use that a speech model has never heard: coworkers, clients, products, code. Parrot hands them to the speech model as hints and to cleanup as spellings to keep."
@@ -139,7 +138,6 @@ export function WritingStyleSection() {
 			<div className={SPLIT}>
 				<div className="lg:order-2">
 					<SectionHead
-						eyebrow="Writing style"
 						title="Casual in Slack."
 						quiet="Careful in Mail."
 						lede="Tell Parrot who you are and how you write, then give any app its own writing style. The same sentence comes out differently depending on where your cursor is."

@@ -121,7 +121,6 @@ function ContactPage() {
 			>
 				<SectionHead
 					as="h1"
-					eyebrow="Contact"
 					title="Questions, bugs, ideas?"
 					quiet="Write to us."
 					lede="Email is the best way to reach us. We usually reply within 24 to 48 hours."
@@ -174,7 +173,6 @@ function ContactPage() {
 
 			<section className={`${WRAP} pb-[clamp(104px,14vw,184px)]`}>
 				<SectionHead
-					eyebrow="Before you write"
 					title="It might"
 					quiet="already be answered."
 					className="mb-6"

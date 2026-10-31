@@ -81,7 +81,6 @@ export function DetailsSection() {
 		<section className="px-4 pb-[clamp(104px,14vw,184px)] md:px-8">
 			<div className="mx-auto max-w-[1160px]">
 				<SectionHead
-					eyebrow="Details"
 					title="Small things"
 					quiet="you'll use every day."
 					className="mb-[clamp(44px,6vw,72px)]"
@@ -189,7 +188,6 @@ export function CompareSection() {
 		>
 			<div className="mx-auto max-w-[1160px]">
 				<SectionHead
-					eyebrow="Compare"
 					title="The same job,"
 					quiet="without the subscription."
 					className="mb-[clamp(44px,6vw,72px)]"

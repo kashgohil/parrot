@@ -27,7 +27,6 @@ export function AboutView() {
 			<section className={`${WRAP} pt-[clamp(48px,8vw,96px)] ${SECTION}`}>
 				<SectionHead
 					as="h1"
-					eyebrow="About"
 					title="About Parrot."
 					quiet="Dictation that stays on your Mac."
 					lede={
@@ -98,7 +97,6 @@ export function AboutView() {
 
 			<section className={`${WRAP} ${SECTION}`}>
 				<SectionHead
-					eyebrow="Principles"
 					title="What Parrot"
 					quiet="won't compromise on."
 					className="mb-7"
@@ -137,7 +135,6 @@ export function AboutView() {
 			<section className={`${WRAP} ${SECTION}`}>
 				<div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-[72px]">
 					<SectionHead
-						eyebrow="Under the hood"
 						title="How Parrot"
 						quiet="is built."
 						lede={

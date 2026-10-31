@@ -59,7 +59,6 @@ export function FaqSection() {
 				className={`${WRAP} grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16`}
 			>
 				<SectionHead
-					eyebrow="FAQ"
 					title="Before you"
 					quiet="install."
 					className="content-start self-start lg:sticky lg:top-24"
@@ -97,7 +96,6 @@ export function BlogStrip() {
 		<section className={SECTION}>
 			<div className={WRAP}>
 				<SectionHead
-					eyebrow="From the blog"
 					title="Guides for local"
 					quiet="Mac dictation."
 					className="mb-[clamp(28px,4vw,40px)]"

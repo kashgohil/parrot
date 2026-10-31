@@ -42,7 +42,6 @@ export function CleanupSection() {
 		>
 			<div className="mx-auto max-w-[1160px]">
 				<SectionHead
-					eyebrow="Cleanup"
 					title="Say it messy."
 					quiet="Send it clean."
 					lede="People don't talk in finished sentences. After the speech model writes down what you said, a small language model on your Mac takes out the filler, applies your corrections and fixes punctuation."

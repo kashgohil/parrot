@@ -42,7 +42,6 @@ export function PrivacySection() {
 				<div>
 					<SectionHead
 						tone="band"
-						eyebrow="Privacy"
 						title="Your voice"
 						quiet="stays on this Mac."
 						lede="Parrot has no servers to send your audio to. You download the models once. After that, recording, transcription, cleanup and history all happen on your machine."
@@ -155,7 +154,6 @@ export function ModelsSection() {
 		>
 			<div className="mx-auto max-w-[1160px]">
 				<SectionHead
-					eyebrow="Under the hood"
 					title="What runs"
 					quiet="on your Mac."
 					lede="Parrot uses open models that are small enough to run locally. You pick the ones that suit your Mac and switch whenever you want."

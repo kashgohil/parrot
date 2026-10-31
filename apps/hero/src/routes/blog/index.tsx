@@ -113,7 +113,6 @@ function BlogIndex() {
 			<section className="mx-auto max-w-[1224px] px-4 pt-[clamp(48px,8vw,96px)] pb-[clamp(56px,8vw,96px)] md:px-8">
 				<SectionHead
 					as="h1"
-					eyebrow="Blog"
 					title="Notes on dictation,"
 					quiet="written on a Mac."
 					lede="Guides, comparisons and the occasional build story: how to dictate well, which apps are worth it, and how Parrot works."

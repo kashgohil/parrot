@@ -83,7 +83,6 @@ const SUMMARY = [
 function PrivacyPage() {
 	return (
 		<LegalLayout
-			eyebrow="Privacy"
 			title="Your voice,"
 			quiet="your data."
 			lede="Parrot is built around a simple rule: your audio and transcriptions belong to you, not us."

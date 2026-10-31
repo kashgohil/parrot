@@ -116,7 +116,6 @@ const SECTIONS: LegalSection[] = [
 function TermsPage() {
 	return (
 		<LegalLayout
-			eyebrow="Legal"
 			title="Terms of Service."
 			quiet="Kept readable."
 			lede="The legal terms for using Parrot."

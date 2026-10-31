@@ -84,7 +84,6 @@ function ChangelogPage() {
 			>
 				<SectionHead
 					as="h1"
-					eyebrow="Changelog"
 					title="What's new"
 					quiet="in Parrot."
 					lede="Parrot is in active development. Every release, newest first. The app checks for updates on its own, so you'll get these automatically."
@@ -141,12 +140,7 @@ function ChangelogPage() {
 			</section>
 
 			<section className={`${WRAP} pb-[clamp(104px,14vw,184px)]`}>
-				<SectionHead
-					eyebrow="Coming up"
-					title="What we're"
-					quiet="working on."
-					className="mb-6"
-				/>
+				<SectionHead title="What we're" quiet="working on." className="mb-6" />
 				<ul className="m-0 grid list-none gap-x-8 border-b border-border p-0 sm:grid-cols-2">
 					{ROADMAP.map((item) => (
 						<li

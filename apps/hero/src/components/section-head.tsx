@@ -1,10 +1,9 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-// Section opener used across the site: a small mono label, a heading whose
-// second clause is set in the quiet color (never italics), and an optional lead.
+// Section opener used across the site: a heading whose second clause is set
+// in the quiet color (never italics), and an optional lead.
 export function SectionHead({
-	eyebrow,
 	title,
 	quiet,
 	lede,
@@ -12,7 +11,6 @@ export function SectionHead({
 	tone = "default",
 	className,
 }: {
-	eyebrow?: string;
 	title: ReactNode;
 	quiet?: ReactNode;
 	lede?: ReactNode;
@@ -23,16 +21,6 @@ export function SectionHead({
 	const band = tone === "band";
 	return (
 		<div className={cn("grid max-w-[760px] gap-4", className)}>
-			{eyebrow && (
-				<p
-					className={cn(
-						"font-mono text-xs uppercase tracking-[0.08em]",
-						band ? "text-band-muted" : "text-muted-foreground",
-					)}
-				>
-					{eyebrow}
-				</p>
-			)}
 			<Heading
 				className={cn(
 					// Line height must follow the size: tailwind-merge drops a
