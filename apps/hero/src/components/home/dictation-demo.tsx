@@ -207,75 +207,77 @@ export function DictationDemo() {
 				</div>
 			</div>
 
-			<div className="demo-wallpaper relative overflow-hidden rounded-[22px] px-[clamp(12px,4vw,56px)] pt-[clamp(18px,4vw,48px)] pb-28">
-				<MenuBar app={demo.menu} />
+			<div className="demo-screen relative overflow-hidden rounded-[22px]">
+				<div className="demo-canvas demo-wallpaper relative flex flex-col px-4 pt-[44px] pb-24 sm:px-14 sm:pt-[74px] sm:pb-[148px]">
+					<MenuBar app={demo.menu} />
 
-				<div className="relative mx-auto mt-[18px] max-w-[920px] overflow-hidden rounded-xl border border-black/10 bg-card text-sm text-card-foreground shadow-[0_30px_60px_-20px_rgba(16,37,26,0.35),0_12px_24px_-12px_rgba(16,37,26,0.25)]">
-					<div className="flex h-[38px] items-center gap-2 border-b border-border bg-sunk px-3.5">
-						<TrafficLights />
-						<span className="mr-[50px] flex-1 text-center text-[12.5px] font-medium text-muted-foreground">
-							{demo.title}
-						</span>
-					</div>
-					{app === "slack" && (
-						<SlackApp>
-							<Target
-								text={texts.slack}
-								landed={landed}
-								placeholder="Message #launch"
-							/>
-						</SlackApp>
-					)}
-					{app === "mail" && (
-						<MailApp>
-							<Target text={texts.mail} landed={landed} />
-						</MailApp>
-					)}
-					{app === "vscode" && (
-						<CodeApp>
-							<Target
-								text={texts.vscode}
-								landed={landed}
-								placeholder="Describe a change"
-							/>
-						</CodeApp>
-					)}
-					{app === "notes" && (
-						<NotesApp>
-							<Target text={texts.notes} landed={landed} />
-						</NotesApp>
-					)}
-				</div>
-
-				<div className="pointer-events-none absolute inset-x-0 bottom-[22px] grid justify-items-center gap-3">
-					<p
-						aria-hidden="true"
-						className={cn(
-							"m-0 max-w-[min(560px,calc(100%-32px))] rounded-[14px] bg-[rgba(12,22,15,0.78)] px-4 py-2.5 text-[15px] leading-snug text-[#f1f6ee] backdrop-blur-md transition-[opacity,transform] duration-250",
-							captionOn ? "opacity-100" : "translate-y-1.5 opacity-0",
-						)}
-					>
-						<span className="mb-0.5 block font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#f1f6ee]/55">
-							You said
-						</span>
-						{WORDS[app].slice(0, shown).map((word, i) => (
-							<span
-								// Words repeat ("the"), so position is the identity here.
-								// biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered token list
-								key={i}
-								className={cn(
-									"transition-colors duration-300",
-									word.fill && "text-[#f1f6ee]/50",
-									word.fill &&
-										struck &&
-										"text-[#f1f6ee]/35 line-through decoration-[#f26a52]",
-								)}
-							>
-								{word.w}{" "}
+					<div className="relative mx-auto flex min-h-0 w-full max-w-[920px] flex-1 flex-col overflow-hidden rounded-xl [&>*:last-child]:flex-1 border border-black/10 bg-card text-sm text-card-foreground shadow-[0_30px_60px_-20px_rgba(16,37,26,0.35),0_12px_24px_-12px_rgba(16,37,26,0.25)]">
+						<div className="flex h-[38px] items-center gap-2 border-b border-border bg-sunk px-3.5">
+							<TrafficLights />
+							<span className="mr-[50px] flex-1 text-center text-[12.5px] font-medium text-muted-foreground">
+								{demo.title}
 							</span>
-						))}
-					</p>
-					<Indicator phase={phase} elapsed={elapsed} />
+						</div>
+						{app === "slack" && (
+							<SlackApp>
+								<Target
+									text={texts.slack}
+									landed={landed}
+									placeholder="Message #launch"
+								/>
+							</SlackApp>
+						)}
+						{app === "mail" && (
+							<MailApp>
+								<Target text={texts.mail} landed={landed} />
+							</MailApp>
+						)}
+						{app === "vscode" && (
+							<CodeApp>
+								<Target
+									text={texts.vscode}
+									landed={landed}
+									placeholder="Describe a change"
+								/>
+							</CodeApp>
+						)}
+						{app === "notes" && (
+							<NotesApp>
+								<Target text={texts.notes} landed={landed} />
+							</NotesApp>
+						)}
+					</div>
+
+					<div className="pointer-events-none absolute inset-x-0 bottom-[22px] grid justify-items-center gap-3">
+						<p
+							aria-hidden="true"
+							className={cn(
+								"m-0 max-w-[min(560px,calc(100%-32px))] rounded-[14px] bg-[rgba(12,22,15,0.78)] px-4 py-2.5 text-[15px] leading-snug text-[#f1f6ee] backdrop-blur-md transition-[opacity,transform] duration-250",
+								captionOn ? "opacity-100" : "translate-y-1.5 opacity-0",
+							)}
+						>
+							<span className="mb-0.5 block font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#f1f6ee]/55">
+								You said
+							</span>
+							{WORDS[app].slice(0, shown).map((word, i) => (
+								<span
+									// Words repeat ("the"), so position is the identity here.
+									// biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered token list
+									key={i}
+									className={cn(
+										"transition-colors duration-300",
+										word.fill && "text-[#f1f6ee]/50",
+										word.fill &&
+											struck &&
+											"text-[#f1f6ee]/35 line-through decoration-[#f26a52]",
+									)}
+								>
+									{word.w}{" "}
+								</span>
+							))}
+						</p>
+						<Indicator phase={phase} elapsed={elapsed} />
+					</div>
 				</div>
 			</div>
 		</div>

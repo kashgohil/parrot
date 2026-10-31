@@ -39,21 +39,10 @@ export function Hero({ children }: { children?: ReactNode }) {
 		<section className="px-4 pt-[clamp(48px,8vw,96px)] md:px-8">
 			<div className="mx-auto max-w-[1160px]">
 				<div className="grid gap-7 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-end lg:gap-14">
-					<div className="grid gap-6">
-						<p className="flex flex-wrap items-center gap-2.5 font-mono text-[12.5px] text-muted-foreground">
-							<span>Mac app</span>
-							<Dot />
-							<span>v{PARROT_FACTS.version}</span>
-							<Dot />
-							<span>Apple Silicon</span>
-							<Dot />
-							<span>{PARROT_FACTS.price}</span>
-						</p>
-						<h1 className="m-0 text-[clamp(2.6rem,6.4vw,4.9rem)] font-bold leading-none tracking-[-0.03em] text-foreground">
-							Talk instead of type.{" "}
-							<span className="text-quiet">Nothing leaves your Mac.</span>
-						</h1>
-					</div>
+					<h1 className="m-0 text-[clamp(2.6rem,6.4vw,4.9rem)] font-bold leading-none tracking-[-0.03em] text-foreground">
+						Talk instead of type.{" "}
+						<span className="text-quiet">Nothing leaves your Mac.</span>
+					</h1>
 					<div className="grid gap-5 pb-1.5">
 						<p className="m-0 max-w-[36em] text-pretty text-lg leading-relaxed text-ink-2">
 							Hold <Kbd>{PARROT_FACTS.defaultHotkey}</Kbd>, say what you mean,
@@ -75,15 +64,6 @@ export function Hero({ children }: { children?: ReactNode }) {
 				<Stats />
 			</div>
 		</section>
-	);
-}
-
-function Dot() {
-	return (
-		<i
-			aria-hidden="true"
-			className="size-1 rounded-full bg-border not-italic"
-		/>
 	);
 }
 

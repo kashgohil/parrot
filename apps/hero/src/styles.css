@@ -240,6 +240,26 @@ pre {
 		var(--wall-d);
 }
 
+/* The hero demo screen keeps a MacBook's 16:10 shape at every width: it is laid
+   out at a fixed size and scaled to fit, like a screenshot. tan(atan2(a, b))
+   gives a / b as a plain number, which calc() can't do with lengths. */
+.demo-screen {
+	container-type: inline-size;
+	aspect-ratio: 16 / 10;
+}
+.demo-screen > .demo-canvas {
+	--screen-w: 1160px;
+	width: var(--screen-w);
+	height: calc(var(--screen-w) * 10 / 16);
+	transform-origin: 0 0;
+	scale: tan(atan2(100cqw, var(--screen-w)));
+}
+@media (max-width: 639px) {
+	.demo-screen > .demo-canvas {
+		--screen-w: 760px;
+	}
+}
+
 /* Syntax colors and the Slack sidebar inside the mock windows. */
 :root {
 	--demo-slack: #3f1d44;
