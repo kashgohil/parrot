@@ -57,7 +57,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getCompetitor } from "@/lib/competitors";
+import { type FeatureRow, getCompetitor } from "@/lib/competitors";
 import { PARROT_FACTS } from "@/lib/parrot-facts";
 
 const wispr = getCompetitor("wispr-flow")!;
@@ -422,25 +422,27 @@ function Ticker() {
 // ---------------------------------------------------------------------------
 // 2. Cleanup: what you said vs what Parrot writes
 // ---------------------------------------------------------------------------
-// Words wrapped in [brackets] are fillers that cleanup removes.
+// Words wrapped in [brackets] are what cleanup removes. Like the app's cleanup
+// prompt, only clear vocal fillers and explicit self-corrections go; words like
+// "so", "just" and "like" stay, and the wording is not rewritten.
 const CLEANUP_EXAMPLES = [
 	{
-		said: "so [um] basically I think we should [uh] move the meeting to [like] Thursday because [uh] monday doesnt work for sarah and john cant make it either",
-		fillers: "4 fillers",
+		said: "[um] can we move the meeting to [thursday no wait] friday monday doesnt work for sarah and john cant make it either",
+		fillers: "1 filler, 1 correction",
 		wrote:
-			"Let's move the meeting to Thursday. Monday doesn't work for Sarah, and John can't make it either.",
+			"Can we move the meeting to Friday? Monday doesn't work for Sarah, and John can't make it either.",
 	},
 	{
-		said: "hey can you [um] send me the report for Q3 the one with the revenue numbers and the churn data I need it for the board deck thanks",
+		said: "hey can you [um] send me the Q3 report the one with the revenue numbers and the churn data I need it for the board deck thanks",
 		fillers: "1 filler",
 		wrote:
-			"Can you send me the Q3 report with the revenue numbers and churn data? I need it for the board deck. Thanks.",
+			"Hey, can you send me the Q3 report, the one with the revenue numbers and the churn data? I need it for the board deck. Thanks.",
 	},
 	{
 		said: "patient presents with [um] elevated BP around 150 over 95 and [uh] recurring headaches in the mornings",
 		fillers: "2 fillers",
 		wrote:
-			"Patient presents with elevated BP (~150/95) and recurring morning headaches.",
+			"Patient presents with elevated BP around 150 over 95 and recurring headaches in the mornings.",
 	},
 ];
 
@@ -1094,31 +1096,34 @@ function WorkflowsSection() {
 // ---------------------------------------------------------------------------
 // 8. Competitor comparison
 // ---------------------------------------------------------------------------
-type Cell = boolean | "partial";
+type Cell = boolean | string;
+
+// Read from competitors.ts, the same sourced rows the compare pages show, so
+// the homepage table cannot drift from them.
+function feature(c: typeof wispr, name: string): FeatureRow {
+	const row = c.features.find((f) => f.name === name);
+	if (!row) throw new Error(`${c.slug} has no "${name}" row`);
+	return row;
+}
+
 const COMPARISON: {
 	feature: string;
 	parrot: Cell;
 	wispr: Cell;
-	macos: Cell;
+	superwhisper: Cell;
 }[] = [
-	{ feature: "Local mode", parrot: true, wispr: false, macos: false },
-	{
-		feature: "Fast on-device dictation",
-		parrot: true,
-		wispr: false,
-		macos: "partial",
-	},
-	{ feature: "Custom vocabulary", parrot: true, wispr: true, macos: false },
-	{ feature: "AI cleanup", parrot: true, wispr: true, macos: false },
-	{
-		feature: "Privacy (no data sent)",
-		parrot: true,
-		wispr: false,
-		macos: "partial",
-	},
-	{ feature: "Offline support", parrot: true, wispr: false, macos: true },
-	{ feature: "Free, for life", parrot: true, wispr: false, macos: true },
-];
+	["Price", "Price", "Price"],
+	["On-device transcription", "On-device transcription", "Fully local"],
+	["AI cleanup", "AI cleanup", "AI cleanup"],
+	["Custom vocabulary", "Custom vocabulary", "Custom vocabulary"],
+	["Works offline", "Works offline", "Works offline"],
+	["Windows", "Windows", "Windows"],
+].map(([label, w, sw]) => ({
+	feature: label,
+	parrot: feature(wispr, w).parrot,
+	wispr: feature(wispr, w).them,
+	superwhisper: feature(superwhisper, sw).them,
+}));
 
 function CompareCell({ value }: { value: Cell }) {
 	if (value === true)
@@ -1134,7 +1139,7 @@ function CompareCell({ value }: { value: Cell }) {
 		return (
 			<XIcon size={18} className="mx-auto text-[#b54a2e]" aria-label="No" />
 		);
-	return <span className="font-medium text-[#9a6a00]">Partial</span>;
+	return <span className="font-medium text-foreground">{value}</span>;
 }
 
 function CompareSection() {
@@ -1157,7 +1162,7 @@ function CompareSection() {
 									Parrot
 								</th>
 								<th className={`${cell} bg-background`}>Wispr Flow</th>
-								<th className={`${cell} bg-background`}>macOS Dictation</th>
+								<th className={`${cell} bg-background`}>Superwhisper</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -1173,13 +1178,16 @@ function CompareSection() {
 										<CompareCell value={row.wispr} />
 									</td>
 									<td className={cell}>
-										<CompareCell value={row.macos} />
+										<CompareCell value={row.superwhisper} />
 									</td>
 								</tr>
 							))}
 						</tbody>
 					</table>
 				</div>
+				<p className="mt-4 text-center text-sm text-muted-foreground">
+					Competitor prices and features checked {wispr.pricesCheckedOn}.
+				</p>
 			</div>
 		</section>
 	);
