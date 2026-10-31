@@ -24,8 +24,9 @@ export default function Header() {
 
 	return (
 		<>
-			<header className="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-border/70 bg-background/85 backdrop-blur-[14px] backdrop-saturate-150">
-				<div className="mx-auto flex h-16 max-w-[1224px] items-center gap-7 px-4 md:px-8">
+			{/* Floating bar: inset from the edges, so the page shows around it. */}
+			<div className="sticky top-[env(safe-area-inset-top,0px)] z-40 px-3 pt-3 md:px-4">
+				<header className="mx-auto flex h-14 max-w-[1120px] items-center gap-6 rounded-2xl border border-border/70 bg-background/80 pr-2 pl-4 shadow-[0_1px_2px_rgba(18,27,20,0.04),0_8px_24px_-12px_rgba(18,27,20,0.12)] backdrop-blur-xl backdrop-saturate-150 md:pl-5">
 					<Link
 						to="/"
 						className="inline-flex items-center gap-2.5 text-[19px] font-extrabold tracking-[-0.03em] text-foreground no-underline"
@@ -42,7 +43,7 @@ export default function Header() {
 
 					<nav
 						aria-label="Main"
-						className="hidden items-center gap-6 text-[14.5px] md:flex"
+						className="hidden items-center gap-5 text-[14px] md:flex lg:gap-6"
 					>
 						{NAV.map((item) => (
 							<Link
@@ -70,14 +71,14 @@ export default function Header() {
 					<button
 						type="button"
 						onClick={() => setIsOpen(true)}
-						className="-mr-1.5 rounded-lg p-1.5 transition-colors hover:bg-muted md:hidden"
+						className="rounded-lg p-1.5 transition-colors hover:bg-muted md:hidden"
 						aria-label="Open menu"
 						aria-expanded={isOpen}
 					>
 						<Menu size={20} className="text-foreground" />
 					</button>
-				</div>
-			</header>
+				</header>
+			</div>
 
 			{isOpen && (
 				<button
