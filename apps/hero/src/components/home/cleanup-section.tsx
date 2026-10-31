@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from "react";
 import { Kbd } from "@/components/kbd";
 import { SectionHead } from "@/components/section-head";
+import { StableSwap } from "@/components/stable-swap";
 import { CLEANUP_TIERS } from "@/lib/models";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +10,9 @@ import { cn } from "@/lib/utils";
 
 const HEARD =
 	"Um, so I think we should, uh, move the design review to Thursday. No, actually, Friday. And can you send Priya the Figma link before then?";
+
+const RESULT =
+	"m-0 text-pretty text-[clamp(1.15rem,2vw,1.45rem)] leading-normal tracking-[-0.01em]";
 
 function Fill({ children }: { children: ReactNode }) {
 	return (
@@ -97,33 +101,37 @@ export function CleanupSection() {
 								))}
 							</fieldset>
 						</div>
-						<p
+						<StableSwap
 							aria-live="polite"
-							className="m-0 text-pretty text-[clamp(1.15rem,2vw,1.45rem)] leading-normal tracking-[-0.01em]"
-						>
-							{on ? (
-								<>
-									So I think we should move the design review to{" "}
-									<mark className="rounded bg-lime px-[3px] text-lime-ink">
-										Friday
-									</mark>
-									. And can you send Priya the Figma link before then?
-								</>
-							) : (
-								HEARD
-							)}
-						</p>
-						<div className="flex flex-wrap gap-2">
-							{on ? (
-								<>
-									<Note kept>Filler removed</Note>
-									<Note kept>Correction applied</Note>
-									<Note kept>Punctuation fixed</Note>
-								</>
-							) : (
-								<Note>Pasted as heard</Note>
-							)}
-						</div>
+							active={on ? "on" : "off"}
+							viewClassName="grid content-start gap-4"
+							views={{
+								on: (
+									<>
+										<p className={RESULT}>
+											So I think we should move the design review to{" "}
+											<mark className="rounded bg-lime px-[3px] text-lime-ink">
+												Friday
+											</mark>
+											. And can you send Priya the Figma link before then?
+										</p>
+										<div className="flex flex-wrap gap-2">
+											<Note kept>Filler removed</Note>
+											<Note kept>Correction applied</Note>
+											<Note kept>Punctuation fixed</Note>
+										</div>
+									</>
+								),
+								off: (
+									<>
+										<p className={RESULT}>{HEARD}</p>
+										<div className="flex flex-wrap gap-2">
+											<Note>Pasted as heard</Note>
+										</div>
+									</>
+								),
+							}}
+						/>
 					</div>
 				</div>
 

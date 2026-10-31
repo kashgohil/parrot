@@ -3,6 +3,7 @@ import { AppIcon } from "@/components/app-icon";
 import { FeatureNotes } from "@/components/feature-notes";
 import { Panel } from "@/components/panel";
 import { SectionHead } from "@/components/section-head";
+import { StableSwap } from "@/components/stable-swap";
 import { cn } from "@/lib/utils";
 
 // Vocabulary and per-app writing style. Both describe the desktop app as built:
@@ -131,7 +132,6 @@ const STYLES: Record<StyleApp, { name: string; style: string; out: string }> = {
 
 export function WritingStyleSection() {
 	const [app, setApp] = useState<StyleApp>("slack");
-	const current = STYLES[app];
 
 	return (
 		<section className={SECTION}>
@@ -194,23 +194,29 @@ export function WritingStyleSection() {
 							out by noon"
 						</p>
 					</div>
-					<div
+					<StableSwap
 						role="tabpanel"
-						className="m-[18px] grid min-h-[150px] content-start gap-2 rounded-xl border border-border px-[18px] py-4"
-					>
-						<small className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
-							Pasted in {current.name}
-						</small>
-						<p
-							aria-live="polite"
-							className="m-0 whitespace-pre-line text-base leading-normal"
-						>
-							{current.out}
-						</p>
-						<p className="m-0 mt-auto border-t border-dashed border-border pt-2.5 text-[13px] text-muted-foreground">
-							Writing style for {current.name}: "{current.style}"
-						</p>
-					</div>
+						aria-live="polite"
+						active={app}
+						className="m-[18px] rounded-xl border border-border px-[18px] py-4"
+						viewClassName="flex flex-col gap-2"
+						views={Object.fromEntries(
+							Object.entries(STYLES).map(([id, s]) => [
+								id,
+								<>
+									<small className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
+										Pasted in {s.name}
+									</small>
+									<p className="m-0 whitespace-pre-line text-base leading-normal">
+										{s.out}
+									</p>
+									<p className="m-0 mt-auto border-t border-dashed border-border pt-2.5 text-[13px] text-muted-foreground">
+										Writing style for {s.name}: "{s.style}"
+									</p>
+								</>,
+							]),
+						)}
+					/>
 				</Panel>
 			</div>
 		</section>
