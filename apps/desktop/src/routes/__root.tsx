@@ -397,13 +397,13 @@ function MobileNavLink({
 			className={`
 				flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium no-underline
 				transition-all duration-200
-				${isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"}
+				${isActive ? "text-leaf-strong" : "text-muted-foreground hover:text-foreground"}
 			`}
 		>
 			<div
 				className={`p-2 rounded-xl transition-colors ${isActive ? "bg-primary/10" : ""}`}
 			>
-				<Icon className={`w-4 h-4 ${isActive ? "text-primary" : ""}`} />
+				<Icon className={`w-4 h-4 ${isActive ? "text-leaf-strong" : ""}`} />
 			</div>
 			{label}
 		</Link>
@@ -471,7 +471,7 @@ function ResultOverlay({
 		>
 			<div className="flex items-start gap-3">
 				<div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-					<Sparkles className="w-4 h-4 text-primary" />
+					<Sparkles className="w-4 h-4 text-leaf-strong" />
 				</div>
 				<div className="flex-1 min-w-0">
 					<p className="text-sm leading-relaxed text-foreground line-clamp-3">

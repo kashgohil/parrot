@@ -19,7 +19,7 @@ function LocalSetupPage() {
 			{/* Header */}
 			<div className="text-center space-y-2">
 				<div className="w-16 h-16 bg-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
-					<Cpu className="w-8 h-8 text-primary" />
+					<Cpu className="w-8 h-8 text-leaf-strong" />
 				</div>
 				<h2 className="text-2xl font-bold text-foreground">Tune Parrot</h2>
 				<p className="text-muted-foreground">

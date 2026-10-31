@@ -5,6 +5,8 @@ import { join } from "node:path";
 const css = readFileSync(join(import.meta.dir, "theme.css"), "utf8");
 
 // Body text needs 4.5:1 (WCAG AA); headings and non-text accents need 3:1.
+// leaf (the brand lime) is a fill that always carries on-leaf text, as on the
+// site, so it is checked against on-leaf; focus rings and green text use leaf-strong.
 const PAIRS: [fg: string, bg: string, min: number][] = [
 	["ink", "paper", 4.5],
 	["ink", "surface", 4.5],
@@ -13,8 +15,10 @@ const PAIRS: [fg: string, bg: string, min: number][] = [
 	["muted", "surface", 4.5],
 	["muted", "sunk", 4.5],
 	["quiet", "paper", 3],
-	["leaf", "paper", 3],
-	["on-leaf", "leaf-strong", 4.5],
+	["leaf-strong", "paper", 4.5],
+	["leaf-strong", "surface", 4.5],
+	["leaf-strong", "sunk", 4.5],
+	["on-leaf", "leaf", 4.5],
 	["lime-ink", "lime", 4.5],
 	["band-ink", "band", 4.5],
 	["band-muted", "band", 4.5],

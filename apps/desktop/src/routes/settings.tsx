@@ -95,7 +95,7 @@ function Pill({
 }) {
 	const tones: Record<PillTone, string> = {
 		muted: "bg-muted text-muted-foreground",
-		primary: "bg-primary/10 text-primary",
+		primary: "bg-primary/10 text-leaf-strong",
 		warning: "bg-warning-soft text-warning",
 		success: "bg-success-soft text-success",
 	};
@@ -537,7 +537,7 @@ function SettingsPage() {
 								onClick={() => scrollToSection(s.id)}
 								className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
 									active
-										? "bg-primary/10 text-primary"
+										? "bg-primary/10 text-leaf-strong"
 										: "text-muted-foreground hover:text-foreground hover:bg-muted"
 								}`}
 							>
@@ -554,7 +554,7 @@ function SettingsPage() {
 					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 						<div className="flex items-start gap-4 mb-4">
 							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-								<Keyboard className="w-5 h-5 text-primary" />
+								<Keyboard className="w-5 h-5 text-leaf-strong" />
 							</div>
 							<div className="flex-1">
 								<h2 className="text-base font-semibold text-foreground">
@@ -570,7 +570,7 @@ function SettingsPage() {
 							{recording ? (
 								<div
 									ref={recorderRef}
-									className="flex items-center justify-center h-14 rounded-xl border-2 border-primary bg-primary/5 text-base font-semibold text-primary animate-pulse"
+									className="flex items-center justify-center h-14 rounded-xl border-2 border-primary bg-primary/5 text-base font-semibold text-leaf-strong animate-pulse"
 								>
 									Press your key combination...
 								</div>
@@ -596,7 +596,7 @@ function SettingsPage() {
 									<button
 										type="button"
 										onClick={setFnHotkey}
-										className="text-primary hover:underline"
+										className="text-leaf-strong hover:underline"
 									>
 										Use fn key instead
 									</button>
@@ -633,7 +633,7 @@ function SettingsPage() {
 					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 						<div className="flex items-start gap-4 mb-5">
 							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-								<Mic className="w-5 h-5 text-primary" />
+								<Mic className="w-5 h-5 text-leaf-strong" />
 							</div>
 							<div className="flex-1">
 								<h2 className="text-base font-semibold text-foreground">
@@ -710,7 +710,7 @@ function SettingsPage() {
 								)}
 
 							{sttProgress && (
-								<p className="text-xs text-primary font-medium">{sttProgress}</p>
+								<p className="text-xs text-leaf-strong font-medium">{sttProgress}</p>
 							)}
 
 							<SpeechLanguagePicker
@@ -754,7 +754,7 @@ function SettingsPage() {
 					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 						<div className="flex items-start gap-4 mb-4">
 							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-								<Wand2 className="w-5 h-5 text-primary" />
+								<Wand2 className="w-5 h-5 text-leaf-strong" />
 							</div>
 							<div className="flex-1">
 								<h2 className="text-base font-semibold text-foreground">
@@ -875,7 +875,7 @@ function SettingsPage() {
 									);
 								})}
 								{cleanupProgress && (
-									<p className="text-xs text-primary font-medium">
+									<p className="text-xs text-leaf-strong font-medium">
 										{cleanupProgress}
 									</p>
 								)}
@@ -889,7 +889,7 @@ function SettingsPage() {
 					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 						<div className="flex items-start gap-4 mb-5">
 							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-								<PenLine className="w-5 h-5 text-primary" />
+								<PenLine className="w-5 h-5 text-leaf-strong" />
 							</div>
 							<div className="flex-1">
 								<h2 className="text-base font-semibold text-foreground">
@@ -1012,7 +1012,7 @@ function SettingsPage() {
 											>
 												{selected && (
 													<Check
-														className="absolute top-2 right-2 w-3.5 h-3.5 text-primary"
+														className="absolute top-2 right-2 w-3.5 h-3.5 text-leaf-strong"
 														strokeWidth={3}
 													/>
 												)}
@@ -1278,7 +1278,7 @@ function AppProfilesSection() {
 		<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 			<div className="flex items-start gap-4 mb-5">
 				<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-					<AppWindow className="w-5 h-5 text-primary" />
+					<AppWindow className="w-5 h-5 text-leaf-strong" />
 				</div>
 				<div className="flex-1">
 					<h2 className="text-base font-semibold text-foreground">
@@ -1507,7 +1507,7 @@ function AppearanceSection() {
 		<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
 			<div className="flex items-start gap-4 mb-4">
 				<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-					<Monitor className="w-5 h-5 text-primary" />
+					<Monitor className="w-5 h-5 text-leaf-strong" />
 				</div>
 				<div className="flex-1">
 					<h2 className="text-base font-semibold text-foreground">Appearance</h2>

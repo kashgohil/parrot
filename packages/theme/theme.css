@@ -1,5 +1,7 @@
 /*
- * Parrot theme — the single source of colors and fonts for apps/hero and apps/desktop.
+ * Parrot theme — colors and fonts for apps/desktop, matching the marketing site
+ * (apps/hero/src/styles.css): lime #7cb342, paper, ink and forest greens, Fira Sans.
+ * The app loads the Fira Sans files itself (@font-face in its styles.css).
  *
  * Import it right after Tailwind:
  *   @import "tailwindcss";
@@ -15,36 +17,37 @@
  */
 
 :root {
-	/* Neutrals: a slight green bias toward the leaf accent. */
-	--brand-paper: #f5f7f1;
+	/* Neutrals: the site's paper, ink and pale lime surfaces. */
+	--brand-paper: #fafdf6;
 	--brand-surface: #ffffff;
-	--brand-sunk: #ecf0e6;
-	--brand-ink: #121b14;
-	--brand-ink-2: #3a473d;
-	--brand-muted: #5e6c60;
-	--brand-quiet: #7d8a7f;
-	--brand-line: #dae1d3;
+	--brand-sunk: #f1f8e9;
+	--brand-ink: #1b2e1b;
+	--brand-ink-2: #2e432e;
+	--brand-muted: #4a634a;
+	--brand-quiet: #6b806b;
+	--brand-line: #cbdcb5;
 
-	/* Greens from the parrot; red from its beak. */
-	--brand-leaf: #3a8a2c;
-	--brand-leaf-strong: #2c6e21;
-	--brand-on-leaf: #ffffff;
-	--brand-lime: #dcefa0;
-	--brand-lime-ink: #2b4410;
-	--brand-beak: #e2432c;
-	--brand-beak-soft: #fbe3dd;
+	/* leaf is the brand lime: fills, rings and buttons, with on-leaf (dark) text.
+	   leaf-strong is the darker green for text and icons, which lime fails. */
+	--brand-leaf: #7cb342;
+	--brand-leaf-strong: #4c7d1c;
+	--brand-on-leaf: #11210f;
+	--brand-lime: #e3f1cf;
+	--brand-lime-ink: #2f5410;
+	--brand-beak: #e8582f;
+	--brand-beak-soft: #fde6dd;
 
-	/* Dark band (privacy section) — dark in both modes. */
-	--brand-band: #10251a;
-	--brand-band-2: #183326;
-	--brand-band-ink: #eaf2e4;
-	--brand-band-muted: #9db3a2;
-	--brand-band-line: #2a4636;
+	/* Forest: the site's dark closing band and footer. Dark in both modes. */
+	--brand-band: #1b2e1b;
+	--brand-band-2: #24402a;
+	--brand-band-ink: #f1f8e9;
+	--brand-band-muted: #b6ccb2;
+	--brand-band-line: #35563a;
 	--brand-band-accent: #b9e27a;
 
 	/* Status. Text color on its own -soft background. */
-	--brand-success: #2c6e21;
-	--brand-success-soft: #e3f1d6;
+	--brand-success: #3d6915;
+	--brand-success-soft: #e3f1cf;
 	--brand-warning: #8a5a00;
 	--brand-warning-soft: #fbefd3;
 	--brand-danger: #bf3520;
@@ -59,7 +62,7 @@
 	--card-foreground: var(--brand-ink);
 	--popover: var(--brand-surface);
 	--popover-foreground: var(--brand-ink);
-	--primary: var(--brand-leaf-strong);
+	--primary: var(--brand-leaf);
 	--primary-foreground: var(--brand-on-leaf);
 	--secondary: var(--brand-sunk);
 	--secondary-foreground: var(--brand-ink);
@@ -70,7 +73,7 @@
 	--destructive: var(--brand-danger);
 	--border: var(--brand-line);
 	--input: var(--brand-line);
-	--ring: var(--brand-leaf);
+	--ring: var(--brand-leaf-strong);
 	--chart-1: var(--brand-leaf);
 	--chart-2: var(--brand-info);
 	--chart-3: var(--brand-warning);
@@ -78,12 +81,12 @@
 	--chart-5: var(--brand-muted);
 	--sidebar: var(--brand-sunk);
 	--sidebar-foreground: var(--brand-ink);
-	--sidebar-primary: var(--brand-leaf-strong);
+	--sidebar-primary: var(--brand-leaf);
 	--sidebar-primary-foreground: var(--brand-on-leaf);
 	--sidebar-accent: var(--brand-surface);
 	--sidebar-accent-foreground: var(--brand-ink);
 	--sidebar-border: var(--brand-line);
-	--sidebar-ring: var(--brand-leaf);
+	--sidebar-ring: var(--brand-leaf-strong);
 
 	color-scheme: light;
 }
@@ -98,20 +101,20 @@
 		--brand-muted: #a3b1a5;
 		--brand-quiet: #879589;
 		--brand-line: #3d4d42;
-		--brand-leaf: #8dcb5b;
+		--brand-leaf: #8cc152;
 		--brand-leaf-strong: #a6db76;
-		--brand-on-leaf: #0d130f;
+		--brand-on-leaf: #11210f;
 		--brand-lime: #34501c;
 		--brand-lime-ink: #d6f0a8;
-		--brand-beak: #f26a52;
+		--brand-beak: #f0704f;
 		--brand-beak-soft: #3d201a;
-		--brand-band: #0a1a10;
-		--brand-band-2: #12271a;
-		--brand-band-ink: #eaf2e4;
-		--brand-band-muted: #93aa98;
-		--brand-band-line: #244030;
+		--brand-band: #111c13;
+		--brand-band-2: #1a2a1d;
+		--brand-band-ink: #f1f8e9;
+		--brand-band-muted: #a9bea6;
+		--brand-band-line: #2c4030;
 		--brand-band-accent: #b9e27a;
-		--brand-success: #8dcb5b;
+		--brand-success: #8cc152;
 		--brand-success-soft: #25381b;
 		--brand-warning: #e8b04b;
 		--brand-warning-soft: #3d2f13;
@@ -132,20 +135,20 @@
 	--brand-muted: #a3b1a5;
 	--brand-quiet: #879589;
 	--brand-line: #3d4d42;
-	--brand-leaf: #8dcb5b;
+	--brand-leaf: #8cc152;
 	--brand-leaf-strong: #a6db76;
-	--brand-on-leaf: #0d130f;
+	--brand-on-leaf: #11210f;
 	--brand-lime: #34501c;
 	--brand-lime-ink: #d6f0a8;
-	--brand-beak: #f26a52;
+	--brand-beak: #f0704f;
 	--brand-beak-soft: #3d201a;
-	--brand-band: #0a1a10;
-	--brand-band-2: #12271a;
-	--brand-band-ink: #eaf2e4;
-	--brand-band-muted: #93aa98;
-	--brand-band-line: #244030;
+	--brand-band: #111c13;
+	--brand-band-2: #1a2a1d;
+	--brand-band-ink: #f1f8e9;
+	--brand-band-muted: #a9bea6;
+	--brand-band-line: #2c4030;
 	--brand-band-accent: #b9e27a;
-	--brand-success: #8dcb5b;
+	--brand-success: #8cc152;
 	--brand-success-soft: #25381b;
 	--brand-warning: #e8b04b;
 	--brand-warning-soft: #3d2f13;
@@ -158,10 +161,10 @@
 
 @theme {
 	--font-sans:
-		-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
+		"Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		"Helvetica Neue", Arial, sans-serif;
 	--font-display:
-		-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto,
+		"Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		"Helvetica Neue", Arial, sans-serif;
 	--font-mono:
 		ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;

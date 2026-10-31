@@ -418,10 +418,10 @@ function HomePage() {
 					/>
 				)}
 				{fileBusy ? (
-					<Loader2 className="relative z-10 w-5 h-5 shrink-0 text-primary animate-spin" />
+					<Loader2 className="relative z-10 w-5 h-5 shrink-0 text-leaf-strong animate-spin" />
 				) : (
 					<Upload
-						className={`relative z-10 w-5 h-5 shrink-0 ${dragOver ? "text-primary" : "text-muted-foreground"}`}
+						className={`relative z-10 w-5 h-5 shrink-0 ${dragOver ? "text-leaf-strong" : "text-muted-foreground"}`}
 					/>
 				)}
 				<div className="relative z-10 text-center sm:text-left min-w-0">
@@ -433,7 +433,7 @@ function HomePage() {
 					</p>
 				</div>
 				{fileBusy && (
-					<span className="relative z-10 tabular-nums text-xs font-medium text-primary shrink-0">
+					<span className="relative z-10 tabular-nums text-xs font-medium text-leaf-strong shrink-0">
 						{Math.round(fileProgressPct)}%
 					</span>
 				)}
@@ -442,7 +442,7 @@ function HomePage() {
 				<p className="text-sm text-destructive -mt-3">{fileError}</p>
 			)}
 			{fileProgress && !fileBusy && (
-				<p className="text-sm text-primary -mt-3">{fileProgress}</p>
+				<p className="text-sm text-leaf-strong -mt-3">{fileProgress}</p>
 			)}
 
 			<div className="relative">
@@ -531,7 +531,7 @@ function HomePage() {
 													<div className="flex flex-col items-center gap-1.5">
 														{hasCleaned && (
 															<Sparkles
-																className="w-3.5 h-3.5 text-primary shrink-0"
+																className="w-3.5 h-3.5 text-leaf-strong shrink-0"
 																aria-label="Cleaned"
 															/>
 														)}
@@ -590,7 +590,7 @@ function HomePage() {
 															variant="ghost"
 															size="sm"
 															onClick={() => copyEntry(entry)}
-															className={`h-8 px-2 text-xs ${isCopied ? "text-success" : "hover:text-primary"}`}
+															className={`h-8 px-2 text-xs ${isCopied ? "text-success" : "hover:text-leaf-strong"}`}
 														>
 															{isCopied ? (
 																<Check className="w-3.5 h-3.5" />

@@ -114,7 +114,7 @@ export function DoodleBackground({ opacity = 0.1 }: { opacity?: number }) {
 				return (
 					<Icon
 						key={doodle.id}
-						className="absolute text-primary"
+						className="absolute text-leaf-strong"
 						style={{
 							top: `${doodle.top}px`,
 							left: `${doodle.left}%`,

@@ -118,7 +118,7 @@ function SystemCheckStep({
 	if (isLoading) {
 		return (
 			<div className="flex flex-col items-center justify-center py-8 space-y-4">
-				<Loader2 className="w-8 h-8 animate-spin text-primary" />
+				<Loader2 className="w-8 h-8 animate-spin text-leaf-strong" />
 				<p className="text-sm text-muted-foreground">Checking your system...</p>
 				{showTimeoutMessage && (
 					<div className="text-center max-w-sm">
@@ -300,7 +300,7 @@ function PermissionsStep({ onContinue }: { onContinue: () => void }) {
 	if (accessibility === null || microphone === null) {
 		return (
 			<div className="flex flex-col items-center justify-center py-10 space-y-3">
-				<Loader2 className="w-7 h-7 animate-spin text-primary" />
+				<Loader2 className="w-7 h-7 animate-spin text-leaf-strong" />
 				<p className="text-sm text-muted-foreground">Checking permissions...</p>
 			</div>
 		);
@@ -310,7 +310,7 @@ function PermissionsStep({ onContinue }: { onContinue: () => void }) {
 		return (
 			<div className="flex flex-col items-center justify-center py-10 space-y-3">
 				<div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center">
-					<Check className="w-7 h-7 text-primary" />
+					<Check className="w-7 h-7 text-leaf-strong" />
 				</div>
 				<p className="font-medium">Permissions granted</p>
 				<p className="text-sm text-muted-foreground">Continuing...</p>
@@ -322,7 +322,7 @@ function PermissionsStep({ onContinue }: { onContinue: () => void }) {
 		<div className="space-y-5">
 			<div className="flex items-start gap-4">
 				<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-					<Terminal className="w-5 h-5 text-primary" />
+					<Terminal className="w-5 h-5 text-leaf-strong" />
 				</div>
 				<div>
 					<h2 className="text-base font-semibold">Grant macOS permissions</h2>
@@ -522,7 +522,7 @@ function ModelSelectionStep({
 			{/* Dictation models */}
 			<div>
 				<div className="flex items-center gap-2 mb-3">
-					<Mic className="w-5 h-5 text-primary" />
+					<Mic className="w-5 h-5 text-leaf-strong" />
 					<h3 className="font-medium">Dictation Quality</h3>
 				</div>
 				<div className="grid gap-3">
@@ -541,7 +541,7 @@ function ModelSelectionStep({
 			<p className="text-xs text-muted-foreground">Language counts describe model coverage. Accuracy for mixed-language recordings is still being evaluated. Download sizes are not memory requirements.</p>
 			<div className="p-4 rounded-xl border border-border bg-muted/40 space-y-1">
 				<div className="flex items-center gap-2">
-					<Brain className="w-4 h-4 text-primary" />
+					<Brain className="w-4 h-4 text-leaf-strong" />
 					<p className="text-sm font-medium">Built-in cleanup included</p>
 				</div>
 				<p className="text-xs text-muted-foreground">
@@ -605,12 +605,12 @@ function ModelCard({
 					<div className="flex items-center flex-wrap gap-x-2 gap-y-1">
 						<span className="font-medium">{model.name}</span>
 						{model.recommended && (
-							<span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
+							<span className="text-xs bg-primary/10 text-leaf-strong px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
 								Recommended
 							</span>
 						)}
 						{isDownloaded && (
-							<span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap shrink-0">
+							<span className="text-xs bg-primary/10 text-leaf-strong px-2 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap shrink-0">
 								<Check className="w-3 h-3" />
 								Downloaded
 							</span>
@@ -640,7 +640,7 @@ function InstallationProgressStep({
 	if (!progress) {
 		return (
 			<div className="flex items-center justify-center py-12">
-				<Loader2 className="w-8 h-8 animate-spin text-primary" />
+				<Loader2 className="w-8 h-8 animate-spin text-leaf-strong" />
 			</div>
 		);
 	}
@@ -713,10 +713,10 @@ function InstallationProgressStep({
 						<div
 							className={`w-10 h-10 rounded-full flex items-center justify-center ${
 								status.type === "completed"
-									? "bg-primary/15 text-primary"
+									? "bg-primary/15 text-leaf-strong"
 									: status.type === "failed"
 										? "bg-danger-soft text-danger"
-										: "bg-primary/10 text-primary"
+										: "bg-primary/10 text-leaf-strong"
 							}`}
 						>
 							{status.type === "in_progress" ? (
@@ -770,7 +770,7 @@ function InstallationProgressStep({
 					) : (
 						logMessages.map((msg, i) => (
 							<div key={i} className="text-muted-foreground">
-								<span className="text-primary">→</span> {msg}
+								<span className="text-leaf-strong">→</span> {msg}
 							</div>
 						))
 					)}
@@ -995,7 +995,7 @@ function CompletionStep({
 		<div className="space-y-6">
 			<div className="text-center py-8">
 				<div className="w-16 h-16 bg-primary/15 rounded-full flex items-center justify-center mx-auto mb-4">
-					<Check className="w-8 h-8 text-primary" />
+					<Check className="w-8 h-8 text-leaf-strong" />
 				</div>
 				<h2 className="text-xl font-bold mb-2">Setup Complete!</h2>
 				<p className="text-muted-foreground">
@@ -1014,7 +1014,7 @@ function CompletionStep({
 					}`}
 				>
 					{testResults?.transcription ? (
-						<Check className="w-5 h-5 text-primary" />
+						<Check className="w-5 h-5 text-leaf-strong" />
 					) : (
 						<X className="w-5 h-5 text-danger" />
 					)}
@@ -1036,7 +1036,7 @@ function CompletionStep({
 					}`}
 				>
 					{testResults?.cleanup ? (
-						<Check className="w-5 h-5 text-primary" />
+						<Check className="w-5 h-5 text-leaf-strong" />
 					) : (
 						<X className="w-5 h-5 text-danger" />
 					)}

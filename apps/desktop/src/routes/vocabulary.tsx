@@ -139,7 +139,7 @@ function VocabularyPage() {
 			</div>
 
 			<div className="p-4 rounded-xl bg-primary/5 border border-primary/20 flex items-start gap-3">
-				<Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+				<Sparkles className="w-5 h-5 text-leaf-strong shrink-0 mt-0.5" />
 				<div className="space-y-1">
 					<p className="text-sm text-foreground">
 						Add words Parrot should recognize correctly — names, jargon, technical
@@ -192,7 +192,7 @@ function VocabularyPage() {
 								<span className="text-xs text-muted-foreground">
 									was &ldquo;{s.seen_as}&rdquo; ×{s.count}
 								</span>
-								<Plus className="w-3.5 h-3.5 text-primary" />
+								<Plus className="w-3.5 h-3.5 text-leaf-strong" />
 							</button>
 						))}
 					</div>
@@ -202,7 +202,7 @@ function VocabularyPage() {
 			<div className="bg-card rounded-2xl border border-border p-5">
 				<div className="flex items-start gap-4 mb-4">
 					<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-						<Plus className="w-5 h-5 text-primary" />
+						<Plus className="w-5 h-5 text-leaf-strong" />
 					</div>
 					<div>
 						<h2 className="text-base font-semibold text-foreground">Add Word</h2>
@@ -252,7 +252,7 @@ function VocabularyPage() {
 				<div className="bg-card rounded-2xl border border-border p-5">
 					<div className="flex items-start gap-4 mb-4">
 						<div className="w-10 h-10 rounded-xl bg-leaf/10 flex items-center justify-center shrink-0">
-							<BookA className="w-5 h-5 text-leaf" />
+							<BookA className="w-5 h-5 text-leaf-strong" />
 						</div>
 						<div className="flex-1">
 							<div className="flex items-center justify-between">

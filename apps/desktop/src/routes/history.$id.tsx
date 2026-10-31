@@ -181,7 +181,7 @@ function TranscriptionDetailPage() {
 									Transcription
 								</h1>
 								{hasCleaned && (
-									<span className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+									<span className="inline-flex items-center gap-1 text-xs font-medium text-leaf-strong bg-primary/10 px-2 py-0.5 rounded-md">
 										<Sparkles className="w-3 h-3" />
 										Cleaned
 									</span>
@@ -326,7 +326,7 @@ function DetailContent({
 									<button
 										type="button"
 										onClick={() => onRevealAttachment(audioPath)}
-										className="inline-flex items-center gap-1.5 text-sm text-foreground hover:text-primary transition-colors min-w-0 max-w-full"
+										className="inline-flex items-center gap-1.5 text-sm text-foreground hover:text-leaf-strong transition-colors min-w-0 max-w-full"
 										title={attachmentFilename(audioPath)}
 									>
 										<FileAudio className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
