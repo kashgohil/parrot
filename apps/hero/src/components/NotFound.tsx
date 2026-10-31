@@ -33,7 +33,7 @@ export default function NotFound() {
 	return (
 		<div className="min-h-screen">
 			<section
-				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(48px,7vw,80px)]`}
+				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(64px,9vw,112px)]`}
 			>
 				<div className="grid justify-items-start gap-7">
 					<img
@@ -63,7 +63,7 @@ export default function NotFound() {
 				</div>
 			</section>
 
-			<section className={`${WRAP} pb-[clamp(72px,10vw,128px)]`}>
+			<section className={`${WRAP} pb-[clamp(104px,14vw,184px)]`}>
 				<p className="m-0 mb-3 font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
 					Or try one of these
 				</p>

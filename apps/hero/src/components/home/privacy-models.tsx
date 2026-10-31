@@ -36,7 +36,7 @@ export function PrivacySection() {
 		// biome-ignore lint/correctness/useUniqueElementIds: #privacy is the header nav target; rendered once
 		<section
 			id="privacy"
-			className="scroll-mt-16 bg-band px-4 py-[clamp(72px,10vw,128px)] text-band-ink md:px-8"
+			className="scroll-mt-20 bg-band px-4 py-[clamp(104px,14vw,184px)] text-band-ink md:px-8"
 		>
 			<div className="mx-auto grid max-w-[1160px] items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-[72px]">
 				<div>
@@ -151,7 +151,7 @@ export function ModelsSection() {
 		// biome-ignore lint/correctness/useUniqueElementIds: #models is the header nav target; rendered once
 		<section
 			id="models"
-			className="scroll-mt-16 px-4 py-[clamp(72px,10vw,128px)] md:px-8"
+			className="scroll-mt-20 px-4 py-[clamp(104px,14vw,184px)] md:px-8"
 		>
 			<div className="mx-auto max-w-[1160px]">
 				<SectionHead
@@ -159,7 +159,7 @@ export function ModelsSection() {
 					title="What runs"
 					quiet="on your Mac."
 					lede="Parrot uses open models that are small enough to run locally. You pick the ones that suit your Mac and switch whenever you want."
-					className="mb-[clamp(36px,5vw,56px)]"
+					className="mb-[clamp(44px,6vw,72px)]"
 				/>
 				<div className="overflow-x-auto rounded-[18px] border border-border bg-card">
 					<table className="w-full min-w-[640px] border-collapse text-[14.5px]">

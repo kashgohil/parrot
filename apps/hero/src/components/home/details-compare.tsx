@@ -78,13 +78,13 @@ const DETAILS: { icon: LucideIcon; title: string; body: ReactNode }[] = [
 
 export function DetailsSection() {
 	return (
-		<section className="px-4 pb-[clamp(72px,10vw,128px)] md:px-8">
+		<section className="px-4 pb-[clamp(104px,14vw,184px)] md:px-8">
 			<div className="mx-auto max-w-[1160px]">
 				<SectionHead
 					eyebrow="Details"
 					title="Small things"
 					quiet="you'll use every day."
-					className="mb-[clamp(36px,5vw,56px)]"
+					className="mb-[clamp(44px,6vw,72px)]"
 				/>
 				<div className="grid border-t border-l border-border sm:grid-cols-2 lg:grid-cols-3">
 					{DETAILS.map(({ icon: Icon, title, body }) => (
@@ -185,14 +185,14 @@ export function CompareSection() {
 		// biome-ignore lint/correctness/useUniqueElementIds: #compare is linked from the footer; rendered once
 		<section
 			id="compare"
-			className="scroll-mt-16 px-4 pb-[clamp(72px,10vw,128px)] md:px-8"
+			className="scroll-mt-20 px-4 pb-[clamp(104px,14vw,184px)] md:px-8"
 		>
 			<div className="mx-auto max-w-[1160px]">
 				<SectionHead
 					eyebrow="Compare"
 					title="The same job,"
 					quiet="without the subscription."
-					className="mb-[clamp(36px,5vw,56px)]"
+					className="mb-[clamp(44px,6vw,72px)]"
 				/>
 				<div className="overflow-x-auto">
 					<table className="w-full min-w-[560px] border-collapse text-[15px]">

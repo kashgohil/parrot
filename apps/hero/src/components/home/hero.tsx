@@ -89,7 +89,7 @@ function Dot() {
 
 function Stats() {
 	return (
-		<dl className="m-0 mt-[clamp(56px,8vw,88px)] grid grid-cols-2 border-y border-border md:grid-cols-4">
+		<dl className="m-0 mt-[clamp(72px,10vw,120px)] grid grid-cols-2 border-y border-border md:grid-cols-4">
 			<Stat value="0" unit="bytes" label="of your voice sent to a server" />
 			<Stat value="$0" label="per month, with no word cap" />
 			<Stat

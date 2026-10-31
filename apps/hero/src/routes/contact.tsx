@@ -117,7 +117,7 @@ function ContactPage() {
 	return (
 		<div className="min-h-screen">
 			<section
-				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(40px,6vw,64px)]`}
+				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(56px,8vw,96px)]`}
 			>
 				<SectionHead
 					as="h1"
@@ -128,7 +128,7 @@ function ContactPage() {
 				/>
 			</section>
 
-			<section className={`${WRAP} pb-[clamp(72px,10vw,128px)]`}>
+			<section className={`${WRAP} pb-[clamp(104px,14vw,184px)]`}>
 				<ul className="m-0 list-none border-b border-border p-0">
 					<li className="grid gap-x-12 gap-y-3 border-t border-border py-7 md:grid-cols-[220px_minmax(0,1fr)]">
 						<h2 className="m-0 text-[19px] font-semibold tracking-[-0.01em]">
@@ -172,7 +172,7 @@ function ContactPage() {
 				</ul>
 			</section>
 
-			<section className={`${WRAP} pb-[clamp(72px,10vw,128px)]`}>
+			<section className={`${WRAP} pb-[clamp(104px,14vw,184px)]`}>
 				<SectionHead
 					eyebrow="Before you write"
 					title="It might"

@@ -110,7 +110,7 @@ function BlogIndex() {
 
 	return (
 		<div className="min-h-screen">
-			<section className="mx-auto max-w-[1224px] px-4 pt-[clamp(48px,8vw,96px)] pb-[clamp(40px,6vw,64px)] md:px-8">
+			<section className="mx-auto max-w-[1224px] px-4 pt-[clamp(48px,8vw,96px)] pb-[clamp(56px,8vw,96px)] md:px-8">
 				<SectionHead
 					as="h1"
 					eyebrow="Blog"
@@ -120,7 +120,7 @@ function BlogIndex() {
 				/>
 			</section>
 
-			<section className="mx-auto max-w-[1224px] px-4 pb-[clamp(72px,10vw,128px)] md:px-8">
+			<section className="mx-auto max-w-[1224px] px-4 pb-[clamp(104px,14vw,184px)] md:px-8">
 				{featured && (
 					<Link
 						to="/blog/$slug"

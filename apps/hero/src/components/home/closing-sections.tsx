@@ -7,7 +7,7 @@ import { HOME_FAQ } from "@/lib/home-faq";
 import { PARROT_FACTS } from "@/lib/parrot-facts";
 
 const WRAP = "mx-auto max-w-[1160px]";
-const SECTION = "px-4 pb-[clamp(72px,10vw,128px)] md:px-8";
+const SECTION = "px-4 pb-[clamp(104px,14vw,184px)] md:px-8";
 
 // DRAFT: written for review; Kash signs off on the final wording (ISSUE-1337).
 export function FounderNote() {
@@ -143,7 +143,7 @@ export function BlogStrip() {
 
 export function FinalCta() {
 	return (
-		<section className="border-t border-border px-4 py-[clamp(80px,12vw,150px)] md:px-8">
+		<section className="border-t border-border px-4 py-[clamp(120px,16vw,208px)] md:px-8">
 			<div className={`${WRAP} grid justify-items-start gap-7`}>
 				<img
 					src="/parrot-192.png"

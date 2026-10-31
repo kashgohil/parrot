@@ -17,7 +17,7 @@ export type ReleaseState =
 	| { status: "error" };
 
 const WRAP = "mx-auto max-w-[1224px] px-4 md:px-8";
-const SECTION = "pb-[clamp(72px,10vw,128px)]";
+const SECTION = "pb-[clamp(104px,14vw,184px)]";
 const LINK =
 	"text-ink-2 underline decoration-border underline-offset-[3px] hover:text-foreground";
 
@@ -45,7 +45,7 @@ export function DownloadView({
 	return (
 		<div className="min-h-screen">
 			<section
-				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(56px,8vw,88px)]`}
+				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(80px,11vw,128px)]`}
 			>
 				<div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
 					<div className="grid gap-6">
@@ -145,7 +145,7 @@ export function DownloadView({
 					eyebrow="Setup"
 					title="Install in"
 					quiet="about a minute."
-					className="mb-[clamp(36px,5vw,56px)]"
+					className="mb-[clamp(44px,6vw,72px)]"
 				/>
 				<ol className="m-0 grid list-none gap-0 p-0">
 					<Step

@@ -35,7 +35,7 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 	return (
 		<div className="min-h-screen">
 			<header
-				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(36px,5vw,56px)]`}
+				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(48px,7vw,80px)]`}
 			>
 				<div className="grid max-w-[820px] gap-5">
 					<p className="m-0 font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
@@ -90,7 +90,7 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 			</header>
 
 			<div
-				className={`mx-4 md:mx-[max(32px,calc((100%-1160px)/2))] grid gap-12 border-t border-border pt-[clamp(32px,5vw,48px)] pb-[clamp(56px,8vw,96px)] lg:grid-cols-[minmax(0,1fr)_220px]`}
+				className={`mx-4 md:mx-[max(32px,calc((100%-1160px)/2))] grid gap-12 border-t border-border pt-[clamp(32px,5vw,48px)] pb-[clamp(80px,11vw,136px)] lg:grid-cols-[minmax(0,1fr)_220px]`}
 			>
 				<article ref={body} className="blog-content min-w-0">
 					<Suspense
@@ -104,7 +104,7 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 			</div>
 
 			{post.faq && post.faq.length > 0 && (
-				<section className={`${WRAP} pb-[clamp(56px,8vw,96px)]`}>
+				<section className={`${WRAP} pb-[clamp(80px,11vw,136px)]`}>
 					<div className="max-w-[68ch]">
 						<h2 className="m-0 mb-4 text-[clamp(1.45rem,2.6vw,1.75rem)] font-bold tracking-[-0.022em]">
 							FAQ
@@ -131,7 +131,7 @@ export default function BlogPostLayout({ post }: { post: BlogPost }) {
 			)}
 
 			{related.length > 0 && (
-				<section className={`${WRAP} pb-[clamp(56px,8vw,96px)]`}>
+				<section className={`${WRAP} pb-[clamp(80px,11vw,136px)]`}>
 					<p className="m-0 mb-3 font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
 						More from the blog
 					</p>

@@ -36,7 +36,7 @@ export function LegalLayout({
 	return (
 		<div className="min-h-screen">
 			<section
-				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(36px,5vw,56px)]`}
+				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(48px,7vw,80px)]`}
 			>
 				<SectionHead
 					as="h1"
@@ -51,7 +51,7 @@ export function LegalLayout({
 			</section>
 
 			<div
-				className={`mx-4 md:mx-[max(32px,calc((100%-1160px)/2))] grid gap-12 border-t border-border pt-[clamp(32px,5vw,48px)] pb-[clamp(72px,10vw,128px)] lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-16`}
+				className={`mx-4 md:mx-[max(32px,calc((100%-1160px)/2))] grid gap-12 border-t border-border pt-[clamp(32px,5vw,48px)] pb-[clamp(104px,14vw,184px)] lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-16`}
 			>
 				<nav aria-label="Contents" className="max-lg:hidden">
 					<div className="sticky top-24 grid gap-2.5 text-sm">

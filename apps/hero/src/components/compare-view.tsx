@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 // Every fact on these pages comes from lib/competitors.ts.
 
 const WRAP = "mx-auto max-w-[1224px] px-4 md:px-8";
-const SECTION = "pb-[clamp(72px,10vw,128px)]";
-const HERO = `${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(56px,8vw,88px)]`;
+const SECTION = "pb-[clamp(104px,14vw,184px)]";
+const HERO = `${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(80px,11vw,128px)]`;
 const LINK =
 	"text-ink-2 underline decoration-border underline-offset-[3px] hover:text-foreground";
 const US = "bg-[color-mix(in_srgb,var(--brand-lime)_30%,transparent)]";
@@ -295,7 +295,7 @@ export function CompetitorView({
 				)}
 			</TryParrot>
 
-			<section className={`${WRAP} pb-[clamp(56px,8vw,88px)]`}>
+			<section className={`${WRAP} pb-[clamp(80px,11vw,128px)]`}>
 				<p className="m-0 mb-3 font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
 					Other comparisons
 				</p>

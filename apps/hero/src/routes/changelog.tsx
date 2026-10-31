@@ -80,7 +80,7 @@ function ChangelogPage() {
 	return (
 		<div className="min-h-screen">
 			<section
-				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(40px,6vw,64px)]`}
+				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(56px,8vw,96px)]`}
 			>
 				<SectionHead
 					as="h1"
@@ -91,7 +91,7 @@ function ChangelogPage() {
 				/>
 			</section>
 
-			<section className={`${WRAP} pb-[clamp(72px,10vw,128px)]`}>
+			<section className={`${WRAP} pb-[clamp(104px,14vw,184px)]`}>
 				<ol className="m-0 list-none p-0">
 					{RELEASES.map((release) => (
 						<li
@@ -140,7 +140,7 @@ function ChangelogPage() {
 				</ol>
 			</section>
 
-			<section className={`${WRAP} pb-[clamp(72px,10vw,128px)]`}>
+			<section className={`${WRAP} pb-[clamp(104px,14vw,184px)]`}>
 				<SectionHead
 					eyebrow="Coming up"
 					title="What we're"

@@ -38,7 +38,7 @@ export function CleanupSection() {
 		// biome-ignore lint/correctness/useUniqueElementIds: #cleanup is the header nav target; rendered once
 		<section
 			id="cleanup"
-			className="scroll-mt-20 px-4 py-[clamp(72px,10vw,128px)] md:px-8"
+			className="scroll-mt-20 px-4 py-[clamp(104px,14vw,184px)] md:px-8"
 		>
 			<div className="mx-auto max-w-[1160px]">
 				<SectionHead
@@ -46,7 +46,7 @@ export function CleanupSection() {
 					title="Say it messy."
 					quiet="Send it clean."
 					lede="People don't talk in finished sentences. After the speech model writes down what you said, a small language model on your Mac takes out the filler, applies your corrections and fixes punctuation."
-					className="mb-[clamp(36px,5vw,56px)]"
+					className="mb-[clamp(44px,6vw,72px)]"
 				/>
 
 				<div className="grid overflow-hidden rounded-[18px] border border-border bg-card md:grid-cols-2">

@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 // - Per-app modes (settings.tsx AppProfilesSection): per bundle ID, override the
 //   context or the free-text writing style, or turn cleanup off.
 
-const SECTION = "px-4 pb-[clamp(72px,10vw,128px)] md:px-8";
+const SECTION = "px-4 pb-[clamp(104px,14vw,184px)] md:px-8";
 const SPLIT =
 	"mx-auto grid max-w-[1160px] items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-[72px]";
 
