@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import Footer from "@/components/Footer";
+import { ForestCTA } from "@/components/forest-cta";
 import { PARROT_FACTS } from "@/lib/parrot-facts";
 
 export const Route = createFileRoute("/about")({
@@ -121,12 +122,9 @@ function AboutPage() {
 	return (
 		<div className="min-h-screen">
 			{/* ── Hero ── */}
-			<section className="px-6 pt-16 pb-20 md:pt-24 md:pb-28">
+			<section className="px-5 pt-[clamp(48px,7vw,88px)] pb-[clamp(56px,7vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						About
-					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+					<h1 className="text-[clamp(2.6rem,5.2vw,4.1rem)] font-black text-foreground tracking-[-0.035em] leading-none text-balance mb-6">
 						About Parrot.
 						<br />
 						Voice dictation, rebuilt.
@@ -139,9 +137,9 @@ function AboutPage() {
 			</section>
 
 			{/* ── The problem ── */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-8">
 						The problem with dictation software
 					</h2>
 					<div className="grid md:grid-cols-3 gap-6">
@@ -159,8 +157,8 @@ function AboutPage() {
 								body: "Most tools upload your audio to process it. Parrot runs fully on-device — nothing leaves your Mac, ever.",
 							},
 						].map((item, i) => (
-							<div key={i}>
-								<p className="text-[13px] font-bold text-primary uppercase tracking-wider mb-2">
+							<div key={i} className="surface p-6">
+								<p className="text-lg font-bold text-foreground mb-2">
 									{item.label}
 								</p>
 								<p className="text-sm text-muted-foreground leading-relaxed">
@@ -173,9 +171,9 @@ function AboutPage() {
 			</section>
 
 			{/* ── What Parrot does differently ── */}
-			<section className="px-6 py-20 md:py-28">
+			<section className="px-5 py-[clamp(72px,9vw,112px)]">
 				<div className="max-w-3xl mx-auto">
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-10">
 						How Parrot is different
 					</h2>
 					<div className="space-y-10">
@@ -220,12 +218,12 @@ function AboutPage() {
 			</section>
 
 			{/* ── How it compares ── */}
-			<section className="px-6 py-16 bg-card border-y border-border">
+			<section className="px-5 py-[clamp(64px,8vw,96px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
 					<div className="grid sm:grid-cols-3 gap-6 text-center">
 						<Link
 							to="/download"
-							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+							className="group surface p-6 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)] no-underline"
 						>
 							<p className="text-2xl font-black text-foreground mb-1">
 								Free for life
@@ -236,7 +234,7 @@ function AboutPage() {
 						</Link>
 						<Link
 							to="/changelog"
-							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+							className="group surface p-6 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)] no-underline"
 						>
 							<p className="text-2xl font-black text-foreground mb-1">Faster</p>
 							<p className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
@@ -245,7 +243,7 @@ function AboutPage() {
 						</Link>
 						<Link
 							to="/privacy"
-							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+							className="group surface p-6 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)] no-underline"
 						>
 							<p className="text-2xl font-black text-foreground mb-1">Zero</p>
 							<p className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
@@ -257,15 +255,12 @@ function AboutPage() {
 			</section>
 
 			{/* ── Principles ── */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						What we believe
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-10">
 						Our principles
 					</h2>
-					<div className="space-y-8">
+					<div className="grid gap-4 sm:grid-cols-2">
 						{[
 							{
 								title: "Your data is yours",
@@ -284,7 +279,7 @@ function AboutPage() {
 								body: "Parrot pastes into any app - email, Slack, your IDE, medical records, legal docs. One tool for everything, not a different integration for each workflow.",
 							},
 						].map((item, i) => (
-							<div key={i} className="border-l-2 border-primary/30 pl-5">
+							<div key={i} className="surface p-6">
 								<h3 className="text-lg font-bold text-foreground mb-1.5">
 									{item.title}
 								</h3>
@@ -298,12 +293,9 @@ function AboutPage() {
 			</section>
 
 			{/* ── Built by ── */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Built by
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-6">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-6">
 						Kash Gohil
 					</h2>
 					<p className="text-base text-muted-foreground leading-relaxed mb-4 max-w-2xl">
@@ -345,12 +337,9 @@ function AboutPage() {
 			</section>
 
 			{/* ── Timeline ── */}
-			<section className="px-6 py-20 md:py-28">
+			<section className="px-5 py-[clamp(72px,9vw,112px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Journey
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-10">
 						How we got here
 					</h2>
 					<div className="relative">
@@ -388,7 +377,7 @@ function AboutPage() {
 							<div key={i} className="relative flex gap-5 mb-8 last:mb-0">
 								<div className="relative z-10 w-[15px] h-[15px] rounded-full bg-card border-2 border-primary shrink-0 mt-1" />
 								<div>
-									<p className="text-[11px] font-bold text-primary uppercase tracking-wider mb-1">
+									<p className="text-[13px] font-bold text-lime-text mb-1">
 										{item.date}
 									</p>
 									<p className="text-base text-muted-foreground leading-relaxed">
@@ -402,6 +391,7 @@ function AboutPage() {
 			</section>
 
 			{/* ── Footer ── */}
+			<ForestCTA />
 			<Footer />
 		</div>
 	);

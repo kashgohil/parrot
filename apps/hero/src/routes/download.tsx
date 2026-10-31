@@ -202,12 +202,9 @@ function DownloadPage() {
 	return (
 		<div className="min-h-screen">
 			{/* ── Hero ── */}
-			<section className="px-6 pt-16 pb-16 md:pt-24 md:pb-20">
+			<section className="px-5 pt-[clamp(48px,7vw,88px)] pb-[clamp(56px,7vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Download
-					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+					<h1 className="text-[clamp(2.6rem,5.2vw,4.1rem)] font-black text-foreground tracking-[-0.035em] leading-none text-balance mb-6">
 						Get Parrot for Mac.
 						<br />
 						Free, for life.
@@ -221,14 +218,14 @@ function DownloadPage() {
 						{release.status === "ready" ? (
 							<a
 								href={release.url}
-								className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline shadow-[0_4px_20px_rgba(0,0,0,0.08)]"
+								className="inline-flex items-center gap-2 h-[50px] px-6 bg-foreground text-background font-semibold rounded-full hover:bg-[#2b452b] transition-[background-color,transform] active:scale-[0.98] shadow-[0_10px_24px_-10px_rgba(27,46,27,0.55)] no-underline shadow-[0_4px_20px_rgba(0,0,0,0.08)]"
 							>
 								<Download size={18} strokeWidth={2.5} />
 								Download for Mac &middot; {release.version}
 								<ArrowRight size={16} strokeWidth={2.5} />
 							</a>
 						) : (
-							<span className="inline-flex items-center gap-2 px-6 py-3 bg-muted text-muted-foreground font-semibold rounded-xl border border-border">
+							<span className="inline-flex items-center gap-2 h-[50px] px-6 bg-card text-muted-foreground font-semibold rounded-full border border-border">
 								<Download size={18} strokeWidth={2.5} />
 								{release.status === "loading"
 									? "Loading…"
@@ -250,10 +247,7 @@ function DownloadPage() {
 									releases page
 								</a>{" "}
 								on GitHub, or follow{" "}
-								<a
-									href="/rss.xml"
-									className="underline hover:text-foreground"
-								>
+								<a href="/rss.xml" className="underline hover:text-foreground">
 									RSS
 								</a>{" "}
 								for product updates.
@@ -284,12 +278,9 @@ function DownloadPage() {
 			</section>
 
 			{/* ── What you get ── */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						In the box
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-8">
 						What you get
 					</h2>
 					<div className="grid md:grid-cols-2 gap-6">
@@ -319,8 +310,8 @@ function DownloadPage() {
 								body: "Light native app. Low memory, no Electron bloat.",
 							},
 						].map((item) => (
-							<div key={item.label}>
-								<p className="text-[13px] font-bold text-primary uppercase tracking-wider mb-2">
+							<div key={item.label} className="surface p-6">
+								<p className="text-lg font-bold text-foreground mb-2">
 									{item.label}
 								</p>
 								<p className="text-sm text-muted-foreground leading-relaxed">
@@ -333,12 +324,9 @@ function DownloadPage() {
 			</section>
 
 			{/* ── Install steps ── */}
-			<section className="px-6 py-20 md:py-28">
+			<section className="px-5 py-[clamp(72px,9vw,112px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Setup
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-10">
 						Install in under a minute
 					</h2>
 					<div className="space-y-10">
@@ -388,22 +376,22 @@ function DownloadPage() {
 			</section>
 
 			{/* ── Requirements ── */}
-			<section className="px-6 py-16 bg-card border-y border-border">
+			<section className="px-5 py-[clamp(64px,8vw,96px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
 					<div className="grid sm:grid-cols-3 gap-6 text-center">
-						<div className="p-5 rounded-2xl border border-border">
+						<div className="surface p-6">
 							<p className="text-2xl font-black text-foreground mb-1">
 								Apple Silicon
 							</p>
 							<p className="text-xs text-muted-foreground">M1, M2, M3, or M4</p>
 						</div>
-						<div className="p-5 rounded-2xl border border-border">
+						<div className="surface p-6">
 							<p className="text-2xl font-black text-foreground mb-1">
 								macOS 11+
 							</p>
 							<p className="text-xs text-muted-foreground">Big Sur or later</p>
 						</div>
-						<div className="p-5 rounded-2xl border border-border">
+						<div className="surface p-6">
 							<p className="text-2xl font-black text-foreground mb-1">
 								~5 GB free
 							</p>
@@ -416,20 +404,14 @@ function DownloadPage() {
 			</section>
 
 			{/* ── FAQ ── */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Common questions
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-10">
 						Before you install
 					</h2>
-					<div className="space-y-8">
+					<div className="grid gap-4 sm:grid-cols-2">
 						{DOWNLOAD_FAQ.map((item) => (
-							<div
-								key={item.title}
-								className="border-l-2 border-primary/30 pl-5"
-							>
+							<div key={item.title} className="surface p-6">
 								<h3 className="text-lg font-bold text-foreground mb-1.5">
 									{item.title}
 								</h3>
@@ -443,11 +425,8 @@ function DownloadPage() {
 			</section>
 
 			{/* ── Related guides ── */}
-			<section className="px-6 py-16 border-t border-border">
+			<section className="px-5 py-[clamp(64px,8vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Before or after you install
-					</p>
 					<h2 className="text-2xl font-bold text-foreground tracking-tight mb-6">
 						Related guides
 					</h2>
@@ -455,7 +434,7 @@ function DownloadPage() {
 						<Link
 							to="/blog/$slug"
 							params={{ slug: "local-voice-dictation-mac" }}
-							className="p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+							className="surface p-6 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)] no-underline"
 						>
 							<p className="text-[15px] font-bold text-foreground mb-1">
 								Local setup guide
@@ -467,7 +446,7 @@ function DownloadPage() {
 						<Link
 							to="/blog/$slug"
 							params={{ slug: "free-voice-dictation-apps-2026" }}
-							className="p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+							className="surface p-6 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)] no-underline"
 						>
 							<p className="text-[15px] font-bold text-foreground mb-1">
 								Free dictation apps
@@ -480,7 +459,7 @@ function DownloadPage() {
 					<div className="grid sm:grid-cols-3 gap-6 text-center">
 						<Link
 							to="/changelog"
-							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+							className="group surface p-6 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)] no-underline"
 						>
 							<p className="text-2xl font-black text-foreground mb-1">
 								Changelog
@@ -491,7 +470,7 @@ function DownloadPage() {
 						</Link>
 						<a
 							href={RELEASES_PAGE}
-							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+							className="group surface p-6 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)] no-underline"
 						>
 							<p className="text-2xl font-black text-foreground mb-1">
 								All releases
@@ -502,7 +481,7 @@ function DownloadPage() {
 						</a>
 						<Link
 							to="/contact"
-							className="group p-5 rounded-2xl border border-border hover:border-primary/30 transition-colors no-underline"
+							className="group surface p-6 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)] no-underline"
 						>
 							<p className="text-2xl font-black text-foreground mb-1">
 								Need help?
