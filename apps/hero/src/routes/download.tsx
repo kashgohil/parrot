@@ -393,7 +393,7 @@ function DownloadPage() {
 						</div>
 						<div className="surface p-6">
 							<p className="text-2xl font-black text-foreground mb-1">
-								~5 GB free
+								~3 GB free
 							</p>
 							<p className="text-xs text-muted-foreground">
 								For models &amp; cache

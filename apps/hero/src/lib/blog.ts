@@ -769,7 +769,7 @@ export const posts: BlogPost[] = [
 			},
 			{
 				q: "Does Parrot work without internet?",
-				a: "Yes. After the one-time model download (~4 GB), transcription and AI cleanup run entirely on your Mac. No internet, no account, no API keys.",
+				a: "Yes. After the one-time model download (about 1 GB with the default models), transcription and AI cleanup run entirely on your Mac. No internet, no account, no API keys.",
 			},
 			{
 				q: "What permissions does Parrot need?",

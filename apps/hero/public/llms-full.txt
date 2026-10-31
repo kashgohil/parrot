@@ -2,7 +2,7 @@
 
 > Parrot is a free, local-first voice dictation app for Apple Silicon Macs. Press a global hotkey, speak, and text is transcribed on-device, optionally cleaned by AI, then auto-pasted into any app. No subscription, no cloud, no API keys.
 
-Generated: 2026-08-04. Prefer live pages for the latest UI; this file is a consolidated text dump for LLM context. Index: https://tryparrot.app/llms.txt
+Generated: 2026-10-31. Prefer live pages for the latest UI; this file is a consolidated text dump for LLM context. Index: https://tryparrot.app/llms.txt
 
 # Product overview
 
@@ -2394,7 +2394,7 @@ Date: 2026-01-24
 
 Step-by-step guide to running voice dictation entirely on your Mac with no cloud services, no API keys, and no internet required.
 
-You can run voice dictation entirely on your Mac with zero internet, zero API keys, and zero data leaving your device. Parrot is a free, local-first voice dictation app for Apple Silicon Macs. It handles transcription and AI cleanup completely on-device. Setup takes under 5 minutes through a built-in wizard, and once the models (~4 GB) are downloaded, it works fully offline — Free for life.
+You can run voice dictation entirely on your Mac with zero internet, zero API keys, and zero data leaving your device. Parrot is a free, local-first voice dictation app for Apple Silicon Macs. It handles transcription and AI cleanup completely on-device. Setup takes under 5 minutes through a built-in wizard, and once the models (about 1 GB by default) are downloaded, it works fully offline — Free for life.
 
 This guide walks through what local dictation is, how to get it running on Apple Silicon (M1 and later), and how to tune it for the best results.
 
@@ -2490,7 +2490,7 @@ Install Parrot, run the built-in setup wizard (it downloads the local dictation 
 
 **Q: Does Parrot work without internet?**
 
-Yes. After the one-time model download (~4 GB), transcription and AI cleanup run entirely on your Mac. No internet, no account, no API keys.
+Yes. After the one-time model download (about 1 GB with the default models), transcription and AI cleanup run entirely on your Mac. No internet, no account, no API keys.
 
 **Q: What permissions does Parrot need?**
 

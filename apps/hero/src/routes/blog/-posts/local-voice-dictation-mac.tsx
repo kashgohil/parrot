@@ -11,7 +11,7 @@ export default function LocalVoiceDictationMac() {
 				</strong>{" "}
 				{PARROT_FACTS.entity} It handles transcription and AI cleanup completely
 				on-device. Setup takes under 5 minutes through a built-in wizard, and
-				once the models (~4 GB) are downloaded, it works fully offline —{" "}
+				once the models (about 1 GB by default) are downloaded, it works fully offline —{" "}
 				{PARROT_FACTS.price}.
 			</p>
 			<p>
