@@ -1,6 +1,7 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { DoodleBackground } from "../components/doodle-background";
 import Header from "../components/Header";
 
 import appCss from "../styles.css?url";
@@ -25,13 +26,7 @@ export const Route = createRootRoute({
 			},
 			{
 				name: "theme-color",
-				content: "#f5f7f1",
-				media: "(prefers-color-scheme: light)",
-			},
-			{
-				name: "theme-color",
-				content: "#18221b",
-				media: "(prefers-color-scheme: dark)",
+				content: "#7cb342",
 			},
 			{
 				property: "og:site_name",
@@ -93,7 +88,7 @@ export const Route = createRootRoute({
 				rel: "icon",
 				href: "/favicon.png",
 				type: "image/png",
-				sizes: "32x32",
+				sizes: "16x16",
 			},
 			{
 				rel: "icon",
@@ -125,6 +120,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<body>
 				<Header />
 				<div className="relative min-h-screen">
+					<DoodleBackground opacity={0.07} />
 					<div className="relative">{children}</div>
 				</div>
 				{import.meta.env.DEV && (

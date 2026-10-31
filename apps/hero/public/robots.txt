@@ -2,7 +2,7 @@
 
 # Allow all crawlers
 User-agent: *
-Allow: /
+Disallow: /og-templates/
 
 # Explicitly allow AI search engine bots
 User-agent: GPTBot
@@ -30,6 +30,6 @@ User-agent: BraveBot
 Allow: /
 
 Sitemap: https://tryparrot.app/sitemap.xml
-# RSS feed: https://tryparrot.app/rss.xml
+RSS: https://tryparrot.app/rss.xml
 
 # LLM context: https://tryparrot.app/llms.txt

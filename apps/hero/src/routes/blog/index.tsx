@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { formatPostDate } from "@/components/BlogPost";
 import Footer from "@/components/Footer";
-import { SectionHead } from "@/components/section-head";
 import { getPostsForBlogIndex } from "@/lib/blog";
 
 export const Route = createFileRoute("/blog/")({
@@ -106,67 +104,61 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogIndex() {
-	const [featured, ...rest] = getPostsForBlogIndex();
+	const orderedPosts = getPostsForBlogIndex();
 
 	return (
 		<div className="min-h-screen">
-			<section className="mx-auto max-w-[1224px] px-4 pt-[clamp(48px,8vw,96px)] pb-[clamp(56px,8vw,96px)] md:px-8">
-				<SectionHead
-					as="h1"
-					title="Notes on dictation,"
-					quiet="written on a Mac."
-					lede="Guides, comparisons and the occasional build story: how to dictate well, which apps are worth it, and how Parrot works."
-				/>
+			{/* ── Hero ── */}
+			<section className="px-6 pt-16 pb-20 md:pt-24 md:pb-28">
+				<div className="max-w-3xl mx-auto">
+					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
+						Blog
+					</p>
+					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+						Voice Dictation Blog
+					</h1>
+					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
+						Guides, comparisons, and stories about voice dictation,
+						transcription, and building Parrot. Money guides (alternatives,
+						free, local) surface first.
+					</p>
+				</div>
 			</section>
 
-			<section className="mx-auto max-w-[1224px] px-4 pb-[clamp(104px,14vw,184px)] md:px-8">
-				{featured && (
-					<Link
-						to="/blog/$slug"
-						params={{ slug: featured.slug }}
-						className="group mb-[clamp(40px,6vw,64px)] grid gap-3 rounded-[18px] border border-border bg-card p-[clamp(24px,4vw,40px)] no-underline"
-					>
-						<span className="font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
-							Start here · {featured.category} · {featured.readingTime}
-						</span>
-						<span className="max-w-[24ch] text-[clamp(1.6rem,3.4vw,2.4rem)] font-bold leading-[1.1] tracking-[-0.03em] text-foreground group-hover:text-success">
-							{featured.title}
-						</span>
-						<span className="max-w-[60ch] text-[17px] leading-relaxed text-ink-2">
-							{featured.description}
-						</span>
-					</Link>
-				)}
-
-				<ul className="m-0 list-none border-b border-border p-0">
-					{rest.map((post) => (
-						<li key={post.slug} className="border-t border-border">
+			{/* ── Posts grid ── */}
+			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+				<div className="max-w-5xl mx-auto">
+					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+						{orderedPosts.map((post) => (
 							<Link
+								key={post.slug}
 								to="/blog/$slug"
 								params={{ slug: post.slug }}
-								className="group grid gap-x-8 gap-y-1 py-5 no-underline md:grid-cols-[150px_minmax(0,1fr)]"
+								className="group bg-card rounded-2xl border border-border p-6 hover:border-primary/30 transition-colors no-underline"
 							>
-								<span className="font-mono text-xs leading-6 text-muted-foreground">
-									<time dateTime={post.date}>
-										{formatPostDate(post.date, "short")}
-									</time>
-									<span className="md:block">
-										<span className="md:hidden"> · </span>
-										{post.category}
-									</span>
+								<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+									{post.category}
 								</span>
-								<span className="grid gap-1">
-									<span className="text-[18px] font-semibold leading-snug tracking-[-0.01em] text-foreground group-hover:text-success">
-										{post.title}
+								<h2 className="text-[16px] font-bold text-foreground mt-2 mb-2 group-hover:text-primary transition-colors leading-snug">
+									{post.title}
+								</h2>
+								<p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+									{post.description}
+								</p>
+								<div className="flex items-center gap-3 mt-4 text-xs text-muted-foreground">
+									<span>
+										{new Date(post.date).toLocaleDateString("en-US", {
+											month: "short",
+											day: "numeric",
+											year: "numeric",
+										})}
 									</span>
-									<span className="max-w-[70ch] text-[15px] text-muted-foreground">
-										{post.description}
-									</span>
-								</span>
+									<span>{post.readingTime}</span>
+								</div>
 							</Link>
-						</li>
-					))}
-				</ul>
+						))}
+					</div>
+				</div>
 			</section>
 
 			<Footer />

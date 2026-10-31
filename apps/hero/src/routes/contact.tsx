@@ -1,8 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Copy } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
-import { SectionHead } from "@/components/section-head";
 
 export const Route = createFileRoute("/contact")({
 	component: ContactPage,
@@ -81,139 +79,109 @@ export const Route = createFileRoute("/contact")({
 	}),
 });
 
-const WRAP = "mx-auto max-w-[1224px] px-4 md:px-8";
-const EMAIL = "hello@tryparrot.app";
-
-function CopyButton({ text }: { text: string }) {
-	const [copied, setCopied] = useState(false);
-	return (
-		<button
-			type="button"
-			onClick={async (e) => {
-				try {
-					await navigator.clipboard.writeText(text);
-					setCopied(true);
-					setTimeout(() => setCopied(false), 1600);
-				} catch {
-					// Clipboard blocked: select the address so it can be copied by hand.
-					const target =
-						e.currentTarget.parentElement?.querySelector("[data-copy-target]");
-					if (target) window.getSelection()?.selectAllChildren(target);
-				}
-			}}
-			className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border px-3 text-[13px] font-medium text-ink-2 transition-colors hover:bg-muted"
-		>
-			{copied ? (
-				<Check className="size-3.5 text-success" />
-			) : (
-				<Copy className="size-3.5" />
-			)}
-			{copied ? "Copied" : "Copy"}
-		</button>
-	);
-}
-
 function ContactPage() {
 	return (
 		<div className="min-h-screen">
-			<section
-				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(56px,8vw,96px)]`}
-			>
-				<SectionHead
-					as="h1"
-					title="Questions, bugs, ideas?"
-					quiet="Write to us."
-					lede="Email is the best way to reach us. We usually reply within 24 to 48 hours."
-				/>
+			{/* Hero */}
+			<section className="px-6 pt-16 pb-14 md:pt-24 md:pb-20">
+				<div className="max-w-3xl mx-auto">
+					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
+						Contact
+					</p>
+					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+						Contact Parrot
+					</h1>
+					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
+						Have a question, found a bug, or just want to say hi? We'd love to
+						hear from you.
+					</p>
+				</div>
 			</section>
 
-			<section className={`${WRAP} pb-[clamp(104px,14vw,184px)]`}>
-				<ul className="m-0 list-none border-b border-border p-0">
-					<li className="grid gap-x-12 gap-y-3 border-t border-border py-7 md:grid-cols-[220px_minmax(0,1fr)]">
-						<h2 className="m-0 text-[19px] font-semibold tracking-[-0.01em]">
-							Email
-						</h2>
-						<div className="grid gap-3">
-							<div className="flex flex-wrap items-center gap-3">
-								<a
-									href={`mailto:${EMAIL}`}
-									className="text-[clamp(1.3rem,2.6vw,1.75rem)] font-semibold tracking-[-0.02em] text-foreground no-underline hover:underline"
-								>
-									<span data-copy-target>{EMAIL}</span>
-								</a>
-								<CopyButton text={EMAIL} />
+			{/* Contact Options */}
+			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+				<div className="max-w-3xl mx-auto">
+					{/* Primary contact - Email */}
+					<div className="bg-card border border-border rounded-2xl p-8 md:p-10 mb-8">
+						<div className="flex flex-col md:flex-row md:items-center gap-6">
+							<div className="flex-1">
+								<h2 className="text-xl font-bold text-foreground tracking-tight mb-2">
+									Email us
+								</h2>
+								<p className="text-[15px] text-muted-foreground leading-relaxed">
+									For questions, feedback, bug reports, or anything else. We
+									typically respond within 24-48 hours.
+								</p>
 							</div>
-							<p className="m-0 max-w-[60ch] text-[15px] text-muted-foreground">
-								For questions, feedback and bug reports. With a bug, include
-								your Parrot version and macOS version, and what you said and
-								what got pasted if it's about transcription.
-							</p>
+							<a
+								href="mailto:hello@tryparrot.app"
+								className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline shrink-0"
+							>
+								hello@tryparrot.app
+								<ArrowRight size={16} strokeWidth={2.5} />
+							</a>
 						</div>
-					</li>
-					<li className="grid gap-x-12 gap-y-3 border-t border-border py-7 md:grid-cols-[220px_minmax(0,1fr)]">
-						<h2 className="m-0 text-[19px] font-semibold tracking-[-0.01em]">
-							X
-						</h2>
-						<div className="grid gap-2">
+					</div>
+
+					{/* Secondary options */}
+					<div className="grid gap-6 sm:grid-cols-2">
+						<div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-colors">
+							<div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+								<svg
+									className="w-5 h-5"
+									fill="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+								</svg>
+							</div>
+							<h3 className="text-lg font-bold text-foreground tracking-tight mb-2">
+								Twitter / X
+							</h3>
+							<p className="text-[14px] text-muted-foreground mb-4">
+								Follow for updates, tips, and announcements.
+							</p>
 							<a
 								href="https://x.com/tryparrot"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="justify-self-start text-[19px] font-semibold text-foreground no-underline hover:underline"
+								className="text-primary hover:text-primary/80 font-medium no-underline transition-colors"
 							>
-								@tryparrot
+								@tryparrot &rarr;
 							</a>
-							<p className="m-0 text-[15px] text-muted-foreground">
-								Release notes, tips and announcements.
-							</p>
 						</div>
-					</li>
-				</ul>
-			</section>
 
-			<section className={`${WRAP} pb-[clamp(104px,14vw,184px)]`}>
-				<SectionHead
-					title="It might"
-					quiet="already be answered."
-					className="mb-6"
-				/>
-				<ul className="m-0 grid list-none gap-x-8 p-0 md:grid-cols-3">
-					{(
-						[
-							[
-								"/",
-								"faq",
-								"Homepage FAQ",
-								"Offline use, languages, cleanup, which Macs.",
-							],
-							[
-								"/download",
-								undefined,
-								"Install help",
-								"Permissions, the security prompt and uninstalling.",
-							],
-							[
-								"/changelog",
-								undefined,
-								"Changelog",
-								"Whether your bug is already fixed.",
-							],
-						] as const
-					).map(([to, hash, title, body]) => (
-						<li key={title} className="border-t border-border">
-							<Link
-								to={to}
-								hash={hash}
-								className="group grid gap-1 py-4 no-underline"
-							>
-								<span className="font-semibold text-foreground group-hover:text-success">
-									{title} →
-								</span>
-								<span className="text-sm text-muted-foreground">{body}</span>
-							</Link>
-						</li>
-					))}
-				</ul>
+						<Link
+							to="/"
+							className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 transition-colors no-underline block"
+						>
+							<div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+								<svg
+									className="w-5 h-5"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={1.5}
+										d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+									/>
+								</svg>
+							</div>
+							<h3 className="text-lg font-bold text-foreground tracking-tight mb-2">
+								FAQ
+							</h3>
+							<p className="text-[14px] text-muted-foreground mb-4">
+								Common questions answered on our homepage.
+							</p>
+							<span className="text-primary font-medium">
+								Read the FAQ &rarr;
+							</span>
+						</Link>
+					</div>
+				</div>
 			</section>
 
 			<Footer />

@@ -61,7 +61,6 @@
     "apps/hero": {
       "name": "hero",
       "dependencies": {
-        "@parrot/theme": "workspace:*",
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-label": "^2.1.8",
         "@radix-ui/react-select": "^2.2.6",

@@ -1,119 +1,88 @@
 import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-
-function Column({ title, children }: { title: string; children: ReactNode }) {
-	return (
-		<div>
-			<h2 className="m-0 mb-3 text-[13px] font-semibold tracking-normal text-foreground">
-				{title}
-			</h2>
-			<ul className="m-0 grid list-none gap-2 p-0 text-muted-foreground [&_a]:no-underline [&_a]:transition-colors [&_a:hover]:text-foreground">
-				{children}
-			</ul>
-		</div>
-	);
-}
 
 export default function Footer() {
 	return (
-		<footer className="border-t border-border py-12 text-sm">
-			<div className="mx-auto max-w-[1224px] px-4 md:px-8">
-				<div className="grid grid-cols-2 gap-8 md:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
-					<div className="col-span-2 md:col-span-1">
+		<footer className="py-10 px-6 border-t border-border bg-card">
+			<div className="max-w-5xl mx-auto">
+				<div className="flex flex-col md:flex-row items-center justify-between gap-6">
+					<div className="flex items-center gap-2">
+						<img
+							src="/parrot-transparent.png"
+							alt="Parrot"
+							className="w-8 h-8"
+						/>
+						<span className="text-2xl font-bold text-foreground tracking-tight">
+							Parrot
+						</span>
+					</div>
+					<nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px]">
 						<Link
 							to="/"
-							className="inline-flex items-center gap-2.5 text-[19px] font-extrabold tracking-[-0.03em] text-foreground no-underline"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
 						>
-							<img
-								src="/parrot-192.png"
-								alt=""
-								width={30}
-								height={30}
-								className="size-[30px]"
-							/>
-							Parrot
+							Home
 						</Link>
-						<p className="mt-2.5 max-w-[26ch] text-muted-foreground">
-							Free voice dictation for Mac that runs entirely on your machine.
-						</p>
-					</div>
-
-					<Column title="Product">
-						<li>
-							<Link to="/download">Download</Link>
-						</li>
-						<li>
-							<Link to="/changelog">Changelog</Link>
-						</li>
-						<li>
-							<Link to="/" hash="models">
-								Models
-							</Link>
-						</li>
-						<li>
-							<Link to="/" hash="faq">
-								FAQ
-							</Link>
-						</li>
-					</Column>
-
-					<Column title="Compare">
-						{(
-							[
-								["wispr-flow", "vs Wispr Flow"],
-								["superwhisper", "vs Superwhisper"],
-								["macwhisper", "vs MacWhisper"],
-								["dragon-professional", "vs Dragon"],
-							] as const
-						).map(([competitor, label]) => (
-							<li key={competitor}>
-								<Link to="/compare/$competitor" params={{ competitor }}>
-									{label}
-								</Link>
-							</li>
-						))}
-					</Column>
-
-					<Column title="Resources">
-						<li>
-							<Link to="/blog">Blog</Link>
-						</li>
-						<li>
-							<Link
-								to="/blog/$slug"
-								params={{ slug: "speech-to-text-complete-guide" }}
-							>
-								Speech-to-text guide
-							</Link>
-						</li>
-						<li>
-							<a href="/rss.xml">RSS</a>
-						</li>
-						<li>
-							<a href="/llms.txt">llms.txt</a>
-						</li>
-					</Column>
-
-					<Column title="Company">
-						<li>
-							<Link to="/about">About</Link>
-						</li>
-						<li>
-							<Link to="/contact">Contact</Link>
-						</li>
-						<li>
-							<Link to="/privacy">Privacy</Link>
-						</li>
-						<li>
-							<Link to="/terms">Terms</Link>
-						</li>
-					</Column>
+						<Link
+							to="/about"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							About
+						</Link>
+						<Link
+							to="/download"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Download
+						</Link>
+						<Link
+							to="/blog"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Blog
+						</Link>
+						<Link
+							to="/changelog"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Changelog
+						</Link>
+						<Link
+							to="/privacy"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Privacy
+						</Link>
+						<Link
+							to="/terms"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Terms
+						</Link>
+						<Link
+							to="/contact"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							Contact
+						</Link>
+						<a
+							href="/rss.xml"
+							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+						>
+							RSS
+						</a>
+					</nav>
 				</div>
-
-				<div className="mt-10 flex flex-wrap justify-between gap-3 text-[13px] text-muted-foreground">
-					<span>&copy; {new Date().getFullYear()} Parrot</span>
-					<span className="font-mono">tryparrot.app</span>
-				</div>
+				<p className="text-center text-muted-foreground/50 text-xs mt-8">
+					&copy; {new Date().getFullYear()} Parrot. Voice dictation that just
+					works.{" "}
+					<a
+						href="/rss.xml"
+						className="text-muted-foreground/70 hover:text-muted-foreground underline underline-offset-2"
+					>
+						Updates via RSS
+					</a>
+					.
+				</p>
 			</div>
 		</footer>
 	);

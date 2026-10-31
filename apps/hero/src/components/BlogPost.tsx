@@ -1,234 +1,186 @@
 import { Link } from "@tanstack/react-router";
-import type React from "react";
-import { Suspense, useEffect, useRef, useState } from "react";
-import { TryParrot } from "@/components/try-parrot";
+import { ArrowRight } from "lucide-react";
+import { Suspense } from "react";
 import type { BlogPost } from "@/lib/blog";
 import { getRelatedPosts } from "@/lib/blog";
 import Footer from "./Footer";
 
-const WRAP = "mx-auto max-w-[1224px] px-4 md:px-8";
-
-export function formatPostDate(date: string, month: "long" | "short" = "long") {
-	// Fixed time zone so server and client render the same string.
-	return new Date(date).toLocaleDateString("en-US", {
-		year: "numeric",
-		month,
-		day: "numeric",
-		timeZone: "UTC",
-	});
-}
-
-function slugify(text: string) {
-	return text
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, "-")
-		.replace(/^-|-$/g, "");
-}
-
 export default function BlogPostLayout({ post }: { post: BlogPost }) {
 	const related = getRelatedPosts(post.slug);
 	const Component = post.component;
-	const body = useRef<HTMLElement>(null);
-
-	const updated = post.dateModified && post.dateModified !== post.date;
 
 	return (
 		<div className="min-h-screen">
-			<header
-				className={`${WRAP} pt-[clamp(48px,8vw,96px)] pb-[clamp(48px,7vw,80px)]`}
-			>
-				<div className="grid max-w-[820px] gap-5">
-					<p className="m-0 font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
-						<Link
-							to="/blog"
-							className="text-muted-foreground no-underline hover:text-foreground"
-						>
-							Blog
-						</Link>{" "}
-						· {post.category} · {post.readingTime}
-					</p>
-					<h1 className="m-0 text-[clamp(2.1rem,4.6vw,3.5rem)] font-bold leading-[1.05] tracking-[-0.03em] text-foreground">
+			{/* Hero */}
+			<section className="px-6 pt-16 pb-12 md:pt-24 md:pb-16">
+				<div className="max-w-3xl mx-auto">
+					<h1 className="text-[2rem] md:text-[2.75rem] font-black text-foreground tracking-tight leading-[1.1] mb-4">
 						{post.title}
 					</h1>
-					<p className="m-0 max-w-[40em] text-pretty text-lg leading-relaxed text-ink-2">
+					<p className="text-lg text-muted-foreground leading-relaxed">
 						{post.description}
 					</p>
-					<div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-						<span className="flex items-center gap-2.5">
-							<span
-								aria-hidden="true"
-								className="grid size-8 place-items-center rounded-full border border-border bg-muted text-xs font-bold"
-							>
+					<div className="flex items-center justify-between">
+						{/* Author */}
+						<div className="flex items-center gap-3 mt-6">
+							<div className="size-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0">
 								KG
-							</span>
-							<span>
-								<a
-									href="https://x.com/kashhh"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="font-medium text-foreground no-underline hover:underline"
-								>
+							</div>
+							<div className="flex flex-col">
+								<span className="flex items-center gap-2 text-sm font-semibold text-foreground">
 									Kash Gohil
-								</a>
-								<span className="text-muted-foreground">, maker of Parrot</span>
+									<a
+										href="https://x.com/kashhh"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="text-muted-foreground hover:text-foreground transition-colors"
+									>
+										<svg
+											width="13"
+											height="13"
+											viewBox="0 0 24 24"
+											fill="currentColor"
+										>
+											<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+										</svg>
+									</a>
+								</span>
+								<span className="text-xs text-muted-foreground">
+									Creator of Parrot
+								</span>
+							</div>
+						</div>
+						{/* Meta */}
+						<div className="flex flex-col gap-2 mt-6 text-xs text-muted-foreground">
+							<span className="w-fit self-end px-2 py-0.5 bg-primary/8 border border-primary/15 rounded-full text-[11px] font-semibold text-primary">
+								{post.category}
 							</span>
-						</span>
-						<span className="text-muted-foreground">
-							<time dateTime={post.date}>{formatPostDate(post.date)}</time>
-							{updated && (
-								<>
-									{" "}
-									· Updated{" "}
-									<time dateTime={post.dateModified}>
-										{formatPostDate(post.dateModified as string)}
-									</time>
-								</>
-							)}
-						</span>
+							<div className="flex items-center gap-2">
+								<span>
+									{new Date(post.date).toLocaleDateString("en-US", {
+										year: "numeric",
+										month: "long",
+										day: "numeric",
+									})}
+								</span>
+								<span>·</span>
+								<span>{post.readingTime}</span>
+								{post.dateModified && post.dateModified !== post.date && (
+									<>
+										<span>·</span>
+										<span>
+											Updated{" "}
+											{new Date(post.dateModified).toLocaleDateString("en-US", {
+												year: "numeric",
+												month: "long",
+											})}
+										</span>
+									</>
+								)}
+							</div>
+						</div>
 					</div>
 				</div>
-			</header>
+			</section>
 
-			<div
-				className={`mx-4 md:mx-[max(32px,calc((100%-1160px)/2))] grid gap-12 border-t border-border pt-[clamp(32px,5vw,48px)] pb-[clamp(80px,11vw,136px)] lg:grid-cols-[minmax(0,1fr)_220px]`}
-			>
-				<article ref={body} className="blog-content min-w-0">
+			{/* Body */}
+			<section className="px-6 pb-16 md:pb-24">
+				<div className="max-w-3xl mx-auto [&>p]:text-[15px] [&>p]:text-muted-foreground [&>p]:leading-relaxed [&>p]:mb-5 [&>h2]:text-xl [&>h2]:md:text-2xl [&>h2]:font-bold [&>h2]:tracking-tight [&>h2]:text-foreground [&>h2]:mt-10 [&>h2]:mb-4 [&>h3]:text-lg [&>h3]:font-bold [&>h3]:tracking-tight [&>h3]:text-foreground [&>h3]:mt-8 [&>h3]:mb-3 [&>ul]:my-5 [&>ul]:space-y-2 [&>ul]:list-disc [&>ul]:pl-5 [&_li]:text-[15px] [&_li]:text-muted-foreground [&_li]:leading-relaxed [&_a]:text-primary [&_a]:no-underline hover:[&_a]:text-primary/80 [&_strong]:text-foreground [&>img]:rounded-2xl [&>img]:border [&>img]:border-border [&_pre]:my-5 [&_pre]:rounded-lg [&_pre]:bg-foreground/3 [&_pre]:border [&_pre]:border-border/60 [&_pre]:px-4 [&_pre]:py-3 [&_pre]:overflow-x-auto [&_pre_code]:text-[13px] [&_pre_code]:leading-relaxed [&_pre_code]:text-foreground/70 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:font-mono [&_code]:text-[13px] [&_code]:font-mono [&_code]:bg-foreground/4 [&_code]:text-foreground/70 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded-md blog-content">
 					<Suspense
-						fallback={<p className="text-muted-foreground">Loading…</p>}
+						fallback={
+							<div className="py-12 text-center text-muted-foreground">
+								Loading...
+							</div>
+						}
 					>
 						<Component />
-						<BodyReady />
 					</Suspense>
-				</article>
-				<TableOfContents article={body} />
-			</div>
+				</div>
+			</section>
 
+			{/* FAQ (from post metadata — same source as FAQPage JSON-LD) */}
 			{post.faq && post.faq.length > 0 && (
-				<section className={`${WRAP} pb-[clamp(80px,11vw,136px)]`}>
-					<div className="max-w-[68ch]">
-						<h2 className="m-0 mb-4 text-[clamp(1.45rem,2.6vw,1.75rem)] font-bold tracking-[-0.022em]">
+				<section className="px-6 pb-16 md:pb-24">
+					<div className="max-w-3xl mx-auto">
+						<h2 className="text-xl md:text-2xl font-bold text-foreground tracking-tight mb-8">
 							FAQ
 						</h2>
-						{post.faq.map((item) => (
-							<details
-								key={item.q}
-								className="group border-b border-border first:border-t"
-							>
-								<summary className="relative cursor-pointer list-none py-4 pr-9 text-[16px] font-semibold [&::-webkit-details-marker]:hidden">
-									{item.q}
-									<span
-										aria-hidden="true"
-										className="absolute top-3 right-1 text-[22px] font-normal text-muted-foreground transition-transform group-open:rotate-45"
-									>
-										+
-									</span>
-								</summary>
-								<p className="m-0 pb-4 text-ink-2">{item.a}</p>
-							</details>
-						))}
+						<div className="space-y-8">
+							{post.faq.map((item) => (
+								<div key={item.q} className="border-l-2 border-primary/30 pl-5">
+									<h3 className="text-lg font-bold text-foreground tracking-tight mb-2">
+										{item.q}
+									</h3>
+									<p className="text-[15px] text-muted-foreground leading-relaxed">
+										{item.a}
+									</p>
+								</div>
+							))}
+						</div>
 					</div>
 				</section>
 			)}
 
+			{/* Related posts */}
 			{related.length > 0 && (
-				<section className={`${WRAP} pb-[clamp(80px,11vw,136px)]`}>
-					<p className="m-0 mb-3 font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
-						More from the blog
-					</p>
-					<ul className="m-0 grid list-none gap-x-8 p-0 md:grid-cols-3">
-						{related.map((p) => (
-							<li key={p.slug} className="border-t border-border">
+				<section className="px-6 py-16 md:py-20 bg-muted/30 border-y border-border">
+					<div className="max-w-5xl mx-auto">
+						<h2 className="text-xl font-bold text-foreground tracking-tight mb-8">
+							More from the blog
+						</h2>
+						<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+							{related.map((p) => (
 								<Link
+									key={p.slug}
 									to="/blog/$slug"
 									params={{ slug: p.slug }}
-									className="group grid gap-1 py-4 no-underline"
+									className="group bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-colors no-underline"
 								>
-									<span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-										{p.category} · {p.readingTime}
+									<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+										{p.category}
 									</span>
-									<span className="font-semibold leading-snug text-foreground group-hover:text-success">
+									<h3 className="text-[15px] font-bold text-foreground mt-2 mb-2 group-hover:text-primary transition-colors leading-snug">
 										{p.title}
-									</span>
-									<span className="line-clamp-2 text-sm text-muted-foreground">
+									</h3>
+									<p className="text-sm text-muted-foreground line-clamp-2">
 										{p.description}
+									</p>
+									<span className="text-xs text-muted-foreground mt-3 block">
+										{p.readingTime}
 									</span>
 								</Link>
-							</li>
-						))}
-					</ul>
+							))}
+						</div>
+					</div>
 				</section>
 			)}
 
-			<TryParrot />
+			{/* CTA */}
+			<section className="px-6 py-16 md:py-20 bg-foreground">
+				<div className="max-w-2xl mx-auto text-center">
+					<h2 className="text-2xl md:text-3xl font-black text-background tracking-tight mb-3">
+						Try Parrot
+					</h2>
+					<p className="text-background/50 mb-6 text-[15px]">
+						Voice dictation for Mac. Free for life &mdash; fully local, no
+						subscription.
+					</p>
+					<div className="flex items-center justify-center gap-4 flex-wrap">
+						<Link
+							to="/download"
+							className="group inline-flex items-center gap-2.5 px-7 py-3 bg-primary text-primary-foreground font-semibold rounded-2xl hover:bg-primary/90 transition-colors no-underline shadow-[0_4px_20px_rgba(124,179,66,0.3)]"
+						>
+							Download for Mac
+							<ArrowRight
+								size={16}
+								strokeWidth={2.5}
+								className="transition-transform group-hover:translate-x-0.5"
+							/>
+						</Link>
+					</div>
+				</div>
+			</section>
 			<Footer />
 		</div>
 	);
-}
-
-// Built from the rendered h2s once the lazy post body is in the DOM. It keeps its
-// own state: updating the layout during hydration would make React drop the
-// still-hydrating post body to its Suspense fallback and shift the page.
-function TableOfContents({
-	article,
-}: {
-	article: React.RefObject<HTMLElement | null>;
-}) {
-	const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
-
-	useEffect(() => {
-		const el = article.current;
-		if (!el) return;
-		const collect = () => {
-			const items = [...el.querySelectorAll("h2")].map((h) => {
-				if (!h.id) h.id = slugify(h.textContent ?? "");
-				return { id: h.id, text: h.textContent ?? "" };
-			});
-			setToc(items);
-			// A deep link like #heading can only land once the ids exist.
-			const target =
-				location.hash && document.getElementById(location.hash.slice(1));
-			if (target) target.scrollIntoView();
-		};
-		// Only touch the headings once the post body has hydrated (BodyReady).
-		if (el.dataset.ready) collect();
-		el.addEventListener(READY, collect);
-		return () => el.removeEventListener(READY, collect);
-	}, [article]);
-
-	// The column is always rendered on wide screens so the article never reflows.
-	return (
-		<nav aria-label="On this page" className="max-lg:hidden">
-			{toc.length > 1 && (
-				<div className="sticky top-24 grid gap-2.5 text-sm">
-					<p className="m-0 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-						On this page
-					</p>
-					{toc.map((item) => (
-						<a
-							key={item.id}
-							href={`#${item.id}`}
-							className="leading-snug text-muted-foreground no-underline hover:text-foreground"
-						>
-							{item.text}
-						</a>
-					))}
-				</div>
-			)}
-		</nav>
-	);
-}
-
-const READY = "post-body-ready";
-
-// Rendered inside the post's Suspense boundary, so its effect runs only after
-// the body has hydrated (or rendered on client navigation).
-function BodyReady() {
-	const ref = useRef<HTMLSpanElement>(null);
-	useEffect(() => {
-		const article = ref.current?.closest("article");
-		if (!article) return;
-		article.dataset.ready = "1";
-		article.dispatchEvent(new Event(READY));
-	}, []);
-	return <span ref={ref} hidden />;
 }
