@@ -34,13 +34,13 @@
 	--brand-beak: #e2432c;
 	--brand-beak-soft: #fbe3dd;
 
-	/* Green band (privacy section): light text on forest green in both modes. */
-	--brand-band: #245a3c;
-	--brand-band-2: #286040;
-	--brand-band-ink: #f1f7ec;
-	--brand-band-muted: #c0d6c4;
-	--brand-band-line: #3d7656;
-	--brand-band-accent: #d2f08f;
+	/* Dark band (privacy section) — dark in both modes. */
+	--brand-band: #10251a;
+	--brand-band-2: #183326;
+	--brand-band-ink: #eaf2e4;
+	--brand-band-muted: #9db3a2;
+	--brand-band-line: #2a4636;
+	--brand-band-accent: #b9e27a;
 
 	/* Status. Text color on its own -soft background. */
 	--brand-success: #2c6e21;
@@ -90,69 +90,69 @@
 
 @media (prefers-color-scheme: dark) {
 	:root:not(.light) {
-		--brand-paper: #0d130f;
-		--brand-surface: #141c16;
-		--brand-sunk: #18211a;
+		--brand-paper: #18221b;
+		--brand-surface: #1f2a22;
+		--brand-sunk: #253026;
 		--brand-ink: #e8efe4;
 		--brand-ink-2: #c3cec2;
-		--brand-muted: #8e9c90;
-		--brand-quiet: #7a887c;
-		--brand-line: #263128;
+		--brand-muted: #9aa89c;
+		--brand-quiet: #879589;
+		--brand-line: #34413a;
 		--brand-leaf: #8dcb5b;
 		--brand-leaf-strong: #a6db76;
 		--brand-on-leaf: #0d130f;
-		--brand-lime: #2d4318;
+		--brand-lime: #34501c;
 		--brand-lime-ink: #d6f0a8;
 		--brand-beak: #f26a52;
-		--brand-beak-soft: #3a1e19;
-		--brand-band: #16392a;
-		--brand-band-2: #1d4633;
+		--brand-beak-soft: #3d201a;
+		--brand-band: #0a1a10;
+		--brand-band-2: #12271a;
 		--brand-band-ink: #eaf2e4;
-		--brand-band-muted: #b0c7b5;
-		--brand-band-line: #2c5a43;
-		--brand-band-accent: #c6ea86;
+		--brand-band-muted: #93aa98;
+		--brand-band-line: #244030;
+		--brand-band-accent: #b9e27a;
 		--brand-success: #8dcb5b;
-		--brand-success-soft: #1e2e16;
+		--brand-success-soft: #25381b;
 		--brand-warning: #e8b04b;
-		--brand-warning-soft: #33270f;
+		--brand-warning-soft: #3d2f13;
 		--brand-danger: #f26a52;
-		--brand-danger-soft: #3a1e19;
+		--brand-danger-soft: #3d201a;
 		--brand-info: #8db6f2;
-		--brand-info-soft: #17243a;
+		--brand-info-soft: #1e2d45;
 		color-scheme: dark;
 	}
 }
 
 :root.dark {
-	--brand-paper: #0d130f;
-	--brand-surface: #141c16;
-	--brand-sunk: #18211a;
+	--brand-paper: #18221b;
+	--brand-surface: #1f2a22;
+	--brand-sunk: #253026;
 	--brand-ink: #e8efe4;
 	--brand-ink-2: #c3cec2;
-	--brand-muted: #8e9c90;
-	--brand-quiet: #7a887c;
-	--brand-line: #263128;
+	--brand-muted: #9aa89c;
+	--brand-quiet: #879589;
+	--brand-line: #34413a;
 	--brand-leaf: #8dcb5b;
 	--brand-leaf-strong: #a6db76;
 	--brand-on-leaf: #0d130f;
-	--brand-lime: #2d4318;
+	--brand-lime: #34501c;
 	--brand-lime-ink: #d6f0a8;
 	--brand-beak: #f26a52;
-	--brand-beak-soft: #3a1e19;
-	--brand-band: #16392a;
-	--brand-band-2: #1d4633;
+	--brand-beak-soft: #3d201a;
+	--brand-band: #0a1a10;
+	--brand-band-2: #12271a;
 	--brand-band-ink: #eaf2e4;
-	--brand-band-muted: #b0c7b5;
-	--brand-band-line: #2c5a43;
-	--brand-band-accent: #c6ea86;
+	--brand-band-muted: #93aa98;
+	--brand-band-line: #244030;
+	--brand-band-accent: #b9e27a;
 	--brand-success: #8dcb5b;
-	--brand-success-soft: #1e2e16;
+	--brand-success-soft: #25381b;
 	--brand-warning: #e8b04b;
-	--brand-warning-soft: #33270f;
+	--brand-warning-soft: #3d2f13;
 	--brand-danger: #f26a52;
-	--brand-danger-soft: #3a1e19;
+	--brand-danger-soft: #3d201a;
 	--brand-info: #8db6f2;
-	--brand-info-soft: #17243a;
+	--brand-info-soft: #1e2d45;
 	color-scheme: dark;
 }
 
