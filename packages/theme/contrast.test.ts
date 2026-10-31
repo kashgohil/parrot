@@ -19,6 +19,8 @@ const PAIRS: [fg: string, bg: string, min: number][] = [
 	["band-ink", "band", 4.5],
 	["band-muted", "band", 4.5],
 	["band-accent", "band", 4.5],
+	["band-muted", "band-2", 4.5],
+	["band-accent", "band-2", 4.5],
 	["success", "success-soft", 4.5],
 	["warning", "warning-soft", 4.5],
 	["danger", "danger-soft", 4.5],

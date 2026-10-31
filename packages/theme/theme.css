@@ -34,13 +34,13 @@
 	--brand-beak: #e2432c;
 	--brand-beak-soft: #fbe3dd;
 
-	/* Dark band (privacy section) — dark in both modes. */
-	--brand-band: #10251a;
-	--brand-band-2: #183326;
-	--brand-band-ink: #eaf2e4;
-	--brand-band-muted: #9db3a2;
-	--brand-band-line: #2a4636;
-	--brand-band-accent: #b9e27a;
+	/* Green band (privacy section): light text on forest green in both modes. */
+	--brand-band: #245a3c;
+	--brand-band-2: #286040;
+	--brand-band-ink: #f1f7ec;
+	--brand-band-muted: #c0d6c4;
+	--brand-band-line: #3d7656;
+	--brand-band-accent: #d2f08f;
 
 	/* Status. Text color on its own -soft background. */
 	--brand-success: #2c6e21;
@@ -105,12 +105,12 @@
 		--brand-lime-ink: #d6f0a8;
 		--brand-beak: #f26a52;
 		--brand-beak-soft: #3a1e19;
-		--brand-band: #0a1a10;
-		--brand-band-2: #12271a;
+		--brand-band: #16392a;
+		--brand-band-2: #1d4633;
 		--brand-band-ink: #eaf2e4;
-		--brand-band-muted: #93aa98;
-		--brand-band-line: #244030;
-		--brand-band-accent: #b9e27a;
+		--brand-band-muted: #b0c7b5;
+		--brand-band-line: #2c5a43;
+		--brand-band-accent: #c6ea86;
 		--brand-success: #8dcb5b;
 		--brand-success-soft: #1e2e16;
 		--brand-warning: #e8b04b;
@@ -139,12 +139,12 @@
 	--brand-lime-ink: #d6f0a8;
 	--brand-beak: #f26a52;
 	--brand-beak-soft: #3a1e19;
-	--brand-band: #0a1a10;
-	--brand-band-2: #12271a;
+	--brand-band: #16392a;
+	--brand-band-2: #1d4633;
 	--brand-band-ink: #eaf2e4;
-	--brand-band-muted: #93aa98;
-	--brand-band-line: #244030;
-	--brand-band-accent: #b9e27a;
+	--brand-band-muted: #b0c7b5;
+	--brand-band-line: #2c5a43;
+	--brand-band-accent: #c6ea86;
 	--brand-success: #8dcb5b;
 	--brand-success-soft: #1e2e16;
 	--brand-warning: #e8b04b;
