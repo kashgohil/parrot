@@ -66,12 +66,12 @@
 	--secondary: #f1f8e9;
 	--secondary-foreground: #1b2e1b;
 	--muted: #f1f8e9;
-	--muted-foreground: #5f7a5f;
+	--muted-foreground: #4a634a;
 	--accent: #f1f8e9;
 	--accent-foreground: #1b2e1b;
 	--destructive: oklch(0.577 0.245 27.325);
-	--border: #d5e4c3;
-	--input: #d5e4c3;
+	--border: #cbdcb5;
+	--input: #cbdcb5;
 	--ring: #7cb342;
 	--chart-1: oklch(0.646 0.222 41.116);
 	--chart-2: oklch(0.6 0.118 184.704);
@@ -84,7 +84,7 @@
 	--sidebar-primary-foreground: #ffffff;
 	--sidebar-accent: #f1f8e9;
 	--sidebar-accent-foreground: #1b2e1b;
-	--sidebar-border: #d5e4c3;
+	--sidebar-border: #cbdcb5;
 	--sidebar-ring: #7cb342;
 	--color-pk-primary: #7cb342;
 	--color-pk-primary-light: #8bc34a;
@@ -93,11 +93,24 @@
 	--color-pk-bg-secondary: #f1f8e9;
 	--color-pk-bg-card: #ffffff;
 	--color-pk-text: #1b2e1b;
-	--color-pk-text-muted: #5f7a5f;
+	--color-pk-text-muted: #4a634a;
 	--color-pk-accent: #ff7043;
 	--color-pk-accent-hover: #ff8a65;
-	--color-pk-border: #d5e4c3;
+	--color-pk-border: #cbdcb5;
 	--color-pk-badge-green: #4ade80;
+	/* Homepage refresh: section bands, firmer text and the forest palette. */
+	--ink-2: #2e432e;
+	--band: #eef6e3;
+	--line-soft: #dde9cf;
+	--lime-text: #4c7d1c;
+	--lime-soft: #e3f1cf;
+	--forest: #1b2e1b;
+	--forest-2: #24402a;
+	--forest-line: #35563a;
+	--on-forest: #f1f8e9;
+	--on-forest-muted: #b6ccb2;
+	--coral: #e8582f;
+	--coral-soft: #fde6dd;
 }
 
 @theme inline {
@@ -139,6 +152,18 @@
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
+	--color-ink-2: var(--ink-2);
+	--color-band: var(--band);
+	--color-line-soft: var(--line-soft);
+	--color-lime-text: var(--lime-text);
+	--color-lime-soft: var(--lime-soft);
+	--color-forest: var(--forest);
+	--color-forest-2: var(--forest-2);
+	--color-forest-line: var(--forest-line);
+	--color-on-forest: var(--on-forest);
+	--color-on-forest-muted: var(--on-forest-muted);
+	--color-coral: var(--coral);
+	--color-coral-soft: var(--coral-soft);
 }
 
 @keyframes fade-in-up {
@@ -313,11 +338,44 @@
 /* Card surface used across the site: hairline border and a soft, layered shadow. */
 @utility surface {
 	background-color: var(--card);
-	border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+	border: 1px solid var(--border);
 	border-radius: 20px;
 	box-shadow:
 		0 1px 2px rgba(27, 46, 27, 0.04),
-		0 12px 32px -16px rgba(27, 46, 27, 0.16);
+		0 10px 30px -14px rgba(27, 46, 27, 0.22);
+}
+
+/* Hero HUD waveform bars and the typing caret. */
+@keyframes hud-wave {
+	0%,
+	100% {
+		height: 4px;
+	}
+	50% {
+		height: 18px;
+	}
+}
+@utility animate-hud-wave {
+	animation: hud-wave 1s ease-in-out infinite;
+}
+@keyframes blink-caret-bg {
+	50% {
+		opacity: 0;
+	}
+}
+@utility animate-blink-caret-bg {
+	animation: blink-caret-bg 1s steps(1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+	.animate-hud-wave,
+	.animate-blink-caret-bg,
+	.animate-marquee,
+	.animate-marquee-reverse {
+		animation: none;
+	}
+	.animate-hud-wave {
+		height: 10px;
+	}
 }
 
 /* Fades a horizontally scrolling row out at both edges. */
