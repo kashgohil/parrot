@@ -1,88 +1,96 @@
 import { Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
+
+const LINK =
+	"text-on-forest-muted hover:text-on-forest transition-colors no-underline";
+
+function Column({ title, children }: { title: string; children: ReactNode }) {
+	return (
+		<div>
+			<h2 className="mb-3 text-sm font-semibold text-on-forest">{title}</h2>
+			<ul className="m-0 grid list-none gap-2 p-0 text-[15px]">{children}</ul>
+		</div>
+	);
+}
 
 export default function Footer() {
 	return (
-		<footer className="py-10 px-6 border-t border-border bg-card">
-			<div className="max-w-5xl mx-auto">
-				<div className="flex flex-col md:flex-row items-center justify-between gap-6">
-					<div className="flex items-center gap-2">
-						<img
-							src="/parrot-transparent.png"
-							alt="Parrot"
-							className="w-8 h-8"
-						/>
-						<span className="text-2xl font-bold text-foreground tracking-tight">
-							Parrot
-						</span>
-					</div>
-					<nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px]">
+		<footer className="relative border-t border-forest-line bg-[#132113] pt-14 pb-8 text-on-forest-muted">
+			<div className="mx-auto max-w-[1120px] px-5">
+				<div className="grid grid-cols-2 gap-8 md:grid-cols-[1.4fr_repeat(3,minmax(0,1fr))]">
+					<div className="col-span-2 md:col-span-1">
 						<Link
 							to="/"
-							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
+							className="inline-flex items-center gap-2 text-on-forest no-underline"
 						>
-							Home
+							<img src="/parrot-transparent.png" alt="" className="h-8 w-8" />
+							<span className="text-2xl font-bold tracking-tight">Parrot</span>
 						</Link>
-						<Link
-							to="/about"
-							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
-						>
-							About
-						</Link>
-						<Link
-							to="/download"
-							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
-						>
-							Download
-						</Link>
-						<Link
-							to="/blog"
-							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
-						>
-							Blog
-						</Link>
-						<Link
-							to="/changelog"
-							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
-						>
-							Changelog
-						</Link>
-						<Link
-							to="/privacy"
-							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
-						>
-							Privacy
-						</Link>
-						<Link
-							to="/terms"
-							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
-						>
-							Terms
-						</Link>
-						<Link
-							to="/contact"
-							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
-						>
-							Contact
-						</Link>
-						<a
-							href="/rss.xml"
-							className="text-muted-foreground hover:text-foreground transition-colors no-underline"
-						>
-							RSS
-						</a>
-					</nav>
+						<p className="mt-3 max-w-[26ch] text-[15px]">
+							Voice dictation for Mac that runs on your Mac.
+						</p>
+					</div>
+					<Column title="Product">
+						<li>
+							<Link to="/download" className={LINK}>
+								Download
+							</Link>
+						</li>
+						<li>
+							<Link to="/changelog" className={LINK}>
+								Changelog
+							</Link>
+						</li>
+						<li>
+							<Link to="/compare" className={LINK}>
+								Compare
+							</Link>
+						</li>
+					</Column>
+					<Column title="Resources">
+						<li>
+							<Link to="/blog" className={LINK}>
+								Blog
+							</Link>
+						</li>
+						<li>
+							<a href="/rss.xml" className={LINK}>
+								RSS
+							</a>
+						</li>
+						<li>
+							<a href="/llms.txt" className={LINK}>
+								llms.txt
+							</a>
+						</li>
+					</Column>
+					<Column title="Company">
+						<li>
+							<Link to="/about" className={LINK}>
+								About
+							</Link>
+						</li>
+						<li>
+							<Link to="/contact" className={LINK}>
+								Contact
+							</Link>
+						</li>
+						<li>
+							<Link to="/privacy" className={LINK}>
+								Privacy
+							</Link>
+						</li>
+						<li>
+							<Link to="/terms" className={LINK}>
+								Terms
+							</Link>
+						</li>
+					</Column>
 				</div>
-				<p className="text-center text-muted-foreground/50 text-xs mt-8">
-					&copy; {new Date().getFullYear()} Parrot. Voice dictation that just
-					works.{" "}
-					<a
-						href="/rss.xml"
-						className="text-muted-foreground/70 hover:text-muted-foreground underline underline-offset-2"
-					>
-						Updates via RSS
-					</a>
-					.
-				</p>
+				<div className="mt-12 flex flex-wrap justify-between gap-3 border-t border-forest-line pt-6 text-[13.5px]">
+					<span>&copy; {new Date().getFullYear()} Parrot</span>
+					<span>Voice dictation that just works.</span>
+				</div>
 			</div>
 		</footer>
 	);

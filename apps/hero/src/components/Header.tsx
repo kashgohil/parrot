@@ -7,7 +7,7 @@ export default function Header() {
 	return (
 		<>
 			<div className="sticky top-0 z-40 w-full px-4 pt-3">
-				<header className="max-w-5xl mx-auto flex items-center justify-between px-4 py-2.5 bg-foreground/3 backdrop-blur-xl rounded-2xl border border-border/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+				<header className="max-w-[1080px] mx-auto flex items-center justify-between h-[60px] pl-[18px] pr-2.5 bg-white/82 backdrop-blur-xl backdrop-saturate-150 rounded-full border border-border shadow-[0_8px_28px_-14px_rgba(27,46,27,0.3)]">
 					<Link
 						to="/"
 						className="flex items-center gap-2 no-underline text-foreground hover:opacity-80 transition-opacity"
@@ -21,7 +21,7 @@ export default function Header() {
 					</Link>
 
 					<nav className="hidden md:flex items-center">
-						<div className="flex items-center gap-0.5 bg-muted/60 rounded-xl p-1">
+						<div className="flex items-center gap-0.5 bg-band rounded-full p-1">
 							{(
 								[
 									{ to: "/", label: "Home" },
@@ -33,10 +33,10 @@ export default function Header() {
 								<Link
 									key={link.to}
 									to={link.to}
-									className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors no-underline"
+									className="px-4 py-1.5 rounded-full text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors no-underline"
 									activeProps={{
 										className:
-											"px-3.5 py-1.5 rounded-lg text-[13px] font-medium bg-card text-foreground shadow-sm no-underline",
+											"px-4 py-1.5 rounded-full text-sm font-semibold bg-card text-foreground shadow-[0_1px_3px_rgba(27,46,27,0.12)] no-underline",
 									}}
 								>
 									{link.label}
@@ -48,7 +48,7 @@ export default function Header() {
 					<div className="hidden md:block">
 						<Link
 							to="/download"
-							className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-foreground text-background text-[13px] font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
+							className="inline-flex items-center gap-1.5 h-10 px-[18px] bg-foreground text-background text-sm font-semibold rounded-full hover:bg-foreground/90 transition-colors no-underline shadow-[0_10px_24px_-10px_rgba(27,46,27,0.55)]"
 						>
 							Download
 							<ArrowRight size={13} strokeWidth={2.5} />
@@ -57,7 +57,7 @@ export default function Header() {
 
 					<button
 						onClick={() => setIsOpen(true)}
-						className="p-1.5 rounded-lg hover:bg-muted transition-colors md:hidden"
+						className="p-2 rounded-full hover:bg-muted transition-colors md:hidden"
 						aria-label="Open menu"
 					>
 						<Menu size={20} className="text-foreground" />
