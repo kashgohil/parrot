@@ -4,16 +4,21 @@ import {
 	Bot,
 	Check,
 	Clipboard,
+	ClipboardPaste,
 	Code,
 	Download,
+	Eye,
+	Gift,
+	Keyboard,
 	Laptop,
 	Lock,
 	Mail,
 	MessageSquare,
 	Mic,
 	Minus,
-	Monitor,
+	Search,
 	Stethoscope,
+	WifiOff,
 	X as XIcon,
 	Zap,
 } from "lucide-react";
@@ -52,6 +57,7 @@ import {
 	VSCodeIcon,
 } from "@/components/app-icons";
 import Footer from "@/components/Footer";
+import { SectionHeading } from "@/components/section-heading";
 import {
 	Accordion,
 	AccordionContent,
@@ -498,12 +504,12 @@ function BeforeAfter() {
 	};
 
 	return (
-		<div className="max-w-4xl mx-auto">
-			<div className="grid md:grid-cols-2 gap-4 md:gap-0">
-				<div className="bg-card rounded-2xl md:rounded-r-none border border-border p-6 md:p-7">
-					<div className="flex items-center gap-2 mb-4">
+		<div>
+			<div className="grid md:grid-cols-2 gap-4">
+				<div className="surface p-7 md:p-8">
+					<div className="flex items-center gap-2 mb-5">
 						<div className="w-2 h-2 rounded-full bg-amber-400" />
-						<span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+						<span className="text-sm font-medium text-muted-foreground">
 							What you said
 						</span>
 					</div>
@@ -511,7 +517,7 @@ function BeforeAfter() {
 						{examples.map((example, i) => (
 							<p
 								key={i}
-								className={`col-start-1 row-start-1 text-[15px] leading-relaxed text-foreground/70 italic transition-opacity duration-300 ${
+								className={`col-start-1 row-start-1 text-[17px] leading-relaxed text-foreground/70 italic transition-opacity duration-300 ${
 									i === idx && !isTransitioning ? "opacity-100" : "opacity-0"
 								}`}
 							>
@@ -520,18 +526,22 @@ function BeforeAfter() {
 						))}
 					</div>
 				</div>
-				<div className="bg-foreground rounded-2xl md:rounded-l-none border border-foreground p-6 md:p-7">
-					<div className="flex items-center gap-2 mb-4">
+				<div className="relative overflow-hidden rounded-[20px] bg-foreground p-7 md:p-8 shadow-[0_12px_32px_-16px_rgba(27,46,27,0.5)]">
+					<div
+						aria-hidden="true"
+						className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-primary/25 blur-3xl"
+					/>
+					<div className="relative flex items-center gap-2 mb-5">
 						<div className="w-2 h-2 rounded-full bg-primary" />
-						<span className="text-xs font-semibold uppercase tracking-wider text-background/50">
+						<span className="text-sm font-medium text-background/60">
 							What Parrot writes
 						</span>
 					</div>
-					<div className="grid">
+					<div className="relative grid">
 						{examples.map((example, i) => (
 							<p
 								key={i}
-								className={`col-start-1 row-start-1 text-[15px] leading-relaxed text-background/90 transition-opacity duration-300 ${
+								className={`col-start-1 row-start-1 text-[17px] leading-relaxed text-background/90 transition-opacity duration-300 ${
 									i === idx && !isTransitioning ? "opacity-100" : "opacity-0"
 								}`}
 							>
@@ -541,7 +551,7 @@ function BeforeAfter() {
 					</div>
 				</div>
 			</div>
-			<div className="flex items-center justify-center gap-2 mt-5">
+			<div className="flex items-center justify-center gap-2 mt-6">
 				{examples.map((_, i) => (
 					<button
 						key={i}
@@ -622,36 +632,38 @@ function VoiceDemoPlayground() {
 	return (
 		<div className="max-w-3xl mx-auto">
 			{/* Tab buttons */}
-			<div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
-				{VOICE_SCENARIOS.map((s, i) => (
-					<button
-						key={i}
-						type="button"
-						onClick={() => setActiveTab(i)}
-						className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-							i === activeTab
-								? "bg-foreground text-background shadow-sm"
-								: "bg-muted/50 text-muted-foreground hover:bg-muted border border-border"
-						}`}
-					>
-						<span>{s.icon}</span>
-						{s.label}
-					</button>
-				))}
+			<div className="flex sm:justify-center mb-6 max-w-full overflow-x-auto [scrollbar-width:none]">
+				<div className="inline-flex shrink-0 gap-1 p-1 rounded-full bg-card/80 border border-border/70 shadow-[0_1px_2px_rgba(27,46,27,0.04)] backdrop-blur-sm">
+					{VOICE_SCENARIOS.map((s, i) => (
+						<button
+							key={i}
+							type="button"
+							onClick={() => setActiveTab(i)}
+							className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+								i === activeTab
+									? "bg-foreground text-background shadow-sm"
+									: "text-muted-foreground hover:text-foreground"
+							}`}
+						>
+							<span>{s.icon}</span>
+							{s.label}
+						</button>
+					))}
+				</div>
 			</div>
 
 			{/* Demo card */}
-			<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+			<div className="surface overflow-hidden">
 				{/* App context bar */}
-				<div className="flex items-center gap-2 px-5 py-3 border-b border-border bg-muted/30">
+				<div className="flex items-center gap-2 px-6 py-3.5 border-b border-border/70">
 					<span className="text-muted-foreground">{scenario.icon}</span>
-					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+					<span className="text-sm font-medium text-muted-foreground">
 						Dictating into {scenario.appName}
 					</span>
 				</div>
 
 				{/* Waveform */}
-				<div className="px-5 pt-4">
+				<div className="px-6 pt-5">
 					<div className="flex items-center gap-[2px] h-8">
 						{waveformBars.map((i) => {
 							const isActive = visibleWords < wordsArr.length;
@@ -677,8 +689,8 @@ function VoiceDemoPlayground() {
 				</div>
 
 				{/* Word-by-word text */}
-				<div className="p-5">
-					<p className="text-[15px] leading-relaxed text-foreground min-h-[80px]">
+				<div className="p-6">
+					<p className="text-[17px] leading-relaxed text-foreground min-h-[84px]">
 						{wordsArr.map((word, i) => (
 							<span
 								key={`${activeTab}-${i}`}
@@ -735,18 +747,9 @@ function DualModeSpotlight() {
 	];
 
 	return (
-		<div className="max-w-4xl mx-auto">
-			{/* Mode label */}
-			<div className="flex items-center justify-center gap-3 mb-10">
-				<div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-foreground text-background shadow-md">
-					<Monitor size={16} />
-					On your Mac
-				</div>
-				<span className="text-sm text-muted-foreground">Private by design</span>
-			</div>
-
+		<div>
 			{/* Data flow diagram */}
-			<div className="relative rounded-2xl border-2 border-primary/30 bg-primary/3 p-6 md:p-8 mb-8">
+			<div className="surface relative p-6 md:p-8 mb-4">
 				<div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 rounded-full">
 					<Lock size={11} className="text-primary" />
 					<span className="text-[10px] font-bold text-primary uppercase tracking-wider">
@@ -758,10 +761,10 @@ function DualModeSpotlight() {
 					{steps.map((step, i) => (
 						<div key={`local-${i}`} className="contents">
 							<div className="flex flex-col items-center gap-1.5 shrink-0">
-								<div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center shadow-sm">
+								<div className="w-12 h-12 rounded-2xl bg-muted/60 flex items-center justify-center">
 									{step.icon}
 								</div>
-								<span className="text-[10px] font-medium text-muted-foreground whitespace-nowrap">
+								<span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
 									{step.label}
 								</span>
 							</div>
@@ -791,34 +794,31 @@ function DualModeSpotlight() {
 			</div>
 
 			{/* Stats */}
-			<div className="grid grid-cols-3 gap-4 mb-8">
+			<div className="grid grid-cols-3 gap-3 md:gap-4 mb-4">
 				{stats.map((s, i) => (
 					<div
 						key={`local-stat-${i}`}
-						className="text-center bg-card rounded-xl border border-border p-4"
+						className="surface text-center px-2 py-4 md:p-6"
 					>
-						<p className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+						<p className="text-xl sm:text-2xl md:text-4xl font-black text-foreground tracking-[-0.03em]">
 							{s.value}
 						</p>
-						<p className="text-xs text-muted-foreground mt-1">{s.label}</p>
+						<p className="text-sm text-muted-foreground mt-1">{s.label}</p>
 					</div>
 				))}
 			</div>
 
 			{/* Feature list */}
-			<div className="bg-card rounded-2xl border border-border overflow-hidden">
-				{features.map((label, i) => (
-					<div
-						key={label}
-						className={`flex items-center justify-between px-5 py-3 ${
-							i > 0 ? "border-t border-border" : ""
-						}`}
-					>
+			<ul className="surface m-0 grid list-none gap-x-8 gap-y-4 p-6 md:p-8 sm:grid-cols-2">
+				{features.map((label) => (
+					<li key={label} className="flex items-center gap-3">
+						<span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary/12 text-primary">
+							<Check size={14} strokeWidth={2.5} />
+						</span>
 						<span className="text-sm text-foreground">{label}</span>
-						<Check size={16} className="text-primary" />
-					</div>
+					</li>
 				))}
-			</div>
+			</ul>
 		</div>
 	);
 }
@@ -899,7 +899,7 @@ function AppCarousel() {
 		apps.map((app, i) => (
 			<span
 				key={i}
-				className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-card border border-border rounded-xl text-sm text-foreground/80 font-medium shrink-0"
+				className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border/70 rounded-full text-sm text-foreground/80 font-medium shrink-0 shadow-[0_1px_2px_rgba(27,46,27,0.04)]"
 			>
 				<span className="text-muted-foreground">{app.icon}</span>
 				{app.label}
@@ -907,7 +907,7 @@ function AppCarousel() {
 		));
 
 	return (
-		<div className="space-y-3 overflow-hidden">
+		<div className="space-y-3 overflow-hidden fade-x">
 			{/* Row 1 - scrolls left */}
 			<div className="flex w-max animate-marquee">
 				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW1)}</div>
@@ -1014,31 +1014,33 @@ function UseCaseTabs() {
 	};
 
 	return (
-		<div className="max-w-4xl mx-auto">
+		<div>
 			{/* Tab bar */}
-			<div className="flex items-center gap-1.5 mb-8 overflow-x-auto pb-2 flex-wrap">
-				{USE_CASE_TABS.map((t, i) => (
-					<button
-						key={i}
-						type="button"
-						onClick={() => handleTabChange(i)}
-						className={`px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
-							i === activeTab
-								? "bg-foreground text-background shadow-sm"
-								: "bg-muted/50 text-muted-foreground hover:bg-muted border border-border"
-						}`}
-					>
-						{t.label}
-					</button>
-				))}
+			<div className="flex mb-6 max-w-full overflow-x-auto [scrollbar-width:none]">
+				<div className="inline-flex shrink-0 gap-1 p-1 rounded-full bg-card/80 border border-border/70 shadow-[0_1px_2px_rgba(27,46,27,0.04)] backdrop-blur-sm">
+					{USE_CASE_TABS.map((t, i) => (
+						<button
+							key={i}
+							type="button"
+							onClick={() => handleTabChange(i)}
+							className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
+								i === activeTab
+									? "bg-foreground text-background shadow-sm"
+									: "text-muted-foreground hover:text-foreground"
+							}`}
+						>
+							{t.label}
+						</button>
+					))}
+				</div>
 			</div>
 
 			{/* Panel */}
-			<div className="bg-card rounded-2xl border border-border p-6 md:p-8">
+			<div className="surface p-6 md:p-8">
 				{/* Mini before/after */}
 				<div className="grid md:grid-cols-2 gap-4 mb-6">
-					<div className="bg-muted/30 rounded-xl p-4 border border-border">
-						<p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
+					<div className="bg-muted/50 rounded-2xl p-5">
+						<p className="text-xs font-medium text-muted-foreground mb-2">
 							You say
 						</p>
 						<div className="grid">
@@ -1056,8 +1058,8 @@ function UseCaseTabs() {
 							))}
 						</div>
 					</div>
-					<div className="bg-foreground/3 rounded-xl p-4 border border-primary/15">
-						<p className="text-[10px] font-bold uppercase tracking-wider text-primary mb-2">
+					<div className="bg-primary/8 rounded-2xl p-5">
+						<p className="text-xs font-medium text-primary mb-2">
 							Parrot writes
 						</p>
 						<div className="grid">
@@ -1151,33 +1153,37 @@ function ComparisonTable() {
 	};
 
 	return (
-		<div className="max-w-3xl mx-auto overflow-x-auto">
+		<div className="surface overflow-x-auto">
 			<table className="w-full text-sm">
 				<thead>
-					<tr className="border-b-2 border-border">
-						<th className="text-left py-3 px-4 text-muted-foreground font-medium">
+					<tr className="border-b border-border/70">
+						<th className="text-left py-4 px-6 text-muted-foreground font-medium">
 							Feature
 						</th>
-						<th className="text-center py-3 px-4 font-bold text-primary">
+						<th className="text-center py-4 px-4 font-bold text-primary bg-primary/6">
 							Parrot
 						</th>
-						<th className="text-center py-3 px-4 text-muted-foreground font-medium">
+						<th className="text-center py-4 px-4 text-muted-foreground font-medium">
 							Wispr Flow
 						</th>
-						<th className="text-center py-3 px-4 text-muted-foreground font-medium">
+						<th className="text-center py-4 px-4 text-muted-foreground font-medium">
 							macOS Dictation
 						</th>
 					</tr>
 				</thead>
 				<tbody>
 					{rows.map((row, i) => (
-						<tr key={i} className="border-b border-border">
-							<td className="py-3 px-4 text-foreground">{row.feature}</td>
-							<td className="py-3 px-4 text-center">
+						<tr key={i} className="border-b border-border/70 last:border-b-0">
+							<td className="py-3.5 px-6 text-foreground">{row.feature}</td>
+							<td className="py-3.5 px-4 text-center bg-primary/6">
 								{renderCell(row.parrot)}
 							</td>
-							<td className="py-3 px-4 text-center">{renderCell(row.wispr)}</td>
-							<td className="py-3 px-4 text-center">{renderCell(row.macos)}</td>
+							<td className="py-3.5 px-4 text-center">
+								{renderCell(row.wispr)}
+							</td>
+							<td className="py-3.5 px-4 text-center">
+								{renderCell(row.macos)}
+							</td>
 						</tr>
 					))}
 				</tbody>
@@ -1254,6 +1260,93 @@ const FAQ: { q: string; a: ReactNode }[] = [
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
+// Every section shares the same vertical rhythm and content width.
+const SECTION = "px-6 py-24 md:py-32";
+const WRAP = "max-w-5xl mx-auto";
+
+const PHRASES = [
+	"Send the quarterly report to the team by Friday.",
+	"Dear Dr. Patel, thank you for the referral.",
+	"Schedule a follow-up with the client next Tuesday.",
+	"The defendant's counsel filed a motion to dismiss.",
+	"Remind me to buy oat milk and sourdough.",
+	"Let's reschedule the standup to 3pm.",
+	"Patient presents with elevated BP, recommend full metabolic panel.",
+	"Can you review the PR and merge when ready?",
+];
+
+const SMALL_FEATURES: { icon: ReactNode; title: string; desc: string }[] = [
+	{
+		icon: <Keyboard size={18} />,
+		title: "Global hotkey",
+		desc: "Press fn from anywhere. Customizable in settings.",
+	},
+	{
+		icon: <ClipboardPaste size={18} />,
+		title: "Auto-paste",
+		desc: "Text lands at your cursor the moment you're done speaking.",
+	},
+	{
+		icon: <Zap size={18} />,
+		title: "Fast & accurate",
+		desc: "Snappy time-to-text with strong first-pass accuracy on names and jargon.",
+	},
+	{
+		icon: <Eye size={18} />,
+		title: "Live preview",
+		desc: "Watch your words form in the HUD while you hold the hotkey.",
+	},
+	{
+		icon: <Gift size={18} />,
+		title: "Free, for life",
+		desc: "No subscription, no word caps, no trial that expires.",
+	},
+	{
+		icon: <WifiOff size={18} />,
+		title: "Fully offline",
+		desc: "After one download, dictate without internet — or an account.",
+	},
+];
+
+const BLOG_CARDS = [
+	{
+		href: "/blog/wispr-flow-alternatives",
+		tag: "Alternatives",
+		title: "Best Wispr Flow alternatives (2026)",
+		blurb: "Free local options vs Wispr’s subscription and word cap.",
+	},
+	{
+		href: "/blog/superwhisper-alternatives",
+		tag: "Alternatives",
+		title: "Best Superwhisper alternatives",
+		blurb: "Local Mac dictation with cleanup — without a Pro plan.",
+	},
+	{
+		href: "/blog/free-voice-dictation-apps-2026",
+		tag: "Guide",
+		title: "Free voice dictation apps in 2026",
+		blurb: "What “free” really means: caps, trials, and free forever.",
+	},
+	{
+		href: "/blog/local-voice-dictation-mac",
+		tag: "Tutorial",
+		title: "Set up local voice dictation on Mac",
+		blurb: "On-device transcription and cleanup in under five minutes.",
+	},
+	{
+		href: "/blog/best-voice-dictation-apps-mac-2026",
+		tag: "Comparison",
+		title: "Best voice dictation apps for Mac",
+		blurb: "Parrot, macOS Dictation, Otter, Dragon, and more.",
+	},
+	{
+		href: "/compare",
+		tag: "Compare",
+		title: "Parrot vs the rest",
+		blurb: "Side-by-side feature and pricing tables for each competitor.",
+	},
+];
+
 function HomePage() {
 	return (
 		<div className="min-h-screen">
@@ -1261,14 +1354,14 @@ function HomePage() {
 				<div className="max-w-6xl mx-auto grid md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 items-center">
 					{/* Left - copy */}
 					<div>
-						<div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/8 border border-primary/15 rounded-full mb-6">
+						<div className="inline-flex items-center gap-2 px-3 py-1 bg-card/80 border border-primary/20 rounded-full mb-6 shadow-[0_1px_2px_rgba(27,46,27,0.04)] backdrop-blur-sm">
 							<div className="w-1.5 h-1.5 rounded-full bg-primary" />
 							<span className="text-xs font-semibold text-primary tracking-wide">
 								macOS &middot; Free for life &middot; Faster &amp; sharper
 							</span>
 						</div>
 
-						<h1 className="text-[2.75rem] md:text-[3.5rem] lg:text-[4rem] font-black text-foreground tracking-tight leading-[1.08] mb-5">
+						<h1 className="text-[2.75rem] md:text-[3.5rem] lg:text-[4rem] font-black text-foreground tracking-[-0.03em] leading-[1.04] mb-6">
 							Voice dictation for Mac.
 							<br />
 							<span className="text-primary">Local-first. Free.</span>
@@ -1285,26 +1378,21 @@ function HomePage() {
 						<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
 							<Link
 								to="/download"
-								className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline shadow-[0_4px_20px_rgba(0,0,0,0.08)]"
+								className="group inline-flex items-center gap-2 pl-5 pr-6 h-12 bg-foreground text-background font-semibold rounded-full hover:bg-foreground/90 transition-[background-color,transform] active:scale-[0.98] no-underline shadow-[0_8px_24px_-8px_rgba(27,46,27,0.45)]"
 							>
 								<Download size={18} strokeWidth={2.5} />
 								Download for Mac
-								<ArrowRight size={16} strokeWidth={2.5} />
+								<ArrowRight
+									size={16}
+									strokeWidth={2.5}
+									className="transition-transform group-hover:translate-x-0.5"
+								/>
 							</Link>
-							<span className="text-xs text-muted-foreground">
-								Free for life &middot; Apple Silicon
-							</span>
-						</div>
-
-						{/* Hotkey hint */}
-						<div className="mt-8 flex items-center gap-3">
-							<div className="flex items-center gap-1">
-								<kbd className="px-2 py-1 bg-muted border border-border rounded-md text-[11px] font-bold text-foreground/70 shadow-[0_1px_0_0] shadow-border/50">
+							<span className="flex items-center gap-2 text-xs text-muted-foreground">
+								<kbd className="px-2 py-1 bg-card border border-border rounded-md text-[11px] font-bold text-foreground/70 shadow-[0_1px_0_0] shadow-border">
 									fn
 								</kbd>
-							</div>
-							<span className="text-xs text-muted-foreground">
-								to start dictating
+								to start dictating &middot; Apple Silicon
 							</span>
 						</div>
 					</div>
@@ -1316,23 +1404,14 @@ function HomePage() {
 				</div>
 			</section>
 
-			<div className="border-y border-border bg-muted/30 py-4 overflow-hidden">
+			<div className="py-4 overflow-hidden fade-x">
 				<div className="flex w-max animate-marquee">
 					{[0, 1].map((setIndex) => (
-						<div key={setIndex} className="flex gap-8 pr-8">
-							{[
-								"Send the quarterly report to the team by Friday.",
-								"Dear Dr. Patel, thank you for the referral.",
-								"Schedule a follow-up with the client next Tuesday.",
-								"The defendant's counsel filed a motion to dismiss.",
-								"Remind me to buy oat milk and sourdough.",
-								"Let's reschedule the standup to 3pm.",
-								"Patient presents with elevated BP, recommend full metabolic panel.",
-								"Can you review the PR and merge when ready?",
-							].map((phrase, i) => (
+						<div key={setIndex} className="flex gap-3 pr-3">
+							{PHRASES.map((phrase) => (
 								<span
-									key={`${setIndex}-${i}`}
-									className="text-[13px] text-muted-foreground/60 font-mono whitespace-nowrap"
+									key={`${setIndex}-${phrase}`}
+									className="px-3.5 py-1.5 rounded-full border border-border/70 bg-card/60 text-[13px] text-muted-foreground font-mono whitespace-nowrap"
 								>
 									{phrase}
 								</span>
@@ -1342,75 +1421,50 @@ function HomePage() {
 				</div>
 			</div>
 
-			<section id="demo" className="py-20 md:py-28 px-6">
-				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Cleanup
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-3">
-						AI cleanup for voice dictation
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px]">
-						The optional cleanup pass removes filler words, fixes grammar, and
-						applies your writing style. Here's what that looks like.
-					</p>
+			<section id="demo" className={SECTION}>
+				<div className={WRAP}>
+					<SectionHeading
+						title="AI cleanup for voice dictation"
+						lede="The optional cleanup pass removes filler words, fixes grammar, and applies your writing style. Here's what that looks like."
+					/>
+					<BeforeAfter />
 				</div>
-				<BeforeAfter />
 			</section>
 
-			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
-				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Context
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-3">
-						Dictate into any app
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px]">
-						Parrot works wherever your cursor is. Watch it transcribe for
-						different workflows.
-					</p>
+			<section className={SECTION}>
+				<div className={WRAP}>
+					<SectionHeading
+						align="center"
+						title="Dictate into any app"
+						lede="Parrot works wherever your cursor is. Watch it transcribe for different workflows."
+					/>
+					<VoiceDemoPlayground />
 				</div>
-				<VoiceDemoPlayground />
 			</section>
 
-			<section className="py-20 md:py-28 px-6">
-				<div className="max-w-4xl mx-auto mb-12 md:mb-16">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						On your Mac
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
-						Fast. Private. Free for life.
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px]">
-						Transcription and cleanup run entirely on-device. Nothing leaves
-						your Mac — and you never pay a subscription to keep dictating.
-					</p>
+			<section className={SECTION}>
+				<div className={WRAP}>
+					<SectionHeading
+						title="Fast. Private. Free for life."
+						lede="Transcription and cleanup run entirely on-device. Nothing leaves your Mac — and you never pay a subscription to keep dictating."
+					/>
+					<DualModeSpotlight />
 				</div>
-				<DualModeSpotlight />
 			</section>
 
-			<section className="py-20 md:py-28 px-6 bg-muted/30 border-y border-border">
-				<div className="max-w-5xl mx-auto">
-					<div className="max-w-4xl mb-12 md:mb-16">
-						<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-							Features
-						</p>
-						<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-3">
-							Voice dictation features that work for you
-						</h2>
-						<p className="text-muted-foreground max-w-lg text-[15px]">
-							Faster dictation, sharper accuracy, and the polish you actually
-							use every day.
-						</p>
-					</div>
+			<section className={SECTION}>
+				<div className={WRAP}>
+					<SectionHeading
+						title="Voice dictation features that work for you"
+						lede="Faster dictation, sharper accuracy, and the polish you actually use every day."
+					/>
 					<div className="space-y-20 md:space-y-28">
 						<FeatureRow
 							title="Custom vocabulary that actually remembers"
 							body="Add names, acronyms, brand terms, and jargon. Parrot learns the words that matter so 'Kubernetes' doesn't become 'Cooper Netties' and your coworker's name isn't butchered every time."
 							visual={
-								<div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-									<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
+								<div className="surface p-6">
+									<p className="text-sm font-semibold text-foreground mb-4">
 										Your vocabulary
 									</p>
 									<div className="flex flex-wrap gap-2">
@@ -1428,7 +1482,7 @@ function HomePage() {
 										].map((word) => (
 											<span
 												key={word}
-												className="px-3 py-1.5 bg-primary/6 border border-primary/12 rounded-lg text-sm text-foreground font-medium"
+												className="px-3 py-1.5 bg-primary/8 rounded-full text-sm text-foreground font-medium"
 											>
 												{word}
 											</span>
@@ -1443,34 +1497,34 @@ function HomePage() {
 							title="Pick how your text sounds"
 							body="Set your writing context and style. The cleanup matches your tone - whether that's terse Slack messages, formal legal prose, or casual blog posts. You write it once, Parrot applies it every time."
 							visual={
-								<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-									<div className="border-b border-border px-5 py-3">
-										<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+								<div className="surface overflow-hidden">
+									<div className="border-b border-border/70 px-6 py-3.5">
+										<p className="text-sm font-semibold text-foreground">
 											Writing style
 										</p>
 									</div>
-									<div className="p-5 space-y-4">
+									<div className="p-6 space-y-5">
 										<div>
-											<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+											<p className="text-xs font-medium text-muted-foreground mb-2">
 												Context
 											</p>
-											<p className="text-sm text-foreground bg-muted/50 rounded-lg p-3 border border-border">
+											<p className="text-sm text-foreground bg-muted/60 rounded-xl p-3.5">
 												I'm a senior engineer writing technical docs and Slack
 												messages to my team.
 											</p>
 										</div>
 										<div>
-											<p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+											<p className="text-xs font-medium text-muted-foreground mb-2">
 												Tone
 											</p>
-											<div className="flex gap-2">
+											<div className="inline-flex gap-1 p-1 rounded-full bg-muted/60">
 												{["Concise", "Technical", "Friendly"].map((t, i) => (
 													<span
 														key={t}
-														className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
+														className={`px-3.5 py-1.5 rounded-full text-xs font-medium ${
 															i === 0
-																? "bg-foreground text-background border-foreground"
-																: "bg-muted/50 text-muted-foreground border-border"
+																? "bg-card text-foreground shadow-[0_1px_3px_rgba(27,46,27,0.12)]"
+																: "text-muted-foreground"
 														}`}
 													>
 														{t}
@@ -1487,15 +1541,16 @@ function HomePage() {
 							title="Everything searchable, nothing lost"
 							body="Every dictation is saved with full text, timestamp, and audio duration. Search past transcriptions, copy them again, or review what you said last Tuesday. You can turn it off if you want to keep it private."
 							visual={
-								<div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-									<div className="px-5 py-3 border-b border-border flex items-center gap-3">
-										<div className="flex-1 bg-muted/50 rounded-lg px-3 py-2 border border-border">
+								<div className="surface overflow-hidden">
+									<div className="px-4 py-3 border-b border-border/70">
+										<div className="flex items-center gap-2 bg-muted/60 rounded-xl px-3 py-2">
+											<Search size={14} className="text-muted-foreground" />
 											<span className="text-xs text-muted-foreground">
 												Search dictations...
 											</span>
 										</div>
 									</div>
-									<div className="divide-y divide-border">
+									<div className="divide-y divide-border/70">
 										{[
 											{
 												text: "Move the meeting to Thursday - Monday doesn't work for Sarah.",
@@ -1512,10 +1567,10 @@ function HomePage() {
 												time: "Yesterday",
 												dur: "0:06",
 											},
-										].map((entry, i) => (
+										].map((entry) => (
 											<div
-												key={i}
-												className="px-5 py-3.5 hover:bg-muted/30 transition-colors"
+												key={entry.text}
+												className="px-6 py-3.5 hover:bg-muted/40 transition-colors"
 											>
 												<p className="text-sm text-foreground truncate">
 													{entry.text}
@@ -1524,7 +1579,7 @@ function HomePage() {
 													<span className="text-[11px] text-muted-foreground">
 														{entry.time}
 													</span>
-													<span className="text-[11px] text-muted-foreground">
+													<span className="text-[11px] text-muted-foreground tabular-nums">
 														{entry.dur}
 													</span>
 												</div>
@@ -1538,103 +1593,78 @@ function HomePage() {
 				</div>
 			</section>
 
-			<section className="py-16 md:py-20 px-6 border-y border-border">
-				<div className="max-w-5xl mx-auto">
-					<h2 className="text-center text-lg font-bold text-foreground mb-2">
-						Voice dictation in any Mac app
-					</h2>
-					<p className="text-center text-sm text-muted-foreground mb-8">
-						Parrot pastes into any app on your Mac. No plugins, no integrations.
-					</p>
+			<section className="px-6 py-16 md:py-20">
+				<div className={WRAP}>
+					<SectionHeading
+						align="center"
+						className="mb-10 md:mb-10"
+						title="Voice dictation in any Mac app"
+						lede="Parrot pastes into any app on your Mac. No plugins, no integrations."
+					/>
 					<AppCarousel />
 				</div>
 			</section>
 
-			<section className="py-20 md:py-28 px-6 bg-muted/30">
-				<div className="max-w-5xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Who it's for
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
-						Voice dictation for every workflow
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px] mb-12">
-						Whether you're drafting emails, writing patient notes, or coding
-						documentation - Parrot adapts to how you work.
-					</p>
+			<section className={SECTION}>
+				<div className={WRAP}>
+					<SectionHeading
+						title="Voice dictation for every workflow"
+						lede="Whether you're drafting emails, writing patient notes, or coding documentation - Parrot adapts to how you work."
+					/>
 					<UseCaseTabs />
 				</div>
 			</section>
 
-			<section className="py-20 md:py-24 bg-muted/30 px-6">
-				<div className="max-w-4xl mx-auto">
-					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-8">
-						{[
-							{
-								title: "Global hotkey",
-								desc: "Press fn from anywhere. Customizable in settings.",
-							},
-							{
-								title: "Auto-paste",
-								desc: "Text lands at your cursor the moment you're done speaking.",
-							},
-							{
-								title: "Fast & accurate",
-								desc: "Snappy time-to-text with strong first-pass accuracy on names and jargon.",
-							},
-							{
-								title: "Live preview",
-								desc: "Watch your words form in the HUD while you hold the hotkey.",
-							},
-							{
-								title: "Free, for life",
-								desc: "No subscription, no word caps, no trial that expires.",
-							},
-							{
-								title: "Fully offline",
-								desc: "After one download, dictate without internet — or an account.",
-							},
-						].map((f, i) => (
-							<div key={i} className="border-l-2 border-primary/25 pl-4">
-								<h3 className="text-[15px] font-semibold text-foreground mb-1">
-									{f.title}
-								</h3>
-								<p className="text-sm text-muted-foreground leading-relaxed">
-									{f.desc}
-								</p>
+			<section className="px-6 pb-24 md:pb-32">
+				<div className={`${WRAP} grid sm:grid-cols-2 lg:grid-cols-3 gap-4`}>
+					{SMALL_FEATURES.map((f) => (
+						<div
+							key={f.title}
+							className="surface p-6 transition-transform duration-200 hover:-translate-y-0.5"
+						>
+							<div className="mb-4 grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
+								{f.icon}
 							</div>
-						))}
-					</div>
+							<h3 className="text-[15px] font-semibold text-foreground mb-1">
+								{f.title}
+							</h3>
+							<p className="text-sm text-muted-foreground leading-relaxed">
+								{f.desc}
+							</p>
+						</div>
+					))}
 				</div>
 			</section>
 
-			<section className="py-20 md:py-28 px-6 border-y border-border">
-				<div className="max-w-4xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						How we compare
-					</p>
-					<h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight mb-4">
-						Parrot vs the alternatives
-					</h2>
-					<p className="text-muted-foreground max-w-lg text-[15px] mb-12">
-						Free for life, fully local, and built for the daily dictation loop —
-						not a metered cloud trial.
-					</p>
+			<section className={SECTION}>
+				<div className={WRAP}>
+					<SectionHeading
+						title="Parrot vs the alternatives"
+						lede="Free for life, fully local, and built for the daily dictation loop — not a metered cloud trial."
+					/>
 					<ComparisonTable />
 				</div>
 			</section>
 
-			<section className="py-20 md:py-28 bg-muted/30 px-6">
-				<div className="max-w-2xl mx-auto">
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
-						Questions
-					</h2>
-					<Accordion type="single" collapsible className="space-y-3">
-						{FAQ.map((item, i) => (
+			<section className={SECTION}>
+				<div
+					className={`${WRAP} grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] md:gap-16`}
+				>
+					<SectionHeading
+						className="mb-0 md:mb-0"
+						title="Questions"
+						lede="The short answers. Anything else, just ask."
+					/>
+					<Accordion
+						type="single"
+						collapsible
+						className="surface overflow-hidden px-2"
+					>
+						{FAQ.map((item) => (
 							<AccordionItem
-								key={i}
-								value={`faq-${i}`}
-								className="border border-border bg-card rounded-2xl px-5 data-[state=open]:border-primary/30 data-[state=open]:bg-primary/3 transition-colors"
+								key={item.q}
+								value={item.q}
+								className="border-b border-border/70 last:border-b-0 px-4"
 							>
 								<AccordionTrigger className="font-semibold text-foreground text-[15px] hover:no-underline py-5">
 									{item.q}
@@ -1648,73 +1678,32 @@ function HomePage() {
 				</div>
 			</section>
 
-			<section className="py-16 md:py-20 px-6 border-t border-border">
-				<div className="max-w-4xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						From the blog
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
-						Guides for free, local Mac dictation
-					</h2>
-					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-						{[
-							{
-								href: "/blog/wispr-flow-alternatives",
-								tag: "Alternatives",
-								title: "Best Wispr Flow alternatives (2026)",
-								blurb:
-									"Free local options vs Wispr’s subscription and word cap.",
-							},
-							{
-								href: "/blog/superwhisper-alternatives",
-								tag: "Alternatives",
-								title: "Best Superwhisper alternatives",
-								blurb:
-									"Local Mac dictation with cleanup — without a Pro plan.",
-							},
-							{
-								href: "/blog/free-voice-dictation-apps-2026",
-								tag: "Guide",
-								title: "Free voice dictation apps in 2026",
-								blurb:
-									"What “free” really means: caps, trials, and free forever.",
-							},
-							{
-								href: "/blog/local-voice-dictation-mac",
-								tag: "Tutorial",
-								title: "Set up local voice dictation on Mac",
-								blurb:
-									"On-device transcription and cleanup in under five minutes.",
-							},
-							{
-								href: "/blog/best-voice-dictation-apps-mac-2026",
-								tag: "Comparison",
-								title: "Best voice dictation apps for Mac",
-								blurb:
-									"Parrot, macOS Dictation, Otter, Dragon, and more.",
-							},
-							{
-								href: "/compare",
-								tag: "Compare",
-								title: "Parrot vs the rest",
-								blurb:
-									"Side-by-side feature and pricing tables for each competitor.",
-							},
-						].map((card) => (
+			<section className={SECTION}>
+				<div className={WRAP}>
+					<SectionHeading title="Guides for free, local Mac dictation" />
+					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+						{BLOG_CARDS.map((card) => (
 							<a
 								key={card.href}
 								href={card.href}
-								className="bg-card rounded-2xl border border-border p-5 hover:border-primary/30 transition-colors no-underline block"
+								className="surface group flex flex-col p-6 no-underline transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_1px_2px_rgba(27,46,27,0.04),0_20px_40px_-20px_rgba(27,46,27,0.25)]"
 							>
-								<span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+								<span className="self-start rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
 									{card.tag}
 								</span>
-								<p className="text-[15px] font-bold text-foreground mt-2 mb-2 leading-snug">
+								<p className="text-[15px] font-bold text-foreground mt-4 mb-2 leading-snug">
 									{card.title}
 								</p>
-								<p className="text-sm text-muted-foreground line-clamp-2">
+								<p className="text-sm text-muted-foreground line-clamp-2 mb-4">
 									{card.blurb}
 								</p>
+								<span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
+									Read
+									<ArrowRight
+										size={14}
+										className="transition-transform group-hover:translate-x-0.5"
+									/>
+								</span>
 							</a>
 						))}
 					</div>
@@ -1730,37 +1719,46 @@ function HomePage() {
 
 function FinalCTA() {
 	return (
-		<section className="py-20 md:py-28 px-6 bg-foreground">
-			<div className="max-w-2xl mx-auto text-center">
-				<h2 className="text-3xl md:text-4xl font-black text-background tracking-tight mb-4">
-					Start dictating. Stop typing.
-				</h2>
-				<p className="text-background/50 mb-8 text-[15px]">
-					{PARROT_FACTS.price}. Fully on-device on Apple Silicon. Download for
-					Mac and start dictating in minutes.
-				</p>
+		<section className="px-4 pb-16 md:px-6 md:pb-24">
+			<div className="relative mx-auto max-w-5xl overflow-hidden rounded-[32px] bg-foreground px-6 py-20 md:py-28">
+				{/* Soft lime glow behind the heading */}
+				<div
+					aria-hidden="true"
+					className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[min(720px,90%)] -translate-x-1/2 rounded-full bg-primary/30 blur-[100px]"
+				/>
+				<div className="relative max-w-2xl mx-auto text-center">
+					<h2 className="text-4xl md:text-5xl font-black text-background tracking-[-0.03em] leading-[1.05] mb-5">
+						Start dictating. Stop typing.
+					</h2>
+					<p className="text-background/60 mb-10 text-[17px]">
+						{PARROT_FACTS.price}. Fully on-device on Apple Silicon. Download for
+						Mac and start dictating in minutes.
+					</p>
 
-				<div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
 					<Link
 						to="/download"
-						className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors no-underline shadow-[0_4px_20px_rgba(124,179,66,0.3)]"
+						className="group inline-flex items-center gap-2 pl-5 pr-6 h-12 bg-primary text-primary-foreground font-semibold rounded-full hover:bg-primary/90 transition-[background-color,transform] active:scale-[0.98] no-underline shadow-[0_8px_32px_-8px_rgba(124,179,66,0.6)]"
 					>
 						<Download size={18} strokeWidth={2.5} />
 						Download for Mac
-						<ArrowRight size={16} strokeWidth={2.5} />
+						<ArrowRight
+							size={16}
+							strokeWidth={2.5}
+							className="transition-transform group-hover:translate-x-0.5"
+						/>
 					</Link>
-				</div>
 
-				<p className="text-background/40 text-xs mt-8">
-					Want product updates?{" "}
-					<a
-						href="/rss.xml"
-						className="text-background/60 underline underline-offset-2 hover:text-background/80 transition-colors"
-					>
-						Subscribe to the RSS feed
-					</a>
-					.
-				</p>
+					<p className="text-background/40 text-xs mt-10">
+						Want product updates?{" "}
+						<a
+							href="/rss.xml"
+							className="text-background/60 underline underline-offset-2 hover:text-background/80 transition-colors"
+						>
+							Subscribe to the RSS feed
+						</a>
+						.
+					</p>
+				</div>
 			</div>
 		</section>
 	);
