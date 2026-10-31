@@ -370,7 +370,7 @@ function HomePage() {
 		<div className="space-y-6">
 			<div className="flex items-start justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-bold text-foreground tracking-tight">
+					<h1 className="text-[30px] leading-tight font-bold text-foreground tracking-[-0.025em]">
 						Dictation History
 					</h1>
 					<p className="text-sm text-muted-foreground mt-1">
@@ -471,9 +471,9 @@ function HomePage() {
 					</p>
 				</div>
 			) : (
-				<div className="rounded-xl border border-border overflow-hidden bg-card">
+				<div className="surface overflow-hidden">
 					<table className="w-full text-sm">
-						<thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
+						<thead className="bg-muted/40 text-xs font-semibold text-muted-foreground">
 							<tr>
 								<th className="text-left font-semibold px-4 py-2.5">Text</th>
 								<th className="w-10 px-2 py-2.5" aria-label="Status" />
@@ -491,7 +491,7 @@ function HomePage() {
 									<tr className="bg-secondary border-t border-border">
 										<td
 											colSpan={4}
-											className="px-4 py-2 text-[11px] font-bold text-foreground uppercase tracking-wider"
+											className="px-4 py-2 text-xs font-bold text-foreground"
 										>
 											{group.label}
 										</td>

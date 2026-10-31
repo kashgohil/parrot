@@ -142,9 +142,7 @@ function OnboardingLayout() {
 				className="md:w-[280px] lg:w-[320px] bg-rail relative overflow-hidden shrink-0 flex flex-col justify-between p-6 lg:p-8 z-10"
 			>
 				{/* Decorative blobs */}
-				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl pointer-events-none" />
-				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
-				<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl pointer-events-none" />
+				<div className="absolute -top-28 -left-16 w-72 h-72 bg-primary/25 rounded-full blur-[90px] pointer-events-none" />
 
 				{/* Brand header */}
 				<motion.div
@@ -197,7 +195,7 @@ function OnboardingLayout() {
 											transition-all duration-200 mt-0.5
 											${
 												isActive
-													? "bg-white text-rail shadow-lg"
+													? "bg-primary text-primary-foreground shadow-lg"
 													: isCompleted
 														? "bg-white/25 text-white"
 														: "bg-white/10 text-white/40"
@@ -303,9 +301,7 @@ function OnboardingLayout() {
 				>
 					{/* Decorative blobs — match the real panel so the handoff is
 					    visually identical when the overlay reaches panel width. */}
-					<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
-					<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-					<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl" />
+					<div className="absolute -top-28 -left-16 w-72 h-72 bg-primary/25 rounded-full blur-[90px]" />
 
 					{/* Centered intro brand */}
 					<AnimatePresence>

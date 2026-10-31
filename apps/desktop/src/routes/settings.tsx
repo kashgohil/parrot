@@ -101,7 +101,7 @@ function Pill({
 	};
 	return (
 		<span
-			className={`text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${tones[tone]}`}
+			className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tones[tone]}`}
 		>
 			{children}
 		</span>
@@ -511,23 +511,18 @@ function SettingsPage() {
 
 	return (
 		<div className="pb-4">
-			{/* Branded header — echoes the sidebar's green wash + soft blobs */}
-			<header className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-card to-card px-6 py-6 shadow-sm">
-				<div className="absolute -top-16 -right-8 w-48 h-48 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-				<div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-warning/5 blur-3xl pointer-events-none" />
-				<div className="relative">
-					<h1 className="text-2xl font-bold text-foreground tracking-tight">
-						Settings
-					</h1>
-					<p className="text-sm text-muted-foreground mt-1">
-						Customize how Parrot works for you
-					</p>
-				</div>
+			<header>
+				<h1 className="text-[30px] leading-tight font-bold text-foreground tracking-[-0.025em]">
+					Settings
+				</h1>
+				<p className="text-sm text-muted-foreground mt-1">
+					Customize how Parrot works for you
+				</p>
 			</header>
 
-			{/* Sticky section nav with scroll-spy */}
-			<div className="sticky top-0 z-20 -mx-5 mt-4 mb-2 border-b border-border/60 bg-background/80 backdrop-blur-md">
-				<nav className="flex flex-wrap gap-1 px-5 py-2">
+			{/* Sticky section nav with scroll-spy: the site's pill tab bar */}
+			<div className="sticky top-0 z-20 -mx-5 mt-4 mb-2 bg-background/80 px-5 py-2 backdrop-blur-md">
+				<nav className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-card p-1 shadow-[0_1px_2px_rgba(27,46,27,0.05)] [scrollbar-width:none]">
 					{SECTIONS.map((s) => {
 						const active = activeSection === s.id;
 						return (
@@ -535,10 +530,10 @@ function SettingsPage() {
 								key={s.id}
 								type="button"
 								onClick={() => scrollToSection(s.id)}
-								className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+								className={`whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors ${
 									active
-										? "bg-primary/10 text-leaf-strong"
-										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										? "bg-foreground text-background"
+										: "text-muted-foreground hover:text-foreground"
 								}`}
 							>
 								{s.label}
@@ -551,7 +546,7 @@ function SettingsPage() {
 			<div className="space-y-8 pt-4">
 				{/* Hotkey Section */}
 				<div id="sec-shortcut" className="scroll-mt-24">
-					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+					<section className="surface p-6">
 						<div className="flex items-start gap-4 mb-4">
 							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
 								<Keyboard className="w-5 h-5 text-leaf-strong" />
@@ -630,7 +625,7 @@ function SettingsPage() {
 
 				{/* Transcription engine */}
 				<div id="sec-speech" className="scroll-mt-24">
-					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+					<section className="surface p-6">
 						<div className="flex items-start gap-4 mb-5">
 							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
 								<Mic className="w-5 h-5 text-leaf-strong" />
@@ -751,7 +746,7 @@ function SettingsPage() {
 
 				{/* Cleanup backend */}
 				<div id="sec-cleanup" className="scroll-mt-24">
-					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+					<section className="surface p-6">
 						<div className="flex items-start gap-4 mb-4">
 							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
 								<Wand2 className="w-5 h-5 text-leaf-strong" />
@@ -886,7 +881,7 @@ function SettingsPage() {
 
 				{/* Writing Preferences Section */}
 				<div id="sec-writing" className="scroll-mt-24">
-					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+					<section className="surface p-6">
 						<div className="flex items-start gap-4 mb-5">
 							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
 								<PenLine className="w-5 h-5 text-leaf-strong" />
@@ -1063,7 +1058,7 @@ function SettingsPage() {
 
 				{/* Data Section */}
 				<div id="sec-data" className="scroll-mt-24">
-					<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+					<section className="surface p-6">
 						<div className="flex items-start gap-4 mb-4">
 							<div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center shrink-0">
 								<Database className="w-5 h-5 text-warning" />
@@ -1154,7 +1149,7 @@ function PermissionsSection() {
 	const status = usePermissions();
 
 	return (
-		<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+		<section className="surface p-6">
 			<div className="flex items-start gap-4 mb-4">
 				<div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center shrink-0">
 					<ShieldCheck className="w-5 h-5 text-warning" />
@@ -1275,7 +1270,7 @@ function AppProfilesSection() {
 	}
 
 	return (
-		<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+		<section className="surface p-6">
 			<div className="flex items-start gap-4 mb-5">
 				<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
 					<AppWindow className="w-5 h-5 text-leaf-strong" />
@@ -1504,7 +1499,7 @@ function AppearanceSection() {
 	const [appearance, setLocal] = useState<Appearance>(cachedAppearance);
 
 	return (
-		<section className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+		<section className="surface p-6">
 			<div className="flex items-start gap-4 mb-4">
 				<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
 					<Monitor className="w-5 h-5 text-leaf-strong" />

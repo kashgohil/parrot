@@ -168,9 +168,7 @@ function MainShell() {
 
 			{/* Left Sidebar */}
 			<div className="hidden md:flex md:w-[240px] lg:w-[260px] bg-rail flex-col relative overflow-hidden shrink-0">
-				<div className="absolute -top-24 -right-24 w-72 h-72 bg-white/8 rounded-full blur-2xl" />
-				<div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-				<div className="absolute top-1/3 right-0 w-48 h-48 bg-white/6 rounded-full blur-2xl" />
+				<div className="absolute -top-28 -left-16 w-72 h-72 bg-primary/25 rounded-full blur-[90px] pointer-events-none" />
 
 				<div className="relative z-10 p-6 lg:p-7">
 					<div className="flex items-center gap-3">
@@ -304,16 +302,16 @@ function NavLink({
 		<Link
 			to={to}
 			className={`
-				flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium no-underline
+				flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-semibold no-underline
 				transition-all duration-200
 				${
 					isActive
-						? "bg-white/20 text-white shadow-lg shadow-black/5"
-						: "text-white/70 hover:text-white hover:bg-white/10"
+						? "bg-primary text-primary-foreground shadow-[0_10px_24px_-12px_rgba(124,179,66,0.7)]"
+						: "text-band-muted hover:text-band-ink hover:bg-white/8"
 				}
 			`}
 		>
-			<Icon className={`w-4 h-4 ${isActive ? "text-white" : ""}`} />
+			<Icon className="w-4 h-4" />
 			{label}
 		</Link>
 	);
@@ -357,7 +355,7 @@ function TipOfTheDay() {
 				<Lightbulb className="w-4 h-4 text-white/70 shrink-0 mt-0.5" />
 				<div className="flex-1 min-w-0">
 					<div className="flex items-center justify-between gap-2">
-						<p className="text-[10px] font-semibold text-white/50 uppercase tracking-wide">
+						<p className="text-xs font-semibold text-band-ink">
 							Tip of the day
 						</p>
 						<button

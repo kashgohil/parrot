@@ -177,7 +177,7 @@ function TranscriptionDetailPage() {
 					<div className="flex items-start justify-between gap-4">
 						<div className="min-w-0">
 							<div className="flex items-center gap-2 flex-wrap">
-								<h1 className="text-2xl font-bold text-foreground tracking-tight">
+								<h1 className="text-[30px] leading-tight font-bold text-foreground tracking-[-0.025em]">
 									Transcription
 								</h1>
 								{hasCleaned && (
@@ -282,7 +282,7 @@ function DetailContent({
 	return (
 		<div className="flex flex-col md:flex-row flex-1 min-h-0 gap-8 md:gap-10 pt-6">
 			<div className="flex-1 min-w-0 min-h-0 overflow-y-auto space-y-5 pb-8">
-				<section className="rounded-xl border border-border bg-card px-5 py-5">
+				<section className="surface px-6 py-6">
 					<p className="text-[15px] leading-relaxed text-foreground whitespace-pre-wrap">
 						{display}
 					</p>
@@ -290,7 +290,7 @@ function DetailContent({
 
 				{hasCleaned && (
 					<section className="rounded-xl border border-border/60 bg-muted/20 px-5 py-4">
-						<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
+						<p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
 							<span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
 							Raw transcription
 						</p>
@@ -302,13 +302,13 @@ function DetailContent({
 			</div>
 
 			<aside className="w-full md:w-44 shrink-0 md:overflow-y-auto md:pb-8 min-w-0">
-				<h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+				<h2 className="text-base font-semibold text-foreground mb-4">
 					Details
 				</h2>
 				<dl className="space-y-4">
 					{metaItems.map((item) => (
 						<div key={item.label}>
-							<dt className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+							<dt className="text-xs font-semibold text-muted-foreground">
 								{item.label}
 							</dt>
 							<dd className="text-sm text-foreground mt-0.5 leading-snug break-words">
@@ -318,7 +318,7 @@ function DetailContent({
 					))}
 					{audioPath && (
 						<div className="min-w-0">
-							<dt className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+							<dt className="text-xs font-semibold text-muted-foreground">
 								Attachment
 							</dt>
 							<dd className="mt-1 min-w-0">

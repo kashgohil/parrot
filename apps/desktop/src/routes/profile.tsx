@@ -13,7 +13,7 @@ function ProfilePage() {
 		<div className="space-y-8">
 			{/* Page header */}
 			<div>
-				<h1 className="text-2xl font-bold text-foreground tracking-tight">
+				<h1 className="text-[30px] leading-tight font-bold text-foreground tracking-[-0.025em]">
 					Profile
 				</h1>
 				<p className="text-sm text-muted-foreground mt-1">
@@ -22,7 +22,7 @@ function ProfilePage() {
 			</div>
 
 			{/* Profile Info Card */}
-			<section className="bg-card rounded-2xl border border-border p-5">
+			<section className="surface p-6">
 				<div className="flex items-start gap-4 mb-5">
 					<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
 						<User className="w-5 h-5 text-leaf-strong" />
@@ -41,7 +41,7 @@ function ProfilePage() {
 							<User className="w-5 h-5 text-leaf-strong" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+							<p className="text-xs font-semibold text-muted-foreground">
 								Name
 							</p>
 							<p className="text-base font-medium text-foreground">
@@ -55,7 +55,7 @@ function ProfilePage() {
 							<Mail className="w-5 h-5 text-leaf-strong" />
 						</div>
 						<div className="flex-1">
-							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+							<p className="text-xs font-semibold text-muted-foreground">
 								Email
 							</p>
 							<p className="text-base font-medium text-foreground">
@@ -67,7 +67,7 @@ function ProfilePage() {
 			</section>
 
 			{/* Privacy Section */}
-			<section className="bg-card rounded-2xl border border-border p-5">
+			<section className="surface p-6">
 				<div className="flex items-start gap-4 mb-5">
 					<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
 						<Shield className="w-5 h-5 text-leaf-strong" />
