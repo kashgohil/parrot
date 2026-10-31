@@ -24,9 +24,9 @@ export default function Header() {
 
 	return (
 		<>
-			{/* Floating bar: inset from the edges, so the page shows around it. */}
+			{/* Floating pill, rounded like the demo's tabs and the buttons. */}
 			<div className="sticky top-[env(safe-area-inset-top,0px)] z-40 px-3 pt-3 md:px-4">
-				<header className="mx-auto flex h-14 max-w-[1120px] items-center gap-6 rounded-2xl border border-border/70 bg-background/80 pr-2 pl-4 shadow-[0_1px_2px_rgba(18,27,20,0.04),0_8px_24px_-12px_rgba(18,27,20,0.12)] backdrop-blur-xl backdrop-saturate-150 md:pl-5">
+				<header className="mx-auto flex h-14 max-w-[1120px] items-center gap-6 rounded-full border border-border/70 bg-background/80 pr-2.5 pl-5 shadow-[0_1px_2px_rgba(18,27,20,0.04),0_8px_24px_-12px_rgba(18,27,20,0.12)] backdrop-blur-xl backdrop-saturate-150 md:pl-6">
 					<Link
 						to="/"
 						className="inline-flex items-center gap-2.5 text-[19px] font-extrabold tracking-[-0.03em] text-foreground no-underline"
