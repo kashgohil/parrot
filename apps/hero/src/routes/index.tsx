@@ -1,23 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	ArrowRight,
-	Bot,
 	Check,
 	Clipboard,
 	ClipboardPaste,
-	Code,
 	Download,
 	Eye,
-	Gift,
 	Keyboard,
 	Laptop,
-	Lock,
-	Mail,
-	MessageSquare,
 	Mic,
-	Minus,
 	Search,
-	Stethoscope,
+	Sparkles,
 	WifiOff,
 	X as XIcon,
 	Zap,
@@ -57,7 +50,6 @@ import {
 	VSCodeIcon,
 } from "@/components/app-icons";
 import Footer from "@/components/Footer";
-import { SectionHeading } from "@/components/section-heading";
 import {
 	Accordion,
 	AccordionContent,
@@ -220,712 +212,733 @@ export const Route = createFileRoute("/")({
 });
 
 // ---------------------------------------------------------------------------
-// 1. Hero: Live Dictation Simulation
+// Layout helpers
 // ---------------------------------------------------------------------------
-const DICTATION_SCENARIOS = [
+const WRAP = "mx-auto max-w-[1120px] px-5";
+// Bands alternate so every section has a visible edge: paper (doodles show
+// through), a pale green tint, or forest.
+const BAND = "py-[clamp(72px,9vw,112px)]";
+const TINT = `${BAND} bg-band border-y border-line-soft`;
+const FOREST = `${BAND} bg-forest text-on-forest-muted`;
+
+function Head({
+	title,
+	lede,
+	center,
+	dark,
+	className = "",
+}: {
+	title: ReactNode;
+	lede?: ReactNode;
+	center?: boolean;
+	dark?: boolean;
+	className?: string;
+}) {
+	return (
+		<div
+			className={`mb-[clamp(36px,5vw,56px)] grid max-w-[640px] gap-3.5 ${center ? "mx-auto text-center" : ""} ${className}`}
+		>
+			<h2
+				className={`text-balance text-[clamp(2rem,4.4vw,3rem)] font-extrabold leading-[1.06] tracking-[-0.028em] ${dark ? "text-on-forest" : "text-foreground"}`}
+			>
+				{title}
+			</h2>
+			{lede && (
+				<p
+					className={`text-pretty text-lg ${dark ? "text-on-forest-muted" : "text-muted-foreground"}`}
+				>
+					{lede}
+				</p>
+			)}
+		</div>
+	);
+}
+
+const PILL_BTN =
+	"inline-flex h-[50px] items-center gap-2.5 rounded-full pr-6 pl-5 font-semibold no-underline transition-[background-color,transform] active:scale-[0.98]";
+
+function Wave({
+	bars = 6,
+	className = "",
+}: {
+	bars?: number;
+	className?: string;
+}) {
+	return (
+		<span className={`flex h-[18px] items-center gap-[3px] ${className}`}>
+			{Array.from({ length: bars }, (_, i) => (
+				<i
+					// biome-ignore lint/suspicious/noArrayIndexKey: fixed decorative bars
+					key={i}
+					className="w-[3px] animate-hud-wave rounded-full bg-primary"
+					style={{ animationDelay: `${i * 0.12}s` }}
+				/>
+			))}
+		</span>
+	);
+}
+
+function Tabs<T extends string>({
+	items,
+	active,
+	onSelect,
+	label,
+}: {
+	items: readonly T[];
+	active: T;
+	onSelect: (item: T) => void;
+	label: string;
+}) {
+	return (
+		<div
+			role="tablist"
+			aria-label={label}
+			className="inline-flex max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-card p-1 shadow-[0_1px_2px_rgba(27,46,27,0.05)] [scrollbar-width:none]"
+		>
+			{items.map((item) => (
+				<button
+					key={item}
+					type="button"
+					role="tab"
+					aria-selected={item === active}
+					onClick={() => onSelect(item)}
+					className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+						item === active
+							? "bg-foreground text-background"
+							: "text-muted-foreground hover:text-foreground"
+					}`}
+				>
+					{item}
+				</button>
+			))}
+		</div>
+	);
+}
+
+// ---------------------------------------------------------------------------
+// 1. Hero: a Gmail draft typing itself while the Parrot HUD listens
+// ---------------------------------------------------------------------------
+const HERO_WORDS =
+	"Hi Sarah, let's move the design review to Thursday at 2. Monday doesn't work for John either. I'll send the Figma link before then.".split(
+		" ",
+	);
+
+function HeroMock() {
+	const [shown, setShown] = useState(0);
+	const [seconds, setSeconds] = useState(3);
+
+	useEffect(() => {
+		const done = shown >= HERO_WORDS.length;
+		const t = setTimeout(
+			() => setShown(done ? 0 : shown + 1),
+			done ? 3200 : 140 + Math.random() * 90,
+		);
+		return () => clearTimeout(t);
+	}, [shown]);
+
+	useEffect(() => {
+		const t = setInterval(() => setSeconds((s) => (s >= 14 ? 1 : s + 1)), 1000);
+		return () => clearInterval(t);
+	}, []);
+
+	return (
+		<div
+			className="relative pt-7 pb-[52px]"
+			role="img"
+			aria-label="Parrot dictating into a Gmail draft"
+		>
+			<div className="absolute inset-y-0 right-[-6%] bottom-[8%] left-[6%] rounded-[36px] bg-[linear-gradient(140deg,#cfe8ad,#9fcd6a_55%,#6aa338)] max-md:right-0" />
+			<div className="relative overflow-hidden rounded-[14px] border border-foreground/15 bg-card shadow-[0_40px_70px_-30px_rgba(27,46,27,0.55),0_12px_24px_-12px_rgba(27,46,27,0.25)] md:-ml-[4%]">
+				<div className="flex h-10 items-center gap-2 border-b border-line-soft bg-[#f3f6ef] px-3.5">
+					<span className="size-3 rounded-full bg-[#ff5f57]" />
+					<span className="size-3 rounded-full bg-[#febc2e]" />
+					<span className="size-3 rounded-full bg-[#28c840]" />
+					<span className="mr-[52px] flex-1 text-center text-[13px] font-semibold text-muted-foreground">
+						New message · Gmail
+					</span>
+				</div>
+				{[
+					["To", "sarah@northwind.co"],
+					["Subject", "Thursday review"],
+				].map(([k, v]) => (
+					<div
+						key={k}
+						className="flex gap-2.5 border-b border-line-soft px-5 py-[11px] text-sm"
+					>
+						<span className="w-[58px] text-muted-foreground">{k}</span>
+						<span className="font-medium text-foreground">{v}</span>
+					</div>
+				))}
+				<p className="min-h-[172px] px-5 pt-[18px] pb-6 text-base leading-[1.65] text-foreground">
+					{HERO_WORDS.slice(0, shown).join(" ")}
+					<span className="ml-px inline-block h-[1.1em] w-0.5 animate-blink-caret-bg bg-lime-text align-[-0.2em]" />
+				</p>
+			</div>
+			<div className="absolute bottom-2 left-1/2 flex h-11 -translate-x-1/2 items-center gap-2.5 whitespace-nowrap rounded-full bg-[#142214] pr-4 pl-3 text-[13px] font-semibold text-on-forest shadow-[0_14px_34px_-10px_rgba(0,0,0,0.55)]">
+				<span className="size-[9px] rounded-full bg-[#ff5d3d] shadow-[0_0_0_4px_rgba(255,93,61,0.22)]" />
+				<Wave />
+				Listening
+				<span className="font-mono font-medium text-on-forest-muted tabular-nums">
+					0:{String(seconds).padStart(2, "0")}
+				</span>
+			</div>
+		</div>
+	);
+}
+
+const PHRASES = [
+	"Send the quarterly report to the team by Friday.",
+	"Dear Dr. Patel, thank you for the referral.",
+	"Schedule a follow-up with the client next Tuesday.",
+	"The defendant's counsel filed a motion to dismiss.",
+	"Remind me to buy oat milk and sourdough.",
+	"Let's reschedule the standup to 3pm.",
+	"Can you review the PR and merge when ready?",
+];
+
+function Ticker() {
+	return (
+		<div
+			aria-hidden="true"
+			className="overflow-hidden border-y border-line-soft bg-card py-[18px] fade-x"
+		>
+			<div className="flex w-max animate-marquee gap-3">
+				{[0, 1].map((set) =>
+					PHRASES.map((p) => (
+						<span
+							key={`${set}-${p}`}
+							className="whitespace-nowrap rounded-full bg-band px-3.5 py-1.5 font-mono text-[13.5px] text-muted-foreground"
+						>
+							{p}
+						</span>
+					)),
+				)}
+			</div>
+		</div>
+	);
+}
+
+// ---------------------------------------------------------------------------
+// 2. Cleanup: what you said vs what Parrot writes
+// ---------------------------------------------------------------------------
+// Words wrapped in [brackets] are fillers that cleanup removes.
+const CLEANUP_EXAMPLES = [
 	{
-		appName: "Gmail",
-		appIcon: <Mail size={14} className="text-white/50" />,
-		placeholder: "Compose...",
-		text: "Hi team, let's move the standup to Thursday at 3pm. Monday doesn't work for Sarah, and John is out until Wednesday. I'll send updated calendar invites.",
+		said: "so [um] basically I think we should [uh] move the meeting to [like] Thursday because [uh] monday doesnt work for sarah and john cant make it either",
+		fillers: "4 fillers",
+		wrote:
+			"Let's move the meeting to Thursday. Monday doesn't work for Sarah, and John can't make it either.",
 	},
 	{
-		appName: "Slack",
-		appIcon: <MessageSquare size={14} className="text-white/50" />,
-		placeholder: "Message #engineering...",
-		text: "Deploy pipeline is green. Merged the hotfix for the auth redirect bug. Can someone from frontend verify on staging before we push to prod?",
+		said: "hey can you [um] send me the report for Q3 the one with the revenue numbers and the churn data I need it for the board deck thanks",
+		fillers: "1 filler",
+		wrote:
+			"Can you send me the Q3 report with the revenue numbers and churn data? I need it for the board deck. Thanks.",
 	},
 	{
-		appName: "VS Code",
-		appIcon: <Code size={14} className="text-white/50" />,
-		placeholder: "// Add comment...",
-		text: "This function validates the session token against the Redis store. If expired, it triggers a silent refresh flow and returns the new token pair.",
-	},
-	{
-		appName: "Notes",
-		appIcon: <Stethoscope size={14} className="text-white/50" />,
-		placeholder: "New note...",
-		text: "Patient presents with elevated BP around 150 over 95 and recurring morning headaches. No prior cardiac history. Recommend full metabolic panel and stress echo.",
+		said: "patient presents with [um] elevated BP around 150 over 95 and [uh] recurring headaches in the mornings",
+		fillers: "2 fillers",
+		wrote:
+			"Patient presents with elevated BP (~150/95) and recurring morning headaches.",
 	},
 ];
 
-type DictationPhase = "idle" | "hotkey" | "recording" | "transcribing" | "done";
-
-function DictationDemo() {
-	const [scenarioIdx, setScenarioIdx] = useState(0);
-	const [phase, setPhase] = useState<DictationPhase>("idle");
-	const [visibleWords, setVisibleWords] = useState(0);
-	const [showClipboard, setShowClipboard] = useState(false);
-
-	const scenario = DICTATION_SCENARIOS[scenarioIdx];
-	const wordsArr = scenario.text.split(" ");
-
-	// Phase state machine
-	useEffect(() => {
-		let timeout: ReturnType<typeof setTimeout>;
-
-		switch (phase) {
-			case "idle":
-				timeout = setTimeout(() => setPhase("hotkey"), 1000);
-				break;
-			case "hotkey":
-				timeout = setTimeout(() => setPhase("recording"), 600);
-				break;
-			case "recording": {
-				// Recording duration scales with text length
-				const dur = 1200 + wordsArr.length * 30;
-				timeout = setTimeout(() => setPhase("transcribing"), dur);
-				break;
-			}
-			case "transcribing":
-				// Words appear one-by-one, handled by separate effect
-				break;
-			case "done":
-				setShowClipboard(true);
-				timeout = setTimeout(() => {
-					setShowClipboard(false);
-					setVisibleWords(0);
-					setScenarioIdx((i) => (i + 1) % DICTATION_SCENARIOS.length);
-					setPhase("idle");
-				}, 1800);
-				break;
-		}
-
-		return () => clearTimeout(timeout);
-	}, [phase, wordsArr.length]);
-
-	// Word-by-word reveal during transcribing phase
-	useEffect(() => {
-		if (phase !== "transcribing") return;
-		if (visibleWords >= wordsArr.length) {
-			setPhase("done");
-			return;
-		}
-		const t = setTimeout(
-			() => setVisibleWords((v) => v + 1),
-			50 + Math.random() * 35,
-		);
-		return () => clearTimeout(t);
-	}, [phase, visibleWords, wordsArr.length]);
-
-	// Reset words when scenario changes
-	useEffect(() => {
-		setVisibleWords(0);
-	}, [scenarioIdx]);
-
-	const isRecording = phase === "recording";
-	const isHotkeyPressed = phase === "hotkey" || phase === "recording";
-	const waveformBars = Array.from({ length: 24 }, (_, i) => i);
-
+function Said({ text }: { text: string }) {
 	return (
-		<div className="bg-[#1a1f2b] rounded-xl border border-white/8 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] overflow-hidden">
-			{/* macOS title bar */}
-			<div className="flex items-center gap-2 px-4 py-3 bg-[#1e2433] border-b border-white/6">
-				<div className="flex gap-[7px]">
-					<div className="w-[11px] h-[11px] rounded-full bg-[#ff5f57]" />
-					<div className="w-[11px] h-[11px] rounded-full bg-[#febc2e]" />
-					<div className="w-[11px] h-[11px] rounded-full bg-[#28c840]" />
-				</div>
-				<div className="flex-1 flex items-center justify-center gap-1.5">
-					{scenario.appIcon}
-					<span className="text-[11px] text-white/30 font-medium">
-						{scenario.appName}
-					</span>
-				</div>
-				<div className="w-[52px]" />
-			</div>
-
-			{/* Text area - all scenarios rendered for consistent height */}
-			<div className="p-5">
-				<div className="grid">
-					{DICTATION_SCENARIOS.map((s, si) => {
-						const isActive = si === scenarioIdx;
-						const words = s.text.split(" ");
-						return (
-							<p
-								key={si}
-								className="col-start-1 row-start-1 text-[13px] leading-relaxed font-mono"
-							>
-								{words.map((word, i) => {
-									// Determine word visibility
-									let colorClass = "text-transparent"; // Hidden by default
-									if (isActive) {
-										if (
-											visibleWords === 0 &&
-											phase !== "transcribing" &&
-											phase !== "done"
-										) {
-											// Placeholder phase - show nothing (transparent)
-											colorClass = "text-transparent";
-										} else if (i < visibleWords) {
-											// Word has been revealed
-											colorClass =
-												i === visibleWords - 1 && phase === "transcribing"
-													? "text-primary"
-													: "text-white/90";
-										}
-									}
-									return (
-										<span
-											key={`${si}-${i}`}
-											className={`inline-block mr-[0.35em] transition-colors duration-150 ${colorClass}`}
-										>
-											{word}
-										</span>
-									);
-								})}
-								{isActive && phase === "transcribing" && (
-									<span className="inline-block w-[2px] h-[1.1em] bg-primary/70 ml-px align-text-bottom animate-blink-caret border-r-2 border-primary/70" />
-								)}
-							</p>
-						);
-					})}
-					{/* Placeholder overlay */}
-					{visibleWords === 0 &&
-						phase !== "transcribing" &&
-						phase !== "done" && (
-							<p className="col-start-1 row-start-1 text-[13px] text-white/20 font-mono pointer-events-none">
-								{scenario.placeholder}
-							</p>
-						)}
-				</div>
-			</div>
-
-			{/* Bottom bar */}
-			<div className="flex items-center justify-between px-4 py-3 bg-[#1e2433] border-t border-white/6">
-				{/* Hotkey indicator */}
-				<div className="flex items-center gap-1">
-					<kbd
-						className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-all duration-150 ${
-							isHotkeyPressed
-								? "bg-primary/30 text-primary border border-primary/40 shadow-[0_0_8px_rgba(124,179,66,0.3)] translate-y-px"
-								: "bg-white/8 text-white/30 border border-white/10"
-						}`}
-					>
-						fn
-					</kbd>
-				</div>
-
-				{/* Recording / status indicator */}
-				<div className="flex items-center gap-2">
-					{isRecording && (
-						<>
-							<div className="flex items-center gap-[2px] h-4">
-								{waveformBars.map((i) => (
-									<div
-										key={i}
-										className="w-[2px] rounded-full bg-primary/60 animate-soundwave"
-										style={{
-											height: `${6 + Math.sin(i * 0.9) * 8}px`,
-											animationDelay: `${i * 0.05}s`,
-											animationDuration: `${0.6 + (i % 4) * 0.12}s`,
-										}}
-									/>
-								))}
-							</div>
-							<div className="flex items-center gap-1.5">
-								<div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-								<span className="text-[10px] text-primary font-semibold uppercase tracking-wider">
-									Recording
-								</span>
-							</div>
-						</>
-					)}
-					{phase === "transcribing" && (
-						<span className="text-[10px] text-white/40 font-medium">
-							Transcribing...
-						</span>
-					)}
-					{showClipboard && (
-						<span className="text-[10px] text-primary font-semibold flex items-center gap-1">
-							<Clipboard size={10} />
-							Copied to clipboard
-						</span>
-					)}
-					{phase === "idle" && (
-						<span className="text-[10px] text-white/20 font-medium">
-							Press hotkey to start
-						</span>
-					)}
-				</div>
-			</div>
-		</div>
-	);
-}
-
-// ---------------------------------------------------------------------------
-// Before/After cleanup demo (kept as-is)
-// ---------------------------------------------------------------------------
-function BeforeAfter() {
-	const examples = [
-		{
-			before:
-				"so um basically I think we should uh move the meeting to like Thursday because uh monday doesnt work for sarah and also john said he cant make it either so yeah thursday works better I think",
-			after:
-				"Let's move the meeting to Thursday - Monday doesn't work for Sarah, and John can't make it either.",
-		},
-		{
-			before:
-				"hey can you um send me the report for Q3 the one with the revenue numbers and also the customer churn data I need it for the board deck thanks",
-			after:
-				"Can you send me the Q3 report with revenue numbers and customer churn data? I need it for the board deck. Thanks.",
-		},
-		{
-			before:
-				"the patient presents with um elevated BP around 150 over 95 and uh complaints of recurring headaches especially in the morning hours I think we should do a full metabolic panel",
-			after:
-				"Patient presents with elevated BP (~150/95) and recurring morning headaches. Recommend full metabolic panel.",
-		},
-	];
-	const [idx, setIdx] = useState(0);
-	const [key, setKey] = useState(0); // Used to reset the timer on manual selection
-	const [isTransitioning, setIsTransitioning] = useState(false);
-
-	// Auto-rotate every 5 seconds, reset when key changes (manual selection)
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setIsTransitioning(true);
-			setTimeout(() => {
-				setIdx((i) => (i + 1) % examples.length);
-				setIsTransitioning(false);
-			}, 300);
-		}, 5000);
-		return () => clearInterval(interval);
-	}, [key, examples.length]);
-
-	const handleSelect = (i: number) => {
-		if (i === idx) return;
-		setIsTransitioning(true);
-		setTimeout(() => {
-			setIdx(i);
-			setIsTransitioning(false);
-		}, 300);
-		setKey((k) => k + 1); // Reset the timer
-	};
-
-	return (
-		<div>
-			<div className="grid md:grid-cols-2 gap-4">
-				<div className="surface p-7 md:p-8">
-					<div className="flex items-center gap-2 mb-5">
-						<div className="w-2 h-2 rounded-full bg-amber-400" />
-						<span className="text-sm font-medium text-muted-foreground">
-							What you said
-						</span>
-					</div>
-					<div className="grid">
-						{examples.map((example, i) => (
-							<p
-								key={i}
-								className={`col-start-1 row-start-1 text-[17px] leading-relaxed text-foreground/70 italic transition-opacity duration-300 ${
-									i === idx && !isTransitioning ? "opacity-100" : "opacity-0"
-								}`}
-							>
-								"{example.before}"
-							</p>
-						))}
-					</div>
-				</div>
-				<div className="relative overflow-hidden rounded-[20px] bg-foreground p-7 md:p-8 shadow-[0_12px_32px_-16px_rgba(27,46,27,0.5)]">
-					<div
-						aria-hidden="true"
-						className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-primary/25 blur-3xl"
-					/>
-					<div className="relative flex items-center gap-2 mb-5">
-						<div className="w-2 h-2 rounded-full bg-primary" />
-						<span className="text-sm font-medium text-background/60">
-							What Parrot writes
-						</span>
-					</div>
-					<div className="relative grid">
-						{examples.map((example, i) => (
-							<p
-								key={i}
-								className={`col-start-1 row-start-1 text-[17px] leading-relaxed text-background/90 transition-opacity duration-300 ${
-									i === idx && !isTransitioning ? "opacity-100" : "opacity-0"
-								}`}
-							>
-								"{example.after}"
-							</p>
-						))}
-					</div>
-				</div>
-			</div>
-			<div className="flex items-center justify-center gap-2 mt-6">
-				{examples.map((_, i) => (
-					<button
+		<>
+			“
+			{text.split(/(\[[^\]]+\])/).map((part, i) =>
+				part.startsWith("[") ? (
+					<s
+						// biome-ignore lint/suspicious/noArrayIndexKey: fixed token order
 						key={i}
-						type="button"
-						onClick={() => handleSelect(i)}
-						className={`h-1.5 rounded-full transition-all ${
-							i === idx ? "w-8 bg-primary" : "w-4 bg-border hover:bg-primary/30"
-						}`}
-						aria-label={`Example ${i + 1}`}
-					/>
-				))}
+						className="rounded bg-coral-soft px-[3px] text-coral decoration-2"
+					>
+						{part.slice(1, -1)}
+					</s>
+				) : (
+					part
+				),
+			)}
+			”
+		</>
+	);
+}
+
+function CleanupSection() {
+	const [idx, setIdx] = useState(0);
+	const [auto, setAuto] = useState(true);
+
+	useEffect(() => {
+		if (!auto) return;
+		const t = setInterval(
+			() => setIdx((i) => (i + 1) % CLEANUP_EXAMPLES.length),
+			6000,
+		);
+		return () => clearInterval(t);
+	}, [auto]);
+
+	const ex = CLEANUP_EXAMPLES[idx];
+	const tag = "rounded-full px-3 py-[5px] text-[13px] font-semibold";
+
+	return (
+		// biome-ignore lint/correctness/useUniqueElementIds: #demo is a link target and renders once
+		<section id="demo" className={TINT}>
+			<div className={WRAP}>
+				<Head
+					title="Say it messy. Parrot sends it clean."
+					lede="The optional cleanup pass removes filler words, applies your corrections and fixes punctuation. Here's what that looks like."
+				/>
+				<div className="grid gap-4 md:grid-cols-2">
+					<div className="min-w-0 rounded-[22px] border border-border bg-card p-[clamp(24px,3.5vw,36px)]">
+						<p className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+							<i className="size-2 rounded-full bg-[#f0a020]" />
+							What you said
+						</p>
+						<p className="text-[clamp(18px,2vw,21px)] leading-[1.55] text-ink-2">
+							<Said text={ex.said} />
+						</p>
+						<div className="mt-[22px] flex flex-wrap gap-2">
+							<span className={`${tag} bg-coral-soft text-[#a33a17]`}>
+								{ex.fillers}
+							</span>
+						</div>
+					</div>
+					<div className="relative min-w-0 overflow-hidden rounded-[22px] bg-forest p-[clamp(24px,3.5vw,36px)] text-on-forest">
+						<div className="pointer-events-none absolute -top-[60px] -right-[60px] size-[220px] rounded-full bg-primary/35 blur-[60px]" />
+						<p className="relative mb-4 flex items-center gap-2 text-sm font-semibold text-on-forest-muted">
+							<i className="size-2 rounded-full bg-primary" />
+							What Parrot writes
+						</p>
+						<p className="relative text-[clamp(18px,2vw,21px)] leading-[1.55]">
+							“{ex.wrote}”
+						</p>
+						<div className="relative mt-[22px] flex flex-wrap gap-2">
+							<span className={`${tag} bg-primary/20 text-[#cfeaa8]`}>
+								Filler removed
+							</span>
+							<span className={`${tag} bg-primary/20 text-[#cfeaa8]`}>
+								Punctuation fixed
+							</span>
+						</div>
+					</div>
+				</div>
+				<div className="mt-[22px] flex justify-center gap-2">
+					{CLEANUP_EXAMPLES.map((e, i) => (
+						<button
+							key={e.wrote}
+							type="button"
+							aria-label={`Example ${i + 1}`}
+							aria-current={i === idx || undefined}
+							onClick={() => {
+								setIdx(i);
+								setAuto(false);
+							}}
+							className={`h-1.5 rounded-full transition-all ${i === idx ? "w-9 bg-primary" : "w-[18px] bg-border hover:bg-primary/40"}`}
+						/>
+					))}
+				</div>
 			</div>
-		</div>
+		</section>
 	);
 }
 
 // ---------------------------------------------------------------------------
-// 4. Interactive Voice Demo Playground
+// 3. Dictate into any app
 // ---------------------------------------------------------------------------
-const VOICE_SCENARIOS: {
-	label: string;
-	icon: ReactNode;
-	appName: string;
-	words: string;
-}[] = [
+const VOICE_SCENARIOS = [
 	{
 		label: "Email",
-		icon: <Mail size={18} />,
 		appName: "Gmail",
 		words:
 			"Hi team, just a quick update on the Q3 launch. We're tracking ahead of schedule and should have the beta ready by next Wednesday. I'll send calendar invites for the review session.",
 	},
 	{
 		label: "Code",
-		icon: <Code size={18} />,
 		appName: "VS Code",
 		words:
 			"This function validates the user session token against the Redis store. If expired, it triggers a refresh flow and returns the new token. Throws AuthError on invalid signatures.",
 	},
 	{
 		label: "Medical",
-		icon: <Stethoscope size={18} />,
 		appName: "Epic",
 		words:
 			"Patient is a 54-year-old male presenting with chest tightness and shortness of breath on exertion. No prior cardiac history. Recommend stress echocardiogram and lipid panel.",
 	},
 	{
 		label: "Slack",
-		icon: <MessageSquare size={18} />,
 		appName: "Slack",
 		words:
 			"Hey, the deploy pipeline is green. I merged the hotfix for the auth redirect bug. Can someone from the frontend team verify on staging before we push to prod?",
 	},
-];
+] as const;
 
-function VoiceDemoPlayground() {
-	const [activeTab, setActiveTab] = useState(0);
-	const [visibleWords, setVisibleWords] = useState(0);
-	const scenario = VOICE_SCENARIOS[activeTab];
-	const wordsArr = scenario.words.split(" ");
+function AnyAppSection() {
+	const [tab, setTab] = useState<string>(VOICE_SCENARIOS[0].label);
+	const [shown, setShown] = useState(0);
+	const scenario =
+		VOICE_SCENARIOS.find((s) => s.label === tab) ?? VOICE_SCENARIOS[0];
+	const words = scenario.words.split(" ");
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: restart typing when the tab changes
+	useEffect(() => setShown(0), [tab]);
 	useEffect(() => {
-		setVisibleWords(0);
-	}, [activeTab]);
-
-	useEffect(() => {
-		if (visibleWords >= wordsArr.length) return;
-		const t = setTimeout(
-			() => setVisibleWords((v) => v + 1),
-			60 + Math.random() * 40,
-		);
+		if (shown >= words.length) return;
+		const t = setTimeout(() => setShown((n) => n + 1), 70 + Math.random() * 50);
 		return () => clearTimeout(t);
-	}, [visibleWords, wordsArr.length]);
-
-	// Animated waveform bars
-	const waveformBars = Array.from({ length: 32 }, (_, i) => i);
+	}, [shown, words.length]);
 
 	return (
-		<div className="max-w-3xl mx-auto">
-			{/* Tab buttons */}
-			<div className="flex sm:justify-center mb-6 max-w-full overflow-x-auto [scrollbar-width:none]">
-				<div className="inline-flex shrink-0 gap-1 p-1 rounded-full bg-card/80 border border-border/70 shadow-[0_1px_2px_rgba(27,46,27,0.04)] backdrop-blur-sm">
-					{VOICE_SCENARIOS.map((s, i) => (
-						<button
-							key={i}
-							type="button"
-							onClick={() => setActiveTab(i)}
-							className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-								i === activeTab
-									? "bg-foreground text-background shadow-sm"
-									: "text-muted-foreground hover:text-foreground"
-							}`}
-						>
-							<span>{s.icon}</span>
-							{s.label}
-						</button>
-					))}
-				</div>
-			</div>
-
-			{/* Demo card */}
-			<div className="surface overflow-hidden">
-				{/* App context bar */}
-				<div className="flex items-center gap-2 px-6 py-3.5 border-b border-border/70">
-					<span className="text-muted-foreground">{scenario.icon}</span>
-					<span className="text-sm font-medium text-muted-foreground">
-						Dictating into {scenario.appName}
-					</span>
-				</div>
-
-				{/* Waveform */}
-				<div className="px-6 pt-5">
-					<div className="flex items-center gap-[2px] h-8">
-						{waveformBars.map((i) => {
-							const isActive = visibleWords < wordsArr.length;
-							return (
-								<div
-									key={i}
-									className={`flex-1 rounded-full transition-all ${
-										isActive
-											? "bg-primary/50 animate-soundwave"
-											: "bg-primary/15"
-									}`}
-									style={{
-										height: isActive
-											? `${12 + Math.sin(i * 0.8) * 16}px`
-											: "4px",
-										animationDelay: `${i * 0.06}s`,
-										animationDuration: `${0.7 + (i % 5) * 0.15}s`,
-									}}
-								/>
-							);
-						})}
+		<section className={BAND}>
+			<div className={WRAP}>
+				<Head
+					center
+					title="Dictate into any app"
+					lede="Parrot works wherever your cursor is. Pick an app and watch it type."
+				/>
+				<div className="mx-auto grid min-w-0 max-w-[820px] justify-items-center gap-5">
+					<Tabs
+						label="App"
+						items={VOICE_SCENARIOS.map((s) => s.label)}
+						active={tab}
+						onSelect={setTab}
+					/>
+					<div className="surface w-full overflow-hidden">
+						<div className="flex items-center gap-2.5 border-b border-line-soft px-[22px] py-3.5 text-sm font-semibold text-muted-foreground">
+							Dictating into {scenario.appName}
+							<span className="ml-auto inline-flex items-center gap-2 text-[13px] text-lime-text">
+								<Wave bars={4} />
+								On device
+							</span>
+						</div>
+						<p className="min-h-[150px] p-[22px] text-lg leading-[1.65] text-foreground">
+							{words.slice(0, shown).join(" ")}
+						</p>
 					</div>
 				</div>
-
-				{/* Word-by-word text */}
-				<div className="p-6">
-					<p className="text-[17px] leading-relaxed text-foreground min-h-[84px]">
-						{wordsArr.map((word, i) => (
-							<span
-								key={`${activeTab}-${i}`}
-								className={`inline-block mr-[0.3em] transition-all duration-200 ${
-									i < visibleWords
-										? "opacity-100 translate-y-0"
-										: "opacity-0 translate-y-1"
-								} ${i === visibleWords - 1 ? "text-primary font-medium" : ""}`}
-							>
-								{word}
-							</span>
-						))}
-					</p>
-				</div>
 			</div>
-		</div>
+		</section>
 	);
 }
 
 // ---------------------------------------------------------------------------
-// 5. Dual Mode Spotlight (major section)
+// 4. Privacy (forest band)
 // ---------------------------------------------------------------------------
-function DualModeSpotlight() {
-	const steps: { icon: ReactNode; label: string }[] = [
-		{ icon: <Mic size={20} className="text-primary" />, label: "Mic" },
-		{
-			icon: <Laptop size={20} className="text-foreground/70" />,
-			label: "Your Mac",
-		},
-		{
-			icon: <Zap size={20} className="text-amber-500" />,
-			label: "Transcribe",
-		},
-		{ icon: <Bot size={20} className="text-violet-500" />, label: "Cleanup" },
-		{
-			icon: <Clipboard size={20} className="text-foreground/70" />,
-			label: "Clipboard",
-		},
-	];
+const FLOW: { icon: ReactNode; label: string }[] = [
+	{ icon: <Mic size={24} />, label: "Mic" },
+	{ icon: <Laptop size={24} />, label: "Your Mac" },
+	{ icon: <Zap size={24} />, label: "Transcribe" },
+	{ icon: <Sparkles size={24} />, label: "Cleanup" },
+	{ icon: <Clipboard size={24} />, label: "Your cursor" },
+];
 
-	const stats = [
-		{ value: "Snappy", label: "time to paste" },
-		{ value: "0 bytes", label: "data sent" },
-		{ value: "Free", label: "for life" },
-	];
+const PRIVACY_CHECKS = [
+	"Fast, accurate first pass",
+	"Audio never leaves your Mac",
+	"No account, no sign-in",
+	"Works fully offline",
+	"Custom vocabulary and cleanup",
+	"Dictation history you control",
+];
 
-	const features = [
-		"Fast, accurate first-pass dictation",
-		"Audio never leaves your device",
-		"No account, no sign-in",
-		"Works fully offline",
-		"Custom vocabulary & AI cleanup",
-		"Dictation history",
-	];
-
+function PrivacySection() {
+	const panel = "rounded-[22px] border border-forest-line bg-forest-2";
 	return (
-		<div>
-			{/* Data flow diagram */}
-			<div className="surface relative p-6 md:p-8 mb-4">
-				<div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 rounded-full">
-					<Lock size={11} className="text-primary" />
-					<span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+		<section className={FOREST}>
+			<div className={WRAP}>
+				<Head
+					dark
+					title="Fast. Private. Free for life."
+					lede="Transcription and cleanup run on your Mac. Your voice never leaves it, and you never pay a subscription to keep dictating."
+				/>
+				<div
+					className={`${panel} relative grid grid-cols-2 gap-y-5 p-[clamp(22px,3vw,34px)] sm:grid-cols-5 sm:gap-2`}
+				>
+					<span className="absolute top-4 right-4 rounded-full bg-primary/18 px-3 py-[5px] text-xs font-semibold text-[#cfeaa8]">
 						On device
 					</span>
-				</div>
-
-				<div className="flex items-center justify-between gap-2 overflow-x-auto py-4">
-					{steps.map((step, i) => (
-						<div key={`local-${i}`} className="contents">
-							<div className="flex flex-col items-center gap-1.5 shrink-0">
-								<div className="w-12 h-12 rounded-2xl bg-muted/60 flex items-center justify-center">
-									{step.icon}
-								</div>
-								<span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
-									{step.label}
-								</span>
-							</div>
-							{i < steps.length - 1 && (
-								<svg
-									width="32"
-									height="12"
-									className="shrink-0 mx-1"
-									viewBox="0 0 32 12"
-								>
-									<line
-										x1="0"
-										y1="6"
-										x2="24"
-										y2="6"
-										stroke="#7cb342"
-										strokeWidth="2"
-										strokeDasharray="4 3"
-										className="animate-flow-line"
-									/>
-									<polygon points="24,2 32,6 24,10" fill="#7cb342" />
-								</svg>
+					{FLOW.map((step, i) => (
+						<div
+							key={step.label}
+							className="relative grid justify-items-center gap-2.5 pt-5 text-center text-sm font-semibold text-on-forest"
+						>
+							<span className="grid size-14 place-items-center rounded-[18px] border border-forest-line bg-on-forest/8 text-[#b9e27a]">
+								{step.icon}
+							</span>
+							{step.label}
+							{i < FLOW.length - 1 && (
+								<span className="absolute top-[47px] right-[calc(-50%+36px)] left-[calc(50%+36px)] border-t-2 border-dashed border-[#b9e27a]/50 max-sm:hidden" />
 							)}
 						</div>
 					))}
 				</div>
+				<div className="mt-4 grid gap-4 sm:grid-cols-3">
+					{[
+						["Snappy", "from releasing the key to pasted text"],
+						["0 bytes", "of your audio sent anywhere"],
+						["Free", "for life, no word caps"],
+					].map(([big, small]) => (
+						<div key={big} className={`${panel} p-[26px]`}>
+							<b className="block text-[clamp(30px,4vw,44px)] font-black leading-none tracking-[-0.035em] text-on-forest">
+								{big}
+							</b>
+							<span className="mt-2 block text-[15px]">{small}</span>
+						</div>
+					))}
+				</div>
+				<ul className="m-0 mt-7 grid list-none gap-x-6 gap-y-3.5 p-0 sm:grid-cols-2 lg:grid-cols-3">
+					{PRIVACY_CHECKS.map((c) => (
+						<li
+							key={c}
+							className="flex items-center gap-2.5 text-[15px] text-on-forest"
+						>
+							<span className="grid size-[22px] shrink-0 place-items-center rounded-full bg-primary/22 text-[#b9e27a]">
+								<Check size={14} strokeWidth={3} />
+							</span>
+							{c}
+						</li>
+					))}
+				</ul>
 			</div>
-
-			{/* Stats */}
-			<div className="grid grid-cols-3 gap-3 md:gap-4 mb-4">
-				{stats.map((s, i) => (
-					<div
-						key={`local-stat-${i}`}
-						className="surface text-center px-2 py-4 md:p-6"
-					>
-						<p className="text-xl sm:text-2xl md:text-4xl font-black text-foreground tracking-[-0.03em]">
-							{s.value}
-						</p>
-						<p className="text-sm text-muted-foreground mt-1">{s.label}</p>
-					</div>
-				))}
-			</div>
-
-			{/* Feature list */}
-			<ul className="surface m-0 grid list-none gap-x-8 gap-y-4 p-6 md:p-8 sm:grid-cols-2">
-				{features.map((label) => (
-					<li key={label} className="flex items-center gap-3">
-						<span className="grid size-6 shrink-0 place-items-center rounded-full bg-primary/12 text-primary">
-							<Check size={14} strokeWidth={2.5} />
-						</span>
-						<span className="text-sm text-foreground">{label}</span>
-					</li>
-				))}
-			</ul>
-		</div>
+		</section>
 	);
 }
 
 // ---------------------------------------------------------------------------
-// Feature deep-dive row (kept as-is)
+// 5. Features bento
 // ---------------------------------------------------------------------------
-function FeatureRow({
-	title,
-	body,
-	visual,
-	flipped,
-}: {
-	title: string;
-	body: string;
-	visual: React.ReactNode;
-	flipped?: boolean;
-}) {
+const MINI_FEATURES: { icon: ReactNode; title: string; desc: string }[] = [
+	{
+		icon: <Keyboard size={19} />,
+		title: "Global hotkey",
+		desc: "Hold fn from anywhere, or set your own shortcut.",
+	},
+	{
+		icon: <ClipboardPaste size={19} />,
+		title: "Auto-paste",
+		desc: "Text lands at your cursor when you let go.",
+	},
+	{
+		icon: <Eye size={19} />,
+		title: "Live preview",
+		desc: "See the words form in the HUD as you talk.",
+	},
+	{
+		icon: <WifiOff size={19} />,
+		title: "Fully offline",
+		desc: "After setup, no internet and no account.",
+	},
+];
+
+const VOCAB = [
+	"Kubernetes",
+	"GraphQL",
+	"Supabase",
+	"Dr. Nakamura",
+	"OAuth2",
+	"PostgreSQL",
+];
+
+function FeaturesSection() {
+	const tile =
+		"surface grid min-w-0 content-start gap-2.5 p-[clamp(22px,3vw,30px)]";
+	const h3 = "text-[21px] font-bold tracking-[-0.015em] text-foreground";
+	const p = "text-[15.5px] text-muted-foreground";
+	const inset = "rounded-[14px] border border-line-soft bg-background";
 	return (
-		<div
-			className={`flex flex-col ${
-				flipped ? "md:flex-row-reverse" : "md:flex-row"
-			} items-center gap-8 md:gap-14`}
-		>
-			<div className="flex-1 min-w-0">
-				<h3 className="text-2xl md:text-[28px] font-bold text-foreground tracking-tight mb-3 leading-tight">
-					{title}
-				</h3>
-				<p className="text-muted-foreground leading-relaxed text-[15px]">
-					{body}
-				</p>
+		<section className={BAND}>
+			<div className={WRAP}>
+				<Head
+					title="The details you'll use every day"
+					lede="Faster dictation, sharper accuracy, and the polish you actually notice."
+				/>
+				<div className="grid gap-4 md:grid-cols-6">
+					<div className={`${tile} md:col-span-4`}>
+						<h3 className={h3}>Custom vocabulary that remembers</h3>
+						<p className={p}>
+							Add names, acronyms and jargon once. Parrot spells them right
+							every time after.
+						</p>
+						<div className="mt-2.5 flex flex-wrap gap-2">
+							{VOCAB.map((w) => (
+								<span
+									key={w}
+									className="rounded-full bg-band px-3.5 py-[7px] text-sm font-medium text-foreground"
+								>
+									{w}
+								</span>
+							))}
+							<span className="rounded-full bg-lime-soft px-3.5 py-[7px] text-sm font-medium text-[#2f5410]">
+								+ Priya Raman
+							</span>
+						</div>
+						<div
+							className={`${inset} mt-3 flex flex-wrap items-center gap-2.5 px-4 py-3.5 text-[15px]`}
+						>
+							<s className="text-coral">cooper netties cluster</s>
+							<ArrowRight size={15} className="text-muted-foreground" />
+							<b className="text-foreground">Kubernetes cluster</b>
+						</div>
+					</div>
+					<div className={`${tile} md:col-span-2`}>
+						<h3 className={h3}>Pick how your text sounds</h3>
+						<p className={p}>
+							Write your context once. Cleanup matches your tone.
+						</p>
+						<p className={`${inset} mt-1.5 px-3.5 py-3 text-sm text-ink-2`}>
+							I'm a senior engineer writing docs and Slack messages to my team.
+						</p>
+						<div className="mt-2 flex flex-wrap gap-1.5">
+							{["Concise", "Technical", "Friendly"].map((t, i) => (
+								<span
+									key={t}
+									className={`rounded-full px-3 py-1.5 text-[13px] font-semibold ${i === 0 ? "bg-foreground text-background" : "bg-band text-muted-foreground"}`}
+								>
+									{t}
+								</span>
+							))}
+						</div>
+					</div>
+					<div className={`${tile} md:col-span-3`}>
+						<h3 className={h3}>Everything searchable</h3>
+						<p className={p}>
+							Every dictation is saved with its text, time and length. Turn
+							history off any time.
+						</p>
+						<div className="mt-2 grid overflow-hidden rounded-[14px] border border-line-soft">
+							<div className="flex items-center gap-2 border-b border-line-soft bg-background px-3.5 py-2.5 text-sm text-muted-foreground">
+								<Search size={15} />
+								Search dictations
+							</div>
+							{[
+								[
+									"Move the meeting to Thursday. Monday doesn't work for Sarah.",
+									"2 min ago · 0:08",
+								],
+								[
+									"Can you send me the Q3 report with revenue numbers?",
+									"Yesterday · 0:06",
+								],
+							].map(([text, meta]) => (
+								<div
+									key={text}
+									className="border-b border-line-soft px-3.5 py-[11px] last:border-b-0"
+								>
+									<p className="truncate text-[14.5px] text-foreground">
+										{text}
+									</p>
+									<small className="text-[12.5px] text-muted-foreground tabular-nums">
+										{meta}
+									</small>
+								</div>
+							))}
+						</div>
+					</div>
+					<div className="grid gap-4 sm:grid-cols-2 md:col-span-3">
+						{MINI_FEATURES.map((f) => (
+							<div
+								key={f.title}
+								className="surface grid content-start gap-2 p-5"
+							>
+								<span className="grid size-[38px] place-items-center rounded-xl bg-lime-soft text-lime-text">
+									{f.icon}
+								</span>
+								<h3 className="text-[15.5px] font-semibold text-foreground">
+									{f.title}
+								</h3>
+								<p className="text-sm leading-normal text-muted-foreground">
+									{f.desc}
+								</p>
+							</div>
+						))}
+					</div>
+				</div>
 			</div>
-			<div className="flex-1 min-w-0 w-full">{visual}</div>
-		</div>
+		</section>
 	);
 }
 
 // ---------------------------------------------------------------------------
-// 8. App Compatibility Carousel
+// 6. App carousel
 // ---------------------------------------------------------------------------
 const APP_ICONS_ROW1: { icon: ReactNode; label: string }[] = [
-	{ icon: <SlackIcon className="w-3.5 h-3.5" />, label: "Slack" },
-	{ icon: <VSCodeIcon className="w-3.5 h-3.5" />, label: "VS Code" },
-	{ icon: <GmailIcon className="w-3.5 h-3.5" />, label: "Gmail" },
-	{ icon: <NotionIcon className="w-3.5 h-3.5" />, label: "Notion" },
-	{ icon: <ArcIcon className="w-3.5 h-3.5" />, label: "Arc" },
-	{ icon: <FigmaIcon className="w-3.5 h-3.5" />, label: "Figma" },
-	{ icon: <LinearIcon className="w-3.5 h-3.5" />, label: "Linear" },
-	{ icon: <DiscordIcon className="w-3.5 h-3.5" />, label: "Discord" },
-	{ icon: <AppleMessagesIcon className="w-3.5 h-3.5" />, label: "Messages" },
-	{ icon: <AppleNotesIcon className="w-3.5 h-3.5" />, label: "Notes" },
-	{ icon: <GoogleDocsIcon className="w-3.5 h-3.5" />, label: "Google Docs" },
-	{ icon: <FinderIcon className="w-3.5 h-3.5" />, label: "Finder" },
-	{ icon: <ExcelIcon className="w-3.5 h-3.5" />, label: "Excel" },
-	{ icon: <TerminalIcon className="w-3.5 h-3.5" />, label: "Terminal" },
-	{ icon: <OutlookIcon className="w-3.5 h-3.5" />, label: "Outlook" },
+	{ icon: <SlackIcon className="w-4 h-4" />, label: "Slack" },
+	{ icon: <VSCodeIcon className="w-4 h-4" />, label: "VS Code" },
+	{ icon: <GmailIcon className="w-4 h-4" />, label: "Gmail" },
+	{ icon: <NotionIcon className="w-4 h-4" />, label: "Notion" },
+	{ icon: <ArcIcon className="w-4 h-4" />, label: "Arc" },
+	{ icon: <FigmaIcon className="w-4 h-4" />, label: "Figma" },
+	{ icon: <LinearIcon className="w-4 h-4" />, label: "Linear" },
+	{ icon: <DiscordIcon className="w-4 h-4" />, label: "Discord" },
+	{ icon: <AppleMessagesIcon className="w-4 h-4" />, label: "Messages" },
+	{ icon: <AppleNotesIcon className="w-4 h-4" />, label: "Notes" },
+	{ icon: <GoogleDocsIcon className="w-4 h-4" />, label: "Google Docs" },
+	{ icon: <FinderIcon className="w-4 h-4" />, label: "Finder" },
+	{ icon: <ExcelIcon className="w-4 h-4" />, label: "Excel" },
+	{ icon: <TerminalIcon className="w-4 h-4" />, label: "Terminal" },
+	{ icon: <OutlookIcon className="w-4 h-4" />, label: "Outlook" },
 ];
 const APP_ICONS_ROW2: { icon: ReactNode; label: string }[] = [
-	{ icon: <TwitterIcon className="w-3.5 h-3.5" />, label: "Twitter" },
-	{ icon: <TelegramIcon className="w-3.5 h-3.5" />, label: "Telegram" },
-	{ icon: <TrelloIcon className="w-3.5 h-3.5" />, label: "Trello" },
-	{ icon: <JiraIcon className="w-3.5 h-3.5" />, label: "Jira" },
-	{ icon: <ConfluenceIcon className="w-3.5 h-3.5" />, label: "Confluence" },
-	{ icon: <SpotifyIcon className="w-3.5 h-3.5" />, label: "Spotify" },
-	{ icon: <InstagramIcon className="w-3.5 h-3.5" />, label: "Instagram" },
-	{ icon: <TeamsIcon className="w-3.5 h-3.5" />, label: "Teams" },
-	{ icon: <ObsidianIcon className="w-3.5 h-3.5" />, label: "Obsidian" },
-	{ icon: <BearIcon className="w-3.5 h-3.5" />, label: "Bear" },
-	{ icon: <SketchIcon className="w-3.5 h-3.5" />, label: "Sketch" },
-	{ icon: <ChromeIcon className="w-3.5 h-3.5" />, label: "Chrome" },
-	{ icon: <FirefoxIcon className="w-3.5 h-3.5" />, label: "Firefox" },
-	{ icon: <SuperhumanIcon className="w-3.5 h-3.5" />, label: "Superhuman" },
-	{ icon: <CalendarIcon className="w-3.5 h-3.5" />, label: "Calendar" },
+	{ icon: <TwitterIcon className="w-4 h-4" />, label: "Twitter" },
+	{ icon: <TelegramIcon className="w-4 h-4" />, label: "Telegram" },
+	{ icon: <TrelloIcon className="w-4 h-4" />, label: "Trello" },
+	{ icon: <JiraIcon className="w-4 h-4" />, label: "Jira" },
+	{ icon: <ConfluenceIcon className="w-4 h-4" />, label: "Confluence" },
+	{ icon: <SpotifyIcon className="w-4 h-4" />, label: "Spotify" },
+	{ icon: <InstagramIcon className="w-4 h-4" />, label: "Instagram" },
+	{ icon: <TeamsIcon className="w-4 h-4" />, label: "Teams" },
+	{ icon: <ObsidianIcon className="w-4 h-4" />, label: "Obsidian" },
+	{ icon: <BearIcon className="w-4 h-4" />, label: "Bear" },
+	{ icon: <SketchIcon className="w-4 h-4" />, label: "Sketch" },
+	{ icon: <ChromeIcon className="w-4 h-4" />, label: "Chrome" },
+	{ icon: <FirefoxIcon className="w-4 h-4" />, label: "Firefox" },
+	{ icon: <SuperhumanIcon className="w-4 h-4" />, label: "Superhuman" },
+	{ icon: <CalendarIcon className="w-4 h-4" />, label: "Calendar" },
 ];
 
-function AppCarousel() {
-	const renderItems = (apps: typeof APP_ICONS_ROW1) =>
-		apps.map((app, i) => (
+function AppsSection() {
+	const row = (apps: typeof APP_ICONS_ROW1, set: number) =>
+		apps.map((app) => (
 			<span
-				key={i}
-				className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border/70 rounded-full text-sm text-foreground/80 font-medium shrink-0 shadow-[0_1px_2px_rgba(27,46,27,0.04)]"
+				key={`${set}-${app.label}`}
+				className="inline-flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-3.5 py-[7px] text-sm font-medium text-foreground"
 			>
 				<span className="text-muted-foreground">{app.icon}</span>
 				{app.label}
 			</span>
 		));
-
 	return (
-		<div className="space-y-3 overflow-hidden fade-x">
-			{/* Row 1 - scrolls left */}
-			<div className="flex w-max animate-marquee">
-				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW1)}</div>
-				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW1)}</div>
+		<section className={`${TINT} !py-[clamp(56px,7vw,80px)]`}>
+			<div className={WRAP}>
+				<Head
+					center
+					className="!mb-8"
+					title={
+						<span className="text-[clamp(1.6rem,3vw,2.2rem)]">
+							Works in every Mac app
+						</span>
+					}
+					lede="No plugins, no integrations. If it has a text field, Parrot can type into it."
+				/>
+				<div className="grid gap-3 overflow-hidden fade-x">
+					<div className="flex w-max animate-marquee gap-2.5">
+						{row(APP_ICONS_ROW1, 0)}
+						{row(APP_ICONS_ROW1, 1)}
+					</div>
+					<div className="flex w-max animate-marquee-reverse gap-2.5">
+						{row(APP_ICONS_ROW2, 0)}
+						{row(APP_ICONS_ROW2, 1)}
+					</div>
+				</div>
 			</div>
-			{/* Row 2 - scrolls right */}
-			<div className="flex w-max animate-marquee-reverse">
-				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW2)}</div>
-				<div className="flex gap-3 pr-3">{renderItems(APP_ICONS_ROW2)}</div>
-			</div>
-		</div>
+		</section>
 	);
 }
 
 // ---------------------------------------------------------------------------
-// 9. Use-Case Tabs
+// 7. Workflows
 // ---------------------------------------------------------------------------
-const USE_CASE_TABS = [
+const USE_CASES = [
 	{
 		label: "Writers",
 		before:
@@ -998,202 +1011,181 @@ const USE_CASE_TABS = [
 			"Local mode works fully offline",
 		],
 	},
+] as const;
+
+function WorkflowsSection() {
+	const [tab, setTab] = useState<string>(USE_CASES[0].label);
+	const active = USE_CASES.findIndex((u) => u.label === tab);
+	// Every tab's content shares one grid cell, so switching never changes the height.
+	const stack = (i: number) =>
+		`col-start-1 row-start-1 transition-opacity duration-200 ${i === active ? "opacity-100" : "invisible opacity-0"}`;
+
+	return (
+		<section className={BAND}>
+			<div className={WRAP}>
+				<Head
+					title="Built for how you work"
+					lede="Drafting emails, writing patient notes or documenting code, Parrot adapts to the job."
+				/>
+				<div className="grid justify-items-start gap-5">
+					<Tabs
+						label="Workflow"
+						items={USE_CASES.map((u) => u.label)}
+						active={tab}
+						onSelect={setTab}
+					/>
+					<div className="surface grid w-full overflow-hidden md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+						<div className="grid border-line-soft p-[clamp(22px,3vw,32px)] max-md:border-b md:border-r">
+							{USE_CASES.map((u, i) => (
+								<div
+									key={u.label}
+									className={`${stack(i)} grid content-start gap-3.5`}
+								>
+									<p className="rounded-2xl border border-line-soft bg-background px-[18px] py-4 italic text-muted-foreground">
+										<small className="mb-1 block text-[13px] font-semibold not-italic">
+											You say
+										</small>
+										“{u.before}”
+									</p>
+									<p className="rounded-2xl bg-lime-soft px-[18px] py-4 text-foreground">
+										<small className="mb-1 block text-[13px] font-semibold text-[#3d6a14]">
+											Parrot writes
+										</small>
+										“{u.after}”
+									</p>
+								</div>
+							))}
+						</div>
+						<div className="grid bg-band p-[clamp(22px,3vw,32px)]">
+							{USE_CASES.map((u, i) => (
+								<div
+									key={u.label}
+									className={`${stack(i)} grid content-start gap-3.5`}
+								>
+									<h3 className="text-lg font-bold text-foreground">
+										Why {u.label.toLowerCase()} use it
+									</h3>
+									<ul className="m-0 grid list-none gap-3 p-0">
+										{u.benefits.map((b) => (
+											<li
+												key={b}
+												className="flex gap-2.5 text-[15px] text-ink-2"
+											>
+												<Check
+													size={18}
+													strokeWidth={2.5}
+													className="mt-0.5 shrink-0 text-lime-text"
+												/>
+												{b}
+											</li>
+										))}
+									</ul>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	);
+}
+
+// ---------------------------------------------------------------------------
+// 8. Competitor comparison
+// ---------------------------------------------------------------------------
+type Cell = boolean | "partial";
+const COMPARISON: {
+	feature: string;
+	parrot: Cell;
+	wispr: Cell;
+	macos: Cell;
+}[] = [
+	{ feature: "Local mode", parrot: true, wispr: false, macos: false },
+	{
+		feature: "Fast on-device dictation",
+		parrot: true,
+		wispr: false,
+		macos: "partial",
+	},
+	{ feature: "Custom vocabulary", parrot: true, wispr: true, macos: false },
+	{ feature: "AI cleanup", parrot: true, wispr: true, macos: false },
+	{
+		feature: "Privacy (no data sent)",
+		parrot: true,
+		wispr: false,
+		macos: "partial",
+	},
+	{ feature: "Offline support", parrot: true, wispr: false, macos: true },
+	{ feature: "Free, for life", parrot: true, wispr: false, macos: true },
 ];
 
-function UseCaseTabs() {
-	const [activeTab, setActiveTab] = useState(0);
-	const [isTransitioning, setIsTransitioning] = useState(false);
+function CompareCell({ value }: { value: Cell }) {
+	if (value === true)
+		return (
+			<Check
+				size={18}
+				strokeWidth={2.5}
+				className="mx-auto text-lime-text"
+				aria-label="Yes"
+			/>
+		);
+	if (value === false)
+		return (
+			<XIcon size={18} className="mx-auto text-[#b54a2e]" aria-label="No" />
+		);
+	return <span className="font-medium text-[#9a6a00]">Partial</span>;
+}
 
-	const handleTabChange = (i: number) => {
-		if (i === activeTab) return;
-		setIsTransitioning(true);
-		setTimeout(() => {
-			setActiveTab(i);
-			setIsTransitioning(false);
-		}, 200);
-	};
-
+function CompareSection() {
+	const cell = "border-b border-line-soft px-5 py-[15px] text-center";
 	return (
-		<div>
-			{/* Tab bar */}
-			<div className="flex mb-6 max-w-full overflow-x-auto [scrollbar-width:none]">
-				<div className="inline-flex shrink-0 gap-1 p-1 rounded-full bg-card/80 border border-border/70 shadow-[0_1px_2px_rgba(27,46,27,0.04)] backdrop-blur-sm">
-					{USE_CASE_TABS.map((t, i) => (
-						<button
-							key={i}
-							type="button"
-							onClick={() => handleTabChange(i)}
-							className={`px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
-								i === activeTab
-									? "bg-foreground text-background shadow-sm"
-									: "text-muted-foreground hover:text-foreground"
-							}`}
-						>
-							{t.label}
-						</button>
-					))}
+		<section className={TINT}>
+			<div className={WRAP}>
+				<Head
+					title="Parrot vs the alternatives"
+					lede="Free for life, fully local, and built for the daily dictation loop."
+				/>
+				<div className="surface overflow-x-auto">
+					<table className="w-full min-w-[560px] border-separate border-spacing-0 text-[15px]">
+						<thead>
+							<tr className="text-sm font-semibold text-muted-foreground">
+								<th className={`${cell} bg-background text-left`}>Feature</th>
+								<th
+									className={`${cell} bg-lime-soft text-[15px] font-extrabold text-[#2f5410]`}
+								>
+									Parrot
+								</th>
+								<th className={`${cell} bg-background`}>Wispr Flow</th>
+								<th className={`${cell} bg-background`}>macOS Dictation</th>
+							</tr>
+						</thead>
+						<tbody>
+							{COMPARISON.map((row) => (
+								<tr key={row.feature} className="[&:last-child>td]:border-b-0">
+									<td className={`${cell} text-left text-foreground`}>
+										{row.feature}
+									</td>
+									<td className={`${cell} bg-lime-soft`}>
+										<CompareCell value={row.parrot} />
+									</td>
+									<td className={cell}>
+										<CompareCell value={row.wispr} />
+									</td>
+									<td className={cell}>
+										<CompareCell value={row.macos} />
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
 				</div>
 			</div>
-
-			{/* Panel */}
-			<div className="surface p-6 md:p-8">
-				{/* Mini before/after */}
-				<div className="grid md:grid-cols-2 gap-4 mb-6">
-					<div className="bg-muted/50 rounded-2xl p-5">
-						<p className="text-xs font-medium text-muted-foreground mb-2">
-							You say
-						</p>
-						<div className="grid">
-							{USE_CASE_TABS.map((tab, i) => (
-								<p
-									key={i}
-									className={`col-start-1 row-start-1 text-sm text-foreground/60 italic leading-relaxed transition-opacity duration-300 ${
-										i === activeTab && !isTransitioning
-											? "opacity-100"
-											: "opacity-0"
-									}`}
-								>
-									"{tab.before}"
-								</p>
-							))}
-						</div>
-					</div>
-					<div className="bg-primary/8 rounded-2xl p-5">
-						<p className="text-xs font-medium text-primary mb-2">
-							Parrot writes
-						</p>
-						<div className="grid">
-							{USE_CASE_TABS.map((tab, i) => (
-								<p
-									key={i}
-									className={`col-start-1 row-start-1 text-sm text-foreground leading-relaxed transition-opacity duration-300 ${
-										i === activeTab && !isTransitioning
-											? "opacity-100"
-											: "opacity-0"
-									}`}
-								>
-									"{tab.after}"
-								</p>
-							))}
-						</div>
-					</div>
-				</div>
-
-				{/* Benefits */}
-				<div className="grid">
-					{USE_CASE_TABS.map((tab, tabIndex) => (
-						<ul
-							key={tabIndex}
-							className={`col-start-1 row-start-1 space-y-2.5 transition-opacity duration-300 ${
-								tabIndex === activeTab && !isTransitioning
-									? "opacity-100"
-									: "opacity-0"
-							}`}
-						>
-							{tab.benefits.map((b, i) => (
-								<li
-									key={i}
-									className="flex items-start gap-2.5 text-sm text-muted-foreground"
-								>
-									<Check size={15} className="text-primary mt-0.5 shrink-0" />
-									{b}
-								</li>
-							))}
-						</ul>
-					))}
-				</div>
-			</div>
-		</div>
+		</section>
 	);
 }
 
 // ---------------------------------------------------------------------------
-// 12. Competitor Comparison Table
-// ---------------------------------------------------------------------------
-function ComparisonTable() {
-	const rows: {
-		feature: string;
-		parrot: boolean | "partial" | "soon";
-		wispr: boolean | "partial" | "soon";
-		macos: boolean | "partial" | "soon";
-	}[] = [
-		{ feature: "Local mode", parrot: true, wispr: false, macos: false },
-		{
-			feature: "Fast on-device dictation",
-			parrot: true,
-			wispr: false,
-			macos: "partial",
-		},
-		{ feature: "Custom vocabulary", parrot: true, wispr: true, macos: false },
-		{ feature: "AI cleanup", parrot: true, wispr: true, macos: false },
-		{
-			feature: "Privacy (no data sent)",
-			parrot: true,
-			wispr: false,
-			macos: "partial",
-		},
-		{ feature: "Offline support", parrot: true, wispr: false, macos: true },
-		{ feature: "Free, for life", parrot: true, wispr: false, macos: true },
-	];
-
-	const renderCell = (val: boolean | "partial" | "soon") => {
-		if (val === true)
-			return <Check size={16} className="text-primary mx-auto" />;
-		if (val === false)
-			return <XIcon size={16} className="text-red-400/60 mx-auto" />;
-		if (val === "partial")
-			return <Minus size={16} className="text-amber-400 mx-auto" />;
-		if (val === "soon")
-			return (
-				<span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-primary/15 text-primary">
-					Soon
-				</span>
-			);
-		return null;
-	};
-
-	return (
-		<div className="surface overflow-x-auto">
-			<table className="w-full text-sm">
-				<thead>
-					<tr className="border-b border-border/70">
-						<th className="text-left py-4 px-6 text-muted-foreground font-medium">
-							Feature
-						</th>
-						<th className="text-center py-4 px-4 font-bold text-primary bg-primary/6">
-							Parrot
-						</th>
-						<th className="text-center py-4 px-4 text-muted-foreground font-medium">
-							Wispr Flow
-						</th>
-						<th className="text-center py-4 px-4 text-muted-foreground font-medium">
-							macOS Dictation
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					{rows.map((row, i) => (
-						<tr key={i} className="border-b border-border/70 last:border-b-0">
-							<td className="py-3.5 px-6 text-foreground">{row.feature}</td>
-							<td className="py-3.5 px-4 text-center bg-primary/6">
-								{renderCell(row.parrot)}
-							</td>
-							<td className="py-3.5 px-4 text-center">
-								{renderCell(row.wispr)}
-							</td>
-							<td className="py-3.5 px-4 text-center">
-								{renderCell(row.macos)}
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
-	);
-}
-
-// ---------------------------------------------------------------------------
-// FAQ
+// 9. FAQ
 // ---------------------------------------------------------------------------
 const FAQ: { q: string; a: ReactNode }[] = [
 	{
@@ -1257,57 +1249,46 @@ const FAQ: { q: string; a: ReactNode }[] = [
 	},
 ];
 
+function FaqSection() {
+	return (
+		<section className={BAND}>
+			<div
+				className={`${WRAP} grid items-start gap-[clamp(32px,5vw,64px)] md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.4fr)]`}
+			>
+				<Head
+					className="!mb-0"
+					title="Questions"
+					lede="The short answers. Anything else, write to us from the Contact page."
+				/>
+				<Accordion
+					type="single"
+					collapsible
+					defaultValue={FAQ[0].q}
+					className="surface overflow-hidden"
+				>
+					{FAQ.map((item) => (
+						<AccordionItem
+							key={item.q}
+							value={item.q}
+							className="border-b border-line-soft px-6 last:border-b-0"
+						>
+							<AccordionTrigger className="py-5 text-[16.5px] font-semibold text-foreground hover:no-underline">
+								{item.q}
+							</AccordionTrigger>
+							<AccordionContent className="pb-5 text-[15.5px] leading-relaxed text-ink-2">
+								{item.a}
+							</AccordionContent>
+						</AccordionItem>
+					))}
+				</Accordion>
+			</div>
+		</section>
+	);
+}
+
 // ---------------------------------------------------------------------------
-// Page
+// 10. Blog
 // ---------------------------------------------------------------------------
-// Every section shares the same vertical rhythm and content width.
-const SECTION = "px-6 py-24 md:py-32";
-const WRAP = "max-w-5xl mx-auto";
-
-const PHRASES = [
-	"Send the quarterly report to the team by Friday.",
-	"Dear Dr. Patel, thank you for the referral.",
-	"Schedule a follow-up with the client next Tuesday.",
-	"The defendant's counsel filed a motion to dismiss.",
-	"Remind me to buy oat milk and sourdough.",
-	"Let's reschedule the standup to 3pm.",
-	"Patient presents with elevated BP, recommend full metabolic panel.",
-	"Can you review the PR and merge when ready?",
-];
-
-const SMALL_FEATURES: { icon: ReactNode; title: string; desc: string }[] = [
-	{
-		icon: <Keyboard size={18} />,
-		title: "Global hotkey",
-		desc: "Press fn from anywhere. Customizable in settings.",
-	},
-	{
-		icon: <ClipboardPaste size={18} />,
-		title: "Auto-paste",
-		desc: "Text lands at your cursor the moment you're done speaking.",
-	},
-	{
-		icon: <Zap size={18} />,
-		title: "Fast & accurate",
-		desc: "Snappy time-to-text with strong first-pass accuracy on names and jargon.",
-	},
-	{
-		icon: <Eye size={18} />,
-		title: "Live preview",
-		desc: "Watch your words form in the HUD while you hold the hotkey.",
-	},
-	{
-		icon: <Gift size={18} />,
-		title: "Free, for life",
-		desc: "No subscription, no word caps, no trial that expires.",
-	},
-	{
-		icon: <WifiOff size={18} />,
-		title: "Fully offline",
-		desc: "After one download, dictate without internet — or an account.",
-	},
-];
-
 const BLOG_CARDS = [
 	{
 		href: "/blog/wispr-flow-alternatives",
@@ -1319,13 +1300,13 @@ const BLOG_CARDS = [
 		href: "/blog/superwhisper-alternatives",
 		tag: "Alternatives",
 		title: "Best Superwhisper alternatives",
-		blurb: "Local Mac dictation with cleanup — without a Pro plan.",
+		blurb: "Local Mac dictation with cleanup, without a Pro plan.",
 	},
 	{
 		href: "/blog/free-voice-dictation-apps-2026",
 		tag: "Guide",
 		title: "Free voice dictation apps in 2026",
-		blurb: "What “free” really means: caps, trials, and free forever.",
+		blurb: "What free really means: caps, trials, and free forever.",
 	},
 	{
 		href: "/blog/local-voice-dictation-mac",
@@ -1347,419 +1328,150 @@ const BLOG_CARDS = [
 	},
 ];
 
-function HomePage() {
+function BlogSection() {
 	return (
-		<div className="min-h-screen">
-			<section className="relative px-6 pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
-				<div className="max-w-6xl mx-auto grid md:grid-cols-[1.1fr_1fr] gap-12 md:gap-16 items-center">
-					{/* Left - copy */}
-					<div>
-						<div className="inline-flex items-center gap-2 px-3 py-1 bg-card/80 border border-primary/20 rounded-full mb-6 shadow-[0_1px_2px_rgba(27,46,27,0.04)] backdrop-blur-sm">
-							<div className="w-1.5 h-1.5 rounded-full bg-primary" />
-							<span className="text-xs font-semibold text-primary tracking-wide">
-								macOS &middot; Free for life &middot; Faster &amp; sharper
-							</span>
-						</div>
-
-						<h1 className="text-[2.75rem] md:text-[3.5rem] lg:text-[4rem] font-black text-foreground tracking-[-0.03em] leading-[1.04] mb-6">
-							Voice dictation for Mac.
-							<br />
-							<span className="text-primary">Local-first. Free.</span>
-						</h1>
-
-						<p className="text-lg text-muted-foreground leading-relaxed max-w-md mb-8">
-							{PARROT_FACTS.entity} Unlike Wispr Flow ({wispr.pricing.theirPaid}
-							) and Superwhisper ({superwhisper.pricing.theirPaid}), Parrot is{" "}
-							{PARROT_FACTS.price}, runs transcription fully on-device, and
-							pastes into any Mac app via a global hotkey. Custom vocabulary, AI
-							cleanup, full history.
-						</p>
-
-						<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-							<Link
-								to="/download"
-								className="group inline-flex items-center gap-2 pl-5 pr-6 h-12 bg-foreground text-background font-semibold rounded-full hover:bg-foreground/90 transition-[background-color,transform] active:scale-[0.98] no-underline shadow-[0_8px_24px_-8px_rgba(27,46,27,0.45)]"
-							>
-								<Download size={18} strokeWidth={2.5} />
-								Download for Mac
-								<ArrowRight
-									size={16}
-									strokeWidth={2.5}
-									className="transition-transform group-hover:translate-x-0.5"
-								/>
-							</Link>
-							<span className="flex items-center gap-2 text-xs text-muted-foreground">
-								<kbd className="px-2 py-1 bg-card border border-border rounded-md text-[11px] font-bold text-foreground/70 shadow-[0_1px_0_0] shadow-border">
-									fn
-								</kbd>
-								to start dictating &middot; Apple Silicon
-							</span>
-						</div>
-					</div>
-
-					{/* Right - typing race */}
-					<div className="max-w-md md:max-w-none mx-auto w-full">
-						<DictationDemo />
-					</div>
-				</div>
-			</section>
-
-			<div className="py-4 overflow-hidden fade-x">
-				<div className="flex w-max animate-marquee">
-					{[0, 1].map((setIndex) => (
-						<div key={setIndex} className="flex gap-3 pr-3">
-							{PHRASES.map((phrase) => (
-								<span
-									key={`${setIndex}-${phrase}`}
-									className="px-3.5 py-1.5 rounded-full border border-border/70 bg-card/60 text-[13px] text-muted-foreground font-mono whitespace-nowrap"
-								>
-									{phrase}
-								</span>
-							))}
-						</div>
-					))}
-				</div>
-			</div>
-
-			<section id="demo" className={SECTION}>
-				<div className={WRAP}>
-					<SectionHeading
-						title="AI cleanup for voice dictation"
-						lede="The optional cleanup pass removes filler words, fixes grammar, and applies your writing style. Here's what that looks like."
-					/>
-					<BeforeAfter />
-				</div>
-			</section>
-
-			<section className={SECTION}>
-				<div className={WRAP}>
-					<SectionHeading
-						align="center"
-						title="Dictate into any app"
-						lede="Parrot works wherever your cursor is. Watch it transcribe for different workflows."
-					/>
-					<VoiceDemoPlayground />
-				</div>
-			</section>
-
-			<section className={SECTION}>
-				<div className={WRAP}>
-					<SectionHeading
-						title="Fast. Private. Free for life."
-						lede="Transcription and cleanup run entirely on-device. Nothing leaves your Mac — and you never pay a subscription to keep dictating."
-					/>
-					<DualModeSpotlight />
-				</div>
-			</section>
-
-			<section className={SECTION}>
-				<div className={WRAP}>
-					<SectionHeading
-						title="Voice dictation features that work for you"
-						lede="Faster dictation, sharper accuracy, and the polish you actually use every day."
-					/>
-					<div className="space-y-20 md:space-y-28">
-						<FeatureRow
-							title="Custom vocabulary that actually remembers"
-							body="Add names, acronyms, brand terms, and jargon. Parrot learns the words that matter so 'Kubernetes' doesn't become 'Cooper Netties' and your coworker's name isn't butchered every time."
-							visual={
-								<div className="surface p-6">
-									<p className="text-sm font-semibold text-foreground mb-4">
-										Your vocabulary
-									</p>
-									<div className="flex flex-wrap gap-2">
-										{[
-											"Kubernetes",
-											"GraphQL",
-											"Supabase",
-											"Dr. Nakamura",
-											"Anthropic",
-											"YC W24",
-											"Series A",
-											"OAuth2",
-											"Tailwind",
-											"PostgreSQL",
-										].map((word) => (
-											<span
-												key={word}
-												className="px-3 py-1.5 bg-primary/8 rounded-full text-sm text-foreground font-medium"
-											>
-												{word}
-											</span>
-										))}
-									</div>
-								</div>
-							}
-						/>
-
-						<FeatureRow
-							flipped
-							title="Pick how your text sounds"
-							body="Set your writing context and style. The cleanup matches your tone - whether that's terse Slack messages, formal legal prose, or casual blog posts. You write it once, Parrot applies it every time."
-							visual={
-								<div className="surface overflow-hidden">
-									<div className="border-b border-border/70 px-6 py-3.5">
-										<p className="text-sm font-semibold text-foreground">
-											Writing style
-										</p>
-									</div>
-									<div className="p-6 space-y-5">
-										<div>
-											<p className="text-xs font-medium text-muted-foreground mb-2">
-												Context
-											</p>
-											<p className="text-sm text-foreground bg-muted/60 rounded-xl p-3.5">
-												I'm a senior engineer writing technical docs and Slack
-												messages to my team.
-											</p>
-										</div>
-										<div>
-											<p className="text-xs font-medium text-muted-foreground mb-2">
-												Tone
-											</p>
-											<div className="inline-flex gap-1 p-1 rounded-full bg-muted/60">
-												{["Concise", "Technical", "Friendly"].map((t, i) => (
-													<span
-														key={t}
-														className={`px-3.5 py-1.5 rounded-full text-xs font-medium ${
-															i === 0
-																? "bg-card text-foreground shadow-[0_1px_3px_rgba(27,46,27,0.12)]"
-																: "text-muted-foreground"
-														}`}
-													>
-														{t}
-													</span>
-												))}
-											</div>
-										</div>
-									</div>
-								</div>
-							}
-						/>
-
-						<FeatureRow
-							title="Everything searchable, nothing lost"
-							body="Every dictation is saved with full text, timestamp, and audio duration. Search past transcriptions, copy them again, or review what you said last Tuesday. You can turn it off if you want to keep it private."
-							visual={
-								<div className="surface overflow-hidden">
-									<div className="px-4 py-3 border-b border-border/70">
-										<div className="flex items-center gap-2 bg-muted/60 rounded-xl px-3 py-2">
-											<Search size={14} className="text-muted-foreground" />
-											<span className="text-xs text-muted-foreground">
-												Search dictations...
-											</span>
-										</div>
-									</div>
-									<div className="divide-y divide-border/70">
-										{[
-											{
-												text: "Move the meeting to Thursday - Monday doesn't work for Sarah.",
-												time: "2 min ago",
-												dur: "0:08",
-											},
-											{
-												text: "Patient presents with elevated BP (~150/95). Recommend full metabolic panel.",
-												time: "1 hour ago",
-												dur: "0:14",
-											},
-											{
-												text: "Can you send me the Q3 report with revenue numbers?",
-												time: "Yesterday",
-												dur: "0:06",
-											},
-										].map((entry) => (
-											<div
-												key={entry.text}
-												className="px-6 py-3.5 hover:bg-muted/40 transition-colors"
-											>
-												<p className="text-sm text-foreground truncate">
-													{entry.text}
-												</p>
-												<div className="flex items-center gap-3 mt-1">
-													<span className="text-[11px] text-muted-foreground">
-														{entry.time}
-													</span>
-													<span className="text-[11px] text-muted-foreground tabular-nums">
-														{entry.dur}
-													</span>
-												</div>
-											</div>
-										))}
-									</div>
-								</div>
-							}
-						/>
-					</div>
-				</div>
-			</section>
-
-			<section className="px-6 py-16 md:py-20">
-				<div className={WRAP}>
-					<SectionHeading
-						align="center"
-						className="mb-10 md:mb-10"
-						title="Voice dictation in any Mac app"
-						lede="Parrot pastes into any app on your Mac. No plugins, no integrations."
-					/>
-					<AppCarousel />
-				</div>
-			</section>
-
-			<section className={SECTION}>
-				<div className={WRAP}>
-					<SectionHeading
-						title="Voice dictation for every workflow"
-						lede="Whether you're drafting emails, writing patient notes, or coding documentation - Parrot adapts to how you work."
-					/>
-					<UseCaseTabs />
-				</div>
-			</section>
-
-			<section className="px-6 pb-24 md:pb-32">
-				<div className={`${WRAP} grid sm:grid-cols-2 lg:grid-cols-3 gap-4`}>
-					{SMALL_FEATURES.map((f) => (
-						<div
-							key={f.title}
-							className="surface p-6 transition-transform duration-200 hover:-translate-y-0.5"
-						>
-							<div className="mb-4 grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
-								{f.icon}
-							</div>
-							<h3 className="text-[15px] font-semibold text-foreground mb-1">
-								{f.title}
-							</h3>
-							<p className="text-sm text-muted-foreground leading-relaxed">
-								{f.desc}
-							</p>
-						</div>
-					))}
-				</div>
-			</section>
-
-			<section className={SECTION}>
-				<div className={WRAP}>
-					<SectionHeading
-						title="Parrot vs the alternatives"
-						lede="Free for life, fully local, and built for the daily dictation loop — not a metered cloud trial."
-					/>
-					<ComparisonTable />
-				</div>
-			</section>
-
-			<section className={SECTION}>
-				<div
-					className={`${WRAP} grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] md:gap-16`}
-				>
-					<SectionHeading
-						className="mb-0 md:mb-0"
-						title="Questions"
-						lede="The short answers. Anything else, just ask."
-					/>
-					<Accordion
-						type="single"
-						collapsible
-						className="surface overflow-hidden px-2"
-					>
-						{FAQ.map((item) => (
-							<AccordionItem
-								key={item.q}
-								value={item.q}
-								className="border-b border-border/70 last:border-b-0 px-4"
-							>
-								<AccordionTrigger className="font-semibold text-foreground text-[15px] hover:no-underline py-5">
-									{item.q}
-								</AccordionTrigger>
-								<AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-5">
-									{item.a}
-								</AccordionContent>
-							</AccordionItem>
-						))}
-					</Accordion>
-				</div>
-			</section>
-
-			<section className={SECTION}>
-				<div className={WRAP}>
-					<SectionHeading title="Guides for free, local Mac dictation" />
-					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-						{BLOG_CARDS.map((card) => (
-							<a
-								key={card.href}
-								href={card.href}
-								className="surface group flex flex-col p-6 no-underline transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_1px_2px_rgba(27,46,27,0.04),0_20px_40px_-20px_rgba(27,46,27,0.25)]"
-							>
-								<span className="self-start rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
-									{card.tag}
-								</span>
-								<p className="text-[15px] font-bold text-foreground mt-4 mb-2 leading-snug">
-									{card.title}
-								</p>
-								<p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-									{card.blurb}
-								</p>
-								<span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
-									Read
-									<ArrowRight
-										size={14}
-										className="transition-transform group-hover:translate-x-0.5"
-									/>
-								</span>
-							</a>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<FinalCTA />
-
-			<Footer />
-		</div>
-	);
-}
-
-function FinalCTA() {
-	return (
-		<section className="px-4 pb-16 md:px-6 md:pb-24">
-			<div className="relative mx-auto max-w-5xl overflow-hidden rounded-[32px] bg-foreground px-6 py-20 md:py-28">
-				{/* Soft lime glow behind the heading */}
-				<div
-					aria-hidden="true"
-					className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[min(720px,90%)] -translate-x-1/2 rounded-full bg-primary/30 blur-[100px]"
-				/>
-				<div className="relative max-w-2xl mx-auto text-center">
-					<h2 className="text-4xl md:text-5xl font-black text-background tracking-[-0.03em] leading-[1.05] mb-5">
-						Start dictating. Stop typing.
-					</h2>
-					<p className="text-background/60 mb-10 text-[17px]">
-						{PARROT_FACTS.price}. Fully on-device on Apple Silicon. Download for
-						Mac and start dictating in minutes.
-					</p>
-
-					<Link
-						to="/download"
-						className="group inline-flex items-center gap-2 pl-5 pr-6 h-12 bg-primary text-primary-foreground font-semibold rounded-full hover:bg-primary/90 transition-[background-color,transform] active:scale-[0.98] no-underline shadow-[0_8px_32px_-8px_rgba(124,179,66,0.6)]"
-					>
-						<Download size={18} strokeWidth={2.5} />
-						Download for Mac
-						<ArrowRight
-							size={16}
-							strokeWidth={2.5}
-							className="transition-transform group-hover:translate-x-0.5"
-						/>
-					</Link>
-
-					<p className="text-background/40 text-xs mt-10">
-						Want product updates?{" "}
+		<section className={TINT}>
+			<div className={WRAP}>
+				<Head title="Guides for free, local Mac dictation" />
+				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+					{BLOG_CARDS.map((card) => (
 						<a
-							href="/rss.xml"
-							className="text-background/60 underline underline-offset-2 hover:text-background/80 transition-colors"
+							key={card.href}
+							href={card.href}
+							className="surface grid content-start gap-2.5 p-6 no-underline transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)]"
 						>
-							Subscribe to the RSS feed
+							<span className="justify-self-start rounded-full bg-lime-soft px-2.5 py-1 text-xs font-bold text-[#2f5410]">
+								{card.tag}
+							</span>
+							<h3 className="text-lg leading-[1.3] font-bold text-foreground">
+								{card.title}
+							</h3>
+							<p className="text-[15px] text-muted-foreground">{card.blurb}</p>
+							<span className="mt-1.5 text-sm font-bold text-lime-text">
+								Read the guide →
+							</span>
 						</a>
-						.
-					</p>
+					))}
 				</div>
 			</div>
 		</section>
+	);
+}
+
+// ---------------------------------------------------------------------------
+// 11. Closing call to action (forest band)
+// ---------------------------------------------------------------------------
+function FinalCTA() {
+	return (
+		<section className={`${FOREST} relative overflow-hidden`}>
+			<div className="pointer-events-none absolute -top-[140px] left-1/2 h-[300px] w-[min(760px,90%)] -translate-x-1/2 rounded-full bg-primary/32 blur-[100px]" />
+			<div
+				className={`${WRAP} relative grid justify-items-center gap-[22px] text-center`}
+			>
+				<h2 className="text-[clamp(2.4rem,6vw,4.2rem)] font-black leading-none tracking-[-0.035em] text-on-forest">
+					Start dictating. Stop typing.
+				</h2>
+				<p className="max-w-[34em] text-lg">
+					{PARROT_FACTS.price}. Fully on-device on Apple Silicon. Download
+					Parrot and start dictating in a few minutes.
+				</p>
+				<Link
+					to="/download"
+					className={`${PILL_BTN} bg-primary text-[#11210f] shadow-[0_12px_32px_-10px_rgba(124,179,66,0.7)] hover:bg-[#8cc152]`}
+				>
+					<Download size={18} strokeWidth={2.4} />
+					Download for Mac
+				</Link>
+				<p className="text-[13px]">
+					Want product updates?{" "}
+					<a
+						href="/rss.xml"
+						className="text-on-forest underline underline-offset-2"
+					>
+						Subscribe to the RSS feed
+					</a>
+					.
+				</p>
+			</div>
+		</section>
+	);
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+function HomePage() {
+	return (
+		<div className="min-h-screen">
+			<section className="overflow-hidden pt-[clamp(48px,7vw,88px)] pb-[clamp(56px,7vw,96px)]">
+				<div
+					className={`${WRAP} grid items-center gap-[clamp(36px,5vw,64px)] md:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)]`}
+				>
+					<div>
+						<span className="inline-flex items-center gap-2 rounded-full border border-border bg-card py-1.5 pr-3.5 pl-2.5 text-[13px] font-semibold text-lime-text shadow-[0_1px_2px_rgba(27,46,27,0.05)]">
+							<i className="size-[7px] rounded-full bg-primary shadow-[0_0_0_4px_var(--lime-soft)]" />
+							macOS · {PARROT_FACTS.price} · Apple Silicon
+						</span>
+						<h1 className="mt-[22px] text-[clamp(2.6rem,5.2vw,4.1rem)] font-black leading-none tracking-[-0.035em] text-foreground">
+							Voice dictation for Mac.{" "}
+							<span className="block whitespace-nowrap text-primary">
+								Local-first. Free.
+							</span>
+						</h1>
+						<p className="mt-[22px] max-w-[30em] text-[19px] leading-relaxed text-ink-2">
+							Hold{" "}
+							<kbd className="inline-grid h-[26px] min-w-[30px] place-items-center rounded-[7px] border border-b-2 border-border bg-card px-[7px] font-mono text-xs font-semibold text-foreground">
+								fn
+							</kbd>
+							, talk, let go. Parrot writes it down on your Mac, cleans it up,
+							and pastes it into whatever app you're in. No account, no
+							subscription, no audio leaving the machine.
+						</p>
+						<div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3.5">
+							<Link
+								to="/download"
+								className={`${PILL_BTN} bg-foreground text-background shadow-[0_10px_24px_-10px_rgba(27,46,27,0.55)] hover:bg-[#2b452b]`}
+							>
+								<Download size={18} strokeWidth={2.4} />
+								Download for Mac
+							</Link>
+							<span className="text-sm text-muted-foreground">
+								Apple Silicon (M1 and later)
+							</span>
+						</div>
+						<dl className="mt-9 flex flex-wrap gap-x-7 gap-y-2.5 border-t border-line-soft pt-6">
+							{[
+								["$0", "forever, no word caps"],
+								["0 bytes", "of audio sent anywhere"],
+								["Any app", "pastes at your cursor"],
+							].map(([big, small]) => (
+								<div key={big} className="grid">
+									<dt className="text-[22px] font-extrabold tracking-[-0.02em] text-foreground">
+										{big}
+									</dt>
+									<dd className="m-0 text-[13px] text-muted-foreground">
+										{small}
+									</dd>
+								</div>
+							))}
+						</dl>
+					</div>
+					<HeroMock />
+				</div>
+			</section>
+
+			<Ticker />
+			<CleanupSection />
+			<AnyAppSection />
+			<PrivacySection />
+			<FeaturesSection />
+			<AppsSection />
+			<WorkflowsSection />
+			<CompareSection />
+			<FaqSection />
+			<BlogSection />
+			<FinalCTA />
+			<Footer />
+		</div>
 	);
 }
