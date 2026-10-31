@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
+import { ForestCTA } from "@/components/forest-cta";
 import { competitors } from "@/lib/competitors";
 
 export const Route = createFileRoute("/compare/")({
@@ -105,12 +106,9 @@ function CompareIndexPage() {
 	return (
 		<div className="min-h-screen">
 			{/* ── Hero ── */}
-			<section className="px-6 pt-16 pb-20 md:pt-24 md:pb-28">
+			<section className="px-5 pt-[clamp(48px,7vw,88px)] pb-[clamp(56px,7vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Comparisons
-					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+					<h1 className="text-[clamp(2.6rem,5.2vw,4.1rem)] font-black text-foreground tracking-[-0.035em] leading-none text-balance mb-6">
 						Parrot vs the rest
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
@@ -121,7 +119,7 @@ function CompareIndexPage() {
 			</section>
 
 			{/* ── Cards ── */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-4xl mx-auto">
 					<div className="grid sm:grid-cols-2 gap-5">
 						{competitors.map((c) => (
@@ -129,9 +127,9 @@ function CompareIndexPage() {
 								key={c.slug}
 								to="/compare/$competitor"
 								params={{ competitor: c.slug }}
-								className="group bg-card rounded-2xl border border-border p-6 hover:border-primary/30 transition-colors no-underline"
+								className="group surface p-6 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_1px_2px_rgba(27,46,27,0.06),0_22px_40px_-18px_rgba(27,46,27,0.32)] no-underline"
 							>
-								<p className="text-[11px] font-semibold text-primary uppercase tracking-wider mb-2">
+								<p className="inline-block rounded-full bg-lime-soft px-2.5 py-1 text-xs font-bold text-[#2f5410] mb-3">
 									Parrot vs
 								</p>
 								<h2 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
@@ -150,6 +148,7 @@ function CompareIndexPage() {
 				</div>
 			</section>
 
+			<ForestCTA />
 			<Footer />
 		</div>
 	);

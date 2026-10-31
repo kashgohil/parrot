@@ -166,12 +166,9 @@ function CompareCompetitorPage() {
 	return (
 		<div className="min-h-screen">
 			{/* ── Hero ── */}
-			<section className="px-6 pt-16 pb-14 md:pt-24 md:pb-20">
+			<section className="px-5 pt-[clamp(48px,7vw,88px)] pb-[clamp(56px,7vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Comparison
-					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+					<h1 className="text-[clamp(2.6rem,5.2vw,4.1rem)] font-black text-foreground tracking-[-0.035em] leading-none text-balance mb-6">
 						Parrot vs {c.name}
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
@@ -181,9 +178,9 @@ function CompareCompetitorPage() {
 			</section>
 
 			{/* ── Quick comparison table ── */}
-			<section className="px-6 py-16 md:py-20 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(64px,8vw,96px)] bg-band border-y border-line-soft">
 				<div className="max-w-4xl mx-auto">
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-8">
 						Side-by-side
 					</h2>
 					<div className="overflow-x-auto bg-card border border-border rounded-2xl">
@@ -225,19 +222,14 @@ function CompareCompetitorPage() {
 			</section>
 
 			{/* ── Pricing comparison ── */}
-			<section className="px-6 py-20 md:py-24">
+			<section className="px-5 py-[clamp(72px,9vw,112px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Pricing
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-8">
 						What it costs
 					</h2>
 					<div className="grid sm:grid-cols-2 gap-5">
-						<div className="bg-card border border-primary/30 rounded-2xl p-6">
-							<p className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">
-								Parrot
-							</p>
+						<div className="surface border-primary/50 bg-lime-soft p-6">
+							<p className="text-sm font-bold text-lime-text mb-2">Parrot</p>
 							<p className="text-3xl font-black text-foreground tracking-tight mb-2">
 								{c.pricing.parrotPrice}
 							</p>
@@ -245,8 +237,8 @@ function CompareCompetitorPage() {
 								No account, no card, no trial. Full feature set.
 							</p>
 						</div>
-						<div className="bg-card border border-border rounded-2xl p-6">
-							<p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+						<div className="surface p-6">
+							<p className="text-sm font-bold text-muted-foreground mb-2">
 								{c.shortName}
 							</p>
 							<p className="text-3xl font-black text-foreground tracking-tight mb-2">
@@ -267,12 +259,9 @@ function CompareCompetitorPage() {
 			</section>
 
 			{/* ── Their strengths (honest) ── */}
-			<section className="px-6 py-20 md:py-24 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Honest take
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-8">
 						Where {c.shortName} is genuinely good
 					</h2>
 					<ul className="space-y-3 mb-12">
@@ -311,12 +300,9 @@ function CompareCompetitorPage() {
 			</section>
 
 			{/* ── Why Parrot ── */}
-			<section className="px-6 py-20 md:py-24">
+			<section className="px-5 py-[clamp(72px,9vw,112px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Why Parrot
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-10">
 						What you get instead
 					</h2>
 					<div className="space-y-8">
@@ -340,13 +326,13 @@ function CompareCompetitorPage() {
 			</section>
 
 			{/* ── When to choose which ── */}
-			<section className="px-6 py-20 md:py-24 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-8">
 						Which one should you pick?
 					</h2>
 					<div className="grid md:grid-cols-2 gap-6">
-						<div className="bg-card border border-primary/30 rounded-2xl p-6">
+						<div className="surface border-primary/50 bg-lime-soft p-6">
 							<h3 className="text-lg font-bold text-foreground mb-4">
 								Pick Parrot if…
 							</h3>
@@ -365,7 +351,7 @@ function CompareCompetitorPage() {
 								))}
 							</ul>
 						</div>
-						<div className="bg-card border border-border rounded-2xl p-6">
+						<div className="surface p-6">
 							<h3 className="text-lg font-bold text-foreground mb-4">
 								Pick {c.shortName} if…
 							</h3>
@@ -389,17 +375,14 @@ function CompareCompetitorPage() {
 			</section>
 
 			{/* ── FAQ ── */}
-			<section className="px-6 py-20 md:py-24">
+			<section className="px-5 py-[clamp(72px,9vw,112px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						FAQ
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-10">
 						Common questions
 					</h2>
-					<div className="space-y-8">
+					<div className="grid gap-4">
 						{c.faq.map((item) => (
-							<div key={item.q} className="border-l-2 border-primary/30 pl-5">
+							<div key={item.q} className="surface p-6">
 								<h3 className="text-lg font-bold text-foreground mb-2">
 									{item.q}
 								</h3>
@@ -413,30 +396,31 @@ function CompareCompetitorPage() {
 			</section>
 
 			{/* ── CTA ── */}
-			<section className="px-6 py-20 md:py-24 bg-muted/30 border-y border-border">
-				<div className="max-w-3xl mx-auto text-center">
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-4">
+			<section className="relative overflow-hidden px-5 py-[clamp(72px,9vw,112px)] bg-forest">
+				<div className="pointer-events-none absolute -top-[140px] left-1/2 h-[300px] w-[min(760px,90%)] -translate-x-1/2 rounded-full bg-primary/32 blur-[100px]" />
+				<div className="relative max-w-3xl mx-auto text-center">
+					<h2 className="text-[clamp(2.2rem,5vw,3.6rem)] font-black text-on-forest tracking-[-0.035em] leading-none text-balance mb-5">
 						Try Parrot for free
 					</h2>
-					<p className="text-base text-muted-foreground mb-8 max-w-xl mx-auto">
+					<p className="text-lg text-on-forest-muted mb-8 max-w-xl mx-auto">
 						{PARROT_FACTS.entity} No account, no card, no trial —{" "}
 						{PARROT_FACTS.price}.
 					</p>
 					<Link
 						to="/download"
-						className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
+						className="inline-flex items-center gap-2 h-[50px] px-6 bg-primary text-[#11210f] font-semibold rounded-full hover:bg-[#8cc152] transition-[background-color,transform] active:scale-[0.98] shadow-[0_12px_32px_-10px_rgba(124,179,66,0.7)] no-underline"
 					>
 						<Download size={18} strokeWidth={2.5} />
 						Download Parrot
 						<ArrowRight size={16} strokeWidth={2.5} />
 					</Link>
 					{ALTERNATIVES_BLOG[c.slug] && (
-						<p className="mt-6 text-sm text-muted-foreground">
+						<p className="mt-6 text-sm text-on-forest-muted">
 							Comparing several options? See{" "}
 							<Link
 								to="/blog/$slug"
 								params={{ slug: ALTERNATIVES_BLOG[c.slug] }}
-								className="text-foreground underline underline-offset-2 hover:text-primary"
+								className="text-on-forest underline underline-offset-2 hover:text-primary"
 							>
 								best {c.shortName} alternatives
 							</Link>
@@ -447,9 +431,9 @@ function CompareCompetitorPage() {
 			</section>
 
 			{/* ── Other comparisons ── */}
-			<section className="px-6 py-16">
+			<section className="px-5 py-[clamp(64px,8vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
+					<p className="text-lg font-bold text-foreground mb-4">
 						Other comparisons
 					</p>
 					<div className="grid sm:grid-cols-2 gap-3">
@@ -460,7 +444,7 @@ function CompareCompetitorPage() {
 									key={other.slug}
 									to="/compare/$competitor"
 									params={{ competitor: other.slug }}
-									className="group p-4 rounded-xl border border-border hover:border-primary/30 transition-colors no-underline"
+									className="group surface p-5 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] no-underline"
 								>
 									<p className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
 										Parrot vs {other.name}
