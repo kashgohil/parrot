@@ -5,12 +5,9 @@ import Footer from "@/components/Footer";
 export default function NotFound() {
 	return (
 		<div className="min-h-screen">
-			<section className="px-6 pt-24 pb-16 md:pt-32 md:pb-24">
+			<section className="px-5 pt-[clamp(64px,9vw,120px)] pb-[clamp(56px,7vw,96px)]">
 				<div className="max-w-3xl mx-auto text-center">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						404 — Page not found
-					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+					<h1 className="text-[clamp(2.6rem,5.2vw,4.1rem)] font-black text-foreground tracking-[-0.035em] leading-none text-balance mb-6">
 						This page flew away
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-10">
@@ -20,7 +17,7 @@ export default function NotFound() {
 					<div className="flex flex-wrap items-center justify-center gap-3">
 						<Link
 							to="/"
-							className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
+							className="inline-flex items-center gap-2 h-[50px] px-6 bg-foreground text-background font-semibold rounded-full hover:bg-[#2b452b] transition-[background-color,transform] active:scale-[0.98] shadow-[0_10px_24px_-10px_rgba(27,46,27,0.55)] no-underline"
 						>
 							<House size={18} strokeWidth={2.5} />
 							Back home
@@ -36,9 +33,9 @@ export default function NotFound() {
 				</div>
 			</section>
 
-			<section className="px-6 py-16 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(64px,8vw,96px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-6">
+					<p className="text-lg font-bold text-foreground mb-5">
 						Popular pages
 					</p>
 					<div className="grid sm:grid-cols-2 gap-3">
@@ -67,7 +64,7 @@ export default function NotFound() {
 							<Link
 								key={item.to}
 								to={item.to}
-								className="group p-4 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors no-underline"
+								className="group surface p-5 transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] no-underline"
 							>
 								<p className="text-base font-bold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5">
 									{item.title}

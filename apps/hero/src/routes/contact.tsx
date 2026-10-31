@@ -83,12 +83,9 @@ function ContactPage() {
 	return (
 		<div className="min-h-screen">
 			{/* Hero */}
-			<section className="px-6 pt-16 pb-14 md:pt-24 md:pb-20">
+			<section className="px-5 pt-[clamp(48px,7vw,88px)] pb-[clamp(56px,7vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Contact
-					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+					<h1 className="text-[clamp(2.6rem,5.2vw,4.1rem)] font-black text-foreground tracking-[-0.035em] leading-none text-balance mb-6">
 						Contact Parrot
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
@@ -99,7 +96,7 @@ function ContactPage() {
 			</section>
 
 			{/* Contact Options */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
 					{/* Primary contact - Email */}
 					<div className="bg-card border border-border rounded-2xl p-8 md:p-10 mb-8">
@@ -115,7 +112,7 @@ function ContactPage() {
 							</div>
 							<a
 								href="mailto:hello@tryparrot.app"
-								className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline shrink-0"
+								className="inline-flex items-center gap-2 h-[50px] px-6 bg-foreground text-background font-semibold rounded-full hover:bg-[#2b452b] transition-[background-color,transform] active:scale-[0.98] shadow-[0_10px_24px_-10px_rgba(27,46,27,0.55)] no-underline shrink-0"
 							>
 								hello@tryparrot.app
 								<ArrowRight size={16} strokeWidth={2.5} />

@@ -1,5 +1,6 @@
-import Footer from "@/components/Footer";
 import { createFileRoute } from "@tanstack/react-router";
+import Footer from "@/components/Footer";
+import { ForestCTA } from "@/components/forest-cta";
 
 export const Route = createFileRoute("/changelog")({
 	component: ChangelogPage,
@@ -311,15 +312,11 @@ const RELEASES = [
 			},
 			{
 				type: "fixed",
-				items: [
-					"PATH resolution for GUI-launched apps on macOS",
-				],
+				items: ["PATH resolution for GUI-launched apps on macOS"],
 			},
 			{
 				type: "removed",
-				items: [
-					"Framer Motion animations from the setup wizard",
-				],
+				items: ["Framer Motion animations from the setup wizard"],
 			},
 		],
 	},
@@ -403,12 +400,9 @@ function ChangelogPage() {
 	return (
 		<div className="min-h-screen">
 			{/* ── Hero ── */}
-			<section className="px-6 pt-16 pb-20 md:pt-24 md:pb-28">
+			<section className="px-5 pt-[clamp(48px,7vw,88px)] pb-[clamp(56px,7vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Changelog
-					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+					<h1 className="text-[clamp(2.6rem,5.2vw,4.1rem)] font-black text-foreground tracking-[-0.035em] leading-none text-balance mb-6">
 						Parrot Changelog
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
@@ -419,7 +413,7 @@ function ChangelogPage() {
 			</section>
 
 			{/* ── Releases ── */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
 					<div className="relative">
 						{/* Vertical line */}
@@ -486,12 +480,9 @@ function ChangelogPage() {
 			</section>
 
 			{/* ── Roadmap preview ── */}
-			<section className="px-6 py-20 md:py-28">
+			<section className="px-5 py-[clamp(72px,9vw,112px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Coming up
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-10">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-10">
 						What we're working on
 					</h2>
 					<div className="space-y-4">
@@ -518,6 +509,7 @@ function ChangelogPage() {
 				</div>
 			</section>
 
+			<ForestCTA />
 			<Footer />
 		</div>
 	);

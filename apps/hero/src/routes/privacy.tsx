@@ -34,23 +34,20 @@ function PrivacyPage() {
 	return (
 		<div className="min-h-screen">
 			{/* ── Hero ── */}
-			<section className="px-6 pt-16 pb-14 md:pt-24 md:pb-20">
+			<section className="px-5 pt-[clamp(48px,7vw,88px)] pb-[clamp(56px,7vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Privacy
-					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+					<h1 className="text-[clamp(2.6rem,5.2vw,4.1rem)] font-black text-foreground tracking-[-0.035em] leading-none text-balance mb-6">
 						Your voice, your data.
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-						Parrot is built around a simple rule: your audio and
-						transcriptions belong to you, not us.
+						Parrot is built around a simple rule: your audio and transcriptions
+						belong to you, not us.
 					</p>
 				</div>
 			</section>
 
 			{/* ── Content ── */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
 					{/* TLDR */}
 					<div className="bg-primary/[0.04] border border-primary/15 rounded-2xl p-6 md:p-7 mb-14">
@@ -126,12 +123,9 @@ function PrivacyPage() {
 			</section>
 
 			{/* ── Contact ── */}
-			<section className="px-6 py-20 md:py-28">
+			<section className="px-5 py-[clamp(72px,9vw,112px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Questions
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-4">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-4">
 						Need more info?
 					</h2>
 					<p className="text-[15px] text-muted-foreground leading-relaxed max-w-xl mb-6">
@@ -141,7 +135,7 @@ function PrivacyPage() {
 					<div className="flex flex-wrap gap-4">
 						<a
 							href="mailto:hello@tryparrot.app"
-							className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
+							className="inline-flex items-center gap-2 h-11 px-5 bg-foreground text-background font-semibold rounded-full hover:bg-[#2b452b] transition-[background-color,transform] active:scale-[0.98] no-underline"
 						>
 							Email us
 							<ArrowRight size={16} strokeWidth={2.5} />
@@ -186,4 +180,3 @@ function PolicySection({
 		</div>
 	);
 }
-

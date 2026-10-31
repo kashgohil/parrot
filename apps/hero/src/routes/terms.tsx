@@ -34,12 +34,9 @@ function TermsPage() {
 	return (
 		<div className="min-h-screen">
 			{/* Hero */}
-			<section className="px-6 pt-16 pb-14 md:pt-24 md:pb-20">
+			<section className="px-5 pt-[clamp(48px,7vw,88px)] pb-[clamp(56px,7vw,96px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Legal
-					</p>
-					<h1 className="text-[2.5rem] md:text-[3.25rem] font-black text-foreground tracking-tight leading-[1.1] mb-5">
+					<h1 className="text-[clamp(2.6rem,5.2vw,4.1rem)] font-black text-foreground tracking-[-0.035em] leading-none text-balance mb-6">
 						Terms of Service
 					</h1>
 					<p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
@@ -49,10 +46,10 @@ function TermsPage() {
 			</section>
 
 			{/* Content */}
-			<section className="px-6 py-20 md:py-28 bg-muted/30 border-y border-border">
+			<section className="px-5 py-[clamp(72px,9vw,112px)] bg-band border-y border-line-soft">
 				<div className="max-w-3xl mx-auto">
 					{/* Last updated */}
-					<div className="bg-muted/30 border border-border rounded-2xl p-6 md:p-7 mb-14">
+					<div className="surface p-6 md:p-7 mb-14">
 						<p className="text-[14px] text-muted-foreground">
 							<span className="font-semibold text-foreground">
 								Last updated:
@@ -66,7 +63,7 @@ function TermsPage() {
 						<TermsSection
 							title="1. Acceptance of terms"
 							paragraphs={[
-								"By downloading, installing, or using Parrot (\"the Software\"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the Software.",
+								'By downloading, installing, or using Parrot ("the Software"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the Software.',
 								"We may update these terms from time to time. Continued use of Parrot after changes constitutes acceptance of the new terms.",
 							]}
 						/>
@@ -113,7 +110,7 @@ function TermsPage() {
 						<TermsSection
 							title="7. Disclaimer of warranties"
 							paragraphs={[
-								"THE SOFTWARE IS PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.",
+								'THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.',
 								"We do not warrant that the Software will meet your requirements, operate without interruption, be error-free, or that defects will be corrected.",
 							]}
 						/>
@@ -160,12 +157,9 @@ function TermsPage() {
 			</section>
 
 			{/* Questions */}
-			<section className="px-6 py-20 md:py-28">
+			<section className="px-5 py-[clamp(72px,9vw,112px)]">
 				<div className="max-w-3xl mx-auto">
-					<p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-3">
-						Questions
-					</p>
-					<h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-4">
+					<h2 className="text-[clamp(2rem,4.4vw,3rem)] font-extrabold text-foreground tracking-[-0.028em] leading-[1.06] text-balance mb-4">
 						Need clarification?
 					</h2>
 					<p className="text-[15px] text-muted-foreground leading-relaxed max-w-xl mb-6">
@@ -175,7 +169,7 @@ function TermsPage() {
 					<div className="flex flex-wrap gap-4">
 						<a
 							href="mailto:hello@tryparrot.app"
-							className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
+							className="inline-flex items-center gap-2 h-11 px-5 bg-foreground text-background font-semibold rounded-full hover:bg-[#2b452b] transition-[background-color,transform] active:scale-[0.98] no-underline"
 						>
 							Email us
 							<ArrowRight size={16} strokeWidth={2.5} />
