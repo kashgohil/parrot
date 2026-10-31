@@ -118,7 +118,7 @@ export default function Header() {
 					<Link
 						to="/download"
 						onClick={() => setIsOpen(false)}
-						className="flex items-center justify-center gap-2 w-full py-2.5 bg-foreground text-background text-sm font-semibold rounded-xl hover:bg-foreground/85 transition-colors no-underline"
+						className="flex items-center justify-center gap-2 w-full py-3 bg-foreground text-background text-sm font-semibold rounded-full hover:bg-foreground/85 transition-colors no-underline"
 					>
 						Download
 						<ArrowRight size={14} />

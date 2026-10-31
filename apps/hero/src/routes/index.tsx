@@ -50,6 +50,7 @@ import {
 	VSCodeIcon,
 } from "@/components/app-icons";
 import Footer from "@/components/Footer";
+import { ForestCTA } from "@/components/forest-cta";
 import {
 	Accordion,
 	AccordionContent,
@@ -1359,45 +1360,6 @@ function BlogSection() {
 }
 
 // ---------------------------------------------------------------------------
-// 11. Closing call to action (forest band)
-// ---------------------------------------------------------------------------
-function FinalCTA() {
-	return (
-		<section className={`${FOREST} relative overflow-hidden`}>
-			<div className="pointer-events-none absolute -top-[140px] left-1/2 h-[300px] w-[min(760px,90%)] -translate-x-1/2 rounded-full bg-primary/32 blur-[100px]" />
-			<div
-				className={`${WRAP} relative grid justify-items-center gap-[22px] text-center`}
-			>
-				<h2 className="text-[clamp(2.4rem,6vw,4.2rem)] font-black leading-none tracking-[-0.035em] text-on-forest">
-					Start dictating. Stop typing.
-				</h2>
-				<p className="max-w-[34em] text-lg">
-					{PARROT_FACTS.price}. Fully on-device on Apple Silicon. Download
-					Parrot and start dictating in a few minutes.
-				</p>
-				<Link
-					to="/download"
-					className={`${PILL_BTN} bg-primary text-[#11210f] shadow-[0_12px_32px_-10px_rgba(124,179,66,0.7)] hover:bg-[#8cc152]`}
-				>
-					<Download size={18} strokeWidth={2.4} />
-					Download for Mac
-				</Link>
-				<p className="text-[13px]">
-					Want product updates?{" "}
-					<a
-						href="/rss.xml"
-						className="text-on-forest underline underline-offset-2"
-					>
-						Subscribe to the RSS feed
-					</a>
-					.
-				</p>
-			</div>
-		</section>
-	);
-}
-
-// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 function HomePage() {
@@ -1470,7 +1432,7 @@ function HomePage() {
 			<CompareSection />
 			<FaqSection />
 			<BlogSection />
-			<FinalCTA />
+			<ForestCTA />
 			<Footer />
 		</div>
 	);
